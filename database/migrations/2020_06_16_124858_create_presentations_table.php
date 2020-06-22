@@ -18,6 +18,7 @@ class CreatePresentationsTable extends Migration
             $table->text('name');
             $table->text('presenter');
             $table->text('description');
+            $table->integer('location')->nullable();
             $table->tinyInteger('capacity')->comment('Max student no.');
         });
     }

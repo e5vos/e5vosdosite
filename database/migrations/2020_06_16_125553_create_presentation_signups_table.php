@@ -17,7 +17,7 @@ class CreatePresentationSignupsTable extends Migration
             $table->id();
             $table->integer('presentation');
             $table->string('diakcode');
-            $table->boolean('present');
+            $table->boolean('present')->default(false);
             $table->timestamps();
 
             $table->foreign('diakcode')->references('code')->on('students');

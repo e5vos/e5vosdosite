@@ -16,3 +16,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/e5n/presentations','E5NController@presentations');
+Route::get('/e5n/scanner','E5NController@scanner');
+Route::get('/e5n/map','E5NController@map');
+Route::get('/e5n/admin','E5NController@admin');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

@@ -15,7 +15,7 @@ class CreatePresentationsTable extends Migration
     {
         Schema::create('presentations', function (Blueprint $table) {
             $table->id();
-            $table->text('name');
+            $table->text('title');
             $table->text('presenter');
             $table->text('description');
             $table->integer('location')->nullable();

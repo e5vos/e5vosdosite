@@ -25,6 +25,29 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('edit-settings', function ($user) {
+            return $user->isAdmin;
+        });
+
+        Gate::define('edit-permissions', function ($user) {
+            return $user->isAdmin;
+        });
+
+        Gate::define('e5n-admin', function ($user) {
+            return $user->isAdmin;
+        });
+
+
+        Gate::define('e5n-scanner', function ($user) {
+            return $user->isAdmin;
+        });
+
+
+        /** E5N System availability */
+        Gate::define('e5n', function ($user) {
+
+            return $user->isAdmin;
+        });
+
     }
 }

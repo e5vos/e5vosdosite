@@ -15,13 +15,13 @@ class CreatePresentationSignupsTable extends Migration
     {
         Schema::create('presentation_signups', function (Blueprint $table) {
             $table->id();
-            $table->integer('presentation');
-            $table->string('diakcode');
+            $table->integer('presentation_id');
+            $table->integer('student_id');
             $table->boolean('present')->default(false);
             $table->timestamps();
 
-            $table->foreign('diakcode')->references('code')->on('students');
-            $table->foreign('presentation')->references('id')->on('presentations');
+            $table->foreign('student_id')->references('id')->on('students');
+            $table->foreign('presentation_id')->references('id')->on('presentations');
         });
     }
 

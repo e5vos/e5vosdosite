@@ -15,14 +15,14 @@ class CreatePermissionsTable extends Migration
     {
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->integer('user');
-            $table->integer('events')->nullable();
-            $table->string('permisison')->comment('For codes see documentation');
-            
+            $table->integer('user_id');
+            $table->integer('event_id')->nullable();
+            $table->string('permission')->comment('For codes see documentation');
+
             $table->timestamps();
-            
-            $table->foreign('user')->references('id')->on('users');
-            $table->foreign('events')->references('id')->on('events');
+
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('event_id')->references('id')->on('events');
         });
     }
 

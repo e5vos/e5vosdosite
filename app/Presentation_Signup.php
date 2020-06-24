@@ -15,4 +15,7 @@ class PresentationSignup extends Model
     public function presentation(){
         return $this->belongsTo(Presentation::class);
     }
+    public function student(){
+        return $this->belongsTo(Student::class);
+    }
 }

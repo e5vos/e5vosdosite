@@ -12,4 +12,7 @@ class Presentation extends Model
     public function signups(){
         return $this->hasMany(PresentationSignup::class);
     }
+    public function students(){
+        return $this->hasManyThrough(PresentationSignup::class,Student::class);
+    }
 }

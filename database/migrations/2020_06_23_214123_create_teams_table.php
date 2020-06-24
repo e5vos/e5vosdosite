@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStudentsTable extends Migration
+class CreateTeamsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,14 @@ class CreateStudentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('students', function (Blueprint $table) {
+        Schema::create('teams', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
             $table->string('code')->unique();
             $table->string('name');
-            $table->integer('class_id');
+            $table->integer('admin_id');
+            $table->foreign('admin_id')->references('id')->on('students')->onDelete('cascade');
 
-            $table->foreign('class_id')->references('id')->on('ejg_classes')->onDelete('cascade');
         });
     }
 
@@ -30,6 +31,6 @@ class CreateStudentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('teams');
     }
 }

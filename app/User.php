@@ -47,4 +47,11 @@ class User extends Authenticatable
         return $this->permissions()->where("permission","ADM");
     }
 
+
+    public function currentEvent(){
+        return $this->permissions()->whereHas('event',function($event){
+            $event->where('start','<',now())->where('end','>',now());
+        })->event();
+    }
+
 }

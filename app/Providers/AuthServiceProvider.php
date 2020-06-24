@@ -39,7 +39,7 @@ class AuthServiceProvider extends ServiceProvider
 
 
         Gate::define('e5n-scanner', function ($user) {
-            return $user->isAdmin;
+            return $user->isAdmin || $user->currentEvent()->exists();
         });
 
 
@@ -48,6 +48,8 @@ class AuthServiceProvider extends ServiceProvider
 
             return $user->isAdmin;
         });
+
+
 
     }
 }

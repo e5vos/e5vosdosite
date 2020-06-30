@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Gate;
 class E5NController extends Controller
 {
     public function presentations(){
-        return view('e5n.map');
+        return view('e5n.presentations');
     }
     public function attendancesheet($code){
         $presentation = App\Presentation::where('code',$code);
@@ -24,6 +24,7 @@ class E5NController extends Controller
         return view('e5n.scanner',[
             'event'=>$event,
         ]);
+
     }
 
     public function map(){
@@ -31,7 +32,7 @@ class E5NController extends Controller
     }
 
     public function admin(){
-        Gate::authorize('e5n-admin');
+        //Gate::authorize('e5n-admin');
         return view('e5n.adminboard');
     }
 

@@ -70,16 +70,16 @@
                 </div>
                 <div class="container border border-dark">
                     <div class="row">
-                        <h4>osztály</h4> <h3>program</h3> <h3>Pontok</h3>
+                        <h3>program</h3> <h3>Pontok: xx</h3>
                     </div>
                     <div class="row">
-                        <h4>osztály</h4> <h3>program</h3> <h3>Pontok</h3>
+                        <h3>program</h3> <h3>Pontok: xx</h3>
                     </div>
                     <div class="row">
-                        <h4>osztály</h4> <h3>program</h3> <h3>Pontok</h3>
+                        <h3>program</h3> <h3>Pontok: xx</h3>
                     </div>
                     <div class="row">
-                        <h4>osztály</h4> <h3>program</h3> <h3>Pontok</h3>
+                        <h3>program</h3> <h3>Pontok: xx</h3>
                     </div>
                 </div>
                 <div class="row ">

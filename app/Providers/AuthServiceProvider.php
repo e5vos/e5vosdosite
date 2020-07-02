@@ -27,6 +27,8 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('image-modify','FilePolicy@imageModify');
         Gate::define('image-upload','FilePolicy@imageUpload');
+
+        
         Gate::define('edit-settings', function ($user) {
             return $user->isAdmin;
         });

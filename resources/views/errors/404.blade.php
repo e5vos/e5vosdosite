@@ -8,7 +8,7 @@
                 <div class="card-header">404</div>
 
                 <div class="card-body">
-                    Errore 404
+                    Error 404
                 </div>
             </div>
         </div>

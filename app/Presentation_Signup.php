@@ -8,7 +8,7 @@ class PresentationSignup extends Model
 {
     protected $table = 'presentation_signups';
 
-    public function toggleJelen(){
+    public function toggle(){
         $this->jelen=!$this->jelen;
         $this->save();
     }

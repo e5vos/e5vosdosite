@@ -21,13 +21,15 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/e5n','E5NController@home');
-Route::get('/e5n/home','E5NController@home');
-Route::get('/e5n/presentations','E5NController@presentations');
-Route::get('/e5n/scanner','E5NController@scanner');
-Route::get('/e5n/map','E5NController@map');
-Route::get('/e5n/admin','E5NController@admin');
 
-Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/e5n/map','E5N\E5NController@map');
+
+Route::get('/e5n/admin','E5N\E5NController@admin')->middleware('auth');
+
+Route::get('/e5n/presentations','E5N\PresentationController@presentations');
+
+Route::get('/e5n/teams/','E5N\TeamController@home');
+
+Route::get('/e5n/scanner','E5N\EventController@scanner')->middleware('auth');
+

@@ -30,6 +30,10 @@ class E5NController extends Controller
         return view('e5n.map');
     }
 
+    public function home(){
+        return view('e5n.home');
+    }
+
     public function admin(){
         Gate::authorize('e5n-admin');
         return view('e5n.adminboard');

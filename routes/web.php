@@ -21,6 +21,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/admin', 'HomeController@admin');
+
 Route::get('/e5n/home', 'E5N\E5NController@home');
 
 Route::get('/e5n', 'E5N\E5NController@home');

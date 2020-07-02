@@ -17,4 +17,8 @@ class Score extends Model
     public function event(){
         return $this->belongsTo(Event::class);
     }
+
+    public function teamMembers(){
+        return $this->hasManyThrough(App\Student::class,App\Team::class);
+    }
 }

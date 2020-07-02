@@ -20,40 +20,23 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 col-xl-4 card">
-                            <div class="card-header">Kötélhúzás <span class="badge badge-success">OK</span></div>
-                            <div class="card-body" style="text-align:center;">
-                                <p>12:00-13:00</p>
-                                <p><span class="text-info">Közpes</span> látogatottság: 2.3 scan/perc, összesen 7</p>
-                                <p>6 szervező</p>
-                                <p class="text-info">Tornacsarnok</p>
-                                <p><img style="max-height:150px; max-width:300px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Irish_600kg_euro_chap_2009.JPG/350px-Irish_600kg_euro_chap_2009.JPG" /></p>
-                                <button class="btn btn-primary">Send message</button>
+
+                        @foreach($events as $event)
+                            <div id="event#{{$event->id}}" class="col-md-6 col-xl-4 card">
+                                <div class="card-header">{{$event->name}} <span class="badge badge-{{$event->badgeClass}}">{{$event->badgeMessage}}</span></div>
+                                <div class="card-body" style="text-align:center;">
+                                    <p>{{$event->type}} event</p>
+                                    <p>{{$event->start->format('h:i')}}-{{$event->end->format('h:i')}}</p>
+                                    <p><span class="text-info">{{$event->visitorcount()}}</span> visitors</p>
+                                    <p>{{$event->permissions->count()}} organisers</p>
+                                    <p class="text-info">{{$event->location->name}}</p>
+                                    @if ($event->image())
+                                        <p><img style="max-height:150px; max-width:300px;" src="{{Storage::url($event->image()->location)}}" /></p>
+                                    @endif
+                                    <button onclick="msg({{$event->id}})"class="btn btn-primary">Send message</button>
+                                </div>
                             </div>
-                        </div> 
-                        <div class="col-md-6 col-xl-4 card">
-                            <div class="card-header">12 órás StarCraft <span class="badge badge-success">OK</span></div>
-                            <div class="card-body" style="text-align:center;">
-                                <p>06:00-18:00</p>
-                                <p><span class="text-info">Hatalmas</span> látogatottság: 23 scan/perc, összesen 1000</p>
-                                <p>2 szervező</p>
-                                <p class="text-info">17</p>
-                                <p><img style="max-height:150px; max-width:300px;" src="https://upload.wikimedia.org/wikipedia/en/thumb/2/20/StarCraft_II_-_Box_Art.jpg/220px-StarCraft_II_-_Box_Art.jpg" /></p>
-                                <button class="btn btn-primary">Send message</button>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-xl-4 card">
-                            <div class="card-header">Konspi  <span class="badge badge-danger">Danger</span></div>
-                            <div class="card-body" style="text-align:center;">
-                                <p class="badge badge-danger" style="font-size:24px">Help Requested</p>
-                                <p>10:00-16:00</p>
-                                <p><span class="text-info">Közepes</span> látogatottság: 2 scan/perc, összesen 87</p>
-                                <p>4 szervező</p>
-                                <p class="text-info">207</p>
-                                <p><img style="max-height:150px; max-width:300px;" src="https://cdn.infotagion.com/uploads/2020/05/thought-catalog-gbQ3EsFSdG8-unsplash-950x500.jpg" /></p>
-                                <button class="btn btn-primary">Send message</button>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>

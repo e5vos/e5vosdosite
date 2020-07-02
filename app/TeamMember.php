@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Team_Member;
+use Illuminate\Database\Eloquent\TeamMember;
 
-class Team_Member extends Model
+class TeamMember extends Model
 {
     public function student(){
         return $this->belongsTo(Student::class);

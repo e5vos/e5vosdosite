@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" style="background:url({{asset('images/defaultbackgroundimage.png')}}) no-repeat center center fixed; background-size:cover;">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,9 +20,10 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @yield('script')
 </head>
-<body>
+<body style="background:none;">
+
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm sticky-top">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     <img src="{{url('/images/donci.jpg')}}" alt="E5vosdosite" height="40px" >

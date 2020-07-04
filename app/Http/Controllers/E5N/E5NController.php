@@ -17,8 +17,8 @@ class E5NController extends Controller
     public function attendancesheet($code){
         $presentation = App\Presentation::where('code',$code);
         return view('e5n.attendance',[
-            'students' => $presentation->students(), // contains student data
-            'signups' => $presentation->signups(), // contains attendance bool
+            'students' => $presentation->students()->get(), // contains student data
+            'signups' => $presentation->signups()->get(), // contains attendance bool
         ]);
     }
 

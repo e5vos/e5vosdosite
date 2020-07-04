@@ -15,11 +15,13 @@ class CreatePresentationsTable extends Migration
     {
         Schema::create('presentations', function (Blueprint $table) {
             $table->id();
-            $table->text('title');
-            $table->text('presenter');
-            $table->text('description');
+            $table->tinyInteger('slot');
+            $table->text('title')->nullable();
+            $table->text('presenter')->nullable();
+            $table->text('description')->nullable();
             $table->integer('location')->nullable();
             $table->tinyInteger('capacity')->comment('Max student no.');
+            $table->string('code')->unique();
         });
     }
 

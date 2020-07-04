@@ -13,5 +13,7 @@ $factory->define(Presentation::class, function (Faker $faker) {
         'presenter' => $faker->name,
         'description' => $faker->paragraph,
         'capacity' => $faker->numberBetween(10,40),
+        'slot'=>    $faker->numberBetween(1,3),
+        'code' => $faker->regexify('[A-Za-z0-9]{4}'),
     ];
 });

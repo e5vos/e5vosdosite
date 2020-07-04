@@ -9,6 +9,7 @@ class Student extends Model
     public $timestamps = false;
     protected $table = 'students';
 
+    protected $hidden = ['created_at','updated_at','laravel_through_key'];
 
     public static function updatedatabase(){
         Student::query()->truncate();
@@ -39,6 +40,11 @@ class Student extends Model
     public function signups(){
         return $this->hasMany(PresentationSignup::class);
     }
+
+    public function presentations(){
+        return $this->hasManyThrough(Presentation::class,PresentationSignup::class);
+    }
+
     public function scores(){
         return $this->hasMany(Score::class);
     }

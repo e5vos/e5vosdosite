@@ -8,7 +8,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-4">
-                <div class="jumbotron" style="background-color: darkslategrey;">
+                <div class="jumbotron" style="background-color: rgba(47, 79, 79, 0.89);">
                     <table class="table table-light">
                         <thead class="thead-dark">
                             <tr>
@@ -31,7 +31,7 @@
 
                             <tbody>
                                 @for ($i = 0; $i < 10; $i++)
-                                <tr style="color: white">
+                                <tr style="color: rgba(255, 255, 255, 0.89)">
                                     <td>12.A</td>
                                     <td id="uname1">János István</td>
                                     <td>
@@ -55,7 +55,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="jumbotron" style="background-color: darkslategrey;">
+                <div class="jumbotron" style="background-color: rgba(47, 79, 79, 0.89);">
                     <table class="table table-light">
                         <thead class="thead-dark">
                             <tr>
@@ -81,11 +81,11 @@
 
                             <tbody>
                                 @for ($i = 0; $i < 10; $i++)
-                                <tr style="color: white">
+                                <tr style="color: rgba(255, 255, 255, 0.89)">
                                     <td>János István</td>
                                     <td>kakilni kell</td>
                                     <td>
-                                        <button class="btn btn-link">&#1F441</button>
+                                        <button class="btn btn-link"><span>&#1F441</span></button>
                                     </td>
                                     <td>
                                         <button class="btn btn-link">&#2705</button>
@@ -101,13 +101,13 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <div class="jumbotron" style="background-color: black;">
+                <div class="jumbotron" style="background-color: rgba(0, 0, 0, 0.89);">
                         <button class="btn btn-success btn-lg btn-block" onclick="confImportant('Start E5N')">Start E5N</button>
                         <button class="btn btn-danger btn-lg btn-block" onclick="confImportant('End E5N')">End E5N</button>
                         <button class="btn btn-danger btn-lg btn-block" onclick="confImportant('E5N Reset')">E5N Reset</button>
                         <button class="btn btn-danger btn-lg btn-block" onclick="confImportant('Service Maintenance')">Service Maintenance</button>
                 </div>
-                <div class="jumbotron" style="background-color: black;">
+                <div class="jumbotron" style="background-color: rgba(0, 0, 0, 0.89);">
                     <div class="input-grup">
                         <textarea class="form-control" rows="3" maxlenght="169" id="comment">Közlemény a főoldalra</textarea>
                         <button class="btn btn-info btn-block" onclick="confMessage(document.getElementById('comment').value)">Küldés</button>
@@ -120,6 +120,7 @@
 
 @section('script')
 <script>
+
     function DM(uname) {
         uname=document.getElementById("uname1").innerText;
         if(msg=window.prompt(uname + ' DM', 'üzenj neki')) {

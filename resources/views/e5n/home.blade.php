@@ -11,7 +11,7 @@
             <!-- Left Sidebar -->
 
             <div class="col-md-4">
-                <div class="jumbotron" style="background-color: cornflowerblue">
+                <div class="jumbotron" style="background-color: rgba(100, 149, 237, 0.89)">
                     <div class="row">
                         <h1>Jelenleg futó programok</h1>
                     </div>
@@ -35,7 +35,7 @@
                                 <h5 style="width: 100%;text-align: center;padding-top:50%"> 00:00-tól <br/> 00:00-ig </h5>
                             </div>
                             <div class="row">
-                                <h3 style="width: 100%;text-align: center;padding-bottom: 50%;"> Időpont </h3>
+                                <h3 style="width: 100%;text-align: center;"> Időpont </h3>
                             </div>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
             <!-- Middle content (map) -->
 
             <div class="col-md-5">
-                <div class="jumbotron" style="background-color: cornflowerblue">
+                <div class="jumbotron" style="background-color: rgba(100, 149, 237, 0.89)">
 
                 </div>
             </div>
@@ -62,7 +62,7 @@
             <!-- Right Sidebar -->
 
             <div class="col-md-3">
-                <div class="jumbotron" style="background-color: cornflowerblue">
+                <div class="jumbotron" style="background-color: rgba(100, 149, 237, 0.89)">
                     <div class="row" style="padding-top: 6.9%;">
                         <span class="align-center"> <h2> Uname pontjai </h2> </span>
                     </div>

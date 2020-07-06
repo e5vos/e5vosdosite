@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\E5N;
 
+use App\Event;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\Response;
@@ -33,7 +34,9 @@ class E5NController extends Controller
 
     public function admin(){
         //Gate::authorize('e5n-admin');
-        return view('e5n.adminboard');
+        return view('e5n.adminboard', [
+            'events' => Event::all(),
+        ]);
     }
 
     public function reset(){

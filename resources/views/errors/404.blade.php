@@ -8,7 +8,7 @@
                 <div class="card-header">404</div>
 
                 <div class="card-body">
-                    Error 404
+                    Ez az oldal nem létezik.
                 </div>
             </div>
         </div>

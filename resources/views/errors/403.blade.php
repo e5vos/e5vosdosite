@@ -8,7 +8,7 @@
                 <div class="card-header">403</div>
 
                 <div class="card-body">
-                    Error 403
+                    Ehez az oldalhoz vagy be kell jelentkezned, vagy nincs jogosultságod hozzá.
                 </div>
             </div>
         </div>

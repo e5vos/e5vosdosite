@@ -25,7 +25,9 @@ Route::get('/admin', 'Homecontroller@admin')
 
 Route::get('/e5n/home', 'E5N\EventController@home');
 
-Route::get('/e5n', 'E5N\EventController@home');
+Route::get('/e5n/home', 'E5N\E5NController@home');
+
+Route::get('/e5n', 'E5N\E5NController@home');
 
 Route::get('/e5n/map','E5N\E5NController@map');
 

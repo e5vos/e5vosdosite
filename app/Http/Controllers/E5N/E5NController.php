@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
 
+use App\Http\Resources\Student as StudentResource;
 
 class E5NController extends Controller
 {
@@ -38,13 +39,20 @@ class E5NController extends Controller
 
     public function reset(){
         Gate::authorize('e5n-admin');
-        App\Student::updatedatabase();
+        \App\Student::updatedatabase();
         Presentation::query()->truncate();
         Event::query()->truncate();
 
         return view('e5n.reset');
     }
 
+    public function codes(){
+        return view('e5n.codes');
+    }
+
+    public function students(){
+        return StudentResource::collection(\App\Student::all());
+    }
 }
 
 

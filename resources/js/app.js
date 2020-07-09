@@ -19,7 +19,15 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+import VueQrcode from '@chenfengyuan/vue-qrcode';
+
+Vue.component(VueQrcode.name, VueQrcode);
+
+
 Vue.component('presentations', require('./components/Presentations.vue').default);
+Vue.component('qrcodes', require('./components/QRCodes.vue').default);
+
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -41,3 +41,7 @@ Route::post('/e5n/presentations/attendance/{code}/{id}','E5N\PresentationControl
 
 // Get Selected Presentation Data
 Route::get('/e5n/presentations/selected/{diakkod}/{omkod}/{slot}','E5N\PresentationController@selected');
+
+
+
+Route::get('/e5n/students','E5N\E5NController@students');//->middleware('auth');

@@ -8,7 +8,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-4">
-                <div class="jumbotron" style="background-color: rgba(47, 79, 79, 0.89);">
+                <div class="jumbotron" style="background-color: rgba(47, 79, 79, 0.8);">
                     <table class="table table-light">
                         <thead class="thead-dark">
                             <tr>
@@ -27,11 +27,11 @@
                         </thead>
                     </table>
                     <div class="overflow-auto" style="width: 100%;background-image: ;height:380px;">
-                        <table class="table table-light" style="text-align:center;width:100%;table-layout: auto;background-color: darkslategrey;">
+                        <table class="table table-light" style="text-align:center;width:100%;table-layout: auto;background-color: rgba(47, 79, 79, 0.8);">
 
                             <tbody>
                                 @for ($i = 0; $i < 10; $i++)
-                                <tr style="color: rgba(255, 255, 255, 0.89)">
+                                <tr style="color: rgba(255, 255, 255, 0.8)">
                                     <td>12.A</td>
                                     <td id="uname1">János István</td>
                                     <td>
@@ -44,7 +44,7 @@
                                     </td>
                                     <td>
                                         <label for="admin">admin</label>
-                                        <input type="checkbox" class="form-control" id="admin">
+                                        <input type="ch0eckbox" class="form-control" id="admin">
                                     </td>
                                     <td><button id="" class="btn btn-info" onclick="DM('1')">DM</button></td>
                                 </tr>
@@ -55,7 +55,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="jumbotron" style="background-color: rgba(47, 79, 79, 0.89);">
+                <div class="jumbotron" style="background-color: rgba(47, 79, 79, 0.8);">
                     <table class="table table-light">
                         <thead class="thead-dark">
                             <tr>
@@ -76,12 +76,12 @@
                             </tr>
                         </thead>
                     </table>
-                    <div class="overflow-auto" style="width: 100%;background-image: ;height:380px;">
-                        <table class="table table-light" style="text-align:center;width:100%;table-layout: auto;background-color: darkslategrey;">
+                    <div class="overflow-auto" style="width: 100%;height:380px;">
+                        <table class="table table-light" style="text-align:center;width:100%;table-layout: auto;background-color: rgba(47, 79, 79, 0.8);">
 
                             <tbody>
                                 @for ($i = 0; $i < 10; $i++)
-                                <tr style="color: rgba(255, 255, 255, 0.89)">
+                                <tr style="color: rgba(255, 255, 255, 0.8)">
                                     <td>János István</td>
                                     <td>kakilni kell</td>
                                     <td>
@@ -101,13 +101,13 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <div class="jumbotron" style="background-color: rgba(0, 0, 0, 0.89);">
+                <div class="jumbotron" style="background-color: rgba(0, 0, 0, 0.8);">
                         <button class="btn btn-success btn-lg btn-block" onclick="confImportant('Start E5N')">Start E5N</button>
                         <button class="btn btn-danger btn-lg btn-block" onclick="confImportant('End E5N')">End E5N</button>
                         <button class="btn btn-danger btn-lg btn-block" onclick="confImportant('E5N Reset')">E5N Reset</button>
                         <button class="btn btn-danger btn-lg btn-block" onclick="confImportant('Service Maintenance')">Service Maintenance</button>
                 </div>
-                <div class="jumbotron" style="background-color: rgba(0, 0, 0, 0.89);">
+                <div class="jumbotron" style="background-color: rgba(0, 0, 0, 0.8);">
                     <div class="input-grup">
                         <textarea class="form-control" rows="3" maxlenght="169" id="comment">Közlemény a főoldalra</textarea>
                         <button class="btn btn-info btn-block" onclick="confMessage(document.getElementById('comment').value)">Küldés</button>

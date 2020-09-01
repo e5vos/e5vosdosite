@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Location;
 use Intervention\Image;
+use Illuminate\Database\Eloquent\Model;
+
 
 class DBImage extends Model
 {
@@ -23,7 +25,7 @@ class DBImage extends Model
         $imageobj->location='/images/'.$imageobj->id; // save image path for later load
         $image->save('/images/'.$imageobj->id); //
         $imageobj->save();
-        return $imabeobj->id;
+        return $imageobj->id;
     }
 
     public static function loadimg($id){
@@ -34,12 +36,12 @@ class DBImage extends Model
         return \Intervention\Image::make($this->location);
     }
 
-    public function saveimg(){
+    /*public function saveimg(){
         DBImage::saveimg($this->image(),$this->id);
     }
     public function loadimg(){
         $this->image();
-    }
+    }*/
 
     public function usecase(){
         $curr=Event::where('image_id',$this->id);

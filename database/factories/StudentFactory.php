@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Student::class, function (Faker $faker) {
     return [
-        'code' => $faker->regexify('[0-9]{4}[A-Z]{1}[0-9]{2}EJG[0-9]{3}'),
+        'code' => $faker->regexify('20[0-9]{2}[A-E]{1}[0-9]{2}EJG[0-9]{3}'),
         'name' => $faker->name,
         'class_id' => $faker->numberBetween(1,29),
     ];

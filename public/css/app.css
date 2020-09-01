@@ -10933,3 +10933,7 @@ a.text-dark:focus {
   }
 }
 
+.centered {
+  text-align: center;
+}
+

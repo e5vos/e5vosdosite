@@ -5,6 +5,7 @@ namespace App\Http\Controllers\E5N;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Presentation;
+use App\Student;
 use App\Http\Resources\Presentation as PresentationResource;
 
 class PresentationController extends Controller
@@ -65,13 +66,18 @@ class PresentationController extends Controller
         ]);
     }
 
-    public function selected($diakkod,$omkod,$slot){
-        if(!Student::omkodcheck($diakkod,$omkod)) return;
-        return Student::where('code',$diakkod)->first()->presentations()->firstWhere('slot',$slot);
-    }
-
     public function toggleAttendance($prezcode,$signup){
         Presentation::where('code',$prezcode)->first()->signups()->findOrFail($signup)->toggle();
+    }
+
+
+    public function StudentAuth($diakcode,$omcode){
+        if(Student::Auth($diakcode,$omcode)){
+            $student = Student::firstWhere('code',$diakcode);
+            $student->presentations;
+            return $student;
+        }
+        else return false;
     }
 
 }

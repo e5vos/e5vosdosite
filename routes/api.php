@@ -45,3 +45,7 @@ Route::get('/e5n/presentations/selected/{diakkod}/{omkod}/{slot}','E5N\Presentat
 
 
 Route::get('/e5n/students','E5N\E5NController@students');//->middleware('auth');
+
+Route::get('/e5n/student/{code}','E5N\E5NController@student');
+
+Route::get('/e5n/student/auth/{diakcode}/{omcode}','E5N\PresentationController@StudentAuth');

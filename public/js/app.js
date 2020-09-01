@@ -7467,12 +7467,41 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       presentations: [],
       selected_slot: '',
-      selected_presentation: [],
       presentation: {
         id: '',
         slot: '',
@@ -7483,8 +7512,16 @@ __webpack_require__.r(__webpack_exports__);
         code: '',
         occupancy: ''
       },
-      diakcode: '',
-      omcode: ''
+      student: {
+        auth: '',
+        diakcode: '',
+        omcode: '',
+        presentations: []
+      },
+      input: {
+        diakcode: '',
+        omcode: ''
+      }
     };
   },
   created: function created() {
@@ -7498,33 +7535,42 @@ __webpack_require__.r(__webpack_exports__);
         return res.json();
       }).then(function (res) {
         _this.presentations = res.data;
-        console.log(_this.presentations);
-      });
-    },
-    fetchSelected: function fetchSelected(slot) {
-      var _this2 = this;
-
-      if (this.diakcode === '' || this.omcode === '') return;
-      fetch('/api/e5n/presentations/selected/' + this.diakcode + '/' + this.omcode + '/' + slot).then(function (res) {
-        return res.json();
-      }).then(function (res) {
-        _this2.selected_presentation = res.data;
       });
     },
     changeSlot: function changeSlot(slot) {
       this.fetchSlot(slot);
-      this.fetchSelected(slot);
       this.selected_slot = slot;
+    },
+    login: function login() {
+      var _this2 = this;
+
+      var dc = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.input.diakcode;
+      var oc = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.input.omcode;
+      fetch('/api/e5n/student/auth/' + dc + '/' + oc), {
+        method: 'POST'
+      }.then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        _this2.student = res;
+        _this2.student.omcode = oc;
+        _this2.student.auth = true;
+      });
+    },
+    unsub: function unsub() {
+      fetch('/api/e5n/student/unsub/' + this.student.diakcode + '/' + this.student.omcode + '/' + this.selected_slot, {
+        method: 'POST'
+      });
+      login(this.student.diakcode, this.student.omcode);
     }
   }
 });
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QRCodes.vue?vue&type=script&lang=js&":
-/*!******************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/QRCodes.vue?vue&type=script&lang=js& ***!
-  \******************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TeamManager.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TeamManager.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -7532,38 +7578,64 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      students: [],
-      pagesize: 20
+      team: {
+        name: '',
+        code: '',
+        participations: [],
+        members: []
+      }
     };
   },
-  created: function created() {
-    var _this = this;
+  created: function created() {},
+  methods: {
+    loadTeam: function loadTeam(teamcode) {
+      var _this = this;
 
-    fetch('/api/e5n/students/').then(function (res) {
-      return res.json();
-    }).then(function (res) {
-      while (res.data.length > 0) {
-        var page = res.data.splice(0, _this.pagesize);
-
-        _this.students.push(page);
-      }
-    });
-  },
-  methods: {}
+      fetch('/api/e5n/teams/manage/' + code).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        _this.team = res.data;
+      });
+    },
+    fetchMembers: function fetchMembers() {
+      this.team.members.forEach(function (member) {
+        member = fetchMember(member.code);
+      });
+    },
+    fetchMember: function fetchMember(studentcode) {
+      fetch('/api/e5n/student/' + code).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        return res.data;
+      });
+    },
+    save: function save(slot) {
+      var requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(this.team)
+      };
+      this.team.members.forEach(function (member) {
+        if (!/[0-9]{4}[A-Z]{1}[0-9]{2}EJG[0-9]{3}/.test(member.code)) {
+          console.log(member);
+          return;
+        }
+      });
+      fetch('/api/e5n/teams/', requestOptions).then(function (res) {
+        if (!res.ok) throw new Error(res.status);
+        res.json();
+      }).then(function (res) {
+        console.log("Team Saved");
+      })["catch"](function (error) {
+        console.error("Team NOT Saved, ERROR: " + error);
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -11995,6 +12067,22 @@ __webpack_require__.r(__webpack_exports__);
 })));
 //# sourceMappingURL=bootstrap.js.map
 
+
+/***/ }),
+
+/***/ "./node_modules/ckeditor4-vue/dist/ckeditor.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/ckeditor4-vue/dist/ckeditor.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*!*
+* @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+* For licensing, see LICENSE.md.
+*/
+!function(t,e){ true?module.exports=e():undefined}(window,(function(){return function(t){var e={};function n(o){if(e[o])return e[o].exports;var r=e[o]={i:o,l:!1,exports:{}};return t[o].call(r.exports,r,r.exports,n),r.l=!0,r.exports}return n.m=t,n.c=e,n.d=function(t,e,o){n.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:o})},n.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},n.t=function(t,e){if(1&e&&(t=n(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var o=Object.create(null);if(n.r(o),Object.defineProperty(o,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var r in t)n.d(o,r,function(e){return t[e]}.bind(null,r));return o},n.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return n.d(e,"a",e),e},n.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},n.p="",n(n.s=1)}([function(t,e){function n(t,e){t.onload=function(){this.onerror=this.onload=null,e(null,t)},t.onerror=function(){this.onerror=this.onload=null,e(new Error("Failed to load "+this.src),t)}}function o(t,e){t.onreadystatechange=function(){"complete"!=this.readyState&&"loaded"!=this.readyState||(this.onreadystatechange=null,e(null,t))}}t.exports=function(t,e,r){var i=document.head||document.getElementsByTagName("head")[0],a=document.createElement("script");"function"==typeof e&&(r=e,e={}),e=e||{},r=r||function(){},a.type=e.type||"text/javascript",a.charset=e.charset||"utf8",a.async=!("async"in e)||!!e.async,a.src=t,e.attrs&&function(t,e){for(var n in e)t.setAttribute(n,e[n])}(a,e.attrs),e.text&&(a.text=""+e.text),("onload"in a?n:o)(a,r),a.onload||n(a,r),i.appendChild(a)}},function(t,e,n){"use strict";n.r(e);var o=n(0),r=n.n(o);let i;function a(t){if("CKEDITOR"in window)return Promise.resolve(CKEDITOR);if(t.length<1)throw new TypeError("CKEditor URL must be a non-empty string.");return i||(i=a.scriptLoader(t).then(t=>(i=void 0,t))),i}a.scriptLoader=t=>new Promise((e,n)=>{r()(t,t=>t?n(t):window.CKEDITOR?void e(CKEDITOR):n(new Error("Script loaded from editorUrl doesn't provide CKEDITOR namespace.")))});var s={name:"ckeditor",render(t){return t("div",{},[t(this.tagName)])},props:{value:{type:String,default:""},type:{type:String,default:"classic",validator:t=>["classic","inline"].includes(t)},editorUrl:{type:String,default:"https://cdn.ckeditor.com/4.14.1/standard-all/ckeditor.js"},config:{type:Object,default:()=>{}},tagName:{type:String,default:"textarea"},readOnly:{type:Boolean,default:null}},mounted(){a(this.editorUrl).then(()=>{if(this.$_destroyed)return;const t=this.config||{};null!==this.readOnly&&(t.readOnly=this.readOnly);const e="inline"===this.type?"inline":"replace",n=this.$el.firstElementChild,o=this.instance=CKEDITOR[e](n,t);o.on("instanceReady",()=>{const t=this.value;o.fire("lockSnapshot"),o.setData(t,{callback:()=>{this.$_setUpEditorEvents();const e=o.getData();t!==e?(this.$once("input",()=>{this.$emit("ready",o)}),this.$emit("input",e)):this.$emit("ready",o),o.fire("unlockSnapshot")}})})})},beforeDestroy(){this.instance&&this.instance.destroy(),this.$_destroyed=!0},watch:{value(t){this.instance&&this.instance.getData()!==t&&this.instance.setData(t)},readOnly(t){this.instance&&this.instance.setReadOnly(t)}},methods:{$_setUpEditorEvents(){const t=this.instance;t.on("change",e=>{const n=t.getData();this.value!==n&&this.$emit("input",n,e,t)}),t.on("focus",e=>{this.$emit("focus",e,t)}),t.on("blur",e=>{this.$emit("blur",e,t)})}}};const c={install(t){t.component("ckeditor",s)},component:s};e.default=c}]).default}));
+//# sourceMappingURL=ckeditor.js.map
 
 /***/ }),
 
@@ -22903,7 +22991,7 @@ return jQuery;
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.15';
+  var VERSION = '4.17.19';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -26610,8 +26698,21 @@ return jQuery;
      * @returns {Array} Returns the new sorted array.
      */
     function baseOrderBy(collection, iteratees, orders) {
+      if (iteratees.length) {
+        iteratees = arrayMap(iteratees, function(iteratee) {
+          if (isArray(iteratee)) {
+            return function(value) {
+              return baseGet(value, iteratee.length === 1 ? iteratee[0] : iteratee);
+            }
+          }
+          return iteratee;
+        });
+      } else {
+        iteratees = [identity];
+      }
+
       var index = -1;
-      iteratees = arrayMap(iteratees.length ? iteratees : [identity], baseUnary(getIteratee()));
+      iteratees = arrayMap(iteratees, baseUnary(getIteratee()));
 
       var result = baseMap(collection, function(value, key, collection) {
         var criteria = arrayMap(iteratees, function(iteratee) {
@@ -26868,6 +26969,10 @@ return jQuery;
         var key = toKey(path[index]),
             newValue = value;
 
+        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+          return object;
+        }
+
         if (index != lastIndex) {
           var objValue = nested[key];
           newValue = customizer ? customizer(objValue, key, nested) : undefined;
@@ -27020,11 +27125,14 @@ return jQuery;
      *  into `array`.
      */
     function baseSortedIndexBy(array, value, iteratee, retHighest) {
-      value = iteratee(value);
-
       var low = 0,
-          high = array == null ? 0 : array.length,
-          valIsNaN = value !== value,
+          high = array == null ? 0 : array.length;
+      if (high === 0) {
+        return 0;
+      }
+
+      value = iteratee(value);
+      var valIsNaN = value !== value,
           valIsNull = value === null,
           valIsSymbol = isSymbol(value),
           valIsUndefined = value === undefined;
@@ -28509,10 +28617,11 @@ return jQuery;
       if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
         return false;
       }
-      // Assume cyclic values are equal.
-      var stacked = stack.get(array);
-      if (stacked && stack.get(other)) {
-        return stacked == other;
+      // Check that cyclic values are equal.
+      var arrStacked = stack.get(array);
+      var othStacked = stack.get(other);
+      if (arrStacked && othStacked) {
+        return arrStacked == other && othStacked == array;
       }
       var index = -1,
           result = true,
@@ -28674,10 +28783,11 @@ return jQuery;
           return false;
         }
       }
-      // Assume cyclic values are equal.
-      var stacked = stack.get(object);
-      if (stacked && stack.get(other)) {
-        return stacked == other;
+      // Check that cyclic values are equal.
+      var objStacked = stack.get(object);
+      var othStacked = stack.get(other);
+      if (objStacked && othStacked) {
+        return objStacked == other && othStacked == object;
       }
       var result = true;
       stack.set(object, other);
@@ -32058,6 +32168,10 @@ return jQuery;
      * // The `_.property` iteratee shorthand.
      * _.filter(users, 'active');
      * // => objects for ['barney']
+     *
+     * // Combining several predicates using `_.overEvery` or `_.overSome`.
+     * _.filter(users, _.overSome([{ 'age': 36 }, ['age', 40]]));
+     * // => objects for ['fred', 'barney']
      */
     function filter(collection, predicate) {
       var func = isArray(collection) ? arrayFilter : baseFilter;
@@ -32807,15 +32921,15 @@ return jQuery;
      * var users = [
      *   { 'user': 'fred',   'age': 48 },
      *   { 'user': 'barney', 'age': 36 },
-     *   { 'user': 'fred',   'age': 40 },
+     *   { 'user': 'fred',   'age': 30 },
      *   { 'user': 'barney', 'age': 34 }
      * ];
      *
      * _.sortBy(users, [function(o) { return o.user; }]);
-     * // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]
+     * // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 30]]
      *
      * _.sortBy(users, ['user', 'age']);
-     * // => objects for [['barney', 34], ['barney', 36], ['fred', 40], ['fred', 48]]
+     * // => objects for [['barney', 34], ['barney', 36], ['fred', 30], ['fred', 48]]
      */
     var sortBy = baseRest(function(collection, iteratees) {
       if (collection == null) {
@@ -37690,11 +37804,11 @@ return jQuery;
 
       // Use a sourceURL for easier debugging.
       // The sourceURL gets injected into the source that's eval-ed, so be careful
-      // with lookup (in case of e.g. prototype pollution), and strip newlines if any.
-      // A newline wouldn't be a valid sourceURL anyway, and it'd enable code injection.
+      // to normalize all kinds of whitespace, so e.g. newlines (and unicode versions of it) can't sneak in
+      // and escape the comment, thus injecting code that gets evaled.
       var sourceURL = '//# sourceURL=' +
         (hasOwnProperty.call(options, 'sourceURL')
-          ? (options.sourceURL + '').replace(/[\r\n]/g, ' ')
+          ? (options.sourceURL + '').replace(/\s/g, ' ')
           : ('lodash.templateSources[' + (++templateCounter) + ']')
         ) + '\n';
 
@@ -37727,8 +37841,6 @@ return jQuery;
 
       // If `variable` is not specified wrap a with-statement around the generated
       // code to add the data object to the top of the scope chain.
-      // Like with sourceURL, we take care to not check the option's prototype,
-      // as this configuration is a code injection vector.
       var variable = hasOwnProperty.call(options, 'variable') && options.variable;
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
@@ -38435,6 +38547,9 @@ return jQuery;
      * values against any array or object value, respectively. See `_.isEqual`
      * for a list of supported value comparisons.
      *
+     * **Note:** Multiple values can be checked by combining several matchers
+     * using `_.overSome`
+     *
      * @static
      * @memberOf _
      * @since 3.0.0
@@ -38450,6 +38565,10 @@ return jQuery;
      *
      * _.filter(objects, _.matches({ 'a': 4, 'c': 6 }));
      * // => [{ 'a': 4, 'b': 5, 'c': 6 }]
+     *
+     * // Checking for several possible values
+     * _.filter(users, _.overSome([_.matches({ 'a': 1 }), _.matches({ 'a': 4 })]));
+     * // => [{ 'a': 1, 'b': 2, 'c': 3 }, { 'a': 4, 'b': 5, 'c': 6 }]
      */
     function matches(source) {
       return baseMatches(baseClone(source, CLONE_DEEP_FLAG));
@@ -38463,6 +38582,9 @@ return jQuery;
      * **Note:** Partial comparisons will match empty array and empty object
      * `srcValue` values against any array or object value, respectively. See
      * `_.isEqual` for a list of supported value comparisons.
+     *
+     * **Note:** Multiple values can be checked by combining several matchers
+     * using `_.overSome`
      *
      * @static
      * @memberOf _
@@ -38480,6 +38602,10 @@ return jQuery;
      *
      * _.find(objects, _.matchesProperty('a', 4));
      * // => { 'a': 4, 'b': 5, 'c': 6 }
+     *
+     * // Checking for several possible values
+     * _.filter(users, _.overSome([_.matchesProperty('a', 1), _.matchesProperty('a', 4)]));
+     * // => [{ 'a': 1, 'b': 2, 'c': 3 }, { 'a': 4, 'b': 5, 'c': 6 }]
      */
     function matchesProperty(path, srcValue) {
       return baseMatchesProperty(path, baseClone(srcValue, CLONE_DEEP_FLAG));
@@ -38703,6 +38829,10 @@ return jQuery;
      * Creates a function that checks if **all** of the `predicates` return
      * truthy when invoked with the arguments it receives.
      *
+     * Following shorthands are possible for providing predicates.
+     * Pass an `Object` and it will be used as an parameter for `_.matches` to create the predicate.
+     * Pass an `Array` of parameters for `_.matchesProperty` and the predicate will be created using them.
+     *
      * @static
      * @memberOf _
      * @since 4.0.0
@@ -38729,6 +38859,10 @@ return jQuery;
      * Creates a function that checks if **any** of the `predicates` return
      * truthy when invoked with the arguments it receives.
      *
+     * Following shorthands are possible for providing predicates.
+     * Pass an `Object` and it will be used as an parameter for `_.matches` to create the predicate.
+     * Pass an `Array` of parameters for `_.matchesProperty` and the predicate will be created using them.
+     *
      * @static
      * @memberOf _
      * @since 4.0.0
@@ -38748,6 +38882,9 @@ return jQuery;
      *
      * func(NaN);
      * // => false
+     *
+     * var matchesFunc = _.overSome([{ 'a': 1 }, { 'a': 2 }])
+     * var matchesPropertyFunc = _.overSome([['a', 1], ['a', 2]])
      */
     var overSome = createOver(arraySome);
 
@@ -43112,6 +43249,146 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _c("h1", { staticStyle: { "text-align": "center", "font-size": "32px" } }, [
+      _vm._v("Előadássávok")
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: !_vm.student.auth,
+            expression: "!student.auth"
+          }
+        ],
+        staticClass: "container py-2",
+        staticStyle: {
+          width: "25%",
+          "text-align": "center",
+          "background-color": "rgba(133, 133, 133, 0.397)"
+        }
+      },
+      [
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", { attrs: { for: "studentcode" } }, [_vm._v("Diákkód")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.input.diakcode,
+                expression: "input.diakcode"
+              }
+            ],
+            staticClass: "form-control centered",
+            attrs: {
+              type: "text",
+              id: "studentcode",
+              name: "studentcode",
+              maxlength: "13",
+              placeholder: "2020A35EJG999"
+            },
+            domProps: { value: _vm.input.diakcode },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.input, "diakcode", $event.target.value)
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group" }, [
+          _c("label", { attrs: { for: "omcode" } }, [
+            _vm._v("OM-Kód utolsó 5 számjegye")
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.input.omcode,
+                expression: "input.omcode"
+              }
+            ],
+            staticClass: "form-control centered",
+            attrs: {
+              type: "text",
+              id: "omcode",
+              name: "omcode",
+              maxlength: "5",
+              placeholder: "93762"
+            },
+            domProps: { value: _vm.input.omcode },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.input, "omcode", $event.target.value)
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-light",
+              on: {
+                click: function($event) {
+                  return _vm.login()
+                }
+              }
+            },
+            [_vm._v("Bejelentkezés")]
+          )
+        ])
+      ]
+    ),
+    _vm._v(" "),
+    _vm.student.auth === false
+      ? _c(
+          "div",
+          {
+            staticClass: "container alert alert-danger py-2",
+            staticStyle: { width: "25%", "text-align": "center" }
+          },
+          [_c("h3", [_vm._v("Hibás bejeletkezési adatok")])]
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.student.auth == true
+      ? _c(
+          "div",
+          {
+            staticClass: "container py-2",
+            staticStyle: {
+              width: "25%",
+              "text-align": "center",
+              "background-color": "rgba(133, 133, 133, 0.397)"
+            }
+          },
+          [
+            _c("h3", [
+              _vm._v(
+                _vm._s(_vm.student.name) + ", " + _vm._s(_vm.student.class)
+              )
+            ])
+          ]
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
     _c(
       "div",
       {
@@ -43119,52 +43396,24 @@ var render = function() {
         staticStyle: { "text-align": "center" },
         attrs: { role: "group" }
       },
-      [
-        _c(
+      _vm._l(3, function(i) {
+        return _c(
           "button",
           {
+            key: i,
             staticClass: "btn btn-secondary",
-            class: { active: _vm.selected_slot == 1 },
+            class: { active: _vm.selected_slot == i },
             attrs: { type: "button" },
             on: {
               click: function($event) {
-                return _vm.changeSlot(1)
+                return _vm.changeSlot(i)
               }
             }
           },
-          [_vm._v("1. előadássáv")]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-secondary",
-            class: { active: _vm.selected_slot == 2 },
-            attrs: { type: "button" },
-            on: {
-              click: function($event) {
-                return _vm.changeSlot(2)
-              }
-            }
-          },
-          [_vm._v("2. előadássáv")]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-secondary",
-            class: { active: _vm.selected_slot == 3 },
-            attrs: { type: "button" },
-            on: {
-              click: function($event) {
-                return _vm.changeSlot(3)
-              }
-            }
-          },
-          [_vm._v("3. előadássáv")]
+          [_vm._v(_vm._s(i) + ". előadássáv")]
         )
-      ]
+      }),
+      0
     ),
     _vm._v(" "),
     _c(
@@ -43184,46 +43433,73 @@ var render = function() {
         _c(
           "tbody",
           [
-            _vm._m(1),
-            _vm._v(" "),
-            _c(
-              "tr",
-              { staticStyle: { "background-color": "rgb(233, 233, 233)" } },
-              [
-                _c("td", [_vm._v(_vm._s(_vm.selected_presentation.presenter))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(_vm.selected_presentation.title))]),
-                _vm._v(" "),
-                _c("td", [
-                  _vm._v(_vm._s(_vm.selected_presentation.description))
-                ]),
-                _vm._v(" "),
-                _c("td", [
+            _vm.student.auth === true &&
+            _vm.student.presentations[_vm.selected_slot] != null
+              ? [
+                  _vm._m(1),
+                  _vm._v(" "),
                   _c(
-                    "button",
+                    "tr",
                     {
-                      staticClass: "btn btn-secondary",
-                      attrs: { disabled: "" }
+                      staticStyle: { "background-color": "rgb(233, 233, 233)" }
                     },
                     [
-                      _vm._v(
-                        _vm._s(
-                          Math.max(
-                            _vm.selected_presentation.capacity -
-                              _vm.selected_presentation.occupancy,
-                            0
+                      _c("td", [
+                        _vm._v(
+                          _vm._s(
+                            _vm.student.presentations[_vm.selected_slot]
+                              .presenter
                           )
                         )
-                      )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          _vm._s(
+                            _vm.student.presentations[_vm.selected_slot].title
+                          )
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          _vm._s(
+                            _vm.student.presentations[_vm.selected_slot]
+                              .description
+                          )
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-secondary",
+                            on: { click: _vm.unsub }
+                          },
+                          [
+                            _vm._v(
+                              _vm._s(
+                                Math.max(
+                                  _vm.student.presentations[_vm.selected_slot]
+                                    .capacity -
+                                    _vm.student.presentations[_vm.selected_slot]
+                                      .occupancy,
+                                  0
+                                )
+                              )
+                            )
+                          ]
+                        )
+                      ])
                     ]
-                  )
-                ])
-              ]
-            ),
-            _vm._v(" "),
-            _vm._m(2),
-            _vm._v(" "),
-            _vm._m(3),
+                  ),
+                  _vm._v(" "),
+                  _vm._m(2),
+                  _vm._v(" "),
+                  _vm._m(3)
+                ]
+              : _vm._e(),
             _vm._v(" "),
             _vm._l(_vm.presentations, function(presentation) {
               return _c("tr", { key: presentation.id }, [
@@ -43236,7 +43512,14 @@ var render = function() {
                 _c("td", [
                   _c(
                     "button",
-                    { staticClass: "btn btn-success", attrs: { disabled: "" } },
+                    {
+                      staticClass: "btn btn-success",
+                      attrs: {
+                        disabled:
+                          !_vm.student.auth ||
+                          _vm.student.presentations[_vm.selected_slot] != null
+                      }
+                    },
                     [
                       _vm._v(
                         _vm._s(
@@ -43273,7 +43556,7 @@ var staticRenderFns = [
           _vm._v("Előadás rövid leírása")
         ]),
         _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Szabad helyek száma")])
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Szabad")])
       ])
     ])
   },
@@ -43324,10 +43607,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QRCodes.vue?vue&type=template&id=0546f98a&":
-/*!**********************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/QRCodes.vue?vue&type=template&id=0546f98a& ***!
-  \**********************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TeamManager.vue?vue&type=template&id=6adcb516&":
+/*!**************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/TeamManager.vue?vue&type=template&id=6adcb516& ***!
+  \**************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -43339,29 +43622,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    _vm._l(_vm.students, function(studentpage, pageno) {
-      return _c(
-        "div",
-        { key: pageno, staticClass: "studentcardgrid" },
-        _vm._l(studentpage, function(student) {
-          return _c(
-            "div",
-            { key: student.id, staticClass: "studentcard" },
-            [
-              _c("h3", [_vm._v(_vm._s(student.name))]),
-              _vm._v(" "),
-              _c("qrcode", { attrs: { value: student.code, tag: "img" } })
-            ],
-            1
-          )
-        }),
-        0
-      )
-    }),
-    0
-  )
+  return _c("div")
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -55543,6 +55804,8 @@ module.exports = function(module) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _chenfengyuan_vue_qrcode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @chenfengyuan/vue-qrcode */ "./node_modules/@chenfengyuan/vue-qrcode/dist/vue-qrcode.js");
 /* harmony import */ var _chenfengyuan_vue_qrcode__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_chenfengyuan_vue_qrcode__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var ckeditor4_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ckeditor4-vue */ "./node_modules/ckeditor4-vue/dist/ckeditor.js");
+/* harmony import */ var ckeditor4_vue__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(ckeditor4_vue__WEBPACK_IMPORTED_MODULE_1__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -55561,10 +55824,16 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+/* Imported components */
+
 
 Vue.component(_chenfengyuan_vue_qrcode__WEBPACK_IMPORTED_MODULE_0___default.a.name, _chenfengyuan_vue_qrcode__WEBPACK_IMPORTED_MODULE_0___default.a);
+
+Vue.use(ckeditor4_vue__WEBPACK_IMPORTED_MODULE_1___default.a);
+/* Custom components */
+
 Vue.component('presentations', __webpack_require__(/*! ./components/Presentations.vue */ "./resources/js/components/Presentations.vue")["default"]);
-Vue.component('qrcodes', __webpack_require__(/*! ./components/QRCodes.vue */ "./resources/js/components/QRCodes.vue")["default"]);
+Vue.component('teammanager', __webpack_require__(/*! ./components/TeamManager.vue */ "./resources/js/components/TeamManager.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -55626,14 +55895,15 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*!***************************************************!*\
   !*** ./resources/js/components/Presentations.vue ***!
   \***************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Presentations_vue_vue_type_template_id_f7fde884___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Presentations.vue?vue&type=template&id=f7fde884& */ "./resources/js/components/Presentations.vue?vue&type=template&id=f7fde884&");
 /* harmony import */ var _Presentations_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Presentations.vue?vue&type=script&lang=js& */ "./resources/js/components/Presentations.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Presentations_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Presentations_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -55663,7 +55933,7 @@ component.options.__file = "resources/js/components/Presentations.vue"
 /*!****************************************************************************!*\
   !*** ./resources/js/components/Presentations.vue?vue&type=script&lang=js& ***!
   \****************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -55691,17 +55961,17 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/QRCodes.vue":
-/*!*********************************************!*\
-  !*** ./resources/js/components/QRCodes.vue ***!
-  \*********************************************/
+/***/ "./resources/js/components/TeamManager.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/components/TeamManager.vue ***!
+  \*************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _QRCodes_vue_vue_type_template_id_0546f98a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./QRCodes.vue?vue&type=template&id=0546f98a& */ "./resources/js/components/QRCodes.vue?vue&type=template&id=0546f98a&");
-/* harmony import */ var _QRCodes_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./QRCodes.vue?vue&type=script&lang=js& */ "./resources/js/components/QRCodes.vue?vue&type=script&lang=js&");
+/* harmony import */ var _TeamManager_vue_vue_type_template_id_6adcb516___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TeamManager.vue?vue&type=template&id=6adcb516& */ "./resources/js/components/TeamManager.vue?vue&type=template&id=6adcb516&");
+/* harmony import */ var _TeamManager_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TeamManager.vue?vue&type=script&lang=js& */ "./resources/js/components/TeamManager.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -55711,9 +55981,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _QRCodes_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _QRCodes_vue_vue_type_template_id_0546f98a___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _QRCodes_vue_vue_type_template_id_0546f98a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _TeamManager_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TeamManager_vue_vue_type_template_id_6adcb516___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _TeamManager_vue_vue_type_template_id_6adcb516___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -55723,38 +55993,38 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/QRCodes.vue"
+component.options.__file = "resources/js/components/TeamManager.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/QRCodes.vue?vue&type=script&lang=js&":
-/*!**********************************************************************!*\
-  !*** ./resources/js/components/QRCodes.vue?vue&type=script&lang=js& ***!
-  \**********************************************************************/
+/***/ "./resources/js/components/TeamManager.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/TeamManager.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_QRCodes_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./QRCodes.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QRCodes.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_QRCodes_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TeamManager_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./TeamManager.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TeamManager.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TeamManager_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/QRCodes.vue?vue&type=template&id=0546f98a&":
-/*!****************************************************************************!*\
-  !*** ./resources/js/components/QRCodes.vue?vue&type=template&id=0546f98a& ***!
-  \****************************************************************************/
+/***/ "./resources/js/components/TeamManager.vue?vue&type=template&id=6adcb516&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/TeamManager.vue?vue&type=template&id=6adcb516& ***!
+  \********************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_QRCodes_vue_vue_type_template_id_0546f98a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./QRCodes.vue?vue&type=template&id=0546f98a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/QRCodes.vue?vue&type=template&id=0546f98a&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_QRCodes_vue_vue_type_template_id_0546f98a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TeamManager_vue_vue_type_template_id_6adcb516___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./TeamManager.vue?vue&type=template&id=6adcb516& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TeamManager.vue?vue&type=template&id=6adcb516&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TeamManager_vue_vue_type_template_id_6adcb516___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_QRCodes_vue_vue_type_template_id_0546f98a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TeamManager_vue_vue_type_template_id_6adcb516___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

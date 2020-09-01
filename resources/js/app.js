@@ -19,13 +19,20 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-import VueQrcode from '@chenfengyuan/vue-qrcode';
 
+/* Imported components */
+
+import VueQrcode from '@chenfengyuan/vue-qrcode';
 Vue.component(VueQrcode.name, VueQrcode);
 
 
+import CKEditor from 'ckeditor4-vue';
+Vue.use( CKEditor );
+
+/* Custom components */
+
 Vue.component('presentations', require('./components/Presentations.vue').default);
-Vue.component('qrcodes', require('./components/QRCodes.vue').default);
+Vue.component('teammanager', require('./components/TeamManager.vue').default);
 
 
 

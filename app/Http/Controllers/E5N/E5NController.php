@@ -47,11 +47,17 @@ class E5NController extends Controller
     }
 
     public function codes(){
-        return view('e5n.codes');
+        return view('e5n.codes',[
+            'students' => \App\Student::all()
+        ]);
     }
 
     public function students(){
         return StudentResource::collection(\App\Student::all());
+    }
+
+    public function student($code){
+        return \App\Student::firstWhere('code',$code);
     }
 }
 

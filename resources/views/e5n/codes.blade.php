@@ -66,7 +66,21 @@
 </head>
 <body>
 <div id="app">
-    <qrcodes></qrcodes>
+    @php $cardperpage = 20 @endphp
+    @foreach ($students as $student)
+        @if($loop->index % $cardperpage == 0)
+            <div class="studentcardgrid">
+        @endif
+        <div class="studentcard">
+            <h3>{{$student->name}}</h3>
+            <qrcode value="{{$student->code}}" tag="img" />
+        </div>
+
+        @if($loop->index % $cardperpage == $cardperpage-1)
+                </div>
+        @endif
+
+    @endforeach
 </div>
 </body>
 </html>

@@ -30,10 +30,10 @@
                         <table class="table table-light" style="text-align:center;width:100%;table-layout: auto;background-color: rgba(47, 79, 79, 0.8);">
 
                             <tbody>
-                                @for ($i = 0; $i < 10; $i++)
+                                @foreach ($permissions as $permission)
                                 <tr style="color: rgba(255, 255, 255, 0.8)">
-                                    <td>12.A</td>
-                                    <td id="uname1">János István</td>
+                                    <td>Users</td>
+                                    <td id="{{$permission->user_id}}">{{$permission->user_id}}</td>
                                     <td>
                                         <label for="e5n">E5N</label>
                                         <input type="checkbox" class="form-control" id="e5n">
@@ -44,18 +44,18 @@
                                     </td>
                                     <td>
                                         <label for="admin">admin</label>
-                                        <input type="ch0eckbox" class="form-control" id="admin">
+                                        <input type="checkbox" class="form-control" id="admin">
                                     </td>
                                     <td><button id="" class="btn btn-info" onclick="DM('1')">DM</button></td>
                                 </tr>
-                                @endfor
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="jumbotron" style="background-color: rgba(47, 79, 79, 0.8);">
+                <div class="jumbotron" style="background-color: rgba(66, 99, 86, 0.8);">
                     <table class="table table-light">
                         <thead class="thead-dark">
                             <tr>

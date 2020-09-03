@@ -33,6 +33,7 @@ Vue.use( CKEditor );
 
 Vue.component('presentations', require('./components/Presentations.vue').default);
 Vue.component('teammanager', require('./components/TeamManager.vue').default);
+Vue.component('nemjelentkezett', require('./components/NoSignups.vue').default);
 
 
 

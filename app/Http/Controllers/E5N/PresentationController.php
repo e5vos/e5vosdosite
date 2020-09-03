@@ -71,13 +71,13 @@ class PresentationController extends Controller
     }
 
 
-    public function StudentAuth($diakcode,$omcode){
-        if(Student::Auth($diakcode,$omcode)){
-            $student = Student::firstWhere('code',$diakcode);
-            $student->presentations;
-            return $student;
-        }
-        else return false;
+
+
+    public function nemjelentkezett($slot){
+        //Gate::authorize('e5n-admin');
+        return Student::where('magantanulo',false)->whereDoesntHave('presentations', function ($query) use ($slot) {
+            $query->where('slot',$slot);
+        })->get();
     }
 
 }

@@ -22,30 +22,33 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // List Presentations
 Route::get('/e5n/presentations/{slot}','E5N\PresentationController@slot');
-
-// List Presentation
-
+// Get Presentation Data
 Route::get('/e5n/presentation/{id}','E5N\PresentationController@show');
-
 // Create Presentation
 Route::post('/e5n/presentations','E5N\PresentationController@store');
-
 // Delete Presentation
 Route::delete('/e5n/presentations','E5N\PresentationController@destroy');
-
-//Get Prezentation Attendance Data
+//Get Presentation Attendance Data
 Route::get('/e5n/presentations/attendance/{code}','E5N\PresentationController@attendanceSheet');
-
-// Set Prezentation Attendance Data
+// Set Presentation Attendance Data
 Route::post('/e5n/presentations/attendance/{code}/{id}','E5N\PresentationController@toggleAttendance');
-
 // Get Selected Presentation Data
 Route::get('/e5n/presentations/selected/{diakkod}/{omkod}/{slot}','E5N\PresentationController@selected');
 
 
 
-Route::get('/e5n/students','E5N\E5NController@students');//->middleware('auth');
+// Get nemjelentkezett's based on {slot}
+Route::get('/e5n/students/nemjelentkezett/{slot}','E5N\PresentationController@nemjelentkezett');
 
-Route::get('/e5n/student/{code}','E5N\E5NController@student');
 
-Route::get('/e5n/student/auth/{diakcode}/{omcode}','E5N\PresentationController@StudentAuth');
+
+// Authenticate student with {diakcode} and {omcode}
+Route::get('/student/auth/{diakcode}/{omcode}','StudentController@StudentAuth');
+
+
+// Get All Student Data
+Route::get('/e5n/students','StudentController@students')->middleware('auth');
+// Get Student Data based on {code}
+Route::get('/student/{code}','StudentController@student')->middleware('auth');
+// Set {{code}} student as magantanulo
+Route::get('/student/{code}/magantanulo','StudentController@setMagantanulo')->middleware('auth');

@@ -8,32 +8,8 @@
             <p>Duis id pellentesque massa, rhoncus varius risus. Maecenas fermentum porttitor arcu, blandit tempor libero ullamcorper ac. Proin imperdiet enim eget augue imperdiet, id convallis augue semper. Nullam vel sagittis dui. Aliquam est est, bibendum a pellentesque eget, sollicitudin a dolor. Ut volutpat eu lorem at ornare. Nunc mattis semper velit quis ornare. In hac habitasse platea dictumst. Nulla mollis dui velit, quis pulvinar sem lacinia sed. Vestibulum ut diam vitae velit scelerisque aliquam.</p>
             <p>Nulla sollicitudin eros eget urna efficitur malesuada. Vestibulum sed sem in ex volutpat tincidunt eu id elit. Suspendisse vel odio eget orci iaculis iaculis pretium porta mi. In dapibus quam ac consequat vehicula. Etiam sit amet purus est. Etiam ultricies auctor sem, ac scelerisque magna volutpat eget. Vestibulum a libero euismod, ultrices neque eu, euismod elit. In et posuere mi. Morbi vitae quam iaculis, porta libero sit amet, gravida lectus. Cras tellus tellus, interdum vehicula nunc at, consectetur porttitor odio.</p>
         </div>
-        <div class="py-2 btn-group d-flex justify-content-center" role="group" style="text-align:center">
-            <button type="button" class="btn btn-secondary active">1. előadássáv</button>
-            @for ($i = 2; $i <= 3; $i++)
-                <button type="button" class="btn btn-secondary">{{$i}}. előadássáv</button>
-            @endfor
-        </div>
-        <br/>
-        <table class="table table-light table-bordered" style="text-align:center;width:100%;table-layout: auto;">
-            <thead class="thead-dark">
-                <tr><th colspan="3">Nem jelentkezett</th></tr>
-                <tr>
-                    <th>Osztály</th>
-                    <th>Diákkód</th>
-                    <th>Név</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for ($i = 0; $i < 10; $i++)
-                <tr>
-                    <td>12.B</td>
-                    <td><button class="btn btn-danger">2014B24EJG547</button></td>
-                    <td>Kovács Béla</td>
-                </tr>
-                @endfor
-            </tbody>
-        </table>
+        <nemjelentkezett></nemjelentkezett>
+
         <table class="table table-light table-bordered" style="text-align:center;width:100%;table-layout: auto;">
             <thead class="thead-dark">
                 <tr><th scope="col" colspan="5">Előadások</th></tr>

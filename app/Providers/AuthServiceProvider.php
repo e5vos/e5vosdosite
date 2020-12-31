@@ -51,7 +51,7 @@ class AuthServiceProvider extends ServiceProvider
         /* DISABLES AUTH FOR TESTING */
         Gate::before(function(){
             return true;
-        })
+        });
 
 
     }

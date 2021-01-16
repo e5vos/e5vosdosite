@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use App\Help;
 use Illuminate\Http\Request;
 use App\Permission;
+use App\User;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -32,7 +35,7 @@ class HomeController extends Controller
 
         //Help::getSos();
         return view('admin.admin', [
-            'permissions' => Permission::all('user_id', 'permission')
+            'permissions' => Permission::all('user_id', 'permission'),
         ]);
     }
 }

@@ -7,8 +7,9 @@ use Faker\Generator as Faker;
 
 $factory->define(Student::class, function (Faker $faker) {
     return [
-        'code' => $faker->numberBetween(2015,2020).strtoupper($faker->randomLetter). $faker->numberBetween(10,40).'EJG'.$faker->numberBetween(100,999),
+        'code' => $faker->regexify('20[0-9]{2}[A-E]{1}[0-9]{2}EJG[0-9]{3}'),
         'name' => $faker->name,
         'class_id' => $faker->numberBetween(1,29),
+        'magantanulo' => $faker->numberBetween(0,1),
     ];
 });

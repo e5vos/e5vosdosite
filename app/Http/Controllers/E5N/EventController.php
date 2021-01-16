@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Gate;
 class EventController extends Controller
 {
     public function scanner(){
-        Gate::authorize('e5n.scanner');
-        $event = Auth::user()->currentEvent();
+        //Gate::authorize('e5n.scanner');
         return view('e5n.scanner',[
-            'event'=>$event,
+            'event' => Auth::user()->currentEvent(),
         ]);
+
 
     }
 }

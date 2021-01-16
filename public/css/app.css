@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Nunito); @charset "UTF-8";
+@import url(https://fonts.googleapis.com/css?family=Nunito);@charset "UTF-8";
 
 /*!
  * Bootstrap v4.5.0 (https://getbootstrap.com/)
@@ -170,13 +170,13 @@ sup {
 }
 
 a {
-  color: #dc3434;
+  color: #3490dc;
   text-decoration: none;
   background-color: transparent;
 }
 
 a:hover {
-  color: #22a71d;
+  color: #1d68a7;
   text-decoration: underline;
 }
 
@@ -385,7 +385,6 @@ h6,
   margin-bottom: 0.5rem;
   font-weight: 500;
   line-height: 1.2;
-  text-align: center;
 }
 
 h1,
@@ -10932,5 +10931,9 @@ a.text-dark:focus {
     color: inherit;
     border-color: #dee2e6;
   }
+}
+
+.centered {
+  text-align: center;
 }
 

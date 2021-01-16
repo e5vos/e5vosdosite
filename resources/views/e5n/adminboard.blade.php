@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-md-9">
+        <div class="col-md-9" style="color: lightblue">
             <div class="card">
                 <div class="card-header">Aktív programok</div>
                 <div class="card-body">
@@ -29,7 +29,7 @@
                                     <p>{{$event->start->format('h:i')}}-{{$event->end->format('h:i')}}</p>
                                     <p><span class="text-info">{{$event->visitorcount()}}</span> visitors</p>
                                     <p>{{$event->permissions->count()}} organisers</p>
-                                    <p class="text-info">{{$event->location->name}}</p>
+                                    <p class="text-info">{{$event->location_id}}. terem.</p>
                                     @if ($event->image())
                                         <p><img style="max-height:150px; max-width:300px;" src="{{Storage::url($event->image()->location)}}" /></p>
                                     @endif
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3" style="color: lightblue">
             <div class="card">
                 <div class="card-header">Oldalsáv</div>
                 <div class="card-body">
@@ -67,8 +67,12 @@
                                     <tr><th>Osztály</th><th>Pont</th></tr>
                                 </thead>
                                 <tbody>
-                                    <tr><td>2014A</td><td>1000</td></tr>
-                                    <tr><td>2015A</td><td>1</td></tr>
+                                    @foreach ($classRanks as $classRank)
+
+                                        <div id="classid#{{$classRank->id}}">
+                                            <tr><td>{{$loop->index+1}}.</td><td>{{$classRank->name}}</td><td>{{$classRank->points}}</td></tr>
+                                        </div>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

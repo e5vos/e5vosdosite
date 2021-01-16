@@ -53,5 +53,4 @@ class User extends Authenticatable
             $event->where('start','<',now())->where('end','>',now());
         })->event();
     }
-
 }

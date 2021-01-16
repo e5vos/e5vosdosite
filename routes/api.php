@@ -17,3 +17,38 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+
+// List Presentations
+Route::get('/e5n/presentations/{slot}','E5N\PresentationController@slot');
+// Get Presentation Data
+Route::get('/e5n/presentation/{id}','E5N\PresentationController@show');
+// Create Presentation
+Route::post('/e5n/presentations','E5N\PresentationController@store');
+// Delete Presentation
+Route::delete('/e5n/presentations','E5N\PresentationController@destroy');
+//Get Presentation Attendance Data
+Route::get('/e5n/presentations/attendance/{code}','E5N\PresentationController@attendanceSheet');
+// Set Presentation Attendance Data
+Route::post('/e5n/presentations/attendance/{code}/{id}','E5N\PresentationController@toggleAttendance');
+// Get Selected Presentation Data
+Route::get('/e5n/presentations/selected/{diakkod}/{omkod}/{slot}','E5N\PresentationController@selected');
+
+
+
+// Get nemjelentkezett's based on {slot}
+Route::get('/e5n/students/nemjelentkezett/{slot}','E5N\PresentationController@nemjelentkezett');
+
+
+
+// Authenticate student with {diakcode} and {omcode}
+Route::get('/student/auth/{diakcode}/{omcode}','StudentController@StudentAuth');
+
+
+// Get All Student Data
+Route::get('/e5n/students','StudentController@students')->middleware('auth');
+// Get Student Data based on {code}
+Route::get('/student/{code}','StudentController@student')->middleware('auth');
+// Set {{code}} student as magantanulo
+Route::get('/student/{code}/magantanulo','StudentController@setMagantanulo')->middleware('auth');

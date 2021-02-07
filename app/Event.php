@@ -2,6 +2,7 @@
 
 namespace App;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
@@ -11,6 +12,10 @@ class Event extends Model
     protected $dates = ['start','end'];
 
     protected $appends = ['type','badgeClass','badgeMessage'];
+
+    protected $casts = ['start' => 'datetime:G:i', 'end' => 'datetime:G:i'];
+
+
 
     public function getBadgeClassAttribute(){
         return 'success';
@@ -27,7 +32,7 @@ class Event extends Model
     }
 
     public static function currentEvents(){
-        return Event::where('start','<',now())->where('end','>',now())->get();
+        return Event::where('start','<' ,now())->where('end','>',now())->get();
     }
 
     public function image(){
@@ -51,6 +56,11 @@ class Event extends Model
     }
 
 
+    /**
+     * Returns visitorcount of an event.
+     *
+     * @return int visitor count of an event
+     */
     public function visitorcount(){
         return $this->scores()->where('place','0')->whereNotNull('student_id')->count();
     }

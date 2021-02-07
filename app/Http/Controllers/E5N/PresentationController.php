@@ -5,6 +5,7 @@ namespace App\Http\Controllers\E5N;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Presentation;
+use App\PresentationSignup;
 use App\Student;
 use App\Http\Resources\Presentation as PresentationResource;
 
@@ -56,14 +57,20 @@ class PresentationController extends Controller
         Gate::authorize('e5n-presentation-delete');
     }
 
-    public function attendanceSheet($code){
-        $presentation = Presentation::where('code',$code)->first();
-
-        return json_encode([
-            'presentation' => $presentation->id,
-            'names' => $presentation->students()->get()->pluck('name'), // contains student data
-            'signups' => $presentation->signups()->get()->makeHidden('presentation_id'), // contains attendance bool
-        ]);
+    public function attendanceSheet($code)
+    {
+        return PresentationResource::collection(
+            PresentationSignup::
+            join(
+                'presentations', 'presentation_signups.presentation_id', '=', 'presentations.id'
+            )->join(
+                'students', 'presentation_signups.student_id', '=', 'students.id'
+            )->select(
+                'presentation_signups.id', 'students.class_id', 'students.name', 'presentation_signups.present', 'presentations.title'
+            )->where(
+                'presentations.code', '=', $code
+            )->get()
+        );
     }
 
     public function toggleAttendance($prezcode,$signup){

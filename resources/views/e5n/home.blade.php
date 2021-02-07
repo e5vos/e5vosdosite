@@ -11,7 +11,7 @@
                 <div class="jumbotron">
                     <h2 class="display-4"> Eötvös Napok</h1>
                     <p class="card-text">
-                        Lorem ipsum
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ab, harum. Incidunt, repellendus sunt accusamus aliquid deleniti, reiciendis ut architecto tempore quam, ipsum iusto sed nobis aut ipsam eaque. Sunt, quisquam?
                     </p>
                 </div>
             </div>

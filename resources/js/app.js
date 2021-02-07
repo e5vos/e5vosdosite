@@ -34,6 +34,12 @@ Vue.use( CKEditor );
 Vue.component('presentations', require('./components/Presentations.vue').default);
 Vue.component('teammanager', require('./components/TeamManager.vue').default);
 Vue.component('nemjelentkezett', require('./components/NoSignups.vue').default);
+Vue.component('programok', require('./components/EventsTable.vue').default);
+Vue.component('eventviewer', require('./components/EventViewer.vue').default);
+Vue.component('attendanceopener', require('./components/AttendanceCheckerOpening.vue').default);
+Vue.component('attendancechecker', require('./components/AttendanceChecker.vue').default);
+//Vue.component('programokadmincol', require('./components/EventsTableAdminCols.vue').default);
+
 
 
 

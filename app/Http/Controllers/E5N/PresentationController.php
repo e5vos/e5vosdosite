@@ -5,6 +5,7 @@ namespace App\Http\Controllers\E5N;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Presentation;
+use App\PresentationSignup;
 use App\Student;
 use App\Http\Resources\Presentation as PresentationResource;
 use Symfony\Component\HttpKernel\Exception\HttpException;

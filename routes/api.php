@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\E5N\E5NController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,18 @@ Route::delete('/e5n/presentations','E5N\PresentationController@destroy');
 Route::get('/e5n/presentations/attendance/{code}','E5N\PresentationController@attendanceSheet');
 // Set Presentation Attendance Data
 Route::post('/e5n/presentations/attendance/{code}/{signupId}','E5N\PresentationController@toggleAttendance');
+
+
+// Get Selected Presentation Data
+Route::get('/e5n/presentations/selected/{diakkod}/{omkod}/{slot}','E5N\PresentationController@selected');
+
+// List Events
+Route::get('/e5n/events/{weight}', 'E5N\EventController@weight');
+// Get Ongoing events
+Route::get('/e5n/events/ongoing', 'E5N\EventController@ongoing');
+// Specific Event data
+Route::get('/e5n/{day}/{event_name}', 'E5N\EventController@event_data');
+
 
 
 // Get nemjelentkezett's based on {slot}

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Presentation;
 use App\Student;
 use App\Http\Resources\Presentation as PresentationResource;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class PresentationController extends Controller
 {
@@ -19,6 +20,7 @@ class PresentationController extends Controller
     {
         return PresentationResource::collection(Presentation::where('slot',$slot)->get()->reject(function($presentation){
             return $presentation->occupancy >= $presentation->capacity; // no free capacity
+            // kiszervezhető kliensre teljesítmény növelés céljából
         }));
     }
 
@@ -56,8 +58,14 @@ class PresentationController extends Controller
         Gate::authorize('e5n-presentation-delete');
     }
 
+    /**
+     * Get attendnce sheet of presentation
+     *
+     * @param  string $code Code of Presentation
+     * @return void
+     */
     public function attendanceSheet($code){
-        $presentation = Presentation::where('code',$code)->first();
+        $presentation = Presentation::firstWhere('code',$code);
 
         return json_encode([
             'presentation' => $presentation->id,
@@ -66,13 +74,53 @@ class PresentationController extends Controller
         ]);
     }
 
+    /**
+     * Toggle attendance of student in a presentation
+     * @param string $prezcode Code of the presentation
+     * @param int $signup id of the signup to toggle
+     */
     public function toggleAttendance($prezcode,$signup){
         Presentation::where('code',$prezcode)->first()->signups()->findOrFail($signup)->toggle();
     }
 
 
+    public function signUp(Request $request){
+        $student_id = $request->session()->get("student_id");
+        if($student_id == null){
+            abort(403, "Student not authenticated");
+        }
+        $student = \App\Student::find($student_id);
+        $presentation = \App\Presentation::find($request->input("presentation"));
+        $student->signUp($presentation);
+    }
+
+    public function deleteSignUp(Request $request){
+        $student_id = $request->session()->get("student_id");
+        if($student_id == null){
+            abort(403, "Student not authenticated");
+        }
+        $student = \App\Student::find($student_id);
+        $student->signups()->where("presentation_id",$request->input("presentation"))->delete();
+    }
+
+    public function getSelectedPresentations(Request $request){
+        $student_id = $request->session()->get("student_id");
+        if($student_id == null){
+            abort(403, "Student not authenticated");
+        }
+        $student = \App\Student::find($student_id);
+        return response()->json(
+            $student->presentations()->get()
+        );
+    }
 
 
+    /**
+     * Returns students who didn't sign up to any presentation in $slot
+     *
+     * @param  mixed $slot Presentation slot
+     * @return Student
+     */
     public function nemjelentkezett($slot){
         //Gate::authorize('e5n-admin');
         return Student::where('magantanulo',false)->whereDoesntHave('presentations', function ($query) use ($slot) {

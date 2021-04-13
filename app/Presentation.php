@@ -11,14 +11,23 @@ class Presentation extends Model
     protected $appends = ['occupancy'];
 
 
+
     public function getOccupancyAttribute(){
-        $this->signups()->count();
+        return $this->signups()->count();
     }
+
+    public function hasCapacity(){
+        return $this->capacity-$this->occupancy > 0;
+    }
+
+
     public function signups(){
         return $this->hasMany(PresentationSignup::class);
     }
     public function students(){
-
         return $this->hasManyThrough(Student::class,PresentationSignup::class,'presentation_id','id','id','student_id');
     }
+
+
+
 }

@@ -2,27 +2,20 @@
 <div>
     <h1 style="text-align:center;font-size:32px;">Előadássávok</h1>
 
-    <div v-show="!student.auth" class="container py-2" style="width:25%;text-align:center;background-color:rgba(133, 133, 133, 0.397)">
-        <div class="form-group">
-            <label for="studentcode">Diákkód</label>
-            <input v-model="input.diakcode" class="form-control centered" type="text" id="studentcode" name="studentcode" maxlength="13" placeholder="2020A35EJG999"/>
+    <div class="container py-2" style="width:25%;text-align:center;background-color:rgba(133, 133, 133, 0.397)">
+        <div id="gSignIn" v-if="!user" class="g-signin2"></div>
+        <div v-if="user" class="container py-2" style="width:25%;text-align:center;background-color:rgba(133, 133, 133, 0.397)">
+            <h3>{{user.getBasicProfile().getName()}}</h3>
         </div>
-        <div class="form-group">
-            <label for="omcode">OM-Kód utolsó 5 számjegye</label>
-            <input v-model="input.omcode" class="form-control centered" type="text" id="omcode" name="omcode" maxlength="5" placeholder="93762" />
+        <div v-if="authFail" class="container py-2" style="width:25%;text-align:center;background-color:rgba(133, 133, 133, 0.397)">
+            <h3 style="color:red;">Sikertelen bejelentkezés</h3>
         </div>
-        <div class="form-group">
-            <button v-on:click="login()" class="btn btn-light">Bejelentkezés</button>
-        </div>
+        <button class="btn btn-primary" v-if="user" v-on:click="logout">Kijelentkezés</button>
+        <button class="btn btn-primary" v-on:click="test">Test</button>
+
     </div>
 
-    <div v-if="student.auth === false" class="container alert alert-danger py-2" style="width:25%;text-align:center;">
-        <h3>Hibás bejeletkezési adatok</h3>
-    </div>
 
-    <div v-if="student.auth == true" class="container py-2" style="width:25%;text-align:center;background-color:rgba(133, 133, 133, 0.397)">
-        <h3>{{student.name}}, {{student.class}}</h3>
-    </div>
 
     <br/>
 
@@ -41,25 +34,27 @@
         </thead>
         <tbody>
 
-            <template v-if="student.auth===true && student.presentations[selected_slot]!=null">
+            <template v-if="user && selected_presentations && selected_presentations[selected_slot]">
                 <tr>
                     <td colspan="4" style="font-weight:600;font-size:24px;">Az általad választott előadás:</td>
                 </tr>
                 <tr style="background-color:rgb(233, 233, 233)">
-                    <td>{{student.presentations[selected_slot].presenter}}</td>
-                    <td>{{student.presentations[selected_slot].title}}</td>
-                    <td>{{student.presentations[selected_slot].description}}</td>
-                    <td><button v-on:click="unsub" class="btn btn-secondary">{{Math.max(student.presentations[selected_slot].capacity-student.presentations[selected_slot].occupancy,0)}}</button></td>
+                    <td>{{selected_presentations[selected_slot].presenter}}</td>
+                    <td>{{selected_presentations[selected_slot].title}}</td>
+                    <td>{{selected_presentations[selected_slot].description}}</td>
+                    <td><button class="btn btn-secondary">{{Math.max(selected_presentations[selected_slot].capacity-selected_presentations[selected_slot].occupancy,0)}}</button></td>
                 </tr>
-                <tr><td colspan=4><button class="btn btn-danger">Jelentkezés törlése</button></td></tr>
+                <tr><td colspan=4><button v-on:click="deleteSignUp(selected_presentations[selected_slot].id)" class="btn btn-danger">Jelentkezés törlése</button></td></tr>
                 <tr><td class="py-0 my-0" colspan=4><hr class="py-0 my-0" style="border-top: 1px solid black;"></td></tr>
             </template>
 
             <tr v-for="presentation in presentations" v-bind:key="presentation.id">
-                <td>{{presentation.presenter}}</td>
-                <td>{{presentation.title}}</td>
-                <td>{{presentation.description}}</td>
-                <td><button class="btn btn-success" :disabled="!student.auth || student.presentations[selected_slot]!=null">{{Math.max(presentation.capacity-presentation.occupancy,0)}}</button></td>
+                <template v-if="!selected_presentations || !selected_presentations[selected_slot] || presentation.id!=selected_presentations[selected_slot].id">
+                    <td>{{presentation.presenter}}</td>
+                    <td>{{presentation.title}}</td>
+                    <td>{{presentation.description}}</td>
+                    <td><button class="btn btn-success" :disabled="!user || (selected_presentations!= null && selected_presentations[selected_slot]!=null)" v-on:click="signUp(presentation.id)">{{Math.max(presentation.capacity-presentation.occupancy,0)}}</button></td>
+                </template>
             </tr>
 
         </tbody>
@@ -72,6 +67,7 @@
 export default {
     data(){
         return{
+            authFail: false,
             presentations: [],
             selected_slot: '',
             presentation:{
@@ -84,12 +80,8 @@ export default {
                 code:'',
                 occupancy: '',
             },
-            student:{
-                auth:'',
-                diakcode: '',
-                omcode: '',
-                presentations:[],
-            },
+            user : '',
+            selected_presentations: [],
             input: {
                 diakcode:'',
                 omcode:'',
@@ -98,6 +90,13 @@ export default {
     },
     created(){
         this.changeSlot(1)
+    },
+    updated(){
+        gapi.auth2.init()
+        gapi.auth2.getAuthInstance().currentUser.listen((currentUser) => {
+            if(currentUser.isSignedIn()) this.authenticate(currentUser);
+        })
+        if(!this.user) gapi.signin2.render("gSignIn")
     },
     methods: {
         fetchSlot(slot){
@@ -108,24 +107,95 @@ export default {
             })
         },
 
+        fetchUserData(){
+            const requestOptions = {
+                method: "POST",
+                headers:{"Content-Type":"application/json"}
+            }
+            fetch('/api/e5n/student/presentations/',requestOptions).then(res => res.json())
+            .then(res => {
+                for(var i=2; i >= 0; i--){
+                    res[i+1]=res[i];
+                }
+                this.selected_presentations = res;
+            })
+        },
+
         changeSlot(slot){
             this.fetchSlot(slot)
             this.selected_slot=slot
         },
 
-        login(dc = this.input.diakcode, oc = this.input.omcode){
+        authenticate(user){
 
-            fetch('/api/e5n/student/auth/'+dc+'/'+oc),{method:'POST'}
-            .then(res =>res.json())
-            .then(res =>{
-                this.student=res;
-                this.student.omcode=oc
-                this.student.auth=true
+            const requestOptions = {
+                method: "POST",
+                headers:{"Content-Type":"application/json"},
+                body: JSON.stringify({
+                    id_token : user.getAuthResponse().id_token
+                })
+            }
+            fetch("/api/student/auth",requestOptions).then(res => {
+                if(res.ok) {
+                    this.authFail = false
+                    this.user = user
+                    this.fetchUserData();
+                }else{
+                    console.log(user);
+                    this.authFail = true
+                }
             })
         },
-        unsub(){
-            fetch('/api/e5n/student/unsub/'+this.student.diakcode+'/'+this.student.omcode+'/'+this.selected_slot,{method:'POST'})
+
+        test(){
+            this.fetchUserData();
+            console.log(this.selected_presentations)
+        },
+
+        signUp(presentationId){
+            const requestOptions = {
+                method: "POST",
+                headers:{"Content-Type":"application/json"},
+                body: JSON.stringify({
+                    presentation: presentationId
+                })
+            }
+            fetch("/api/e5n/presentations/signup/",requestOptions)
+            .then(res => {
+                if(res.ok){
+                    this.fetchUserData();
+                }else{
+                    console.error("Signup error occured");
+                }
+            })
+        },
+        refresh(){
+            this.fetchSlot(this.selected_slot)
+        },
+        deleteSignUp(presentation){
+            const requestOptions = {
+                method: "POST",
+                headers:{"Content-Type":"application/json"},
+                body: JSON.stringify({
+                    presentation: presentation,
+                })
+            }
+
+            fetch('/api/e5n/presentations/signup/delete/',requestOptions).then(res => {
+                if(res.ok){
+                    this.selected_presentations[this.selected_slot] = null
+                    this.$forceUpdate()
+                }
+            })
             login(this.student.diakcode,this.student.omcode)
+        },
+
+        logout(){
+             gapi.auth2.getAuthInstance().signOut().then(()=>{
+                this.user = null
+                this.selected_presentations = null
+                gapi.signin2.render("gSignIn")
+             })
         }
     }
 }

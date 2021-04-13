@@ -12,12 +12,20 @@ class Event extends Model
 
     protected $appends = ['type','badgeClass','badgeMessage'];
 
+
     public function getBadgeClassAttribute(){
         return 'success';
     }
+
     public function getBadgeMessageAttribute(){
         return $this->badgeClass;
     }
+
+    /**
+     * Get Event Type
+     *
+     * @return String
+     */
     public function getTypeAttribute(){
         return ['Small','Medium','Large'][$this->weight-1];
     }

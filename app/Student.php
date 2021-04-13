@@ -12,29 +12,45 @@ class Student extends Model
     protected $hidden = ['created_at','updated_at','laravel_through_key'];
 
 
-    public static function Auth($diakcode,$omcode){
-        return Student::firstWhere('code',$diakcode)->omkodcheck($omcode);
+    /**
+     * Authenticates student with existing profile (from mailing list)
+     * Creates new student if not in mailing list
+     *
+     * @param google_payload Google OAuth2 payload
+     * @return \App\Student Authenticated student
+     */
+    public static function logIn($google_payload){
+        $student =\App\Student::firstWhere("email",$google_payload["email"]);
+        if($student == null){
+            $student = new Student();
+            $student->email = $google_payload["email"];
+            $student->name = $google_payload["family_name"]." ".$google_payload["given_name"]; // name order fix
+            $student->google_id = $google_payload["sub"];
+            $student->save();
+        }
+        if($student->google_id == null){
+            $student->google_id = $google_payload["sub"];
+            $student->save();
+        }
+        return $student->google_id == $google_payload["sub"] ? $student : null;
     }
 
-    public static function updatedatabase(){
-        Student::query()->truncate();
-        EJGClass::query()->truncate();
+    public function isBusy($slot){
+        return $this->presentations()->where("slot",$slot)->exists();
+    }
 
 
-        $arrContextOptions=array("ssl"=>array("verify_peer"=>false,"verify_peer_name"=>false,),); // needed to accept invalid ssl certificates
-
-        $students = json_decode(file_get_contents("http://ejg.bimun.hu/ExecuteAPI.php?action=diakkodlista",false,stream_context_create($arrContextOptions)),true);
-
-        foreach($students as $classname => &$class){
-            $ejgclass = new EJGClass;
-            $ejgclass->name=$classname;
-            $ejgclass->save();
-            foreach($class as &$studentcode){
-                    $student = new Student;
-                    $student->code=$studentcode;
-                    $student->class_id=$ejgclass->id;
-                    $student->save();
-            }
+    public function signUp(\App\Presentation $presentation){
+        if($this->isBusy($presentation->slot)){
+            abort(400, "Student Busy");
+        }
+        if($presentation->hasCapacity()){
+            $signup = new \App\PresentationSignup();
+            $signup->presentation_id = $presentation->id;
+            $signup->student_id = $this->id;
+            $signup->save();
+        }else{
+            abort(400, "Capacity Exceeded");
         }
     }
 
@@ -53,18 +69,5 @@ class Student extends Model
     public function scores(){
         return $this->hasMany(Score::class);
     }
-
-    public function omkodcheck($omkod){
-
-        return true; // testing
-
-        $arrContextOptions=array("ssl"=>array("verify_peer"=>false,"verify_peer_name"=>false,),); // needed to accept invalid ssl certificates
-        return file_get_contents("http://ejg.bimun.hu/ExecuteAPI.php?action=dcredcheck&dkod=".strtoupper($this->student_code)."&omkod=".$omkod ,false,stream_context_create($arrContextOptions))==1;
-    }
-
-
-
-
-
 
 }

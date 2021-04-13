@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
-
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
     public function scanner(){
-        //Gate::authorize('e5n.scanner');
+        //Gate::authorize('e5n.scanner' );
         return view('e5n.scanner',[
             'event' => Auth::user()->currentEvent(),
         ]);

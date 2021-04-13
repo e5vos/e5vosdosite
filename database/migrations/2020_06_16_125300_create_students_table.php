@@ -15,9 +15,11 @@ class CreateStudentsTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique();
+            $table->string('google_id',21)->nullable()->unique();
+            $table->string('email')->unique();
             $table->string('name');
-            $table->integer('class_id');
+            $table->integer('class_id')->nullable();
+            $table->boolean('allowed')->default(false);
 
             $table->foreign('class_id')->references('id')->on('ejg_classes')->onDelete('cascade');
         });

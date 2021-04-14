@@ -110,6 +110,9 @@ class PresentationController extends Controller
             abort(403, "Student not authenticated");
         }
         $student = \App\Student::find($student_id);
+        if($student->doesntExist()){
+            abort(403, "Student does not exist");
+        }
         return response()->json(
             $student->presentations()->get()
         );

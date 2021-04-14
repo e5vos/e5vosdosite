@@ -7968,54 +7968,53 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       authFail: false,
+      authLock: false,
       presentations: [],
       selected_slot: '',
-      presentation: {
-        id: '',
-        slot: '',
-        title: '',
-        description: '',
-        location: '',
-        capacity: '',
-        code: '',
-        occupancy: ''
-      },
-      user: '',
-      selected_presentations: [],
-      input: {
-        diakcode: '',
-        omcode: ''
-      }
+      selected_slot_before: '',
+      disableSignup: false,
+      user: null,
+      selected_presentations: []
     };
   },
   created: function created() {
+    var _this = this;
+
     this.changeSlot(1);
+    setInterval(function () {
+      if (_this.user != null) _this.refresh();
+    }, 2000);
   },
   updated: function updated() {
-    var _this = this;
+    var _this2 = this;
 
     gapi.auth2.init();
     gapi.auth2.getAuthInstance().currentUser.listen(function (currentUser) {
-      if (currentUser.isSignedIn()) _this.authenticate(currentUser);
+      if (currentUser.isSignedIn()) setTimeout(function () {
+        _this2.authenticate(currentUser);
+      }, 100);
     });
     if (!this.user) gapi.signin2.render("gSignIn");
   },
   methods: {
-    fetchSlot: function fetchSlot(slot) {
-      var _this2 = this;
+    changeSlot: function changeSlot(slot) {
+      var _this3 = this;
 
+      this.selected_slot_before = slot;
       fetch('/api/e5n/presentations/' + slot).then(function (res) {
         return res.json();
       }).then(function (res) {
-        _this2.presentations = res.data;
+        _this3.presentations = res.data;
+        _this3.selected_slot = slot;
       });
     },
     fetchUserData: function fetchUserData() {
-      var _this3 = this;
+      var _this4 = this;
 
       var requestOptions = {
         method: "POST",
@@ -8023,23 +8022,33 @@ __webpack_require__.r(__webpack_exports__);
           "Content-Type": "application/json"
         }
       };
-      fetch('/api/e5n/student/presentations/', requestOptions).then(function (res) {
+      return fetch('/api/e5n/student/presentations/', requestOptions).then(function (res) {
         return res.json();
       }).then(function (res) {
-        for (var i = 2; i >= 0; i--) {
-          res[i + 1] = res[i];
-        }
+        res.forEach(function (element) {
+          return _this4.selected_presentations[element.slot] = element;
+        });
 
-        _this3.selected_presentations = res;
+        _this4.$forceUpdate();
       });
     },
-    changeSlot: function changeSlot(slot) {
-      this.fetchSlot(slot);
-      this.selected_slot = slot;
+    retryAuthenticate: function retryAuthenticate(user, times) {
+      var _this5 = this;
+
+      setTimeout(function () {
+        _this5.authenticate(user);
+
+        _this5.retryAuthenticate(user, times - 1);
+      }, 1000);
     },
     authenticate: function authenticate(user) {
-      var _this4 = this;
+      var _this6 = this;
 
+      if (this.authLock) {
+        return;
+      }
+
+      this.authLock = true;
       var requestOptions = {
         method: "POST",
         headers: {
@@ -8049,24 +8058,22 @@ __webpack_require__.r(__webpack_exports__);
           id_token: user.getAuthResponse().id_token
         })
       };
-      fetch("/api/student/auth", requestOptions).then(function (res) {
+      return fetch("/api/student/auth", requestOptions).then(function (res) {
         if (res.ok) {
-          _this4.authFail = false;
-          _this4.user = user;
+          _this6.authFail = false;
+          _this6.user = user;
 
-          _this4.fetchUserData();
+          _this6.fetchUserData();
         } else {
-          console.log(user);
-          _this4.authFail = true;
+          if (!_this6.authFail) _this6.retryAuthenticate(user, 2);
+          _this6.authFail = true;
         }
+
+        _this6.authLock = false;
       });
     },
-    test: function test() {
-      this.fetchUserData();
-      console.log(this.selected_presentations);
-    },
     signUp: function signUp(presentationId) {
-      var _this5 = this;
+      var _this7 = this;
 
       var requestOptions = {
         method: "POST",
@@ -8077,19 +8084,24 @@ __webpack_require__.r(__webpack_exports__);
           presentation: presentationId
         })
       };
+      this.disableSignup = true;
       fetch("/api/e5n/presentations/signup/", requestOptions).then(function (res) {
         if (res.ok) {
-          _this5.fetchUserData();
+          _this7.fetchUserData().then(function () {
+            _this7.disableSignup = false;
+          });
         } else {
           console.error("Signup error occured");
+          _this7.disableSignup = false;
         }
       });
     },
     refresh: function refresh() {
-      this.fetchSlot(this.selected_slot);
+      this.changeSlot(this.selected_slot_before);
+      this.fetchUserData();
     },
     deleteSignUp: function deleteSignUp(presentation) {
-      var _this6 = this;
+      var _this8 = this;
 
       var requestOptions = {
         method: "POST",
@@ -8102,18 +8114,18 @@ __webpack_require__.r(__webpack_exports__);
       };
       fetch('/api/e5n/presentations/signup/delete/', requestOptions).then(function (res) {
         if (res.ok) {
-          _this6.selected_presentations[_this6.selected_slot] = null;
+          _this8.selected_presentations[_this8.selected_slot] = null;
 
-          _this6.$forceUpdate();
+          _this8.$forceUpdate();
         }
       });
     },
     logout: function logout() {
-      var _this7 = this;
+      var _this9 = this;
 
       gapi.auth2.getAuthInstance().signOut().then(function () {
-        _this7.user = null;
-        _this7.selected_presentations = null;
+        _this9.user = null;
+        _this9.selected_presentations = [];
         gapi.signin2.render("gSignIn");
       });
     }
@@ -44366,48 +44378,39 @@ var render = function() {
       {
         staticClass: "container py-2",
         staticStyle: {
-          width: "25%",
+          width: "fit-content",
           "text-align": "center",
           "background-color": "rgba(133, 133, 133, 0.397)"
         }
       },
       [
-        !_vm.user
-          ? _c("div", { staticClass: "g-signin2", attrs: { id: "gSignIn" } })
-          : _vm._e(),
+        _c(
+          "span",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.user === null,
+                expression: "user===null"
+              }
+            ]
+          },
+          [_c("div", { staticClass: "g-signin2", attrs: { id: "gSignIn" } })]
+        ),
         _vm._v(" "),
         _vm.user
-          ? _c(
-              "div",
-              {
-                staticClass: "container py-2",
-                staticStyle: {
-                  width: "25%",
-                  "text-align": "center",
-                  "background-color": "rgba(133, 133, 133, 0.397)"
-                }
-              },
-              [_c("h3", [_vm._v(_vm._s(_vm.user.getBasicProfile().getName()))])]
-            )
+          ? _c("div", { staticClass: "container py-2" }, [
+              _c("h3", [_vm._v(_vm._s(_vm.user.getBasicProfile().getName()))])
+            ])
           : _vm._e(),
         _vm._v(" "),
         _vm.authFail
-          ? _c(
-              "div",
-              {
-                staticClass: "container py-2",
-                staticStyle: {
-                  width: "25%",
-                  "text-align": "center",
-                  "background-color": "rgba(133, 133, 133, 0.397)"
-                }
-              },
-              [
-                _c("h3", { staticStyle: { color: "red" } }, [
-                  _vm._v("Sikertelen bejelentkezés")
-                ])
-              ]
-            )
+          ? _c("div", { staticClass: "container py-2" }, [
+              _c("h3", { staticStyle: { color: "red" } }, [
+                _vm._v("Sikertelen bejelentkezés")
+              ])
+            ])
           : _vm._e(),
         _vm._v(" "),
         _vm.user
@@ -44416,13 +44419,7 @@ var render = function() {
               { staticClass: "btn btn-primary", on: { click: _vm.logout } },
               [_vm._v("Kijelentkezés")]
             )
-          : _vm._e(),
-        _vm._v(" "),
-        _c(
-          "button",
-          { staticClass: "btn btn-primary", on: { click: _vm.test } },
-          [_vm._v("Test")]
-        )
+          : _vm._e()
       ]
     ),
     _vm._v(" "),
@@ -44578,7 +44575,8 @@ var render = function() {
                                   (_vm.selected_presentations != null &&
                                     _vm.selected_presentations[
                                       _vm.selected_slot
-                                    ] != null)
+                                    ] != null) ||
+                                  _vm.disableSignup
                               },
                               on: {
                                 click: function($event) {

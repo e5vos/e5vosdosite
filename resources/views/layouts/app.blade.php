@@ -14,8 +14,13 @@
     <!-- Scripts -->
 
     <script src="{{ asset('js/app.js') }}" defer> </script>
-    <script src="https://apis.google.com/js/platform.js?onload=init" onload="gapi.load('auth2')" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async defer></script>
 
+    <script>
+        window.onLoadCallback = function(){
+            gapi.load('auth2')
+        }
+    </script>
 
 
 

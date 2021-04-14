@@ -2,16 +2,17 @@
 <div>
     <h1 style="text-align:center;font-size:32px;">Előadássávok</h1>
 
-    <div class="container py-2" style="width:25%;text-align:center;background-color:rgba(133, 133, 133, 0.397)">
-        <div id="gSignIn" v-if="!user" class="g-signin2"></div>
-        <div v-if="user" class="container py-2" style="width:25%;text-align:center;background-color:rgba(133, 133, 133, 0.397)">
+    <div class="container py-2" style="width:fit-content;text-align:center;background-color:rgba(133, 133, 133, 0.397)">
+        <span v-show="user===null">
+            <div id="gSignIn" class="g-signin2"></div>
+        </span>
+        <div v-if="user" class="container py-2">
             <h3>{{user.getBasicProfile().getName()}}</h3>
         </div>
-        <div v-if="authFail" class="container py-2" style="width:25%;text-align:center;background-color:rgba(133, 133, 133, 0.397)">
+        <div v-if="authFail" class="container py-2">
             <h3 style="color:red;">Sikertelen bejelentkezés</h3>
         </div>
         <button class="btn btn-primary" v-if="user" v-on:click="logout">Kijelentkezés</button>
-        <button class="btn btn-primary" v-on:click="test">Test</button>
 
     </div>
 
@@ -53,7 +54,7 @@
                     <td>{{presentation.presenter}}</td>
                     <td>{{presentation.title}}</td>
                     <td>{{presentation.description}}</td>
-                    <td><button class="btn btn-success" :disabled="!user || (selected_presentations!= null && selected_presentations[selected_slot]!=null)" v-on:click="signUp(presentation.id)">{{Math.max(presentation.capacity-presentation.occupancy,0)}}</button></td>
+                    <td><button class="btn btn-success" :disabled="!user || (selected_presentations!= null && selected_presentations[selected_slot]!=null) || disableSignup" v-on:click="signUp(presentation.id)">{{Math.max(presentation.capacity-presentation.occupancy,0)}}</button></td>
                 </template>
             </tr>
 
@@ -68,42 +69,36 @@ export default {
     data(){
         return{
             authFail: false,
+            authLock: false,
             presentations: [],
             selected_slot: '',
-            presentation:{
-                id:'',
-                slot:'',
-                title:'',
-                description:'',
-                location:'',
-                capacity:'',
-                code:'',
-                occupancy: '',
-            },
-            user : '',
+            selected_slot_before: '',
+            disableSignup: false,
+            user : null,
             selected_presentations: [],
-            input: {
-                diakcode:'',
-                omcode:'',
-            }
         }
     },
     created(){
         this.changeSlot(1)
+        setInterval(() => {
+            if(this.user!=null) this.refresh();
+        },2000);
     },
     updated(){
         gapi.auth2.init()
         gapi.auth2.getAuthInstance().currentUser.listen((currentUser) => {
-            if(currentUser.isSignedIn()) this.authenticate(currentUser);
+            if(currentUser.isSignedIn()) setTimeout(() => {this.authenticate(currentUser)},100);
         })
         if(!this.user) gapi.signin2.render("gSignIn")
     },
     methods: {
-        fetchSlot(slot){
+        changeSlot(slot){
+            this.selected_slot_before=slot
             fetch('/api/e5n/presentations/'+slot)
             .then(res => res.json())
             .then(res => {
                 this.presentations=res.data
+                this.selected_slot = slot
             })
         },
 
@@ -112,22 +107,24 @@ export default {
                 method: "POST",
                 headers:{"Content-Type":"application/json"}
             }
-            fetch('/api/e5n/student/presentations/',requestOptions).then(res => res.json())
-            .then(res => {
-                for(var i=2; i >= 0; i--){
-                    res[i+1]=res[i];
-                }
-                this.selected_presentations = res;
+            return fetch('/api/e5n/student/presentations/',requestOptions).then(res => res.json()).then(res=>{
+                res.forEach(element => this.selected_presentations[element.slot]=element)
+                this.$forceUpdate();
             })
         },
 
-        changeSlot(slot){
-            this.fetchSlot(slot)
-            this.selected_slot=slot
+        retryAuthenticate(user,times){
+            setTimeout(()=>{
+                this.authenticate(user)
+                this.retryAuthenticate(user,times-1)
+            },1000)
         },
 
         authenticate(user){
-
+            if(this.authLock){
+                return
+            }
+            this.authLock = true;
             const requestOptions = {
                 method: "POST",
                 headers:{"Content-Type":"application/json"},
@@ -135,21 +132,18 @@ export default {
                     id_token : user.getAuthResponse().id_token
                 })
             }
-            fetch("/api/student/auth",requestOptions).then(res => {
+            return fetch("/api/student/auth",requestOptions).then(res => {
                 if(res.ok) {
                     this.authFail = false
                     this.user = user
                     this.fetchUserData();
                 }else{
-                    console.log(user);
+                    if(!this.authFail) this.retryAuthenticate(user,2)
                     this.authFail = true
-                }
-            })
-        },
 
-        test(){
-            this.fetchUserData();
-            console.log(this.selected_presentations)
+                }
+                this.authLock = false;
+            })
         },
 
         signUp(presentationId){
@@ -160,17 +154,21 @@ export default {
                     presentation: presentationId
                 })
             }
+            this.disableSignup = true;
             fetch("/api/e5n/presentations/signup/",requestOptions)
             .then(res => {
                 if(res.ok){
-                    this.fetchUserData();
+                    this.fetchUserData().then(() => {this.disableSignup = false});
                 }else{
                     console.error("Signup error occured");
+                    this.disableSignup = false;
                 }
+
             })
         },
         refresh(){
-            this.fetchSlot(this.selected_slot)
+            this.changeSlot(this.selected_slot_before)
+            this.fetchUserData()
         },
         deleteSignUp(presentation){
             const requestOptions = {
@@ -192,7 +190,7 @@ export default {
         logout(){
              gapi.auth2.getAuthInstance().signOut().then(()=>{
                 this.user = null
-                this.selected_presentations = null
+                this.selected_presentations = []
                 gapi.signin2.render("gSignIn")
              })
         }

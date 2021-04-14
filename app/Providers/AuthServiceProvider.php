@@ -42,6 +42,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('e5n-admin', 'E5NPolicy@admin');
 
 
+        Gate::define('e5n-presentationSignup', 'E5NPolicy@presentationSignupEnabled');
+
         Gate::define('e5n-scanner', 'E5NPolicy@scanner');
 
 

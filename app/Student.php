@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class Student extends Model
 {
     public $timestamps = false;
@@ -41,8 +42,11 @@ class Student extends Model
 
 
     public function signUp(\App\Presentation $presentation){
+        if(!$this->allowed){
+            abort(403,"Diák nem jelentkezhet");
+        }
         if($this->isBusy($presentation->slot)){
-            abort(400, "Student Busy");
+            abort(400, "Diák elfoglalt");
         }
         if($presentation->hasCapacity()){
             $signup = new \App\PresentationSignup();
@@ -50,7 +54,7 @@ class Student extends Model
             $signup->student_id = $this->id;
             $signup->save();
         }else{
-            abort(400, "Capacity Exceeded");
+            abort(400, "Előadás betelt");
         }
     }
 

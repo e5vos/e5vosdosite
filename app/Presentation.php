@@ -15,7 +15,13 @@ class Presentation extends Model
     }
 
     public function fillUp(){
-        Student::where('allowed', true)->limit($this->capacity-$this->occupancy)->get()->signUp($this);
+        $availalbeStudents = Student::where('allowed', true)->get()->reject(function(Student $student){
+            return $student->isBusy($this->slot);
+        })->take($this->capacity - $this->occupancy);
+        foreach($availalbeStudents as $student){
+            $student->signUp($this);
+        }
+
     }
 
     public function hasCapacity(){

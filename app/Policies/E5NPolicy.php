@@ -45,11 +45,15 @@ class E5NPolicy
     /**
      * E5N System Restrictions
      *
-     * @param  User $user
      * @return bool Access Granted
      */
-    public function e5n(User $user){
+    public function e5n(){
         return true; // e5n toggleswitch
+    }
+
+    public function presentationSignupEnabled(){
+        return true;
+       //return
     }
 
     public function editTeam(User $user, Team $team){

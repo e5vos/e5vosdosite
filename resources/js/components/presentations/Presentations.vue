@@ -12,6 +12,9 @@
         <div v-if="authFail" class="container py-2">
             <h3 style="color:red;">Sikertelen bejelentkezés</h3>
         </div>
+        <div v-if="signupError == 403" class="container py-2">
+            <h3 style="color:red;">Nem jelentkezhetsz előadásokra</h3>
+        </div>
         <button class="btn btn-primary" v-if="user" v-on:click="logout">Kijelentkezés</button>
 
     </div>
@@ -76,11 +79,14 @@ export default {
             disableSignup: false,
             user : null,
             selected_presentations: [],
+            signupError : null,
         }
     },
     created(){
         this.changeSlot(1)
         setInterval(() => {
+            var currentUser =  gapi.auth2.getAuthInstance().currentUser.get();
+            if(currentUser!= null && currentUser.isSignedIn()) this.user = currentUser
             if(this.user!=null) this.refresh();
         },2000);
     },
@@ -160,7 +166,7 @@ export default {
                 if(res.ok){
                     this.fetchUserData().then(() => {this.disableSignup = false});
                 }else{
-                    console.error("Signup error occured");
+                    this.signupError = res.status;
                     this.disableSignup = false;
                 }
 

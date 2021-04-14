@@ -8,6 +8,8 @@ use App\Presentation;
 use App\PresentationSignup;
 use App\Student;
 use App\Http\Resources\Presentation as PresentationResource;
+use Illuminate\Support\Facades\Gate;
+
 use Egulias\EmailValidator\Exception\CharNotAllowed;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Auth\Access\Gate;
@@ -132,6 +134,9 @@ class PresentationController extends Controller
      * @return void
      */
     public function signUp(Request $request){
+        if(!\App\Setting::check('e5nPresentationSignup')){
+            abort(403,"No e5n");
+        };
         $student_id = $request->session()->get("student_id");
         if($student_id == null){
             abort(403, "Student not authenticated");
@@ -198,11 +203,13 @@ class PresentationController extends Controller
      */
     public function fillUpPresentation(Request $request) {
         //Gate::authorize('e5n-admin');
-        return Presentation::find($request->input('presentation'))->fillUp();
+        Presentation::find($request->input('presentation'))->fillUp();
     }
 
     public function fillUpAllPresentation(Request $request) {
         //Gate::authorize('e5n-admin');
-        return Presentation::all()->fillUp();
+        foreach (\App\Presentation::all() as $presentation) {
+            $presentation->fillUp();
+        }
     }
 }

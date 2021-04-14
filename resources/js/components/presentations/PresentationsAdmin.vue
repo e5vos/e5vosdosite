@@ -14,11 +14,11 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="presentation in presentations" v-bind:key="presentation" >
+                <tr v-for="presentation in presentations" v-bind:key="presentation.id" >
                     <td>{{presentation.presenter}}</td>
                     <td>{{presentation.title}}</td>
                     <td>{{presentation.capacity}}</td>
-                    <td><button class="btn btn-warning" v-on:click="fillup(presentation.id)" :disabled="presentation.capacity - presentation.occupancy<= 0">{{presentation.capacity - presentation.occupancy}}</button></td>
+                    <td><button class="btn btn-warning" v-on:click="fillUp(presentation.id)" :disabled="presentation.capacity - presentation.occupancy<= 0">{{presentation.capacity - presentation.occupancy}}</button></td>
                     <td>N/A</td>
                 </tr>
             </tbody>
@@ -29,25 +29,14 @@
 export default {
     data() {
         return {
-            selected_slot: '',
+            selected_slot: 1,
             selected_slot_before: '',
             presentations: [],
-            presentation:{
-                id:'',
-                slot:'',
-                presenter:'',
-                title:'',
-                description:'',
-                location:'',
-                capacity:'',
-                code:'',
-                occupancy: '',
-            },
         }
     },
     created() {
         this.changeSlot(1)
-        setInterval(this.changeSlot(selected_slot),1000)
+        setInterval(this.changeSlot(this.selected_slot),1000)
     },
     methods: {
         changeSlot(slot){
@@ -67,7 +56,7 @@ export default {
                     presentation: presid
                 })
             }
-            fetch('api/e5n/presadmin/fillup/',requestOptions)
+            fetch('/api/e5n/presadmin/fillup/',requestOptions)
             .then(this.changeSlot(this.selected_slot))
         },
         fillUpAll(){
@@ -75,7 +64,7 @@ export default {
                 method: "POST",
                 headers:{"Content-Type":"application/json"}
             }
-            fetch('api/e5n/presadmin/fillupall',requestOptions)
+            fetch('/api/e5n/presadmin/fillupall/',requestOptions)
             .then(this.changeSlot(this.selected_slot))
         }
     }

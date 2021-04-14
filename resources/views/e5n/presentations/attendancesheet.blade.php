@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    <attendancechecker></attendancechecker>
+    <attendance-checker/>
 @endsection

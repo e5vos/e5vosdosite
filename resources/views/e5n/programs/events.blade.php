@@ -13,7 +13,7 @@
         </div>
         <div class="row">
             <div class="col-md-9">
-                <programok/>
+                <events-table/>
             </div>
             <div class="col-md-3">
                 <div class="jumbotron">

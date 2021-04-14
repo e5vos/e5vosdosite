@@ -5,5 +5,5 @@
 @endsection
 
 @section('content')
-    <eventviewer/>
+    <event-viewer/>
 @endsection

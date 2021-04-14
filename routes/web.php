@@ -52,6 +52,10 @@ Route::get('/e5n/teams/','E5N\TeamController@home');
 Route::get('/e5n/scanner','E5N\EventController@scanner')->middleware('auth');
 Route::get('/e5n/codes','E5N\E5NController@codes');
 
+//Settings
+Route::get('/settings','HomeController@settingsView');
+
+
 Route::get('/e5n/presentations','E5N\PresentationController@presentationsSignup');
 Route::get('/e5n/attendanceopener', 'E5N\PresentationController@attendanceOpener');
 Route::get('/e5n/presentations/attendance/{prescode}','E5N\PresentationController@attendanceViewer');

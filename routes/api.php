@@ -56,7 +56,14 @@ Route::post('/e5n/presentations/signup/', 'E5N\PresentationController@signUp');
 // revoke a students appliance to a presentation
 Route::post('/e5n/presentations/signup/delete/', 'E5N\PresentationController@deleteSignUp');
 // automaticly fill up a presentations capacity
-Route::post('e5n/presadmin/fillup/', 'E5N\PresentationController@fillUpPresentation');
+Route::post('/e5n/presadmin/fillup/', 'E5N\PresentationController@fillUpPresentation');
+Route::post('/e5n/presadmin/fillupall/', 'E5N\PresentationController@fillUpAllPresentation');
+
 // Authenticate student with {diakcode} and {omcode}
 Route::post('/student/auth/','StudentController@StudentAuth');
 
+
+// get all settings
+Route::get('/settings','HomeController@settings');
+// change a setting
+Route::post('/setting','HomeController@setSetting');

@@ -5,5 +5,5 @@
 @endsection
 
 @section('content')
-    <attendanceopener></attendanceopener>
+    <attendance-checker-opening>
 @endsection

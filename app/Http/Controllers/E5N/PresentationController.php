@@ -10,7 +10,7 @@ use App\Student;
 use App\Http\Resources\Presentation as PresentationResource;
 use Egulias\EmailValidator\Exception\CharNotAllowed;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-
+use Illuminate\Auth\Access\Gate;
 use function Symfony\Component\String\b;
 
 class PresentationController extends Controller
@@ -191,7 +191,7 @@ class PresentationController extends Controller
     }
 
     /**
-     * fillUp a specific pres
+     * fillUp a specific presentation
      *
      * @param  mixed $request
      * @return void

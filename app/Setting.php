@@ -9,6 +9,7 @@ class Setting extends Model
 {
     protected $table = 'settings';
     protected $primaryKey = 'key';
+    protected $keyType = 'string';
 
     public static function lookUp($key){
         $setting = Setting::find($key);
@@ -21,5 +22,10 @@ class Setting extends Model
 
     public static function check($key,$expected="1"){
         return Setting::lookUp($key) === $expected;
+    }
+
+    public function set($value){
+        $this->value = $value;
+        $this->save();
     }
 }

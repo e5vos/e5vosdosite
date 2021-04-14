@@ -88,7 +88,7 @@ export default {
             var currentUser =  gapi.auth2.getAuthInstance().currentUser.get();
             if(currentUser!= null && currentUser.isSignedIn()) this.user = currentUser
             if(this.user!=null) this.refresh();
-        },2000);
+        },2000)
     },
     updated(){
         gapi.auth2.init()

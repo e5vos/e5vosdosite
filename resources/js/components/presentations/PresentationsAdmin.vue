@@ -36,7 +36,10 @@ export default {
     },
     created() {
         this.changeSlot(1)
-        setInterval(this.changeSlot(this.selected_slot),1000)
+        setInterval(()=>{
+            console.log("Teszt")
+            this.changeSlot(this.selected_slot)
+        },1000)
     },
     methods: {
         changeSlot(slot){
@@ -64,7 +67,7 @@ export default {
                 method: "POST",
                 headers:{"Content-Type":"application/json"}
             }
-            fetch('/api/e5n/presadmin/fillupall/',requestOptions)
+            fetch('/api/e5n/presadmin/fillupall/    ',requestOptions)
             .then(this.changeSlot(this.selected_slot))
         }
     }

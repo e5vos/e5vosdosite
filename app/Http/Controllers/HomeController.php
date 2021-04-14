@@ -46,7 +46,7 @@ class HomeController extends Controller
      * @return void
      */
     public function settings(){
-        return Setting::get()->all();
+        return Setting::all();
     }
 
     /**

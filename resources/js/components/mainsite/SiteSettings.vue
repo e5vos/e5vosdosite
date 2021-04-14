@@ -9,11 +9,14 @@
                 <th>
                     <h2>állapot</h2>
                 </th>
+                <th>
+                    <h2>OK</h2>
+                </th>
             </thead>
             <tr v-for="setting in settings" v-bind:key="setting.key">
                 <td>{{setting.key}}</td>
                 <td><input type="text" class="form-control" v-model="setting.value" /></td>
-                <td><button v-on:click="changeSetting(setting.key)">OK</button></td>
+                <td><button class="btn btn-dark" v-on:click="changeSetting(setting.key)">OK</button></td>
             </tr>
         </table>
     </div>
@@ -29,7 +32,9 @@ export default {
     },
     created(){
         this.fetchSettings()
-        setInterval(this.fetchSettings(),1000)
+        setInterval(() => {
+            this.fetchSettings();
+        },5000)
     },
     methods: {
         fetchSettings(){

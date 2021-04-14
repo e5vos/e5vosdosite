@@ -85,6 +85,8 @@ export default {
     created(){
         this.changeSlot(1)
         setInterval(() => {
+            var currentUser =  gapi.auth2.getAuthInstance().currentUser.get();
+            if(currentUser!= null && currentUser.isSignedIn()) this.user = currentUser
             if(this.user!=null) this.refresh();
         },2000);
     },

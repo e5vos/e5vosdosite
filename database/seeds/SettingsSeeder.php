@@ -11,6 +11,16 @@ class SettingsSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Setting::class,15)->create();
+
+        $DEFAULTS = [
+            "e5nPresentationSignup" => "0",
+        ];
+        foreach ($DEFAULTS as $key => &$value) {
+            $setting = new \App\Setting();
+            $setting->key = $key;
+            $setting->value = $value;
+            $setting->save();
+        }
+
     }
 }

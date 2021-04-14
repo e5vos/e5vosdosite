@@ -52,7 +52,8 @@ class E5NPolicy
     }
 
     public function presentationSignupEnabled(){
-        return \App\Setting::find('e5nPresentationSignup')->value;
+        return true;
+       //return
     }
 
     public function editTeam(User $user, Team $team){

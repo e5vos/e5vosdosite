@@ -11,6 +11,8 @@ class PresentationSignupSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\PresentationSignup::class,500)->create();
+        foreach (\App\Presentation::all() as $presentation) {
+            $presentation->fillUp();
+        }
     }
 }

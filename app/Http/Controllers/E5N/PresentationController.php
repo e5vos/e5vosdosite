@@ -8,10 +8,49 @@ use App\Presentation;
 use App\PresentationSignup;
 use App\Student;
 use App\Http\Resources\Presentation as PresentationResource;
+use Egulias\EmailValidator\Exception\CharNotAllowed;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+
+use function Symfony\Component\String\b;
 
 class PresentationController extends Controller
 {
+    /**
+     * returns the presentations signup view
+     *
+     * @return view
+     */
+    public function presentationsSignup() {
+        return view('e5n.presentations.signup');
+    }
+
+    /**
+     * returns teacher admin board view opener
+     *
+     * @return view
+     */
+    public function attendanceOpener() {
+        return view('e5n.presentations.attendancesheetopener');
+    }
+
+    /**
+     * returns general teacher board view
+     *
+     * @return view
+     */
+    public function attendanceViewer(){
+        return view('e5n.presentations.attendancesheet');
+    }
+
+    /**
+     * returns the presentations adminboard
+     *
+     * @return view
+     */
+    public function presAdmin(){
+        return view('e5n.presentations.admin');
+    }
+
     /**
      * Display a listing of presentations based on timeslot.
      *
@@ -57,6 +96,7 @@ class PresentationController extends Controller
     public function destroy($id)
     {
         Gate::authorize('e5n-presentation-delete');
+        return Presentation::where('id',$id)->delete();
     }
 
     /**
@@ -85,6 +125,12 @@ class PresentationController extends Controller
     }
 
 
+    /**
+     * signs a student up to a presentation
+     *
+     * @param  mixed $request {}
+     * @return void
+     */
     public function signUp(Request $request){
         $student_id = $request->session()->get("student_id");
         if($student_id == null){
@@ -95,6 +141,12 @@ class PresentationController extends Controller
         $student->signUp($presentation);
     }
 
+    /**
+     * revoke a students aoolication to a presentation
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function deleteSignUp(Request $request){
         $student_id = $request->session()->get("student_id");
         if($student_id == null){
@@ -104,6 +156,12 @@ class PresentationController extends Controller
         $student->signups()->where("presentation_id",$request->input("presentation"))->delete();
     }
 
+    /**
+     * Returns the selected presentation of a given student
+     *
+     * @param  mixed $request {}
+     * @return void
+     */
     public function getSelectedPresentations(Request $request){
         $student_id = $request->session()->get("student_id");
         if($student_id == null){
@@ -129,4 +187,19 @@ class PresentationController extends Controller
         })->get();
     }
 
+    /**
+     * fillUp a specific pres
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function fillUpPresentation(Request $request) {
+        //Gate::authorize('e5n-admin');
+        return Presentation::find($request->input('presentation'))->fillUp();
+    }
+
+    public function fillUpAllPresentation(Request $request) {
+        //Gate::authorize('e5n-admin');
+        return Presentation::all()->fillUp();
+    }
 }

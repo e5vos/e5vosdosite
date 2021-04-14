@@ -187,7 +187,6 @@ export default {
                     this.$forceUpdate()
                 }
             })
-            login(this.student.diakcode,this.student.omcode)
         },
 
         logout(){

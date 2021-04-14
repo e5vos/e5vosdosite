@@ -7897,6 +7897,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -7907,7 +7910,8 @@ __webpack_require__.r(__webpack_exports__);
       selected_slot_before: '',
       disableSignup: false,
       user: null,
-      selected_presentations: []
+      selected_presentations: [],
+      signupError: null
     };
   },
   created: function created() {
@@ -8019,7 +8023,7 @@ __webpack_require__.r(__webpack_exports__);
             _this7.disableSignup = false;
           });
         } else {
-          console.error("Signup error occured");
+          _this7.signupError = res.status;
           _this7.disableSignup = false;
         }
       });
@@ -44270,6 +44274,14 @@ var render = function() {
           ? _c("div", { staticClass: "container py-2" }, [
               _c("h3", { staticStyle: { color: "red" } }, [
                 _vm._v("Sikertelen bejelentkezés")
+              ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.signupError == 403
+          ? _c("div", { staticClass: "container py-2" }, [
+              _c("h3", { staticStyle: { color: "red" } }, [
+                _vm._v("Nem jelentkezhetsz előadásokra")
               ])
             ])
           : _vm._e(),

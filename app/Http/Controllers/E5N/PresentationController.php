@@ -8,6 +8,8 @@ use App\Presentation;
 use App\PresentationSignup;
 use App\Student;
 use App\Http\Resources\Presentation as PresentationResource;
+use Illuminate\Support\Facades\Gate;
+
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class PresentationController extends Controller
@@ -86,6 +88,7 @@ class PresentationController extends Controller
 
 
     public function signUp(Request $request){
+        Gate::authorize("e5n-presentationSignup");
         $student_id = $request->session()->get("student_id");
         if($student_id == null){
             abort(403, "Student not authenticated");

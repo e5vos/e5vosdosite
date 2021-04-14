@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-signin-client_id" content="352962433416-obdmdsbt2205mains21suujpvrfmhks4.apps.googleusercontent.com">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -11,7 +12,17 @@
 <title> @yield('title') </title>
 
     <!-- Scripts -->
+
     <script src="{{ asset('js/app.js') }}" defer> </script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async defer></script>
+
+    <script>
+        window.onLoadCallback = function(){
+            gapi.load('auth2')
+        }
+    </script>
+
+
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -27,7 +38,7 @@
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm sticky-top">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    <img src="{{url('/images/donci.jpg')}}" alt="E5vosdosite" height="40px" >
+                    <img src="{{url('/images/whitedonci.png')}}" alt="E5vosdosite" height="40px" >
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>

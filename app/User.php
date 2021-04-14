@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     public function currentEvent(){
         return $this->permissions()->whereHas('event',function($event){
-            $event->where('start','<',now())->where('end','>',now());
+            return $event->where('start','<',now())->where('end','>',now());
         })->event();
     }
 }

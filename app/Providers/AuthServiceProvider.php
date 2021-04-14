@@ -42,17 +42,12 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('e5n-admin', 'E5NPolicy@admin');
 
 
+        Gate::define('e5n-presentationSignup', 'E5NPolicy@presentationSignupEnabled');
+
         Gate::define('e5n-scanner', 'E5NPolicy@scanner');
 
 
         /** E5N System availability */
         Gate::define('e5n', 'E5NPolicy@e5n');
-
-        /* DISABLES AUTH FOR TESTING */
-        Gate::before(function(){
-            return true;
-        });
-
-
     }
 }

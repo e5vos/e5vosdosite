@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('title')
-    Az oldal beállításai
+    Előadás Részvétel
 @endsection
 
 @section('content')
-    <site-settings>
+    <attendance-checker-opening>
 @endsection

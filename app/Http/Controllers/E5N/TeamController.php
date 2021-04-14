@@ -12,10 +12,18 @@ class TeamController extends Controller
     public function home(){
         return view('e5n.teams.home');
     }
+
+    /**
+     * Add or remove TeamMember
+     */
     public function editMember($team,$member){
         Gate::authorize('edit-team',$team);
-        if($team->member($member)) $team->remove($member);
-        else $team->add($member);
+        if($team->member($member)){
+            $team->remove($member);
+        }
+        else{
+            $team->add($member);
+        }
     }
 
 

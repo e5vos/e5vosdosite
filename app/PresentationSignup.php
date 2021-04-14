@@ -11,7 +11,7 @@ class PresentationSignup extends Model
     protected $hidden = ['created_at','updated_at'];
 
     public function toggle(){
-        $this->jelen=!$this->jelen;
+        $this->present=!$this->present;
         $this->save();
     }
     public function presentation(){

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Gate;
+
 class PromController extends Controller
 {
     public function admin(){
@@ -11,7 +13,5 @@ class PromController extends Controller
         return view('prom.adminboard');
     }
 
-    public function seatselect(){
 
-    }
 }

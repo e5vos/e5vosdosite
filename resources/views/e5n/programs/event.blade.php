@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('title')
-    Az oldal beállításai
+    Program Információk
 @endsection
 
 @section('content')
-    <site-settings>
+    <event-viewer/>
 @endsection

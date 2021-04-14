@@ -14,7 +14,7 @@ use App\Event;
 class EventController extends Controller
 {
     public function scanner(){
-        //Gate::authorize('e5n.scanner' );
+        Gate::authorize('e5n.scanner' );
         return view('e5n.scanner',[
             'event' => Auth::user()->currentEvent(),
         ]);

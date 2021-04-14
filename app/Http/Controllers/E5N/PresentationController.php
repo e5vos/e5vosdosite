@@ -187,7 +187,7 @@ class PresentationController extends Controller
      * @return Student
      */
     public function nemjelentkezett($slot){
-        //Gate::authorize('e5n-admin');
+        Gate::authorize('e5n-admin');
         return Student::where('magantanulo',false)->whereDoesntHave('presentations', function ($query) use ($slot) {
             $query->where('slot',$slot);
         })->get();
@@ -200,12 +200,12 @@ class PresentationController extends Controller
      * @return void
      */
     public function fillUpPresentation(Request $request) {
-        //Gate::authorize('e5n-admin');
+        Gate::authorize('e5n-admin');
         Presentation::find($request->input('presentation'))->fillUp();
     }
 
     public function fillUpAllPresentation(Request $request) {
-        //Gate::authorize('e5n-admin');
+        Gate::authorize('e5n-admin');
         foreach (\App\Presentation::all() as $presentation) {
             $presentation->fillUp();
         }

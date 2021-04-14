@@ -49,12 +49,5 @@ class AuthServiceProvider extends ServiceProvider
 
         /** E5N System availability */
         Gate::define('e5n', 'E5NPolicy@e5n');
-
-        /* DISABLES AUTH FOR TESTING */
-        Gate::before(function(){
-            return true;
-        });
-
-
     }
 }

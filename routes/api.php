@@ -47,13 +47,16 @@ Route::get('/e5n/{day}/{event_name}', 'E5N\EventController@event_data');
 
 
 
-// Get nemjelentkezett's based on {slot}
+// Get no signups based on {slot}
 Route::get('/e5n/students/nemjelentkezett/{slot}','E5N\PresentationController@nemjelentkezett');
-
+// Get the presentation list
 Route::post('/e5n/student/presentations/','E5N\PresentationController@getSelectedPresentations');
+// Signup a student to a presentation
 Route::post('/e5n/presentations/signup/', 'E5N\PresentationController@signUp');
+// revoke a students appliance to a presentation
 Route::post('/e5n/presentations/signup/delete/', 'E5N\PresentationController@deleteSignUp');
-
+// automaticly fill up a presentations capacity
+Route::post('e5n/presadmin/fillup/', 'E5N\PresentationController@fillUpPresentation');
 // Authenticate student with {diakcode} and {omcode}
 Route::post('/student/auth/','StudentController@StudentAuth');
 

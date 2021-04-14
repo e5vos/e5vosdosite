@@ -32,7 +32,6 @@
                 <td>{{event.start}}</td>
                 <td>{{event.end}}</td>
                 <td>{{event.location_id}}</td>
-                <!--<td><button class="btn btn-success" :disabled="!student.auth || student.presentations[selected_slot]!=null">{{Math.max(presentation.capacity-presentation.occupancy,0)}}</button></td> -->
             </tr>
 
         </tbody>

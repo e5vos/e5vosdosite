@@ -10,10 +10,12 @@ class Presentation extends Model
     protected $table = 'presentations';
     protected $appends = ['occupancy'];
 
-
-
     public function getOccupancyAttribute(){
         return $this->signups()->count();
+    }
+
+    public function fillUp(){
+        Student::where('allowed', true)->limit($this->capacity-$this->occupancy)->get()->signUp($this);
     }
 
     public function hasCapacity(){

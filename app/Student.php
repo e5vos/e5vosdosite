@@ -26,14 +26,14 @@ class Student extends Model
             $student = new Student();
             $student->email = $google_payload["email"];
             $student->name = $google_payload["family_name"]." ".$google_payload["given_name"]; // name order fix
-            $student->google_id = $google_payload["sub"];
+            $student->google_id = hash('sha256',$google_payload["sub"]);
             $student->save();
         }
         if($student->google_id == null){
-            $student->google_id = $google_payload["sub"];
+            $student->google_id = hash('sha256',$google_payload["sub"]);
             $student->save();
         }
-        return $student->google_id == $google_payload["sub"] ? $student : null;
+        return $student->google_id == hash('sha256',$google_payload["sub"]) ? $student : null;
     }
 
     public function isBusy($slot){

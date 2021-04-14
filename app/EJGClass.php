@@ -32,7 +32,7 @@ class EJGClass extends Model
                 }
                 foreach($student->teams() as $teamid => &$team){
                     foreach($team->scores() as $scoreid =>&$score){
-                        $ejgclass->points += $score->place*$score->event()->weight*$team->sizeModifier()*Setting::firstWhere('key','e5nBasePoint')->get()->value()wa();
+                        $ejgclass->points += $score->place*$score->event()->weight*$team->sizeModifier()*Setting::firstWhere('key','e5nBasePoint')->get()->value();
                     }
                 }
             }

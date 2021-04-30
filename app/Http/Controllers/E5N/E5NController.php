@@ -38,7 +38,7 @@ class E5NController extends Controller
     }
 
     public function admin(){
-        //Gate::authorize('e5n-admin');
+        Gate::authorize('e5n-admin');
         return view('e5n.adminboard', [
             'events' => Event::all(),
             'classRanks' => EJGClass::all('id','name','points')->sortByDesc('points'),

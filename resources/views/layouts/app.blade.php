@@ -12,15 +12,9 @@
 <title> @yield('title') </title>
 
     <!-- Scripts -->
+    <script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" ></script>
 
-    <script src="{{ asset('js/app.js') }}" defer> </script>
-    <script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async defer></script>
-
-    <script>
-        window.onLoadCallback = function(){
-            gapi.load('auth2')
-        }
-    </script>
+    <script src="/public/js/app.js" async defer> </script>
 
 
 
@@ -29,7 +23,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="/public/css/app.css" rel="stylesheet">
     @yield('script')
 </head>
 <body style="background:none;">
@@ -57,11 +51,6 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('auth.login') }}</a>
                             </li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('auth.register') }}</a>
-                                </li>
-                            @endif
                         @else
                             <li class="nav-item">
                                 <a href="{{ route('home')}}">Bejelentkezve mint {{ Auth::user()->user_name }}</a>

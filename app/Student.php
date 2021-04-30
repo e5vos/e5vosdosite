@@ -2,11 +2,16 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
-
-class Student extends Model
+/**
+ * @deprecated
+ */
+class Student extends Authenticatable
 {
+    use HasFactory;
     public $timestamps = false;
     protected $table = 'students';
 
@@ -34,7 +39,13 @@ class Student extends Model
             $student->save();
         }
         return $student->google_id == hash('sha256',$google_payload["sub"]) ? $student : null;
+
+
     }
+
+
+
+
 
     public function isBusy($slot){
         return $this->presentations()->where("slot",$slot)->exists();

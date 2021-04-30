@@ -2,10 +2,12 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class EJGClass extends Model
 {
+    use HasFactory;
     protected $table = 'ejg_classes';
 
     public function bonuspoints(){

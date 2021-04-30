@@ -1,11 +1,11 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\PresentationSignup;
-use Faker\Generator as Faker;
-
-$factory->define(PresentationSignup::class, function (Faker $faker) {
-
-});
+ class PresentationSignupFactory extends Factory{
+    public function definition(){
+        return;
+    }
+}

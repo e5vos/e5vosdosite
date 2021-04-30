@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -30,13 +29,13 @@ class AuthServiceProvider extends ServiceProvider
 
 
         Gate::define('edit-settings', function ($user) {
-            return $user->isAdmin;
+            return $user->isAdmin();
         });
 
 
 
         Gate::define('edit-permissions', function ($user) {
-            return $user->isAdmin;
+            return $user->isAdmin();
         });
 
         Gate::define('e5n-admin', 'E5NPolicy@admin');
@@ -49,12 +48,6 @@ class AuthServiceProvider extends ServiceProvider
 
         /** E5N System availability */
         Gate::define('e5n', 'E5NPolicy@e5n');
-
-        /* DISABLES AUTH FOR TESTING */
-        Gate::before(function(){
-            return true;
-        });
-
 
     }
 }

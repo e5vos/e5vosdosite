@@ -1,10 +1,9 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
-
-use App\User;
-use Faker\Generator as Faker;
+namespace Database\Factories;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,14 +16,16 @@ use Illuminate\Support\Str;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
-    return [
-        'user_name' => $faker->userName,
-        'full_name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'email_verified_at' => now(),
+class UserFactory extends Factory{
+    public function definition(){
+        return [
+            'user_name' => $this->faker->userName,
+            'full_name' => $this->faker->name,
+            'email' => $this->faker->unique()->safeEmail,
+            'email_verified_at' => now(),
 
-        'password' => Hash::make('password'), // password
-        'remember_token' => Str::random(10),
-    ];
-});
+            'password' => Hash::make('password'), // password
+            'remember_token' => Str::random(10),
+        ];
+    }
+}

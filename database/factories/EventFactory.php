@@ -1,20 +1,17 @@
 <?php
+namespace Database\Factories;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
-
-use App\Event;
-use Faker\Generator as Faker;
-use Illuminate\Support\Str;
-
-
-$factory->define(Event::class, function (Faker $faker) {
-    return [
-        'name' => $faker->word(),
-        'description' => $faker->paragraph,
-        'location_id' => $faker->numberBetween(0,40),
-        'start'=> $faker->dateTimeBetween($format = 'Y-m-d', $startDate = '-1 day', $endDate = '+1 day'),
-        'end'=> $faker->dateTimeBetween($format = 'Y-m-d', $startDate = '-1 day', $endDate = '+1 day'),
-        'weight' => $faker->numberBetween(1,3),
-        'image_id' => $faker->numberBetween(0,100),
-    ];
-});
+class EventFactory extends Factory{
+    public function definition(){
+        return [
+            'name' => $this->faker->word(),
+            'description' => $this->faker->paragraph,
+            'location_id' => $this->faker->numberBetween(0,40),
+            'start'=> $this->faker->dateTimeBetween($format = 'Y-m-d', $startDate = '-1 day', $endDate = '+1 day'),
+            'end'=> $this->faker->dateTimeBetween($format = 'Y-m-d', $startDate = '-1 day', $endDate = '+1 day'),
+            'weight' => $this->faker->numberBetween(1,3),
+            'image_id' => $this->faker->numberBetween(0,100),
+        ];
+    }
+}

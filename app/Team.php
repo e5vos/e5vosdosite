@@ -2,12 +2,13 @@
 
 namespace App;
 
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Teams;
 use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model
 {
+    use HasFactory;
     /**
      * Members of this team
      */

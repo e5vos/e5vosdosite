@@ -1,16 +1,16 @@
 <?php
+namespace Database\Factories;
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\Help;
-use Faker\Generator as Faker;
-
-$factory->define(Help::class, function (Faker $faker) {
-    return [
-        'user' => $faker->name,
-        'help' => $faker->sentence(),
-        'solved' => $faker->numberBetween(0,1),
-        'deleted' => $faker->numberBetween(0,1),
-        'in_progress' => $faker->numberBetween(0,1),
-    ];
-});
+class HelpFactory extends Factory{
+    public function definition(){
+        return [
+            'user' => $this->faker->name,
+            'help' => $this->faker->sentence(),
+            'solved' => $this->faker->numberBetween(0,1),
+            'deleted' => $this->faker->numberBetween(0,1),
+            'in_progress' => $this->faker->numberBetween(0,1),
+        ];
+    }
+}

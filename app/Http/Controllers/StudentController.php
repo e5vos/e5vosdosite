@@ -35,13 +35,16 @@ class StudentController extends Controller
         $student->save();
     }
 
+
     public function StudentAuth(Request $request){
         $id_token = $request->input("id_token");
 
         $client = new \Google_Client([
             'client_id' => env("GOOGLE_CLIENT_ID"),
         ]);
+
         try{
+
             $payload = $client->verifyIdToken($id_token);
             if($payload){
                 // $domain = $payload["hd"]
@@ -52,7 +55,7 @@ class StudentController extends Controller
             }else{
                 abort(403);
             }
-        }catch(\Exception $e){
+        }catch(\UnexpectedValueException  $e){
             abort(400);
         }
 

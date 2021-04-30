@@ -1,13 +1,15 @@
 <?php
+namespace Database\Factories;
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\EJGClass;
-use Faker\Generator as Faker;
+class EJGClassFactory extends Factory{
+    public function definition(){
+        return [
+            'name'=>$this->faker->numberBetween(7,12).$this->faker->randomLetter,
+            'points'=>$this->faker->numberBetween(0,1000),
+        ];
 
-$factory->define(EJGClass::class, function (Faker $faker) {
-    return [
-        'name'=>$faker->numberBetween(7,12).$faker->randomLetter,
-        'points'=>$faker->numberBetween(0,1000),
-    ];
-});
+    }
+}
+

@@ -1,19 +1,33 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Presentation;
-use Faker\Generator as Faker;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
+class PresentationFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Presentation::class;
 
-$factory->define(Presentation::class, function (Faker $faker) {
-    return [
-        'title' => $faker->sentence,
-        'presenter' => $faker->name,
-        'description' => $faker->paragraph,
-        'capacity' => $faker->numberBetween(10,40),
-        'slot'=>    $faker->numberBetween(1,3),
-        'code' => $faker->regexify('[A-Za-z0-9]{4}'),
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'title' => $this->faker->sentence,
+            'presenter' => $this->faker->name,
+            'description' => $this->faker->paragraph,
+            'capacity' => $this->faker->numberBetween(10,40),
+            'slot'=>    $this->faker->numberBetween(1,3),
+            'code' => $this->faker->regexify('[A-Za-z0-9]{4}'),
+        ];
+    }
+}

@@ -3,12 +3,15 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Presentation extends Model
 {
     public $timestamps = false;
     protected $table = 'presentations';
     protected $appends = ['occupancy'];
+
+    use HasFactory;
 
     public function getOccupancyAttribute(){
         return $this->signups()->count();

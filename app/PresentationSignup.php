@@ -3,12 +3,15 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PresentationSignup extends Model
 {
     protected $table = 'presentation_signups';
 
     protected $hidden = ['created_at','updated_at'];
+
+    use HasFactory;
 
     public function toggle(){
         $this->present=!$this->present;

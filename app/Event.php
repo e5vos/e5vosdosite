@@ -4,6 +4,7 @@ namespace App;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Event extends Model
 {
@@ -14,6 +15,8 @@ class Event extends Model
     protected $appends = ['type','badgeClass','badgeMessage'];
 
     protected $casts = ['start' => 'datetime:G:i', 'end' => 'datetime:G:i'];
+
+    use HasFactory;
 
 
 

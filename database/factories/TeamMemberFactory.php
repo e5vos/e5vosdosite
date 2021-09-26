@@ -1,0 +1,30 @@
+<?php
+
+namespace Database\Factories;
+
+use App\TeamMember;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class TeamMemberFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = TeamMember::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'team_id' => $this->faker->numberBetween(0,69),
+            'student_id' => $this->faker->numberBetween(0,420),
+
+        ];
+    }
+}

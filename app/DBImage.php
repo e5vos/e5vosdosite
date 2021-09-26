@@ -5,12 +5,14 @@ namespace App;
 use Illuminate\Database\Eloquent\Location;
 use Intervention\Image;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
 class DBImage extends Model
 {
     protected $table = 'images';
 
+    use HasFactory;
 
 
     public static function saveimg($image,$id=null){
@@ -44,6 +46,7 @@ class DBImage extends Model
     }*/
 
     public function usecase(){
+
         $curr=Event::where('image_id',$this->id);
         if($curr){
             return [

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
 class Student extends Model
@@ -12,6 +13,8 @@ class Student extends Model
 
     protected $hidden = ['created_at','updated_at','laravel_through_key'];
 
+
+    use HasFactory;
 
     /**
      * Authenticates student with existing profile (from mailing list)

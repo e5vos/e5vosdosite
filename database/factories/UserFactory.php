@@ -6,7 +6,6 @@ use App\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
 
 class UserFactory extends Factory
 {

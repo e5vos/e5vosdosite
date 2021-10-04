@@ -28,7 +28,7 @@ class E5NPolicy
      * @return bool Access Granted
      */
     public function admin(User $user){
-        return $user->isAdmin;
+        return $user->isAdmin();
     }
 
     /**

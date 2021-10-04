@@ -1,12 +1,10 @@
 <?php
 namespace Database\Seeders;
 
-namespace Database\Seeders;
-
+use App\Permission;
 use Illuminate\Database\Seeder;
-use App\TeamMember;
 
-class TeamMemberSeeder extends Seeder
+class PermissionsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,6 +13,6 @@ class TeamMemberSeeder extends Seeder
      */
     public function run()
     {
-        TeamMember::factory()->count(15)->create();
+        Permission::factory()->count(50)->create();
     }
 }

@@ -1,12 +1,8 @@
 <?php
 namespace Database\Seeders;
-
-namespace Database\Seeders;
-
 use Illuminate\Database\Seeder;
-use App\TeamMember;
-
-class TeamMemberSeeder extends Seeder
+use App\Location;
+class LocationsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,6 +11,6 @@ class TeamMemberSeeder extends Seeder
      */
     public function run()
     {
-        TeamMember::factory()->count(15)->create();
+        Location::factory()->count(40)->create();
     }
 }

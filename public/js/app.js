@@ -7830,26 +7830,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      presentationtitle: '',
       signups: [],
-      prescode: '',
-      signup: {
-        id: '',
-        presentation_id: '',
-        student_id: '',
-        present: ''
-      }
+      prescode: ''
     };
   },
   created: function created() {
-    this.prescode = window.location.pathname, this.fetchSlot(this.prescode);
+    this.prescode = window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1), this.fetchSlot(this.prescode);
   },
   methods: {
     fetchSlot: function fetchSlot(prescode) {
@@ -7944,8 +7934,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
 //
 //
 //
@@ -8079,9 +8067,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      api: null,
+      refreshIntervalTimeMin: 5000,
+      refreshIntervalTime: 5000,
+      refreshIntervalTimeIncrement: 1000,
+      refreshIntervalTimeMax: 10000,
+      statusmsg: "Jelentkezz be az adatok automatikus frissítéséhez!",
+      counter: 0,
+      performanceDangerLevels: {
+        warning: 400,
+        danger: 900
+      },
       authFail: false,
       authLock: false,
       presentations: [],
@@ -8096,38 +8104,62 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
-    this.changeSlot(1);
-    setInterval(function () {
-      var currentUser = gapi.auth2.getAuthInstance().currentUser.get();
-      if (currentUser != null && currentUser.isSignedIn()) _this.user = currentUser;
-      if (_this.user != null) _this.refresh();
-    }, 2000);
+    gapi.load("auth2", function () {
+      gapi.auth2.init().then(function () {
+        gapi.auth2.getAuthInstance().currentUser.listen(_this.userListener);
+        setTimeout(function () {
+          return _this.userListener(gapi.auth2.getAuthInstance.currentUser);
+        }, 100);
+
+        _this.changeSlot(1);
+
+        setTimeout(_this.tick, _this.refreshIntervalTime / 10);
+        setTimeout(_this.authenticate, 1000);
+      });
+    });
+  },
+  mounted: function mounted() {
+    this.refreshBar = document.getElementById("refreshBar");
   },
   updated: function updated() {
-    var _this2 = this;
-
-    gapi.auth2.init();
-    gapi.auth2.getAuthInstance().currentUser.listen(function (currentUser) {
-      if (currentUser.isSignedIn()) setTimeout(function () {
-        _this2.authenticate(currentUser);
-      }, 100);
-    });
     if (!this.user) gapi.signin2.render("gSignIn");
   },
   methods: {
+    userListener: function userListener(currentUser) {
+      if (currentUser != null && currentUser.isSignedIn()) {
+        this.authenticate(currentUser);
+      }
+    },
+    tick: function tick() {
+      var currentUser = gapi.auth2.getAuthInstance() ? gapi.auth2.getAuthInstance().currentUser.get() : null;
+      if (currentUser != null && currentUser.isSignedIn()) this.user = currentUser;
+
+      if (!this.authFail && this.user != null) {
+        if (this.counter > 100) {
+          this.counter = 0;
+          if (this.user != null) this.refresh();
+          this.updateRefreshBarColor();
+        }
+
+        this.refreshBar.style.width = this.counter + "%";
+        this.counter += 10;
+      }
+
+      setTimeout(this.tick, this.refreshIntervalTime / 10);
+    },
     changeSlot: function changeSlot(slot) {
-      var _this3 = this;
+      var _this2 = this;
 
       this.selected_slot_before = slot;
-      fetch('/api/e5n/presentations/' + slot).then(function (res) {
-        return res.json();
+      return fetch('/api/e5n/presentations/' + slot).then(function (res) {
+        return res.status == 200 ? res.json() : null;
       }).then(function (res) {
-        _this3.presentations = res.data;
-        _this3.selected_slot = slot;
+        _this2.presentations = res.data;
+        _this2.selected_slot = slot;
       });
     },
     fetchUserData: function fetchUserData() {
-      var _this4 = this;
+      var _this3 = this;
 
       var requestOptions = {
         method: "POST",
@@ -8136,28 +8168,34 @@ __webpack_require__.r(__webpack_exports__);
         }
       };
       return fetch('/api/e5n/student/presentations/', requestOptions).then(function (res) {
-        return res.json();
+        return res.status == 200 ? res.json() : null;
       }).then(function (res) {
-        res.forEach(function (element) {
-          return _this4.selected_presentations[element.slot] = element;
-        });
+        if (res != null) {
+          res.forEach(function (element) {
+            return _this3.selected_presentations[element.slot] = element;
+          });
 
-        _this4.$forceUpdate();
+          _this3.$forceUpdate();
+        }
       });
     },
     retryAuthenticate: function retryAuthenticate(user, times) {
+      var _this4 = this;
+
+      if (times <= 0) return;
+      setTimeout(function () {
+        if (_this4.authFail) _this4.authenticate(user, false);
+
+        _this4.retryAuthenticate(user, times - 1);
+      }, 2000);
+    },
+    authenticate: function authenticate() {
       var _this5 = this;
 
-      setTimeout(function () {
-        _this5.authenticate(user);
+      var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.user;
+      var retry = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-        _this5.retryAuthenticate(user, times - 1);
-      }, 1000);
-    },
-    authenticate: function authenticate(user) {
-      var _this6 = this;
-
-      if (this.authLock) {
+      if (user == null || this.authLock) {
         return;
       }
 
@@ -8173,20 +8211,23 @@ __webpack_require__.r(__webpack_exports__);
       };
       return fetch("/api/student/auth", requestOptions).then(function (res) {
         if (res.ok) {
-          _this6.authFail = false;
-          _this6.user = user;
+          _this5.authFail = false;
+          _this5.user = user;
 
-          _this6.fetchUserData();
+          _this5.fetchUserData();
         } else {
-          if (!_this6.authFail) _this6.retryAuthenticate(user, 2);
-          _this6.authFail = true;
+          _this5.authFail = true;
+
+          _this5.refreshBar.classList.add("bg-warning");
+
+          if (retry) _this5.retryAuthenticate(user, 2);
         }
 
-        _this6.authLock = false;
+        _this5.authLock = false;
       });
     },
     signUp: function signUp(presentationId) {
-      var _this7 = this;
+      var _this6 = this;
 
       var requestOptions = {
         method: "POST",
@@ -8200,18 +8241,27 @@ __webpack_require__.r(__webpack_exports__);
       this.disableSignup = true;
       fetch("/api/e5n/presentations/signup/", requestOptions).then(function (res) {
         if (res.ok) {
-          _this7.fetchUserData().then(function () {
-            _this7.disableSignup = false;
+          _this6.fetchUserData().then(function () {
+            _this6.disableSignup = false;
           });
         } else {
-          _this7.signupError = res.status;
-          _this7.disableSignup = false;
+          _this6.signupError = res.status;
+          _this6.disableSignup = false;
         }
       });
     },
     refresh: function refresh() {
-      this.changeSlot(this.selected_slot_before);
-      this.fetchUserData();
+      var _this7 = this;
+
+      performance.mark("slotRefreshMark");
+      this.changeSlot(this.selected_slot_before).then(function () {
+        performance.measure("slotRefresh", "slotRefreshMark");
+        performance.mark("userDataRefreshMark");
+
+        _this7.fetchUserData().then(function () {
+          performance.measure("userDataRefresh", "userDataRefreshMark");
+        });
+      });
     },
     deleteSignUp: function deleteSignUp(presentation) {
       var _this8 = this;
@@ -8241,6 +8291,26 @@ __webpack_require__.r(__webpack_exports__);
         _this9.selected_presentations = [];
         gapi.signin2.render("gSignIn");
       });
+    },
+    updateRefreshBarColor: function updateRefreshBarColor() {
+      var userDataRefreshTime = performance.getEntriesByName("userDataRefresh").length == 0 ? 0 : performance.getEntriesByName("userDataRefresh")[performance.getEntriesByName("userDataRefresh").length - 1].duration;
+      var slotRefreshTime = performance.getEntriesByName("slotRefresh").length == 0 ? 0 : performance.getEntriesByName("slotRefresh")[performance.getEntriesByName("slotRefresh").length - 1].duration;
+      var responseTime = Math.max(userDataRefreshTime, slotRefreshTime);
+
+      if (responseTime < this.performanceDangerLevels.warning) {
+        this.refreshBar.classList.remove("bg-danger");
+        this.refreshBar.classList.remove("bg-warning");
+        this.statusmsg = "";
+        if (this.refreshIntervalTime > this.refreshIntervalTimeMin) this.refreshIntervalTime -= this.refreshIntervalTimeIncrement;
+      } else if (responseTime < this.performanceDangerLevels.danger) {
+        this.refreshBar.classList.add("bg-warning");
+        this.refreshBar.classList.remove("bg-danger");
+        this.statusmsg = "Közepes válaszidő";
+      } else {
+        this.refreshBar.classList.add("bg-danger");
+        this.statusmsg = "Extrém válaszidő";
+        if (this.refreshIntervalTime < this.refreshIntervalTimeMax) this.refreshIntervalTime += this.refreshIntervalTimeIncrement;
+      }
     }
   }
 });
@@ -44285,12 +44355,10 @@ var render = function() {
               [
                 _c("thead", { staticClass: "thead-dark" }, [
                   _c("tr", [
-                    _c("th", { attrs: { colspan: "3" } }, [
-                      _vm._v(_vm._s(_vm.signups[0].title))
+                    _c("th", { attrs: { colspan: "2" } }, [
+                      _vm._v(_vm._s(_vm.presentationtitle))
                     ])
-                  ]),
-                  _vm._v(" "),
-                  _vm._m(0)
+                  ])
                 ]),
                 _vm._v(" "),
                 _c(
@@ -44298,8 +44366,6 @@ var render = function() {
                   [
                     _vm._l(_vm.signups, function(signup) {
                       return _c("tr", { key: signup.id }, [
-                        _c("td", [_vm._v(_vm._s(signup.class_id))]),
-                        _vm._v(" "),
                         _c("td", [_vm._v(_vm._s(signup.name))]),
                         _vm._v(" "),
                         _c("td", [
@@ -44317,7 +44383,7 @@ var render = function() {
                       ])
                     }),
                     _vm._v(" "),
-                    _vm._m(1)
+                    _vm._m(0)
                   ],
                   2
                 )
@@ -44332,16 +44398,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("th", { attrs: { scope: "col" } }, [_vm._v("Osztály")]),
-      _vm._v(" "),
-      _c("th", { attrs: { scope: "col", colspan: "2" } }, [_vm._v("Név")])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -44508,9 +44564,7 @@ var render = function() {
         _c(
           "tbody",
           _vm._l(_vm.students, function(student) {
-            return _c("tr", { key: student.code }, [
-              _c("td", [_vm._v(_vm._s(student.class_name))]),
-              _vm._v(" "),
+            return _c("tr", { key: student.email }, [
               _c("td", [
                 _c(
                   "button",
@@ -44518,11 +44572,11 @@ var render = function() {
                     staticClass: "btn btn-danger",
                     on: {
                       click: function($event) {
-                        return _vm.magantanulo(student.code)
+                        return _vm.magantanulo(student.id)
                       }
                     }
                   },
-                  [_vm._v(_vm._s(student.code))]
+                  [_vm._v(_vm._s(student.email))]
                 )
               ]),
               _vm._v(" "),
@@ -44546,9 +44600,7 @@ var staticRenderFns = [
       ]),
       _vm._v(" "),
       _c("tr", [
-        _c("th", [_vm._v("Osztály")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Diákkód")]),
+        _c("th", [_vm._v("E-Mail")]),
         _vm._v(" "),
         _c("th", [_vm._v("Név")])
       ])
@@ -44607,16 +44659,22 @@ var render = function() {
           [_c("div", { staticClass: "g-signin2", attrs: { id: "gSignIn" } })]
         ),
         _vm._v(" "),
-        _vm.user
+        _vm.user && _vm.user.getBasicProfile()
           ? _c("div", { staticClass: "container py-2" }, [
               _c("h3", [_vm._v(_vm._s(_vm.user.getBasicProfile().getName()))])
             ])
           : _vm._e(),
         _vm._v(" "),
         _vm.authFail
-          ? _c("div", { staticClass: "container py-2" }, [
+          ? _c("div", { staticClass: "container card bg-info py-2" }, [
               _c("h3", { staticStyle: { color: "red" } }, [
-                _vm._v("Sikertelen bejelentkezés")
+                _vm._v("Sikertelen bejelentkezés a DÖ szerverére!")
+              ]),
+              _vm._v(" "),
+              _c("p", [
+                _vm._v(
+                  "A hiba leggyakoribb oka a szerverünk túlterhelődése, kérlek próbálkozz később! Ha a hiba továbbra is fennáll, kérj segítséget!"
+                )
               ])
             ])
           : _vm._e(),
@@ -44627,6 +44685,30 @@ var render = function() {
                 _vm._v("Nem jelentkezhetsz előadásokra")
               ])
             ])
+          : _vm._e()
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "container py-2",
+        staticStyle: { width: "fit-content", "text-align": "center" }
+      },
+      [
+        _vm.user && _vm.authFail && !_vm.authLock
+          ? _c(
+              "button",
+              {
+                staticClass: "btn btn-warning",
+                on: {
+                  click: function($event) {
+                    return _vm.authenticate(_vm.user, false)
+                  }
+                }
+              },
+              [_vm._v("Újrapróbálkozás")]
+            )
           : _vm._e(),
         _vm._v(" "),
         _vm.user
@@ -44680,7 +44762,17 @@ var render = function() {
         }
       },
       [
-        _vm._m(0),
+        _c("thead", { staticClass: "thead-dark" }, [
+          _c("tr", [
+            _c("th", { attrs: { colspan: "4" } }, [
+              _c("span", [_vm._v(_vm._s(_vm.statusmsg))]),
+              _vm._v(" "),
+              _vm._m(0)
+            ])
+          ]),
+          _vm._v(" "),
+          _vm._m(1)
+        ]),
         _vm._v(" "),
         _c(
           "tbody",
@@ -44689,7 +44781,7 @@ var render = function() {
             _vm.selected_presentations &&
             _vm.selected_presentations[_vm.selected_slot]
               ? [
-                  _vm._m(1),
+                  _vm._m(2),
                   _vm._v(" "),
                   _c(
                     "tr",
@@ -44760,7 +44852,7 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _vm._m(2)
+                  _vm._m(3)
                 ]
               : _vm._e(),
             _vm._v(" "),
@@ -44787,6 +44879,7 @@ var render = function() {
                               staticClass: "btn btn-success",
                               attrs: {
                                 disabled:
+                                  _vm.authFail ||
                                   !_vm.user ||
                                   (_vm.selected_presentations != null &&
                                     _vm.selected_presentations[
@@ -44831,18 +44924,26 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", { staticClass: "thead-dark" }, [
-      _c("tr", [
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Előadó")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Előadás címe")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [
-          _vm._v("Előadás rövid leírása")
-        ]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Szabad")])
-      ])
+    return _c("div", { staticClass: "progress" }, [
+      _c("div", {
+        staticClass: "progress-bar bg-success",
+        staticStyle: { transition: "width 0.6s ease" },
+        attrs: { role: "progressbar", id: "refreshBar" }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", { attrs: { scope: "col" } }, [_vm._v("Előadó")]),
+      _vm._v(" "),
+      _c("th", { attrs: { scope: "col" } }, [_vm._v("Előadás címe")]),
+      _vm._v(" "),
+      _c("th", { attrs: { scope: "col" } }, [_vm._v("Előadás rövid leírása")]),
+      _vm._v(" "),
+      _c("th", { attrs: { scope: "col" } }, [_vm._v("Szabad")])
     ])
   },
   function() {
@@ -57329,7 +57430,7 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
   null,
   null,
   null
-  
+
 )
 
 /* hot reload */
@@ -57349,7 +57450,7 @@ component.options.__file = "resources/js/components/TeamManager.vue"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TeamManager_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./TeamManager.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/TeamManager.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TeamManager_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TeamManager_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 /***/ }),
 
@@ -57398,7 +57499,7 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
   null,
   null,
   null
-  
+
 )
 
 /* hot reload */
@@ -57418,7 +57519,7 @@ component.options.__file = "resources/js/components/events/EventViewer.vue"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EventViewer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./EventViewer.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/events/EventViewer.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EventViewer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EventViewer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 /***/ }),
 
@@ -57467,7 +57568,7 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
   null,
   null,
   null
-  
+
 )
 
 /* hot reload */
@@ -57487,7 +57588,7 @@ component.options.__file = "resources/js/components/events/EventsTable.vue"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EventsTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./EventsTable.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/events/EventsTable.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EventsTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EventsTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 /***/ }),
 
@@ -57536,7 +57637,7 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
   null,
   null,
   null
-  
+
 )
 
 /* hot reload */
@@ -57556,7 +57657,7 @@ component.options.__file = "resources/js/components/mainsite/SiteSettings.vue"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SiteSettings_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./SiteSettings.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/mainsite/SiteSettings.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SiteSettings_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SiteSettings_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 /***/ }),
 
@@ -57605,7 +57706,7 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
   null,
   null,
   null
-  
+
 )
 
 /* hot reload */
@@ -57625,7 +57726,7 @@ component.options.__file = "resources/js/components/presentations/AttendanceChec
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AttendanceChecker_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./AttendanceChecker.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/presentations/AttendanceChecker.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AttendanceChecker_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AttendanceChecker_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 /***/ }),
 
@@ -57674,7 +57775,7 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
   null,
   null,
   null
-  
+
 )
 
 /* hot reload */
@@ -57694,7 +57795,7 @@ component.options.__file = "resources/js/components/presentations/AttendanceChec
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AttendanceCheckerOpening_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./AttendanceCheckerOpening.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/presentations/AttendanceCheckerOpening.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AttendanceCheckerOpening_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AttendanceCheckerOpening_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 /***/ }),
 
@@ -57743,7 +57844,7 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
   null,
   null,
   null
-  
+
 )
 
 /* hot reload */
@@ -57763,7 +57864,7 @@ component.options.__file = "resources/js/components/presentations/NoSignups.vue"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NoSignups_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./NoSignups.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/presentations/NoSignups.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NoSignups_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NoSignups_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 /***/ }),
 
@@ -57812,7 +57913,7 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
   null,
   null,
   null
-  
+
 )
 
 /* hot reload */
@@ -57832,7 +57933,7 @@ component.options.__file = "resources/js/components/presentations/Presentations.
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Presentations_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Presentations.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/presentations/Presentations.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Presentations_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Presentations_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 /***/ }),
 
@@ -57881,7 +57982,7 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
   null,
   null,
   null
-  
+
 )
 
 /* hot reload */
@@ -57901,7 +58002,7 @@ component.options.__file = "resources/js/components/presentations/PresentationsA
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PresentationsAdmin_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./PresentationsAdmin.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/presentations/PresentationsAdmin.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PresentationsAdmin_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PresentationsAdmin_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 /***/ }),
 

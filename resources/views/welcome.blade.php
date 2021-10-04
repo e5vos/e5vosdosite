@@ -19,7 +19,7 @@
             <div class="col-md-6 container">
                 <div class="jumbotron" style="background-color:rgba(100, 212, 133, 0.89)">
                     <h1 class="display-4"><img src="{{asset('images/defaultdonci.png')}}" style="height:1em;">E5N Előadás Jelentkezés</h1>
-                    <p class="lead"><a class="btn btn-primary btn-lg" href="e5vosdo.hu/e5n/presentations" role="button">Tovább a Jelentkezéshez!</a></p>
+                    <p class="lead"><a class="btn btn-primary btn-lg" href="/e5n/presentations" role="button">Tovább a Jelentkezéshez!</a></p>
                     <hr class="my-4">
                     <p>Egy teljes átírást követően alfa verzióban</p>
                     <p class="lead">

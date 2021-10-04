@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeders;
 
 namespace Database\Seeders;
 
@@ -14,6 +15,6 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(50)->create();
+        User::factory()->count(50)->create();
     }
 }

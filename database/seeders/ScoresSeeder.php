@@ -1,12 +1,10 @@
 <?php
 namespace Database\Seeders;
 
-namespace Database\Seeders;
-
+use App\Score;
 use Illuminate\Database\Seeder;
-use App\TeamMember;
 
-class TeamMemberSeeder extends Seeder
+class ScoresSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,6 +13,6 @@ class TeamMemberSeeder extends Seeder
      */
     public function run()
     {
-        TeamMember::factory()->count(15)->create();
+        Score::factory()->count(500)->create();
     }
 }

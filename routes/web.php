@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 
 /*
@@ -19,6 +20,10 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+
+
+Route::get('auth/google', 'Auth\GoogleController@redirectToGoogle');
+Route::get('auth/google/callback', 'Auth\GoogleController@callback');
 
 // Login redirection waiter
 Route::get('/home', 'HomeController@index')->name('home');

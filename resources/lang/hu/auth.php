@@ -21,6 +21,7 @@ return [
     'fullname' => 'Teljes név',
     'class' => 'Osztály (végzés évével)',
     'studentcode' =>"Diákkód",
+    'invitecode' => "Meghívókód",
 
 
     'confirmpass' =>'Jelszó megerősítése',

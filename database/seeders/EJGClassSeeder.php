@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeders;
 
 namespace Database\Seeders;
 
@@ -14,6 +15,6 @@ class EJGClassSeeder extends Seeder
      */
     public function run()
     {
-        EJGClass::factory(29)->create();
+        EJGClass::factory()->count(20)->create();
     }
 }

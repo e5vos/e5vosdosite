@@ -67,4 +67,6 @@ class HomeController extends Controller
     public function settingsView(){
         return view('admin.settings');
     }
+
+
 }

@@ -9,15 +9,13 @@
         <thead class="thead-dark">
             <tr><th colspan="3">Nem jelentkezett</th></tr>
             <tr>
-                <th>Osztály</th>
-                <th>Diákkód</th>
+                <th>E-Mail</th>
                 <th>Név</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="student in students" :key="student.code">
-                <td>{{student.class_name}}</td>
-                <td><button class="btn btn-danger" v-on:click="magantanulo(student.code)">{{student.code}}</button></td>
+            <tr v-for="student in students" :key="student.email">
+                <td><button class="btn btn-danger" v-on:click="magantanulo(student.id)">{{student.email}}</button></td>
                 <td>{{student.name}}</td>
             </tr>
         </tbody>

@@ -14,6 +14,6 @@ class PresentationsTableSeeder extends Seeder
      */
     public function run()
     {
-        Presentation::factory(50)->create();
+        Presentation::factory()->count(50)->create();
     }
 }

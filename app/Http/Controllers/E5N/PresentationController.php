@@ -5,13 +5,11 @@ namespace App\Http\Controllers\E5N;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Presentation;
-use App\PresentationSignup;
 use App\Student;
 use App\Http\Resources\Presentation as PresentationResource;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
-use Egulias\EmailValidator\Exception\CharNotAllowed;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use function Symfony\Component\String\b;
+
 
 class PresentationController extends Controller
 {
@@ -58,10 +56,17 @@ class PresentationController extends Controller
      */
     public function slot($slot)
     {
-        return PresentationResource::collection(Presentation::where('slot',$slot)->get()->reject(function($presentation){
-            return $presentation->occupancy >= $presentation->capacity; // no free capacity
-            // kiszervezhető kliensre teljesítmény növelés céljából
-        }));
+        $cacheKey = 'e5n.presentations.slot.'.$slot;
+        if(!Cache::has($cacheKey)){
+            Cache::put($cacheKey,
+            PresentationResource::collection(Presentation::where('slot',$slot)->get()->reject(function($presentation){
+                return $presentation->occupancy >= $presentation->capacity; // no free capacity
+                // kiszervezhető kliensre teljesítmény növelés céljából
+            })), 5);
+        }
+        return Cache::get($cacheKey);
+
+
     }
 
     /**
@@ -139,7 +144,7 @@ class PresentationController extends Controller
         if($student_id == null){
             abort(403, "Student not authenticated");
         }
-        $student = \App\Student::find($student_id);
+        $student = \App\User::find($student_id);
         $presentation = \App\Presentation::find($request->input("presentation"));
         $student->signUp($presentation);
     }
@@ -155,7 +160,7 @@ class PresentationController extends Controller
         if($student_id == null){
             abort(403, "Student not authenticated");
         }
-        $student = \App\Student::find($student_id);
+        $student = \App\User::find($student_id);
         $student->signups()->where("presentation_id",$request->input("presentation"))->delete();
     }
 
@@ -170,7 +175,7 @@ class PresentationController extends Controller
         if($student_id == null){
             abort(403, "Student not authenticated");
         }
-        $student = \App\Student::find($student_id);
+        $student = \App\User::find($student_id);
         if($student->doesntExist()){
             abort(403, "Student does not exist");
         }
@@ -187,8 +192,8 @@ class PresentationController extends Controller
      * @return Student
      */
     public function nemjelentkezett($slot){
-        Gate::authorize('e5n-admin');
-        return Student::where('magantanulo',false)->whereDoesntHave('presentations', function ($query) use ($slot) {
+        //Gate::authorize('e5n-admin');
+        return \App\User::whereDoesntHave('presentations', function ($query) use ($slot) {
             $query->where('slot',$slot);
         })->get();
     }

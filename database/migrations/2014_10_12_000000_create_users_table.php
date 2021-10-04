@@ -16,18 +16,15 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
 
-            $table->string('student_code')->unique()->nullable();
-            $table->string('user_name');
-            $table->string('full_name')->nullable();
-
+            $table->string('google_id',64)->nullable();
+            $table->string('name')->nullable();
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->integer('class_id')->nullable();
 
             $table->rememberToken();
             $table->timestamps();
 
-            $table->foreign('student_code')->references('code')->on('students');
+            $table->foreign('class_id')->references('id')->on('ejg_classes')->onDelete('cascade');
         });
     }
 

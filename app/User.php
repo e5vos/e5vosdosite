@@ -2,13 +2,15 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
+    use HasFactory;
+
     protected $table = 'users';
 
     use Notifiable;
@@ -20,7 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'user_name', 'email', 'password',
+        'user_name', 'email', 'password','google_id'
     ];
 
     /**
@@ -30,15 +32,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password', 'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
     ];
 
     public function permissions(){
@@ -55,4 +48,44 @@ class User extends Authenticatable
             return $event->where('start','<',now())->where('end','>',now());
         })->event();
     }
+
+
+    public function isBusy($slot){
+        return $this->presentations()->where("slot",$slot)->exists();
+    }
+
+
+    public function signUp(\App\Presentation $presentation){
+        if(!$this->allowed){
+            abort(403,"Diák nem jelentkezhet");
+        }
+        if($this->isBusy($presentation->slot)){
+            abort(400, "Diák elfoglalt");
+        }
+        if($presentation->hasCapacity()){
+            $signup = new \App\PresentationSignup();
+            $signup->presentation_id = $presentation->id;
+            $signup->student_id = $this->id;
+            $signup->save();
+        }else{
+            abort(400, "Előadás betelt");
+        }
+    }
+
+    public function ejg_class(){
+        return $this->belongsTo(EJGClass::class);
+    }
+
+    public function signups(){
+        return $this->hasMany(PresentationSignup::class);
+    }
+
+    public function presentations(){
+        return $this->hasManyThrough(Presentation::class,PresentationSignup::class,'student_id','id','id','presentation_id');
+    }
+
+    public function scores(){
+        return $this->hasMany(Score::class);
+    }
+
 }

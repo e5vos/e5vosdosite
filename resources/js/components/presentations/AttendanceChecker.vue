@@ -6,15 +6,10 @@
             <div class="py-2 container-fluid" style="background-color:rgba(255, 255, 255, 0.5)">
                 <table class="table table-light" style="text-align:center;width:100%;table-layout: auto;">
                     <thead class="thead-dark">
-                        <tr><th colspan=3>{{signups[0].title}}</th></tr>
-                        <tr>
-                            <th scope="col">Osztály</th>
-                            <th scope="col" colspan=2>Név</th>
-                        </tr>
+                        <tr><th colspan=2>{{presentationtitle}}</th></tr>
                     </thead>
                     <tbody>
                         <tr v-for="signup in signups" v-bind:key="signup.id">
-                            <td>{{signup.class_id}}</td>
                             <td>{{signup.name}}</td>
                             <td><input type="checkbox" class="form-control"   v-bind:checked="signup.present" v-on:click="toggle(signup)"  ></td>
                         </tr>
@@ -31,19 +26,14 @@
 export default {
     data(){
         return{
+            presentationtitle: '',
             signups: [],
             prescode: '',
-            signup:{
-                id:'',
-                presentation_id:'',
-                student_id:'',
-                present:'',
-            },
 
         }
     },
     created(){
-        this.prescode = window.location.pathname,
+        this.prescode = window.location.pathname.substring(window.location.pathname.lastIndexOf('/')+1),
         this.fetchSlot(this.prescode)
     },
     methods: {

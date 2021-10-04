@@ -7830,26 +7830,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      presentationtitle: '',
       signups: [],
-      prescode: '',
-      signup: {
-        id: '',
-        presentation_id: '',
-        student_id: '',
-        present: ''
-      }
+      prescode: ''
     };
   },
   created: function created() {
-    this.prescode = window.location.pathname, this.fetchSlot(this.prescode);
+    this.prescode = window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1), this.fetchSlot(this.prescode);
   },
   methods: {
     fetchSlot: function fetchSlot(prescode) {
@@ -7944,8 +7934,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
 //
 //
 //
@@ -44367,12 +44355,10 @@ var render = function() {
               [
                 _c("thead", { staticClass: "thead-dark" }, [
                   _c("tr", [
-                    _c("th", { attrs: { colspan: "3" } }, [
-                      _vm._v(_vm._s(_vm.signups[0].title))
+                    _c("th", { attrs: { colspan: "2" } }, [
+                      _vm._v(_vm._s(_vm.presentationtitle))
                     ])
-                  ]),
-                  _vm._v(" "),
-                  _vm._m(0)
+                  ])
                 ]),
                 _vm._v(" "),
                 _c(
@@ -44380,8 +44366,6 @@ var render = function() {
                   [
                     _vm._l(_vm.signups, function(signup) {
                       return _c("tr", { key: signup.id }, [
-                        _c("td", [_vm._v(_vm._s(signup.class_id))]),
-                        _vm._v(" "),
                         _c("td", [_vm._v(_vm._s(signup.name))]),
                         _vm._v(" "),
                         _c("td", [
@@ -44399,7 +44383,7 @@ var render = function() {
                       ])
                     }),
                     _vm._v(" "),
-                    _vm._m(1)
+                    _vm._m(0)
                   ],
                   2
                 )
@@ -44414,16 +44398,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("th", { attrs: { scope: "col" } }, [_vm._v("Osztály")]),
-      _vm._v(" "),
-      _c("th", { attrs: { scope: "col", colspan: "2" } }, [_vm._v("Név")])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -44590,9 +44564,7 @@ var render = function() {
         _c(
           "tbody",
           _vm._l(_vm.students, function(student) {
-            return _c("tr", { key: student.code }, [
-              _c("td", [_vm._v(_vm._s(student.class_name))]),
-              _vm._v(" "),
+            return _c("tr", { key: student.email }, [
               _c("td", [
                 _c(
                   "button",
@@ -44600,11 +44572,11 @@ var render = function() {
                     staticClass: "btn btn-danger",
                     on: {
                       click: function($event) {
-                        return _vm.magantanulo(student.code)
+                        return _vm.magantanulo(student.id)
                       }
                     }
                   },
-                  [_vm._v(_vm._s(student.code))]
+                  [_vm._v(_vm._s(student.email))]
                 )
               ]),
               _vm._v(" "),
@@ -44628,9 +44600,7 @@ var staticRenderFns = [
       ]),
       _vm._v(" "),
       _c("tr", [
-        _c("th", [_vm._v("Osztály")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Diákkód")]),
+        _c("th", [_vm._v("E-Mail")]),
         _vm._v(" "),
         _c("th", [_vm._v("Név")])
       ])

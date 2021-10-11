@@ -1,11 +1,7 @@
 <?php
-<<<<<<< HEAD:database/seeders/SettingSeeder.php
 
 namespace Database\Seeders;
 
-=======
-namespace Database\Seeders;
->>>>>>> dev:database/seeders/SettingsSeeder.php
 use Illuminate\Database\Seeder;
 
 class SettingSeeder extends Seeder

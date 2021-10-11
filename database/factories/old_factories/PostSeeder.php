@@ -1,10 +1,11 @@
 <?php
 namespace Database\Seeders;
 
-use App\Score;
-use Illuminate\Database\Seeder;
 
-class ScoresSeeder extends Seeder
+use Illuminate\Database\Seeder;
+use App\Post;
+
+class PostSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,6 +14,6 @@ class ScoresSeeder extends Seeder
      */
     public function run()
     {
-        Score::factory()->count(500)->create();
+        Post::factory(50)->create();
     }
 }

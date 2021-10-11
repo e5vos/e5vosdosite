@@ -1,10 +1,11 @@
 <?php
+
 namespace Database\Seeders;
 
-use App\Post;
 use Illuminate\Database\Seeder;
+use App\Presentation;
 
-class PostsSeeder extends Seeder
+class PresentationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,6 +14,6 @@ class PostsSeeder extends Seeder
      */
     public function run()
     {
-        Post::factory()->count(50)->create();
+        Presentation::factory()->count(50)->create();
     }
 }

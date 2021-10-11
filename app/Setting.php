@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class Setting extends Model
 {

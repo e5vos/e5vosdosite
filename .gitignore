@@ -13,3 +13,4 @@ yarn-error.log
 /public/svg
 .idea
 .public
+composer.lock

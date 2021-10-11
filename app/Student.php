@@ -5,7 +5,6 @@ namespace App;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @deprecated
@@ -18,8 +17,6 @@ class Student extends Authenticatable
 
     protected $hidden = ['created_at','updated_at','laravel_through_key'];
 
-
-    use HasFactory;
 
     /**
      * Authenticates student with existing profile (from mailing list)

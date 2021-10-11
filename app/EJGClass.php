@@ -4,14 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class EJGClass extends Model
 {
     use HasFactory;
     protected $table = 'ejg_classes';
 
-    use HasFactory;
 
     public function bonuspoints(){
         return $this->hasMany(BonusPoints::class);

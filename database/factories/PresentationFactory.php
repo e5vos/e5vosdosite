@@ -1,11 +1,8 @@
 <?php
 namespace Database\Factories;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
-
-namespace Database\Factories;
-
 use App\Presentation;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PresentationFactory extends Factory
 {
@@ -29,7 +26,7 @@ class PresentationFactory extends Factory
             'description' => $this->faker->paragraph,
             'capacity' => $this->faker->numberBetween(10,40),
             'slot'=>    $this->faker->numberBetween(1,3),
-            'code' => $this->faker->regexify('[A-Za-z0-9]{4}'),
+            'code' => $this->faker->unique()->regexify('[A-Za-z0-9]{4}'),
         ];
     }
 }

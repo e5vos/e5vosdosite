@@ -33,5 +33,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SettingSeeder::class);
         $this->call(TeamSeeder::class);
         $this->call(TeamMemberSeeder::class);
+        $this->call(RatingSeeder::class);
     }
 }

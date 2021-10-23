@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use function PHPUnit\Framework\returnSelf;
+
 class Rating extends Model
 {
     use HasFactory;
@@ -25,17 +27,18 @@ class Rating extends Model
         return $this->belongsTo(Event::class);
     }
 
-    public function createRating($rating){
+    static public function createRating($rating){
         $newRating = new Rating;
         Rating::updateRating($newRating,$rating);
     }
 
-    public function updateRating($from, $rating){
+    static public function updateRating($from, $rating){
         $newRating = Rating::find($from);
         $newRating->user_id = $rating->user_id;
         $newRating->event_id = $rating->event_id;
         $newRating->rating = $rating->rating;
         $newRating->save();
+        returnSelf();
     }
 
 }

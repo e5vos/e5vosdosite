@@ -12,6 +12,8 @@ use App\Event;
 use App\Rating;
 use App\User;
 
+use function PHPUnit\Framework\returnSelf;
+
 class EventController extends Controller
 {
     public function scanner(){
@@ -81,10 +83,7 @@ class EventController extends Controller
         return Event::currentEvents();
     }
 
-    public function rate(Request $request){
-        if(!\App\Setting::check('e5nPresentationSignup')){
-            abort(403,"No e5n");
-        }
+    static public function rate(Request $request){
         $user = User::find($request->session()->get("user_id"));
         if($user->id == null){
             abort(403, "Student not authenticated");

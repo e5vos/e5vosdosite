@@ -14,8 +14,6 @@ class Setting extends Model
     protected $primaryKey = 'key';
     protected $keyType = 'string';
 
-    use HasFactory;
-
     public static function lookUp($key){
         $setting = Setting::find($key);
         if($setting == null){

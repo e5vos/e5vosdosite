@@ -1,17 +1,18 @@
 <?php
+
 namespace Database\Factories;
 
-use App\EJGClass;
+use App\Rating;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class EJGClassFactory extends Factory
+class RatingFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = EJGClass::class;
+    protected $model = Rating::class;
 
     /**
      * Define the model's default state.
@@ -21,8 +22,9 @@ class EJGClassFactory extends Factory
     public function definition()
     {
         return [
-            'name'=>$this->faker->numberBetween(7,12).$this->faker->randomLetter,
-            'points'=>$this->faker->numberBetween(0,1000),
+            'rating' =>$this->faker->randomFloat(3,0,1),
+            'user_id' => $this->faker->numberBetween(0,499),
+            'event_id' => $this->faker->numberBetween(0,30),
         ];
     }
 }

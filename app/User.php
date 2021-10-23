@@ -79,6 +79,10 @@ class User extends Authenticatable
         return $this->hasMany(PresentationSignup::class);
     }
 
+    public function ratings(){
+        return $this->hasMany(Rating::class);
+    }
+    
     public function presentations(){
         return $this->hasManyThrough(Presentation::class,PresentationSignup::class,'student_id','id','id','presentation_id');
     }

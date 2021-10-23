@@ -4,8 +4,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 namespace Database\Factories;
 
-use App\Event;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EventFactory extends Factory
 {

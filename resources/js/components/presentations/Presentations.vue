@@ -3,7 +3,7 @@
     <h1 style="text-align:center;font-size:32px;">Előadássávok</h1>
 
     <div class="container py-2" style="width:fit-content;text-align:center;background-color:rgba(133, 133, 133, 0.397)">
-        <span v-show="user===null">
+        <span v-show="user==null">
             <div id="gSignIn" class="g-signin2"></div>
         </span>
         <div v-if="user && user.getBasicProfile()" class="container py-2">
@@ -20,7 +20,7 @@
     <div class="container py-2" style="width:fit-content;text-align:center;">
         <button class="btn btn-warning" v-if="user && authFail && !authLock" v-on:click="authenticate(user,false)">Újrapróbálkozás</button>
         <button class="btn btn-primary" v-if="user" v-on:click="logout">Kijelentkezés</button>
-    </div>
+    </div><!--AUTH the student -->
 
     <br/>
 
@@ -97,7 +97,7 @@ export default {
             selected_slot: '',
             selected_slot_before: '',
             disableSignup: false,
-            user : null,
+            user: null,
             selected_presentations: [],
             signupError : null,
         }

@@ -209,7 +209,7 @@ class PresentationController extends Controller
         Presentation::find($request->input('presentation'))->fillUp();
     }
 
-    public function fillUpAllPresentation(Request $request) {
+    public function fillUpAllPresentation() {
         Gate::authorize('e5n-admin');
         foreach (\App\Presentation::all() as $presentation) {
             $presentation->fillUp();

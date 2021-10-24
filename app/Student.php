@@ -2,12 +2,14 @@
 
 namespace App;
 
+use App\Exceptions\PresentationFullException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @deprecated
+ *
  */
 class Student extends Authenticatable
 {
@@ -22,10 +24,11 @@ class Student extends Authenticatable
      * Authenticates student with existing profile (from mailing list)
      * Creates new student if not in mailing list
      *
-     * @param google_payload Google OAuth2 payload
+     * @param array Google OAuth2 payload
      * @return \App\Student Authenticated student
+     * @deprecated
      */
-    public static function logIn($google_payload){
+    public static function logIn(array $google_payload){
         $student =\App\Student::firstWhere("email",$google_payload["email"]);
         if($student == null){
             $student = new Student();
@@ -47,26 +50,45 @@ class Student extends Authenticatable
 
 
 
+    /**
+     * Returns whether the student is busy at the specified slot
+     *
+     * @param  int $slot
+     * @return bool
+     */
     public function isBusy($slot){
         return $this->presentations()->where("slot",$slot)->exists();
     }
 
 
+    /**
+     * Sign up student to $presentation
+     *
+     * @param  \App\Presentation $presentation
+     * @throws AuthorizationException if student is not allowed to sign up
+     * @throws StudentBusyException if student is busy at the presentations timeslot
+     * @throws PresentationFullException if the presentation is full
+     * @return \App\PresentationSignup the newly created PresentationSignup object
+     */
     public function signUp(\App\Presentation $presentation){
+
         if(!$this->allowed){
-            abort(403,"Diák nem jelentkezhet");
+            throw new AuthorizationException("Student is not allowed to sign up");
         }
+
         if($this->isBusy($presentation->slot)){
-            abort(400, "Diák elfoglalt");
+            throw new \App\Exceptions\StudentBusyException("Student busy");
         }
-        if($presentation->hasCapacity()){
-            $signup = new \App\PresentationSignup();
-            $signup->presentation_id = $presentation->id;
-            $signup->student_id = $this->id;
-            $signup->save();
-        }else{
-            abort(400, "Előadás betelt");
+
+        if(!$presentation->hasCapacity()){
+            throw new PresentationFullException("Presentation full");
         }
+
+        $signup = new \App\PresentationSignup();
+        $signup->presentation_id = $presentation->id;
+        $signup->student_id = $this->id;
+        $signup->save();
+        return $signup;
     }
 
     public function ejg_class(){
@@ -76,6 +98,7 @@ class Student extends Authenticatable
     public function signups(){
         return $this->hasMany(PresentationSignup::class);
     }
+
 
     public function presentations(){
         return $this->hasManyThrough(Presentation::class,PresentationSignup::class,'student_id','id','id','presentation_id');

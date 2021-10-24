@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Presentation extends Model
 {
@@ -20,13 +21,13 @@ class Presentation extends Model
     }
 
     public function fillUp(){
-        $availalbeStudents = Student::where('allowed', true)->get()->reject(function(Student $student){
-            return $student->isBusy($this->slot);
-        })->take($this->capacity - $this->occupancy);
+
+        $availalbeStudents = Student::where('allowed', true)->whereDoesntHave('presentations',function($query){
+            $query->where('slot',$this->slot);
+        })->limit($this->capacity - $this->occupancy)->get();
         foreach($availalbeStudents as $student){
             $student->signUp($this);
         }
-
     }
 
     public function hasCapacity(){
@@ -40,7 +41,4 @@ class Presentation extends Model
     public function students(){
         return $this->hasManyThrough(Student::class,PresentationSignup::class,'presentation_id','id','id','student_id');
     }
-
-
-
 }

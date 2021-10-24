@@ -14,3 +14,6 @@ yarn-error.log
 .idea
 .public
 composer.lock
+.env.testing
+composer.lock
+public/js/app.js

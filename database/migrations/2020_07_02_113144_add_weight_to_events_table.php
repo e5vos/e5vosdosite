@@ -14,7 +14,7 @@ class AddWeightToEventsTable extends Migration
     public function up()
     {
         Schema::table('events', function (Blueprint $table) {
-            $table->tinyInteger('weight');
+            $table->tinyInteger('weight')->default(1);
             $table->integer('image_id')->nullable();
         });
     }

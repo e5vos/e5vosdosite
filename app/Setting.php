@@ -16,6 +16,12 @@ class Setting extends Model
 
     use HasFactory;
 
+
+    /**
+     * Returns setting value based on $key
+     * @param  string $key
+     * @return string value
+     */
     public static function lookUp($key){
         $setting = Setting::find($key);
         if($setting == null){
@@ -29,8 +35,15 @@ class Setting extends Model
         return Setting::lookUp($key) === $expected;
     }
 
+    /**
+     * Set setting to $value
+     *
+     * @param  string $value
+     * @return void
+     */
     public function set($value){
         $this->value = $value;
         $this->save();
+
     }
 }

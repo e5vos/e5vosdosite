@@ -34,7 +34,9 @@ class E5NController extends Controller
     }
 
     public function home(){
-        return view('e5n.home');
+        return view('e5n.home',[
+            "classes" => \App\EJGClass::limit(10)->get()
+        ]);
     }
 
     public function admin(){

@@ -24,7 +24,7 @@ class StudentFactory extends Factory
         return [
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->email,
-            'class_id' => $this->faker->numberBetween(1,29),
+            'class_id' => null,
             'allowed' => $this->faker->boolean()
         ];
     }

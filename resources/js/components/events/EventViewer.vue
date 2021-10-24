@@ -7,7 +7,6 @@
 export default {
     data() {
         return{
-            events: [],
             event:{
                 id:'',
                 name:'',
@@ -26,8 +25,7 @@ export default {
         fetchEventdata(event_route){
             fetch('/api'+event_route)
             .then( res => res.json())
-            .then( res => this.events = res.data )
-            .then( this.event = this.events[0] )
+            .then( res => this.event = res.data )
         }
     }
 

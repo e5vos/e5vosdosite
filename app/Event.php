@@ -55,6 +55,9 @@ class Event extends Model
     public function scores(){
         return $this->hasMany(Score::class);
     }
+    public function ratings(){
+        return $this->hasMany(Rating::class);
+    }
 
     public function location(){
         return $this->belongsTo(Location::class);

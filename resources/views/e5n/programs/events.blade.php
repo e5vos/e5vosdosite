@@ -12,13 +12,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <events-table/>
-            </div>
-            <div class="col-md-3">
-                <div class="jumbotron">
-                    <button class="btn btn-success btn-lg"><a href="#">Éppen futó programok#</a></button>
-                </div>
             </div>
         </div>
     </div>

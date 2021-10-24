@@ -26,7 +26,6 @@
             </tr>
         </thead>
         <tbody>
-
             <tr v-for="event in events" v-bind:key="event.id">
             <td><a v-bind:href="'/e5n/events/'+event.start+'/'+event.name">{{event.name}}</a></td>
                 <td>{{event.start}}</td>

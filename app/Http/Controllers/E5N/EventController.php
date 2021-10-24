@@ -9,16 +9,18 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Event as EventResource;
 use App\Event;
+use App\Rating;
+use App\User;
 
+use function PHPUnit\Framework\returnSelf;
 
 class EventController extends Controller
 {
     public function scanner(){
-        Gate::authorize('e5n.scanner' );
+        Gate::authorize('e5n.scanner');
         return view('e5n.scanner',[
             'event' => Auth::user()->currentEvent(),
         ]);
-
     }
 
     /**
@@ -79,5 +81,18 @@ class EventController extends Controller
     public function ongoing()
     {
         return Event::currentEvents();
+    }
+
+    static public function rate(Request $request){
+        $user = User::find($request->session()->get("user_id"));
+        if($user->id == null){
+            abort(403, "Student not authenticated");
+        }
+        $rating = Rating::where('user_id', $user->id)->where('event_id', Event::find($request->session()->get("event_id")))->get(1);
+        if ($rating != null){
+            Rating::createRating($request);
+        }else{
+            Rating::updateRating($rating, $request);
+        }
     }
 }

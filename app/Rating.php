@@ -5,8 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use function PHPUnit\Framework\returnSelf;
-
+/**
+ * Rating of an event by a user.
+ *
+ * @version 2021.10.24
+ * @author Roland Domjan, Zoltan Meszaros
+ */
 class Rating extends Model
 {
     use HasFactory;
@@ -15,30 +19,22 @@ class Rating extends Model
     protected $hidden = ['created_at','updated_at'];
 
     /**
-     * references the user who added the rating
+     * Returns the user who added the rating.
      *
-     * @return UserClass
+     * @return \App\User
      */
     public function user(){
         return $this->belongsTo(User::class);
     }
 
+
+    /**
+     * Returns the event this rating refers to.
+     *
+     * @return \App\Event
+     */
     public function event(){
         return $this->belongsTo(Event::class);
-    }
-
-    static public function createRating($rating){
-        $newRating = new Rating;
-        Rating::updateRating($newRating,$rating);
-    }
-
-    static public function updateRating($from, $rating){
-        $newRating = Rating::find($from);
-        $newRating->user_id = $rating->user_id;
-        $newRating->event_id = $rating->event_id;
-        $newRating->rating = $rating->rating;
-        $newRating->save();
-        returnSelf();
     }
 
 }

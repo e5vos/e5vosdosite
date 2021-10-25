@@ -16,6 +16,7 @@ class Presentation extends Model
 
     use HasFactory;
 
+
     public function getOccupancyAttribute(){
         return $this->signups()->count();
     }

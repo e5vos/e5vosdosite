@@ -20,8 +20,8 @@ class CreateRatingsTable extends Migration
             $table->integer('user_id');
             $table->integer('event_id');
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete("CASCADE");
+            $table->foreign('event_id')->references('id')->on('events')->onDelete("CASCADE");
         });
     }
 

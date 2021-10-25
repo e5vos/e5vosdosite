@@ -1,27 +1,11 @@
 <template>
 <div>
-    <h1 style="text-align:center;font-size:32px;">Előadássávok</h1>
 
-    <div class="container py-2" style="width:fit-content;text-align:center;background-color:rgba(133, 133, 133, 0.397)">
-        <span v-show="user==null">
-            <div id="gSignIn" class="g-signin2"></div>
-        </span>
-        <div v-if="user && user.getBasicProfile()" class="container py-2">
-            <h3>{{user.getBasicProfile().getName()}}</h3>
-        </div>
-        <div v-if="authFail" class="container card bg-info py-2">
-            <h3 style="color:red;">Sikertelen bejelentkezés a DÖ szerverére!</h3>
-            <p>A hiba leggyakoribb oka a szerverünk túlterhelődése, kérlek próbálkozz később! Ha a hiba továbbra is fennáll, kérj segítséget!</p>
-        </div>
+    <div class="container py-2" style="width:fit-content;text-align:center;">
         <div v-if="signupError == 403" class="container py-2">
             <h3 style="color:red;">Nem jelentkezhetsz előadásokra</h3>
         </div>
     </div>
-    <div class="container py-2" style="width:fit-content;text-align:center;">
-        <button class="btn btn-warning" v-if="user && authFail && !authLock" v-on:click="authenticate(user,false)">Újrapróbálkozás</button>
-        <button class="btn btn-primary" v-if="user" v-on:click="logout">Kijelentkezés</button>
-    </div><!--AUTH the student -->
-
     <br/>
 
     <div class="py-2 btn-group d-flex justify-content-center" role="group" style="text-align:center">
@@ -47,7 +31,7 @@
         </thead>
         <tbody>
 
-            <template v-if="user && selected_presentations && selected_presentations[selected_slot]">
+            <template v-if="selected_presentations && selected_presentations[selected_slot]">
                 <tr>
                     <td colspan="4" style="font-weight:600;font-size:24px;">Az általad választott előadás:</td>
                 </tr>
@@ -66,7 +50,7 @@
                     <td>{{presentation.presenter}}</td>
                     <td>{{presentation.title}}</td>
                     <td>{{presentation.description}}</td>
-                    <td><button class="btn btn-success" :disabled="authFail || !user || (selected_presentations!= null && selected_presentations[selected_slot]!=null) || disableSignup" v-on:click="signUp(presentation.id)">{{Math.max(presentation.capacity-presentation.occupancy,0)}}</button></td>
+                    <td><button class="btn btn-success" :disabled="(selected_presentations!= null && selected_presentations[selected_slot]!=null) || disableSignup" v-on:click="signUp(presentation.id)">{{Math.max(presentation.capacity-presentation.occupancy,0)}}</button></td>
                 </template>
             </tr>
 
@@ -85,14 +69,12 @@ export default {
             refreshIntervalTime: 5000,
             refreshIntervalTimeIncrement: 1000,
             refreshIntervalTimeMax: 10000,
-            statusmsg: "Jelentkezz be az adatok automatikus frissítéséhez!",
+            statusmsg: "Az adatok automatikusan frissülnek!",
             counter: 0,
             performanceDangerLevels:{
                 warning: 400,
                 danger: 900
             },
-            authFail: false,
-            authLock: false,
             presentations: [],
             selected_slot: '',
             selected_slot_before: '',
@@ -106,42 +88,25 @@ export default {
             gapi.load("auth2",()=>{
                 gapi.auth2.init().then(()=>{
                     gapi.auth2.getAuthInstance().currentUser.listen(this.userListener)
-                    setTimeout(() => this.userListener(gapi.auth2.getAuthInstance.currentUser), 100)
+                    setTimeout(() => {this.user = gapi.auth2.getAuthInstance().currentUser.get()} , 100)
                     this.changeSlot(1)
                     setTimeout(this.tick,this.refreshIntervalTime/10)
-                    setTimeout(this.authenticate,1000)
                 })
             })
     },
     mounted(){
         this.refreshBar = document.getElementById("refreshBar")
     },
-    updated(){
-        if(!this.user) gapi.signin2.render("gSignIn")
-
-    },
     methods: {
 
-        userListener(currentUser){
-
-            if(currentUser != null && currentUser.isSignedIn()){
-                this.authenticate(currentUser)
-            }
-        },
         tick(){
-
-            var currentUser =  gapi.auth2.getAuthInstance() ? gapi.auth2.getAuthInstance().currentUser.get() : null;
-            if(currentUser!= null && currentUser.isSignedIn()) this.user = currentUser
-            if(!this.authFail && this.user!=null){
-                if(this.counter > 100){
-                    this.counter = 0;
-                    if(this.user!=null) this.refresh();
-                    this.updateRefreshBarColor();
-
-                }
-                this.refreshBar.style.width=this.counter+"%"
-                this.counter+=10;
+            if(this.counter > 100){
+                this.counter = 0;
+                this.refresh();
+                this.updateRefreshBarColor();
             }
+            this.refreshBar.style.width=this.counter+"%"
+            this.counter+=10;
             setTimeout(this.tick,this.refreshIntervalTime/10)
         },
 
@@ -157,8 +122,7 @@ export default {
 
         fetchUserData(){
             const requestOptions = {
-                method: "POST",
-                headers:{"Content-Type":"application/json"}
+                method: "POST"
             }
             return fetch('/api/e5n/student/presentations/',requestOptions).then(res => res.status==200 ? res.json() : null).then(res=>{
                 if(res!=null){
@@ -166,41 +130,6 @@ export default {
                     this.$forceUpdate();
                 }
 
-            })
-        },
-
-        retryAuthenticate(user,times){
-            if(times<=0) return;
-            setTimeout(()=>{
-                if(this.authFail) this.authenticate(user,false)
-                this.retryAuthenticate(user,times-1)
-            },2000)
-        },
-
-        authenticate(user=this.user,retry=true){
-            if(user==null || this.authLock){
-                return
-            }
-            this.authLock = true;
-            const requestOptions = {
-                method: "POST",
-                headers:{"Content-Type":"application/json"},
-                body: JSON.stringify({
-                    id_token : user.getAuthResponse().id_token
-                })
-            }
-            return fetch("/api/student/auth",requestOptions).then(res => {
-                if(res.ok) {
-                    this.authFail = false
-                    this.user = user
-                    this.fetchUserData();
-                }else{
-                    this.authFail = true
-                    this.refreshBar.classList.add("bg-warning")
-                    if(retry) this.retryAuthenticate(user,2)
-
-                }
-                this.authLock = false;
             })
         },
 
@@ -252,15 +181,6 @@ export default {
                 }
             })
         },
-
-        logout(){
-             gapi.auth2.getAuthInstance().signOut().then(()=>{
-                this.user = null
-                this.selected_presentations = []
-                gapi.signin2.render("gSignIn")
-             })
-        },
-
         updateRefreshBarColor(){
             var userDataRefreshTime = performance.getEntriesByName("userDataRefresh").length == 0 ? 0 : performance.getEntriesByName("userDataRefresh")[performance.getEntriesByName("userDataRefresh").length-1].duration;
             var slotRefreshTime =  performance.getEntriesByName("slotRefresh").length == 0 ? 0 : performance.getEntriesByName("slotRefresh")[performance.getEntriesByName("slotRefresh").length-1].duration;
@@ -268,7 +188,7 @@ export default {
             if(responseTime < this.performanceDangerLevels.warning){
                 this.refreshBar.classList.remove("bg-danger")
                 this.refreshBar.classList.remove("bg-warning")
-                this.statusmsg = ""
+                this.statusmsg = "Az adatok automatikusan frissülnek!"
                 if(this.refreshIntervalTime>this.refreshIntervalTimeMin) this.refreshIntervalTime-=this.refreshIntervalTimeIncrement
             }
             else if(responseTime < this.performanceDangerLevels.danger){
@@ -281,8 +201,7 @@ export default {
                 if(this.refreshIntervalTime<this.refreshIntervalTimeMax) this.refreshIntervalTime+= this.refreshIntervalTimeIncrement;
 
             }
-        }
-
+        },
     }
 }
 </script>

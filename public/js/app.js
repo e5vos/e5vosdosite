@@ -7870,7 +7870,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      events: [],
       event: {
         id: '',
         name: '',
@@ -7892,8 +7891,8 @@ __webpack_require__.r(__webpack_exports__);
       fetch('/api' + event_route).then(function (res) {
         return res.json();
       }).then(function (res) {
-        return _this.events = res.data;
-      }).then(this.event = this.events[0]);
+        return _this.event = res.data;
+      });
     }
   }
 });
@@ -8374,22 +8373,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -8398,14 +8381,12 @@ __webpack_require__.r(__webpack_exports__);
       refreshIntervalTime: 5000,
       refreshIntervalTimeIncrement: 1000,
       refreshIntervalTimeMax: 10000,
-      statusmsg: "Jelentkezz be az adatok automatikus frissítéséhez!",
+      statusmsg: "Az adatok automatikusan frissülnek!",
       counter: 0,
       performanceDangerLevels: {
         warning: 400,
         danger: 900
       },
-      authFail: false,
-      authLock: false,
       presentations: [],
       selected_slot: '',
       selected_slot_before: '',
@@ -8422,43 +8403,28 @@ __webpack_require__.r(__webpack_exports__);
       gapi.auth2.init().then(function () {
         gapi.auth2.getAuthInstance().currentUser.listen(_this.userListener);
         setTimeout(function () {
-          return _this.userListener(gapi.auth2.getAuthInstance.currentUser);
+          _this.user = gapi.auth2.getAuthInstance().currentUser.get();
         }, 100);
 
         _this.changeSlot(1);
 
         setTimeout(_this.tick, _this.refreshIntervalTime / 10);
-        setTimeout(_this.authenticate, 1000);
       });
     });
   },
   mounted: function mounted() {
     this.refreshBar = document.getElementById("refreshBar");
   },
-  updated: function updated() {
-    if (!this.user) gapi.signin2.render("gSignIn");
-  },
   methods: {
-    userListener: function userListener(currentUser) {
-      if (currentUser != null && currentUser.isSignedIn()) {
-        this.authenticate(currentUser);
-      }
-    },
     tick: function tick() {
-      var currentUser = gapi.auth2.getAuthInstance() ? gapi.auth2.getAuthInstance().currentUser.get() : null;
-      if (currentUser != null && currentUser.isSignedIn()) this.user = currentUser;
-
-      if (!this.authFail && this.user != null) {
-        if (this.counter > 100) {
-          this.counter = 0;
-          if (this.user != null) this.refresh();
-          this.updateRefreshBarColor();
-        }
-
-        this.refreshBar.style.width = this.counter + "%";
-        this.counter += 10;
+      if (this.counter > 100) {
+        this.counter = 0;
+        this.refresh();
+        this.updateRefreshBarColor();
       }
 
+      this.refreshBar.style.width = this.counter + "%";
+      this.counter += 10;
       setTimeout(this.tick, this.refreshIntervalTime / 10);
     },
     changeSlot: function changeSlot(slot) {
@@ -8476,10 +8442,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       var requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        }
+        method: "POST"
       };
       return fetch('/api/e5n/student/presentations/', requestOptions).then(function (res) {
         return res.status == 200 ? res.json() : null;
@@ -8493,55 +8456,8 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    retryAuthenticate: function retryAuthenticate(user, times) {
-      var _this4 = this;
-
-      if (times <= 0) return;
-      setTimeout(function () {
-        if (_this4.authFail) _this4.authenticate(user, false);
-
-        _this4.retryAuthenticate(user, times - 1);
-      }, 2000);
-    },
-    authenticate: function authenticate() {
-      var _this5 = this;
-
-      var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.user;
-      var retry = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-      if (user == null || this.authLock) {
-        return;
-      }
-
-      this.authLock = true;
-      var requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          id_token: user.getAuthResponse().id_token
-        })
-      };
-      return fetch("/api/student/auth", requestOptions).then(function (res) {
-        if (res.ok) {
-          _this5.authFail = false;
-          _this5.user = user;
-
-          _this5.fetchUserData();
-        } else {
-          _this5.authFail = true;
-
-          _this5.refreshBar.classList.add("bg-warning");
-
-          if (retry) _this5.retryAuthenticate(user, 2);
-        }
-
-        _this5.authLock = false;
-      });
-    },
     signUp: function signUp(presentationId) {
-      var _this6 = this;
+      var _this4 = this;
 
       var requestOptions = {
         method: "POST",
@@ -8555,30 +8471,30 @@ __webpack_require__.r(__webpack_exports__);
       this.disableSignup = true;
       fetch("/api/e5n/presentations/signup/", requestOptions).then(function (res) {
         if (res.ok) {
-          _this6.fetchUserData().then(function () {
-            _this6.disableSignup = false;
+          _this4.fetchUserData().then(function () {
+            _this4.disableSignup = false;
           });
         } else {
-          _this6.signupError = res.status;
-          _this6.disableSignup = false;
+          _this4.signupError = res.status;
+          _this4.disableSignup = false;
         }
       });
     },
     refresh: function refresh() {
-      var _this7 = this;
+      var _this5 = this;
 
       performance.mark("slotRefreshMark");
       this.changeSlot(this.selected_slot_before).then(function () {
         performance.measure("slotRefresh", "slotRefreshMark");
         performance.mark("userDataRefreshMark");
 
-        _this7.fetchUserData().then(function () {
+        _this5.fetchUserData().then(function () {
           performance.measure("userDataRefresh", "userDataRefreshMark");
         });
       });
     },
     deleteSignUp: function deleteSignUp(presentation) {
-      var _this8 = this;
+      var _this6 = this;
 
       var requestOptions = {
         method: "POST",
@@ -8591,19 +8507,10 @@ __webpack_require__.r(__webpack_exports__);
       };
       fetch('/api/e5n/presentations/signup/delete/', requestOptions).then(function (res) {
         if (res.ok) {
-          _this8.selected_presentations[_this8.selected_slot] = null;
+          _this6.selected_presentations[_this6.selected_slot] = null;
 
-          _this8.$forceUpdate();
+          _this6.$forceUpdate();
         }
-      });
-    },
-    logout: function logout() {
-      var _this9 = this;
-
-      gapi.auth2.getAuthInstance().signOut().then(function () {
-        _this9.user = null;
-        _this9.selected_presentations = [];
-        gapi.signin2.render("gSignIn");
       });
     },
     updateRefreshBarColor: function updateRefreshBarColor() {
@@ -8614,7 +8521,7 @@ __webpack_require__.r(__webpack_exports__);
       if (responseTime < this.performanceDangerLevels.warning) {
         this.refreshBar.classList.remove("bg-danger");
         this.refreshBar.classList.remove("bg-warning");
-        this.statusmsg = "";
+        this.statusmsg = "Az adatok automatikusan frissülnek!";
         if (this.refreshIntervalTime > this.refreshIntervalTimeMin) this.refreshIntervalTime -= this.refreshIntervalTimeIncrement;
       } else if (responseTime < this.performanceDangerLevels.danger) {
         this.refreshBar.classList.add("bg-warning");
@@ -45000,66 +44907,6 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h1", { staticStyle: { "text-align": "center", "font-size": "32px" } }, [
-      _vm._v("Előadássávok")
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "container py-2",
-        staticStyle: {
-          width: "fit-content",
-          "text-align": "center",
-          "background-color": "rgba(133, 133, 133, 0.397)"
-        }
-      },
-      [
-        _c(
-          "span",
-          {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.user == null,
-                expression: "user==null"
-              }
-            ]
-          },
-          [_c("div", { staticClass: "g-signin2", attrs: { id: "gSignIn" } })]
-        ),
-        _vm._v(" "),
-        _vm.user && _vm.user.getBasicProfile()
-          ? _c("div", { staticClass: "container py-2" }, [
-              _c("h3", [_vm._v(_vm._s(_vm.user.getBasicProfile().getName()))])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.authFail
-          ? _c("div", { staticClass: "container card bg-info py-2" }, [
-              _c("h3", { staticStyle: { color: "red" } }, [
-                _vm._v("Sikertelen bejelentkezés a DÖ szerverére!")
-              ]),
-              _vm._v(" "),
-              _c("p", [
-                _vm._v(
-                  "A hiba leggyakoribb oka a szerverünk túlterhelődése, kérlek próbálkozz később! Ha a hiba továbbra is fennáll, kérj segítséget!"
-                )
-              ])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.signupError == 403
-          ? _c("div", { staticClass: "container py-2" }, [
-              _c("h3", { staticStyle: { color: "red" } }, [
-                _vm._v("Nem jelentkezhetsz előadásokra")
-              ])
-            ])
-          : _vm._e()
-      ]
-    ),
-    _vm._v(" "),
     _c(
       "div",
       {
@@ -45067,27 +44914,12 @@ var render = function() {
         staticStyle: { width: "fit-content", "text-align": "center" }
       },
       [
-        _vm.user && _vm.authFail && !_vm.authLock
-          ? _c(
-              "button",
-              {
-                staticClass: "btn btn-warning",
-                on: {
-                  click: function($event) {
-                    return _vm.authenticate(_vm.user, false)
-                  }
-                }
-              },
-              [_vm._v("Újrapróbálkozás")]
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.user
-          ? _c(
-              "button",
-              { staticClass: "btn btn-primary", on: { click: _vm.logout } },
-              [_vm._v("Kijelentkezés")]
-            )
+        _vm.signupError == 403
+          ? _c("div", { staticClass: "container py-2" }, [
+              _c("h3", { staticStyle: { color: "red" } }, [
+                _vm._v("Nem jelentkezhetsz előadásokra")
+              ])
+            ])
           : _vm._e()
       ]
     ),
@@ -45148,7 +44980,6 @@ var render = function() {
         _c(
           "tbody",
           [
-            _vm.user &&
             _vm.selected_presentations &&
             _vm.selected_presentations[_vm.selected_slot]
               ? [
@@ -45250,8 +45081,6 @@ var render = function() {
                               staticClass: "btn btn-success",
                               attrs: {
                                 disabled:
-                                  _vm.authFail ||
-                                  !_vm.user ||
                                   (_vm.selected_presentations != null &&
                                     _vm.selected_presentations[
                                       _vm.selected_slot

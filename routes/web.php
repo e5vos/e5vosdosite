@@ -16,15 +16,13 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/','WelcomeController@index')->name('index');
 
 Route::get('/logout', 'Auth\AuthController@logout' )->name("logout");
 Route::get('/login','Auth\AuthController@login')->name('login');
 Route::post('/logout', 'Auth\AuthController@logout' );
 
-Route::get('auth/{provider?}', 'Auth\AuthController@redirect');
+Route::get('auth/{provider?}', 'Auth\AuthController@redirect')->name("auth");
 Route::get('auth/{provider}/callback', 'Auth\AuthController@callback');
 
 // Login redirection waiter

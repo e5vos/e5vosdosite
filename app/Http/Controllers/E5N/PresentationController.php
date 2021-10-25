@@ -7,12 +7,20 @@ use Illuminate\Http\Request;
 use App\Presentation;
 use App\Student;
 use App\Http\Resources\Presentation as PresentationResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 
 
 class PresentationController extends Controller
 {
+
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * returns the presentations signup view
      *
@@ -171,16 +179,8 @@ class PresentationController extends Controller
      * @return void
      */
     public function getSelectedPresentations(Request $request){
-        $student_id = $request->session()->get("student_id");
-        if($student_id == null){
-            abort(403, "Student not authenticated");
-        }
-        $student = \App\User::find($student_id);
-        if($student->doesntExist()){
-            abort(403, "Student does not exist");
-        }
         return response()->json(
-            $student->presentations()->get()
+            Auth::User()->presentations()->get()
         );
     }
 

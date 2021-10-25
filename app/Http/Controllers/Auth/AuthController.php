@@ -11,15 +11,15 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller{
 
-    public function redirect($provider)
+    public function redirect($provider='google')
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver($provider)->redirect();
     }
 
-    public function callback($provider)
+    public function callback($provider='google')
     {
         $userData = Socialite::driver($provider)->user();
-        $user = \App\User::where('google_id', Hash::make($userData->id))->exists();
+        $user = \App\User::firstWhere('email',$userData->email);
 
         if(!$user){
             $user = \App\User::create([
@@ -29,15 +29,15 @@ class AuthController extends Controller{
             ]);
         }
         Auth::login($user);
-        return redirect('./');
+        return redirect()->intended();
     }
 
     public function logout(){
         Auth::logout();
-        return back();
+        return redirect()->route("index");
     }
 
     public function login(){
-        redirect('auth/google');
+        return Socialite::driver('google')->redirect();
     }
 }

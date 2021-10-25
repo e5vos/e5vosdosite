@@ -4,15 +4,12 @@ namespace App\Http\Controllers\E5N;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Event as EventResource;
 use App\Event;
 use App\Rating;
 use App\User;
-
-use function PHPUnit\Framework\returnSelf;
 
 class EventController extends Controller
 {
@@ -49,7 +46,7 @@ class EventController extends Controller
      *
      * @param  string $event_name
      * @param  string $day
-     * @return \Illuminate\Http\Resources\Json\EventResourceCollection
+     * @return \Illuminate\Http\Resources\Json\Event
      */
     public function event_data($day, $event_name)
     {
@@ -63,36 +60,30 @@ class EventController extends Controller
             "szombat" => 5,
             "vasárnap" => 6
         ][$day];
-        return EventResource::collection(Event::where('name', '=', $event_name)->whereRaw('WEEKDAY(`start`)', '=', $day)->get());
+        return Event::where('name', '=', $event_name)->whereRaw('WEEKDAY(`start`)', '=', $day)->get();
     }
 
     /** Returns the events with the specified weight.
      *
      *
      * @param  int $weight the weight of the events
-     * @return \Illuminate\Http\Resources\Json\EventResourceCollection
-
-
      */
     public function weight($weight)
     {
-        return EventResource::collection(Event::where('weight', '=', $weight)->get());
+        return Event::where('weight', $weight)->get();
     }
     public function ongoing()
     {
         return Event::currentEvents();
     }
 
-    static public function rate(Request $request){
-        $user = User::find($request->session()->get("user_id"));
-        if($user->id == null){
-            abort(403, "Student not authenticated");
-        }
-        $rating = Rating::where('user_id', $user->id)->where('event_id', Event::find($request->session()->get("event_id")))->get(1);
-        if ($rating != null){
-            Rating::createRating($request);
-        }else{
-            Rating::updateRating($rating, $request);
+    public function rate(Request $request){
+        /**
+         * @var \App\User
+         */
+        $user = Auth::user();
+        if($user != null){
+            $user->rate(\App\Event::find($request->input('event_id')),$request->input('rating'));
         }
     }
 }

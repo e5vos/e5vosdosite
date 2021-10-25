@@ -27,7 +27,10 @@ class StudentTest extends TestCase
     public function test_signupStudentNotAllowed(){
         $this->expectException(AuthorizationException::class);
         $presentation = \App\Presentation::factory()->make();
+        $presentation->save();
         $student = \App\Student::factory()->make();
+        $student->allowed=false;
+        $student->save();
         $student->signUp($presentation);
     }
 

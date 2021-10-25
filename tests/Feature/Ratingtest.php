@@ -27,13 +27,6 @@ class RatingTest extends TestCase
      */
     public function test_example()
     {
-        for($i = 0; $i < 30; $i++){
-            $request = RatingTest::create_request($i);
-            EventController::rate($request);
-        }
-        for($i = 0; $i < 30; $i++){
-            $request = RatingTest::create_request($i);
-            EventController::rate($request);
-        }
+       
     }
 }

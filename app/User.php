@@ -71,6 +71,20 @@ class User extends Authenticatable
         }
     }
 
+    public function rate(\App\Event $event, int $ratingValue){
+        $rating = $this->ratings()->whereBelongsTo($event)->first();
+
+        if($rating == null){
+            $rating = new \App\Rating();
+            $rating->event_id = $event->id;
+            $rating->user_id = $this->id;
+        }
+
+        $rating->rating = $ratingValue;
+
+        $rating->save();
+    }
+
     public function ejg_class(){
         return $this->belongsTo(EJGClass::class);
     }
@@ -82,7 +96,7 @@ class User extends Authenticatable
     public function ratings(){
         return $this->hasMany(Rating::class);
     }
-    
+
     public function presentations(){
         return $this->hasManyThrough(Presentation::class,PresentationSignup::class,'student_id','id','id','presentation_id');
     }

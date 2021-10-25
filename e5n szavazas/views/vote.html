@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<title>e5n</title>
+	<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alata&amp;display=swap">
+	<link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+	<link rel="stylesheet" href="assets/css/styles.min.css">
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
+  <meta name="google-signin-client_id" content="34242585475-n7rb0iodm7m9lphe60knplli29gfbj5t.apps.googleusercontent.com">
+  <script>
+    var token = ""
+		function vote() {
+    var greeting = document.getElementById("greeting")
+    var auth2 = gapi.auth2.init();
+    if (auth2.isSignedIn.get()) {
+    var profile = auth2.currentUser.get().getBasicProfile();
+    var email = profile.getEmail()
+    var id = profile.getId()
+    var token = window.token
+    var cls = document.getElementById('class').value; 
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/vote', true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) 
+      greeting.innerText = xhr.response
+    }
+    xhr.send(`token=${token}&cls=${cls}&email=${email}&id=${id}`);
+}
+}
+
+  function onSignIn(googleUser) {
+  window.token = googleUser.getAuthResponse().id_token
+  var profile = googleUser.getBasicProfile();
+  var greeting = document.getElementById("greeting")
+  greeting.innerText = `Üdvözöllek, ${profile.getGivenName()}! (${profile.getEmail()})`
+}
+
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+        var greeting = document.getElementById("greeting")
+    greeting.innerText = `Jelentkezz be a szavazáshoz. Ezt a felső sávban tudod megtenni.`
+    });
+  }
+	</script>
+</head>
+
+<body style="border-bottom-style: none;border-bottom-color: rgb(12,26,164);border-radius: 0;">
+	<div>
+    
+		<nav class="navbar navbar-light navbar-expand-md sticky-top navigation-clean-button" style="height: 80px;color: #ffffff;background: rgb(12,26,164);">
+			<div class="container-fluid"><a class="navbar-brand" href="/"><img src="assets/img/logó.svg" style="height: 70.328px;margin: 0px;margin-top: -25px;">&nbsp;E5N</a>
+<div class="g-signin2" data-onsuccess="onSignIn" ></div></nav>
+      </div><div class="text-center"><h1 class="text-center" data-bs-toggle="tooltip" data-bss-tooltip="" style="margin-top: 26px;margin-bottom: 21px;text-align: center;color: rgb(12,26,164);" >Szavazás</h1>
+      
+      
+      
+      <p id="greeting" style="margin-top: 26px;margin-bottom: 21px;text-align: center;color: rgb(12,26,164);" >Jelentkezz be a szavazáshoz. Ezt a felső sávban tudod megtenni.</p><a onclick="signOut();" href="/vote.html"  data-bs-toggle="tooltip" data-bss-tooltip="" data-bs-placement="bottom" style="color:rgb(12,26,164);margin-right: 25px;" title="Kattints ide a Kijelentkezéshez!"><strong>Kijelentkezés</strong></a>
+      <form class="d-flex flex-column flex-grow-0 flex-fill justify-content-center align-items-center" onsubmit="return false" enctype="application/x-www-form-urlencoded">
+      <select class="form-select" id="class" data-bs-toggle="tooltip" data-bss-tooltip="" data-bs-placement="bottom" title="Válassz egy osztályt! " style="width: 112%;margin-top: 25px;border-bottom-width: 2px;border-bottom-color: rgb(12,26,164);border-radius: -13px;font-family: Alata, sans-serif;"><optgroup label="7. Évfolyam"><option value="1" selected="">7.A</option><option value="2">7.B</option></optgroup><optgroup label="8. Évfolyam"><option value="3">8.A</option><option value="4">8.B</option></optgroup><optgroup label="9. Évfolyam"><option value="5" selected="">9. Ny</option><option value="6">9.A</option><option value="7">9.B</option><option value="8">9.C</option><option value="9">9.D</option><option value="10">9.E</option><option value="11">9.F</option></optgroup><optgroup label="10. évfolyam"><option value="12">10.A</option><option value="13">10.B</option><option value="14">10.C</option><option value="15">10.D</option><option value="16">10.E</option><option value="17">10.F</option></optgroup><optgroup label="11. Évfolyam"><option value="18">11.A</option><option value="19">11.B</option><option value="20">11.C</option><option value="21">11.D</option><option value="22">11.E</option><option value="23">11.F</option></optgroup><optgroup label="12. Évfolyam"><option value="24">12.A</option><option value="25">12.B</option><option value="26">12.C</option><option value="26">12.D</option><option value="28">12.E</option><option value="29">12.F</option></optgroup></select><button class="btn btn-outline-primary text-start" data-bs-toggle="tooltip" data-bss-tooltip="" data-bs-placement="bottom" type="submit" onclick="vote()" style="margin-top: 19px;color: rgb(12,26,164);border-bottom-color: rgb(12,26,164);" title="Ezzel a gombbal tudod szavazatodat leadni.">Szavazás</button>
+      </form></div><script src="assets/bootstrap/js/bootstrap.min.js"></script><script src="assets/js/script.min.js"></script></body></html>

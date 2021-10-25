@@ -14,7 +14,7 @@ app.set("view engine", "ejs");
 app.use(require('body-parser').urlencoded({ extended: false }));
 
 const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client('34242585475-n7rb0iodm7m9lphe60knplli29gfbj5t.apps.googleusercontent.com');
+const client = new OAuth2Client('CLIENTID.apps.googleusercontent.com');
 
 var votes = new JsonDB(new Config("./db/votes", true, false, '/'));
 var voted = new JsonDB(new Config("./db/voted", true, false, '/'))
@@ -49,7 +49,7 @@ function use(search) {
 async function verify(token) {
   const ticket = await client.verifyIdToken({
     idToken: token,
-    audience: '34242585475-n7rb0iodm7m9lphe60knplli29gfbj5t.apps.googleusercontent.com',
+    audience: 'CLIENTID.apps.googleusercontent.com',
   });
   const payload = ticket.getPayload();
   const userid = payload['sub'];

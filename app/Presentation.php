@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Presentation extends Model
 {
-    use HasFactory;
-
+    /**
+     * @deprecated
+     */
     public $timestamps = false;
     protected $table = 'presentations';
     protected $appends = ['occupancy'];

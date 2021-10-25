@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Exceptions\PresentationFullException;
+use App\Exceptions\EventFullException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -26,10 +26,10 @@ class StudentTest extends TestCase
      */
     public function test_signupStudentNotAllowed(){
         $this->expectException(AuthorizationException::class);
-        $presentation = \App\Presentation::factory()->make();
+        $presentation = \App\Event::factory()->make();
+        $presentation->is_presentation = true;
         $presentation->save();
         $student = \App\Student::factory()->make();
-        $student->allowed=false;
         $student->save();
         $student->signUp($presentation);
     }
@@ -40,9 +40,9 @@ class StudentTest extends TestCase
      * @return void
      */
     public function test_signupPresentationFull(){
-        $this->expectException(\App\Exceptions\PresentationFullException::class);
+        $this->expectException(\App\Exceptions\EventFullException::class);
 
-        $presentation = \App\Presentation::factory()->make();
+        $presentation = \App\Event::factory()->make();
         $presentation->capacity = 1;
         $presentation->save();
 
@@ -74,8 +74,10 @@ class StudentTest extends TestCase
         $student->allowed = true;
         $student->save();
 
-        $presentation_a = \App\Presentation::factory()->make();
-        $presentation_b = \App\Presentation::factory()->make();
+        $presentation_a = \App\Event::factory()->make();
+        $presentation_b = \App\Event::factory()->make();
+        $presentation_a->is_presentation = true;
+        $presentation_b->is_presentation = true;
         $presentation_a->slot = 1;
         $presentation_b->slot = 1;
         $presentation_a->save();

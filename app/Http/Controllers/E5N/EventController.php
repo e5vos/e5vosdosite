@@ -46,7 +46,7 @@ class EventController extends Controller
      *
      * @param  string $event_name
      * @param  string $day
-     * @return \Illuminate\Http\Resources\Json\Event
+     * @return \Illuminate\Http\Resources\Json\EventResourceCollection
      */
     public function event_data($day, $event_name)
     {

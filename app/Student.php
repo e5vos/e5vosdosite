@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Exceptions\PresentationFullException;
+use App\Exceptions\EventFullException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -54,35 +54,35 @@ class Student extends Authenticatable
      * @return bool
      */
     public function isBusy($slot){
-        return $this->presentations()->where("slot",$slot)->exists();
+        return $this->events()->where("slot",$slot)->exists();
     }
 
 
     /**
-     * Sign up student to $presentation
+     * Sign up student to $event
      *
-     * @param  \App\Presentation $presentation
+     * @param  \App\Event $event
      * @throws AuthorizationException if student is not allowed to sign up
-     * @throws StudentBusyException if student is busy at the presentations timeslot
-     * @throws PresentationFullException if the presentation is full
-     * @return \App\PresentationSignup the newly created PresentationSignup object
+     * @throws StudentBusyException if student is busy at the event timeslot
+     * @throws EventFullException if the event is full
+     * @return \App\EventSignup the newly created EventSignup object
      */
-    public function signUp(\App\Presentation $presentation){
+    public function signUp(\App\Event $event){
 
         if(!$this->allowed){
             throw new AuthorizationException("Student is not allowed to sign up");
         }
 
-        if($this->isBusy($presentation->slot)){
+        if($event->slot != null && $this->isBusy($event->slot)){
             throw new \App\Exceptions\StudentBusyException("Student busy");
         }
 
-        if(!$presentation->hasCapacity()){
-            throw new PresentationFullException("Presentation full");
+        if(!$event->hasCapacity()){
+            throw new EventFullException("Event full");
         }
 
-        $signup = new \App\PresentationSignup();
-        $signup->presentation_id = $presentation->id;
+        $signup = new \App\EventSignup();
+        $signup->event_id = $event->id;
         $signup->student_id = $this->id;
         $signup->save();
         return $signup;
@@ -93,12 +93,12 @@ class Student extends Authenticatable
     }
 
     public function signups(){
-        return $this->hasMany(PresentationSignup::class);
+        return $this->hasMany(EventSignup::class);
     }
 
 
-    public function presentations(){
-        return $this->hasManyThrough(Presentation::class,PresentationSignup::class,'student_id','id','id','presentation_id');
+    public function events(){
+        return $this->hasManyThrough(Event::class,EventSignup::class,'student_id','id','id','event_id');
     }
 
     public function scores(){

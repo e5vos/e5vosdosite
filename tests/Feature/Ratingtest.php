@@ -27,6 +27,6 @@ class RatingTest extends TestCase
      */
     public function test_example()
     {
-       
+
     }
 }

@@ -85,10 +85,15 @@ class EventController extends Controller
 
     static public function rate(Request $request){
         $user = User::find($request->session()->get("user_id"));
+        $event = Event::find($request->session()->get("event_id"));
         if($user->id == null){
             abort(403, "Student not authenticated");
         }
-        $rating = Rating::where('user_id', $user->id)->where('event_id', Event::find($request->session()->get("event_id")))->get(1);
+        if($user->id == $event->user_id){
+            abort(403, 'Szervező nem értékelhai a saját eseményét');
+        }
+        $rating = Rating::where('user_id', $user->id)->where('event_id', $event->id)->get(1);
+        $rating->rating /= 10;
         if ($rating != null){
             Rating::createRating($request);
         }else{

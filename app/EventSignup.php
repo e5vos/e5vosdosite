@@ -5,10 +5,10 @@ namespace App;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PresentationSignup extends Model
+class EventSignup extends Model
 {
     use HasFactory;
-    protected $table = 'presentation_signups';
+    protected $table = 'event_signups';
 
     protected $hidden = ['created_at','updated_at'];
 
@@ -16,7 +16,7 @@ class PresentationSignup extends Model
         $this->present=!$this->present;
         $this->save();
     }
-    public function presentation(){
+    public function event(){
         return $this->belongsTo(Presentation::class);
     }
     public function student(){

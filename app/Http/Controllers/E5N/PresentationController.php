@@ -161,7 +161,7 @@ class PresentationController extends Controller
             abort(403, "Student not authenticated");
         }
         $student = \App\User::find($student_id);
-        $student->signups()->where("presentation_id",$request->input("presentation"))->delete();
+        $student->signups()->where("event_id",$request->input("presentation"))->delete();
     }
 
     /**

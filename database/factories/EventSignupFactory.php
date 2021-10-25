@@ -5,7 +5,7 @@ namespace Database\Factories;
 use App\PresentationSignup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class PresentationSignupFactory extends Factory
+class EventSignupFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.

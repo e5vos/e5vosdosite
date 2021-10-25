@@ -11,8 +11,10 @@ class PresentationTest extends TestCase
 
     public function test_capacity(){
         $this->expectException(\Exception::class);
-        $presentation = \App\Presentation::factory()->make();
+        $presentation = \App\Event::factory()->make();
+        $presentation->is_presentation = true;
         $presentation->capacity = 10;
+        $presentation->save();
         for($i = 0; $i<($presentation->capacity+1);$i++){
             \App\Student::factory()->make()->signup($presentation);
         }
@@ -20,7 +22,8 @@ class PresentationTest extends TestCase
     }
 
     public function test_fillup(){
-        $presentation = \App\Presentation::factory()->make();
+        $presentation = \App\Event::factory()->make();
+        $presentation->is_presentation = true;
         $presentation->save();
         $students = \App\Student::factory($presentation->capacity)->create();
 
@@ -36,9 +39,9 @@ class PresentationTest extends TestCase
         $this->assertFalse($presentation->hasCapacity());
 
         foreach($students as $student){
-            $this->assertTrue($student->presentations()->get()->contains($presentation));
+            $this->assertTrue($student->events()->get()->contains($presentation));
         }
-        $this->assertFalse($excludedStudent->presentations()->get()->contains($presentation));
+        $this->assertFalse($excludedStudent->events()->get()->contains($presentation));
     }
 
 

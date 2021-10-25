@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Presentation;
 
-class PresentationSeeder extends Seeder
+class EventSignupSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +13,8 @@ class PresentationSeeder extends Seeder
      */
     public function run()
     {
-        Presentation::factory()->count(50)->create();
+        foreach (\App\Event::where('is_presentation',true)->get() as $presentation) {
+            $presentation->fillUp();
+        }
     }
 }

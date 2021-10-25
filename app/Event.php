@@ -17,8 +17,6 @@ class Event extends Model
 
     protected $casts = ['start' => 'datetime:G:i', 'end' => 'datetime:G:i'];
 
-
-
     public function getBadgeClassAttribute(){
         return 'success';
     }
@@ -38,6 +36,10 @@ class Event extends Model
 
     public function getOrgaCountAttribute(){
         return $this->permissions()->count();
+    }
+
+    public function presentations(){
+        return Event::where('is_presentation',true)->get;
     }
 
     public static function currentEvents(){
@@ -75,6 +77,36 @@ class Event extends Model
      */
     public function visitorcount(){
         return $this->scores()->where('place','0')->whereNotNull('student_id')->count();
+    }
+
+
+    //PRESENTATION related things from here
+
+    public function fillUp(){
+        if (!$this->is_presentation){
+            abort(403,'Sajnos ezen az eseményen való részvételre nem lehet kötelezni a diákokat');
+        }
+        $availalbeStudents = Student::where('allowed', true)->get()->reject(function(Student $student){
+            return $student->isBusy($this->slot);
+        })->take($this->capacity - $this->occupancy);
+        foreach($availalbeStudents as $student){
+            $student->signUp($this);
+        }
+    }
+    public function getOccupancyAttribute(){
+        return $this->signups()->count();
+    }
+
+    public function hasCapacity(){
+        return $this->capacity-$this->occupancy > 0;
+    }
+
+    public function signups(){
+
+        return $this->hasMany(EventSignup::class);
+    }
+    public function students(){
+        return $this->hasManyThrough(Student::class,EventSignup::class,'event_id','id','id','student_id');
     }
 
 }

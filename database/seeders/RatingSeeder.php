@@ -14,6 +14,8 @@ class RatingSeeder extends Seeder
      */
     public function run()
     {
-        Rating::factory(500)->create();
+        foreach(\App\Event::all() as $event){
+                Rating::factory(10)->create(['event_id' => $event->id]);
+        }
     }
 }

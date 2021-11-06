@@ -1,9 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\EJGClass;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Score extends Model

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Score;
+use App\Models\Score;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ScoreFactory extends Factory

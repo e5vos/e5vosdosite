@@ -36,8 +36,8 @@
                     <td colspan="4" style="font-weight:600;font-size:24px;">Az általad választott előadás:</td>
                 </tr>
                 <tr style="background-color:rgb(233, 233, 233)">
-                    <td>{{selected_presentations[selected_slot].presenter}}</td>
-                    <td>{{selected_presentations[selected_slot].title}}</td>
+                    <td>{{selected_presentations[selected_slot].organiser_name}}</td>
+                    <td>{{selected_presentations[selected_slot].name}}</td>
                     <td>{{selected_presentations[selected_slot].description}}</td>
                     <td><button class="btn btn-secondary">{{Math.max(selected_presentations[selected_slot].capacity-selected_presentations[selected_slot].occupancy,0)}}</button></td>
                 </tr>
@@ -47,8 +47,8 @@
 
             <tr v-for="presentation in presentations" v-bind:key="presentation.id">
                 <template v-if="!selected_presentations || !selected_presentations[selected_slot] || presentation.id!=selected_presentations[selected_slot].id">
-                    <td>{{presentation.presenter}}</td>
-                    <td>{{presentation.title}}</td>
+                    <td>{{presentation.organiser_name}}</td>
+                    <td>{{presentation.name}}</td>
                     <td>{{presentation.description}}</td>
                     <td><button class="btn btn-success" :disabled="(selected_presentations!= null && selected_presentations[selected_slot]!=null) || disableSignup" v-on:click="signUp(presentation.id)">{{Math.max(presentation.capacity-presentation.occupancy,0)}}</button></td>
                 </template>
@@ -117,7 +117,9 @@ export default {
 
         fetchUserData(){
             const requestOptions = {
-                method: "GET"
+                method: "GET",
+                "X-CSRF-TOKEN": window.Laravel.csrfToken,
+
             }
             return fetch('/api/e5n/student/presentations/',requestOptions).then(res =>{
 
@@ -131,10 +133,12 @@ export default {
         signUp(presentationId){
             const requestOptions = {
                 method: "POST",
-                headers:{"Content-Type":"application/json"},
+                headers:{
+                    "Content-Type":"application/json",
+                    "X-CSRF-TOKEN": window.Laravel.csrfToken,
+                },
                 body: JSON.stringify({
-                    presentation: presentationId,
-                    "_token": window.Laravel.crsfToken
+                    event: presentationId,
                 })
             }
             this.disableSignup = true;
@@ -165,13 +169,16 @@ export default {
         deleteSignUp(presentation){
             const requestOptions = {
                 method: "DELETE",
-                headers:{"Content-Type":"application/json"},
+                headers:{
+                    "Content-Type":"application/json",
+                    "X-CSRF-TOKEN": window.Laravel.csrfToken,
+                },
                 body: JSON.stringify({
-                    presentation: presentation,
+
                 })
             }
 
-            fetch('/e5n/eventsignup/',requestOptions).then(res => {
+            fetch('/e5n/eventsignup/'+presentation,requestOptions).then(res => {
                 if(res.ok){
                     this.selected_presentations[this.selected_slot] = null
                     this.$forceUpdate()

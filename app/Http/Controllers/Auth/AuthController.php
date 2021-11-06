@@ -1,8 +1,14 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\{
+    Controller
+};
+
+use App\Models\{
+    User
+};
+
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,10 +25,10 @@ class AuthController extends Controller{
     public function callback($provider='google')
     {
         $userData = Socialite::driver($provider)->user();
-        $user = \App\User::firstWhere('email',$userData->email);
+        $user = User::firstWhere('email',$userData->email);
 
         if(!$user){
-            $user = \App\User::create([
+            $user = User::create([
                 'name' => $userData->name,
                 'email' => $userData->email,
                 'google_id'=> Hash::make($userData->id)

@@ -4,7 +4,7 @@ namespace Database\Seeders;
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\TeamMember;
+use App\Models\TeamMember;
 
 class TeamMemberSeeder extends Seeder
 {

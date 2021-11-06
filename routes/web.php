@@ -70,7 +70,7 @@ Route::get('/settings','HomeController@settingsView');
 
 Route::resource('e5n/event', \E5N\EventController::class);
 Route::resource('e5n/presentation', \E5N\PresentationController::class, ['only' => ['index'] ]);
-Route::resource('e5n/eventsignup', \E5N\EventSignupController::class, ['only' => ['index','store','destroy']]);
+Route::resource('e5n/eventsignup', \E5N\EventSignupController::class);
 
 Route::get('/e5n/attendanceopener', 'E5N\PresentationController@attendanceOpener');
 Route::get('/e5n/presentations/attendance/{prescode}','E5N\PresentationController@attendanceViewer');

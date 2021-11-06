@@ -2,9 +2,20 @@
 
 namespace App\Http\Controllers\E5N;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Http\Request;
+use App\Http\Controllers\{
+    Controller
+};
+
+use App\Models\{
+    Team,
+    TeamMember
+};
+
+use Illuminate\Support\Facades\{
+    Gate,
+    Request
+};
+
 use Illuminate\Support\Str;
 
 
@@ -23,7 +34,7 @@ class TeamController extends Controller
      */
     public function editMember($teamCode,$member){
 
-        $team = \App\Team::firstWhere('code',$teamCode);
+        $team = Team::firstWhere('code',$teamCode);
         Gate::authorize('update',$team);
 
         if($team->member($member)){
@@ -35,7 +46,7 @@ class TeamController extends Controller
     }
 
     public function update($teamCode){
-        $team = \App\Team::firstWhere('code',$teamCode);
+        $team = Team::firstWhere('code',$teamCode);
         Gate::authorize('update',$team);
         return view('e5n.teams.update');
     }
@@ -44,18 +55,22 @@ class TeamController extends Controller
         Gate::authorize('create',Team::class);
         do{
             $teamcode = Str::random(4);
-        } while(!\App\Team::where('code',$teamcode)->exists());
+        } while(!Team::where('code',$teamcode)->exists());
 
-        $request->user->teams()->create([
-            'name'=>$name,
-            'code'=>$teamcode,
-        ]);
+
+        $team = new Team();
+
+        $teamMember = new TeamMember();
+        $teamMember->team()->associate($team);
+        $teamMember->user()->associate($request->user());
+        $teamMember->isManager=true;
+        $teamMember->save();
 
         return $teamcode;
     }
     public function loadTeam($teamCode){
-        $team= \App\Team::firstWhere('code',$teamCode);
+        $team= Team::firstWhere('code',$teamCode);
         Gate::authorize('show',$team);
-        return \App\Team::find($team)->toJson();
+        return Team::find($team)->toJson();
     }
 }

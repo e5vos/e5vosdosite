@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Exceptions\EventFullException;
 use App\Exceptions\StudentBusyException;
@@ -61,19 +61,21 @@ class User extends Authenticatable
     /**
      * Sign up user to $event
      *
-     * @param  \App\Event $event
+     * @param  Event $event
      * @throws StudentBusyException if user is busy at the event timeslot
      * @throws EventFullException if the event is full
-     * @return \App\EventSignup the newly created EventSignup object
+     * @return EventSignup the newly created EventSignup object
      */
-    public function signUp(\App\Event $event){
+    public function signUp(Event $event){
         if($event->slot !=null && $this->isBusy($event->slot)){
             throw new StudentBusyException();
         }
         if(!$event->hasCapacity()){
             throw new EventFullException();
         }
-        $signup = $this->signups()->create(['event_id'=>$event->id]);
+        $signup = new EventSignup();
+        $signup->event()->associate($event);
+        $signup->user()->associate($this);
         $signup->save();
         return $signup;
     }
@@ -81,11 +83,11 @@ class User extends Authenticatable
     /**
      * Rate an event
      *
-     * @param  \App\Event $event
+     * @param  Event $event
      * @param  int $ratingValue
      * @return \App\Rating
      */
-    public function rate(\App\Event $event, int $ratingValue){
+    public function rate(Event $event, int $ratingValue){
         $rating = $this->ratings()->whereBelongsTo($event)->first();
 
         if($rating == null){
@@ -134,7 +136,7 @@ class User extends Authenticatable
     }
 
     public function managedTeams(){
-        return teams()->where('is_manager',true);
+        return $this->teams()->where('is_manager',true);
     }
 
 }

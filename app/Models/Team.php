@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Teams;
@@ -35,10 +35,10 @@ class Team extends Model
     /**
      * Returns whether $member is in team
      *
-     * @param \App\User $member
+     * @param User $member
      * @return bool
      */
-    public function isMember(\App\User $member){
+    public function isMember(User $member){
         return $this->members()->contains($member);
     }
 
@@ -49,7 +49,7 @@ class Team extends Model
      * @param  int $member New member's id
      * @return void
      */
-    public function add(\App\User $member){
+    public function add(User $member){
         if(!$this->isMember($member)){
             $this->members()->create(['user'=>$member->id])->save();
         }

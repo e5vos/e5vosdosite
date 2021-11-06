@@ -4,7 +4,7 @@ namespace Database\Seeders;
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\EJGClass;
+use App\Models\EJGClass;
 
 class EJGClassSeeder extends Seeder
 {

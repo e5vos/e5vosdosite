@@ -1,7 +1,7 @@
 <?php
 namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Event;
+use App\Models\Event;
 
 
 class EventFactory extends Factory

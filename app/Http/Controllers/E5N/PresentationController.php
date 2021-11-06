@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers\E5N;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Event;
-use App\Student;
-use App\Http\Resources\Presentation as PresentationResource;
-use Google\Service\Slides\Presentation;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Redirect;
-use Laravel\Ui\Presets\Preset;
+use App\Http\Controllers\{
+    Controller
+};
+
+use App\Models\{
+    Event,
+    User,
+    Setting
+};
+
+use Illuminate\Support\Facades\{
+    Gate,
+    Request
+};
+
+
 
 class PresentationController extends Controller
 {
@@ -76,7 +81,7 @@ class PresentationController extends Controller
      * @param int $signup id of the signup to toggle
      */
     public function toggleAttendance($prezcode,$signup){
-        Presentation::where('code',$prezcode)->first()->signups()->findOrFail($signup)->toggle();
+        Event::where('code',$prezcode)->first()->signups()->findOrFail($signup)->toggle();
     }
 
 
@@ -87,15 +92,15 @@ class PresentationController extends Controller
      * @return void
      */
     public function signUp(Request $request){
-        if(!\App\Setting::check('e5nPresentationSignup')){
+        if(!Setting::check('e5nPresentationSignup')){
             abort(403,"No e5n");
-        };
+        }
         $student_id = $request->session()->get("student_id");
         if($student_id == null){
             abort(403, "Student not authenticated");
         }
-        $student = \App\User::find($student_id);
-        $presentation = \App\Event::find($request->input("presentation"));
+        $student = User::find($student_id);
+        $presentation = Event::find($request->input("presentation"));
         $student->signUp($presentation);
     }
 
@@ -110,7 +115,7 @@ class PresentationController extends Controller
         if($student_id == null){
             abort(403, "Student not authenticated");
         }
-        $student = \App\User::find($student_id);
+        $student = User::find($student_id);
         $student->signups()->where("event_id",$request->input("presentation"))->delete();
     }
 
@@ -124,8 +129,7 @@ class PresentationController extends Controller
      * @return Student
      */
     public function nemjelentkezett($slot){
-        //Gate::authorize('e5n-admin');
-        return \App\User::whereDoesntHave('events', function ($query) use ($slot) {
+        return User::whereDoesntHave('events', function ($query) use ($slot) {
             $query->where('slot',$slot);
         })->get();
     }
@@ -138,12 +142,12 @@ class PresentationController extends Controller
      */
     public function fillUpPresentation(Request $request) {
         Gate::authorize('e5n-admin');
-        \App\Event::find($request->input('presentation'))->fillUp();
+        Event::find($request->input('presentation'))->fillUp();
     }
 
     public function fillUpAllPresentation() {
         Gate::authorize('e5n-admin');
-        foreach (\App\Event::all() as $presentation) {
+        foreach (Event::all() as $presentation) {
             $presentation->fillUp();
         }
     }

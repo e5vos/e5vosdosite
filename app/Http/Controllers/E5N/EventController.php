@@ -2,14 +2,22 @@
 
 namespace App\Http\Controllers\E5N;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\Event as EventResource;
-use App\Event;
-use App\Rating;
-use App\User;
+use App\Http\Controllers\{
+    Controller
+};
+
+
+use App\Models\{
+    Event
+};
+
+
+use Illuminate\Support\Facades\{
+    Gate,
+    Auth,
+    Request
+};
+
 
 class EventController extends Controller
 {
@@ -53,21 +61,23 @@ class EventController extends Controller
 
     public function edit($eventCode){
 
-        $event = \App\Event::where('code',$eventCode)->firstOrFail();
+        $event = Event::where('code',$eventCode)->firstOrFail();
 
         Gate::authorize('update',$event);
         return view('e5n.events.edit',["event" => $event]);
     }
 
     public function update(Request $request, $eventCode){
-        $event = \App\Event::firstWhere('code',$eventCode);
+        $event = Event::firstWhere('code',$eventCode);
         Gate::authorize('update',$event);
 
         if(!$event->is_presentation){
             abort(400);
         }
 
-        if($event->code != $request->input('code') && !\App\Event::where('code',$request->input('code'))->exists()) $event->code = $request->input('code');
+        if($event->code != $request->input('code') && !Event::where('code',$request->input('code'))->exists()){
+            $event->code = $request->input('code');
+        }
         $event->name = $request->input('name');
         $event->description = $request->input('description');
         $event->weight = $request->input('weight');
@@ -84,7 +94,7 @@ class EventController extends Controller
     }
 
     public function destroy($presentationCode){
-        $presentation = \App\Event::firstWhere('code',$presentationCode);
+        $presentation = Event::firstWhere('code',$presentationCode);
         Gate::authorize('destroy', $presentation);
         $presentation->delete();
     }
@@ -119,8 +129,8 @@ class EventController extends Controller
         return Event::currentEvents();
     }
 
-    public function slot($slot){
-        return Event::where('slot',$slot)->get();
+    public function presentationSlot($slot){
+        return Event::where('is_presentation',true)->where('slot',$slot)->get();
     }
 
     public function rate(Request $request){
@@ -129,7 +139,7 @@ class EventController extends Controller
          */
         $user = Auth::user();
         if($user != null){
-            $user->rate(\App\Event::find($request->input('event_id')),$request->input('rating'));
+            $user->rate(Event::find($request->input('event_id')),$request->input('rating'));
         }
     }
 }

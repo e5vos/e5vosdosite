@@ -41,7 +41,7 @@ class User extends Authenticatable
     }
 
     public function isAdmin(){
-        return $this->permissions()->where("permission","ADM");
+        return $this->permissions()->where("permission","ADM")->exists();
     }
 
 
@@ -99,7 +99,10 @@ class User extends Authenticatable
     }
 
     public function ejg_class(){
-        return $this->belongsTo(EJGClass::class);
+        return $this->belongsTo(EJGClass::class, 'class_id');
+    }
+    public function ejgClass(){
+        return $this->belongsTo(EJGClass::class, 'class_id');
     }
 
     public function signups(){
@@ -128,6 +131,10 @@ class User extends Authenticatable
 
     public function teams(){
         return $this->hasManyThrough(Team::class,TeamMember::class,'user_id','id','id','team_id');
+    }
+
+    public function managedTeams(){
+        return teams()->where('is_manager',true);
     }
 
 }

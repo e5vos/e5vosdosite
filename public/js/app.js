@@ -8391,29 +8391,15 @@ __webpack_require__.r(__webpack_exports__);
       selected_slot: '',
       selected_slot_before: '',
       disableSignup: false,
-      user: null,
+      isUser: false,
       selected_presentations: [],
       signupError: null
     };
   },
   created: function created() {
-    var _this = this;
-
-    gapi.load("auth2", function () {
-      gapi.auth2.init().then(function () {
-        gapi.auth2.getAuthInstance().currentUser.listen(_this.userListener);
-        setTimeout(function () {
-          _this.user = gapi.auth2.getAuthInstance().currentUser.get();
-        }, 100);
-
-        _this.changeSlot(1);
-
-        setTimeout(_this.tick, _this.refreshIntervalTime / 10);
-      });
-    });
-  },
-  mounted: function mounted() {
-    this.refreshBar = document.getElementById("refreshBar");
+    this.changeSlot(1);
+    this.fetchUserData();
+    setTimeout(this.tick, this.refreshIntervalTime / 10);
   },
   methods: {
     tick: function tick() {
@@ -8423,41 +8409,43 @@ __webpack_require__.r(__webpack_exports__);
         this.updateRefreshBarColor();
       }
 
-      this.refreshBar.style.width = this.counter + "%";
-      this.counter += 10;
+      if (this.isUser) {
+        this.counter += 10;
+        document.getElementById("refreshBar").style.width = this.counter + "%";
+      }
+
       setTimeout(this.tick, this.refreshIntervalTime / 10);
     },
     changeSlot: function changeSlot(slot) {
-      var _this2 = this;
+      var _this = this;
 
       this.selected_slot_before = slot;
       return fetch('/api/e5n/presentations/' + slot).then(function (res) {
         return res.status == 200 ? res.json() : null;
       }).then(function (res) {
-        _this2.presentations = res.data;
-        _this2.selected_slot = slot;
+        _this.presentations = res;
+        _this.selected_slot = slot;
       });
     },
     fetchUserData: function fetchUserData() {
-      var _this3 = this;
+      var _this2 = this;
 
       var requestOptions = {
-        method: "POST"
+        method: "GET"
       };
       return fetch('/api/e5n/student/presentations/', requestOptions).then(function (res) {
-        return res.status == 200 ? res.json() : null;
+        _this2.isUser = res.status == 200;
+        if (res != null) return res.json()["catch"](function () {});
       }).then(function (res) {
-        if (res != null) {
-          res.forEach(function (element) {
-            return _this3.selected_presentations[element.slot] = element;
-          });
-
-          _this3.$forceUpdate();
-        }
+        if (res != null) res.forEach(function (element) {
+          return _this2.selected_presentations[element.slot] = element;
+        }).then(function () {
+          return _this2.$forceUpdate();
+        });
       });
     },
     signUp: function signUp(presentationId) {
-      var _this4 = this;
+      var _this3 = this;
 
       var requestOptions = {
         method: "POST",
@@ -8465,39 +8453,40 @@ __webpack_require__.r(__webpack_exports__);
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          presentation: presentationId
+          presentation: presentationId,
+          "_token": window.Laravel.crsfToken
         })
       };
       this.disableSignup = true;
-      fetch("/api/e5n/presentations/signup/", requestOptions).then(function (res) {
+      fetch("/e5n/eventsignup/", requestOptions).then(function (res) {
         if (res.ok) {
-          _this4.fetchUserData().then(function () {
-            _this4.disableSignup = false;
+          _this3.fetchUserData().then(function () {
+            _this3.disableSignup = false;
           });
         } else {
-          _this4.signupError = res.status;
-          _this4.disableSignup = false;
+          _this3.signupError = res.status;
+          _this3.disableSignup = false;
         }
       });
     },
     refresh: function refresh() {
-      var _this5 = this;
+      var _this4 = this;
 
       performance.mark("slotRefreshMark");
       this.changeSlot(this.selected_slot_before).then(function () {
         performance.measure("slotRefresh", "slotRefreshMark");
         performance.mark("userDataRefreshMark");
 
-        _this5.fetchUserData().then(function () {
+        _this4.fetchUserData().then(function () {
           performance.measure("userDataRefresh", "userDataRefreshMark");
         });
       });
     },
     deleteSignUp: function deleteSignUp(presentation) {
-      var _this6 = this;
+      var _this5 = this;
 
       var requestOptions = {
-        method: "POST",
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json"
         },
@@ -8505,11 +8494,11 @@ __webpack_require__.r(__webpack_exports__);
           presentation: presentation
         })
       };
-      fetch('/api/e5n/presentations/signup/delete/', requestOptions).then(function (res) {
+      fetch('/e5n/eventsignup/', requestOptions).then(function (res) {
         if (res.ok) {
-          _this6.selected_presentations[_this6.selected_slot] = null;
+          _this5.selected_presentations[_this5.selected_slot] = null;
 
-          _this6.$forceUpdate();
+          _this5.$forceUpdate();
         }
       });
     },
@@ -8517,18 +8506,19 @@ __webpack_require__.r(__webpack_exports__);
       var userDataRefreshTime = performance.getEntriesByName("userDataRefresh").length == 0 ? 0 : performance.getEntriesByName("userDataRefresh")[performance.getEntriesByName("userDataRefresh").length - 1].duration;
       var slotRefreshTime = performance.getEntriesByName("slotRefresh").length == 0 ? 0 : performance.getEntriesByName("slotRefresh")[performance.getEntriesByName("slotRefresh").length - 1].duration;
       var responseTime = Math.max(userDataRefreshTime, slotRefreshTime);
+      var refreshBar = document.getElementById("refreshBar");
 
       if (responseTime < this.performanceDangerLevels.warning) {
-        this.refreshBar.classList.remove("bg-danger");
-        this.refreshBar.classList.remove("bg-warning");
+        refreshBar.classList.remove("bg-danger");
+        refreshBar.classList.remove("bg-warning");
         this.statusmsg = "Az adatok automatikusan frissülnek!";
         if (this.refreshIntervalTime > this.refreshIntervalTimeMin) this.refreshIntervalTime -= this.refreshIntervalTimeIncrement;
       } else if (responseTime < this.performanceDangerLevels.danger) {
-        this.refreshBar.classList.add("bg-warning");
-        this.refreshBar.classList.remove("bg-danger");
+        refreshBar.classList.add("bg-warning");
+        refreshBar.classList.remove("bg-danger");
         this.statusmsg = "Közepes válaszidő";
       } else {
-        this.refreshBar.classList.add("bg-danger");
+        refreshBar.classList.add("bg-danger");
         this.statusmsg = "Extrém válaszidő";
         if (this.refreshIntervalTime < this.refreshIntervalTimeMax) this.refreshIntervalTime += this.refreshIntervalTimeIncrement;
       }
@@ -44966,13 +44956,15 @@ var render = function() {
       },
       [
         _c("thead", { staticClass: "thead-dark" }, [
-          _c("tr", [
-            _c("th", { attrs: { colspan: "4" } }, [
-              _c("span", [_vm._v(_vm._s(_vm.statusmsg))]),
-              _vm._v(" "),
-              _vm._m(0)
-            ])
-          ]),
+          _vm.isUser
+            ? _c("tr", [
+                _c("th", { attrs: { colspan: "4" } }, [
+                  _c("span", [_vm._v(_vm._s(_vm.statusmsg))]),
+                  _vm._v(" "),
+                  _vm._m(0)
+                ])
+              ])
+            : _vm._e(),
           _vm._v(" "),
           _vm._m(1)
         ]),

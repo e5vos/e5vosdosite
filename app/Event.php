@@ -5,36 +5,26 @@ namespace App;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Event extends Model
 {
     use HasFactory;
+    use SoftDeletes;
+
     protected $table = 'events';
 
     protected $dates = ['start','end'];
 
-    protected $appends = ['type','badgeClass','badgeMessage'];
+    protected $appends = ['occupancy'];
 
     protected $casts = ['start' => 'datetime:G:i', 'end' => 'datetime:G:i'];
 
-    public function getBadgeClassAttribute(){
-        return 'success';
+    public function getOccupancyAttribute(){
+        return $this->signups()->count();
     }
 
-    public function getBadgeMessageAttribute(){
-        return $this->badgeClass;
-    }
-
-    /**
-     * Get Event Type
-     *
-     * @return String
-     */
-    public function getTypeAttribute(){
-        return ['Small','Medium','Large'][$this->weight-1];
-    }
-
-    public function getOrgaCountAttribute(){
+    public function getOrgaCount(){
         return $this->permissions()->count();
     }
 
@@ -54,6 +44,9 @@ class Event extends Model
         return $this->hasMany(Permission::class);
     }
 
+    public function organisers(){
+        return $this->hasManyThrough(User::class,Permission::class,'event_id','id','id','user_id');
+    }
     public function scores(){
         return $this->hasMany(Score::class);
     }
@@ -93,19 +86,16 @@ class Event extends Model
             $student->signUp($this);
         }
     }
-    public function getOccupancyAttribute(){
-        return $this->signups()->count();
-    }
 
     public function hasCapacity(){
-        return $this->capacity-$this->occupancy > 0;
+        return $this->capacity == null || $this->capacity-$this->occupancy > 0;
     }
 
     public function signups(){
 
         return $this->hasMany(EventSignup::class);
     }
-    public function students(){
+    public function attendees(){
         return $this->hasManyThrough(Student::class,EventSignup::class,'event_id','id','id','student_id');
     }
 

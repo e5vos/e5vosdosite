@@ -35,6 +35,7 @@ class CreateEventsTable extends Migration
             $table->boolean('is_presentation')->comment('true if event is a presentation');
 
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
             $table->foreign('organiser_id')->references('id')->on('users')->onDelete('cascade');

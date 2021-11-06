@@ -83,7 +83,7 @@ class Team extends Model
     /**
      * Administator user for the team
      */
-    public function admin(){
-        return $this->belongsTo(Student::class);
+    public function admins(){
+        return $this->members()->where('is_manager',true);
     }
 }

@@ -14,7 +14,7 @@
 
     <table class="table table-light table-bordered" style="text-align:center;width:100%;table-layout: auto;overflow-wrap: break-word;">
         <thead class="thead-dark">
-            <tr>
+            <tr v-if="isUser">
                 <th colspan="4">
                     <span>{{statusmsg}}</span>
                     <div class="progress">
@@ -79,23 +79,16 @@ export default {
             selected_slot: '',
             selected_slot_before: '',
             disableSignup: false,
-            user: null,
+            isUser: false,
             selected_presentations: [],
             signupError : null,
         }
     },
     created(){
-            gapi.load("auth2",()=>{
-                gapi.auth2.init().then(()=>{
-                    gapi.auth2.getAuthInstance().currentUser.listen(this.userListener)
-                    setTimeout(() => {this.user = gapi.auth2.getAuthInstance().currentUser.get()} , 100)
-                    this.changeSlot(1)
-                    setTimeout(this.tick,this.refreshIntervalTime/10)
-                })
-            })
-    },
-    mounted(){
-        this.refreshBar = document.getElementById("refreshBar")
+            this.changeSlot(1)
+            this.fetchUserData()
+            setTimeout(this.tick,this.refreshIntervalTime/10)
+
     },
     methods: {
 
@@ -105,8 +98,10 @@ export default {
                 this.refresh();
                 this.updateRefreshBarColor();
             }
-            this.refreshBar.style.width=this.counter+"%"
-            this.counter+=10;
+            if(this.isUser){
+                this.counter+=10;
+                document.getElementById("refreshBar").style.width=this.counter+"%"
+            }
             setTimeout(this.tick,this.refreshIntervalTime/10)
         },
 
@@ -115,21 +110,21 @@ export default {
             return fetch('/api/e5n/presentations/'+slot)
             .then(res => res.status == 200 ? res.json() : null)
             .then(res => {
-                this.presentations=res.data
+                this.presentations=res
                 this.selected_slot = slot
             })
         },
 
         fetchUserData(){
             const requestOptions = {
-                method: "POST"
+                method: "GET"
             }
-            return fetch('/api/e5n/student/presentations/',requestOptions).then(res => res.status==200 ? res.json() : null).then(res=>{
-                if(res!=null){
-                    res.forEach(element => this.selected_presentations[element.slot]=element)
-                    this.$forceUpdate();
-                }
+            return fetch('/api/e5n/student/presentations/',requestOptions).then(res =>{
 
+                this.isUser = res.status==200
+                if(res!=null) return res.json().catch(() => {})
+            }).then(res=>{
+                if(res!=null) res.forEach(element => this.selected_presentations[element.slot]=element).then(() => this.$forceUpdate())
             })
         },
 
@@ -138,11 +133,12 @@ export default {
                 method: "POST",
                 headers:{"Content-Type":"application/json"},
                 body: JSON.stringify({
-                    presentation: presentationId
+                    presentation: presentationId,
+                    "_token": window.Laravel.crsfToken
                 })
             }
             this.disableSignup = true;
-            fetch("/api/e5n/presentations/signup/",requestOptions)
+            fetch("/e5n/eventsignup/",requestOptions)
             .then(res => {
                 if(res.ok){
                     this.fetchUserData().then(() => {this.disableSignup = false});
@@ -164,39 +160,42 @@ export default {
                 })
             })
 
+
         },
         deleteSignUp(presentation){
             const requestOptions = {
-                method: "POST",
+                method: "DELETE",
                 headers:{"Content-Type":"application/json"},
                 body: JSON.stringify({
                     presentation: presentation,
                 })
             }
 
-            fetch('/api/e5n/presentations/signup/delete/',requestOptions).then(res => {
+            fetch('/e5n/eventsignup/',requestOptions).then(res => {
                 if(res.ok){
                     this.selected_presentations[this.selected_slot] = null
                     this.$forceUpdate()
                 }
             })
         },
+
         updateRefreshBarColor(){
             var userDataRefreshTime = performance.getEntriesByName("userDataRefresh").length == 0 ? 0 : performance.getEntriesByName("userDataRefresh")[performance.getEntriesByName("userDataRefresh").length-1].duration;
             var slotRefreshTime =  performance.getEntriesByName("slotRefresh").length == 0 ? 0 : performance.getEntriesByName("slotRefresh")[performance.getEntriesByName("slotRefresh").length-1].duration;
             var responseTime = Math.max(userDataRefreshTime,slotRefreshTime);
+            var refreshBar = document.getElementById("refreshBar")
             if(responseTime < this.performanceDangerLevels.warning){
-                this.refreshBar.classList.remove("bg-danger")
-                this.refreshBar.classList.remove("bg-warning")
+                refreshBar.classList.remove("bg-danger")
+                refreshBar.classList.remove("bg-warning")
                 this.statusmsg = "Az adatok automatikusan frissülnek!"
                 if(this.refreshIntervalTime>this.refreshIntervalTimeMin) this.refreshIntervalTime-=this.refreshIntervalTimeIncrement
             }
             else if(responseTime < this.performanceDangerLevels.danger){
-                this.refreshBar.classList.add("bg-warning")
-                this.refreshBar.classList.remove("bg-danger")
+                refreshBar.classList.add("bg-warning")
+                refreshBar.classList.remove("bg-danger")
                 this.statusmsg = "Közepes válaszidő"
             }else{
-                this.refreshBar.classList.add("bg-danger")
+                refreshBar.classList.add("bg-danger")
                 this.statusmsg = "Extrém válaszidő"
                 if(this.refreshIntervalTime<this.refreshIntervalTimeMax) this.refreshIntervalTime+= this.refreshIntervalTimeIncrement;
 

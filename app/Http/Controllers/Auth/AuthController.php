@@ -40,4 +40,7 @@ class AuthController extends Controller{
     public function login(){
         return Socialite::driver('google')->redirect();
     }
+
+
+
 }

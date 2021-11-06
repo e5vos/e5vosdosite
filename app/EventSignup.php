@@ -17,9 +17,9 @@ class EventSignup extends Model
         $this->save();
     }
     public function event(){
-        return $this->belongsTo(Presentation::class);
+        return $this->belongsTo(Event::class);
     }
-    public function student(){
-        return $this->belongsTo(Student::class);
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

@@ -22,13 +22,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 // List Presentations
-Route::get('/e5n/presentations/{slot}','E5N\PresentationController@slot');
+Route::get('/e5n/presentations/{slot}','E5N\EventController@slot');
 // Get Presentation Data
-Route::get('/e5n/presentation/{id}','E5N\PresentationController@show');
-// Create Presentation
-Route::post('/e5n/presentations','E5N\PresentationController@store');
-// Delete Presentation
-Route::delete('/e5n/presentations','E5N\PresentationController@destroy');
+Route::get('/e5n/presentation/{id}','E5N\EventController@show');
+
 //Get Presentation Attendance Data
 Route::get('/e5n/presentations/attendance/{code}','E5N\PresentationController@attendanceSheet');
 // Set Presentation Attendance Data
@@ -50,9 +47,9 @@ Route::get('/e5n/{day}/{event_name}', 'E5N\EventController@event_data');
 // Get no signups based on {slot}
 Route::get('/e5n/students/nemjelentkezett/{slot}','E5N\PresentationController@nemjelentkezett');
 // Get the presentation list
-Route::post('/e5n/student/presentations/','E5N\PresentationController@getSelectedPresentations');
+Route::get('/e5n/student/presentations/','E5N\EventSignupController@getSelectedPresentations') ;
 // Signup a student to a presentation
-Route::post('/e5n/presentations/signup/', 'E5N\PresentationController@signUp');
+Route::post('/e5n/student/presentations/', 'E5N\PresentationController@signUp');
 // revoke a students appliance to a presentation
 Route::post('/e5n/presentations/signup/delete/', 'E5N\PresentationController@deleteSignUp');
 // automaticly fill up a presentations capacity

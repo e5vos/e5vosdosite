@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Policies\EventPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 class AuthServiceProvider extends ServiceProvider
@@ -13,6 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Model' => 'App\Policies\ModelPolicy',
+        Event::class => EventPolicy::class,
     ];
 
     /**
@@ -24,29 +26,5 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::define('image-modify','FilePolicy@imageModify');
-        Gate::define('image-upload','FilePolicy@imageUpload');
-
-
-        Gate::define('edit-settings', function ($user) {
-            return $user->isAdmin();
-        });
-
-
-
-        Gate::define('edit-permissions', function ($user) {
-            return $user->isAdmin();
-        });
-
-        Gate::define('e5n-admin', 'E5NPolicy@admin');
-
-
-        Gate::define('e5n-presentationSignup', 'E5NPolicy@presentationSignupEnabled');
-
-        Gate::define('e5n-scanner', 'E5NPolicy@scanner');
-
-
-        /** E5N System availability */
-        Gate::define('e5n', 'E5NPolicy@e5n');
     }
 }

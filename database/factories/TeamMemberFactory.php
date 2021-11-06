@@ -23,7 +23,7 @@ class TeamMemberFactory extends Factory
     {
         return [
             'team_id' => $this->faker->numberBetween(0,69),
-            'student_id' => $this->faker->numberBetween(0,420),
+            'user_id' => $this->faker->numberBetween(0,420),
 
         ];
     }

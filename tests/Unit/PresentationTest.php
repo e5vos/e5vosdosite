@@ -16,7 +16,7 @@ class PresentationTest extends TestCase
         $presentation->capacity = 10;
         $presentation->save();
         for($i = 0; $i<($presentation->capacity+1);$i++){
-            \App\Student::factory()->make()->signup($presentation);
+            \App\User::factory()->make()->signup($presentation);
         }
 
     }
@@ -25,14 +25,12 @@ class PresentationTest extends TestCase
         $presentation = \App\Event::factory()->make();
         $presentation->is_presentation = true;
         $presentation->save();
-        $students = \App\Student::factory($presentation->capacity)->create();
+        $students = \App\User::factory($presentation->capacity)->create();
 
-        $excludedStudent = \App\Student::factory()->make();
-        $excludedStudent->allowed = true;
+        $excludedStudent = \App\User::factory()->make();
         $excludedStudent->save();
 
         foreach($students as $student){
-            $student->allowed=true;
             $student->save();
         }
         $presentation->fillUp();

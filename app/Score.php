@@ -10,7 +10,7 @@ class Score extends Model
 {
     use HasFactory;
     public function student(){
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(User::class);
     }
 
     public function team(){
@@ -19,9 +19,5 @@ class Score extends Model
 
     public function event(){
         return $this->belongsTo(Event::class);
-    }
-
-    public function teamMembers(){
-        return $this->hasManyThrough(App\Student::class,App\Team::class);
     }
 }

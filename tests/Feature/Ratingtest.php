@@ -13,5 +13,20 @@ use Illuminate\Support\Facades\Http;
 class RatingTest extends TestCase
 {
     use WithFaker;
-    //test
+    function create_request($i){
+        return Http::post(env('APP_URL'),[
+            'rating' => $this->faker->randomFloat(3,0,1),
+            'user_id' => $i,
+            'event_id' => $i
+        ]);
+    }
+    /**
+     * Test Rating events
+     *
+     * @return void
+     */
+    public function test_example()
+    {
+
+    }
 }

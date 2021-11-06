@@ -1,5 +1,6 @@
 <?php
 
+use Google\Service\AndroidPublisher\UserComment;
 use Illuminate\Support\Facades\Route;
 
 use Illuminate\Support\Facades\Auth;
@@ -16,16 +17,16 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/','WelcomeController@index')->name('index');
 
 Route::get('/logout', 'Auth\AuthController@logout' )->name("logout");
 Route::get('/login','Auth\AuthController@login')->name('login');
 Route::post('/logout', 'Auth\AuthController@logout' );
 
-Route::get('auth/{provider?}', 'Auth\AuthController@redirect');
+Route::get('auth/{provider?}', 'Auth\AuthController@redirect')->name("auth");
 Route::get('auth/{provider}/callback', 'Auth\AuthController@callback');
+
+Route::resource('user', \Auth\UserController::class, ['only' => ['index', 'edit', 'destroy']]);
 
 // Login redirection waiter
 Route::get('/home', 'HomeController@index')->name('home');
@@ -55,6 +56,10 @@ Route::get('/e5n/admin','E5N\E5NController@admin');
 //Route::get('/e5n/presentations','E5N\PresentationController@presentations');
 
 Route::get('/e5n/teams/','E5N\TeamController@home');
+Route::get('/e5n/teams/invite/{token}', 'E5N\TeamController@invite');
+Route::get('/e5n/team/{team}', 'E5N\TeamController@manageTeam');
+
+
 
 Route::get('/e5n/scanner','E5N\EventController@scanner')->middleware('auth');
 Route::get('/e5n/codes','E5N\E5NController@codes');
@@ -63,7 +68,10 @@ Route::get('/e5n/codes','E5N\E5NController@codes');
 Route::get('/settings','HomeController@settingsView');
 
 
-Route::get('/e5n/presentations','E5N\PresentationController@presentationsSignup');
+Route::resource('e5n/event', \E5N\EventController::class);
+Route::resource('e5n/presentation', \E5N\PresentationController::class, ['only' => ['index'] ]);
+Route::resource('e5n/eventsignup', \E5N\EventSignupController::class, ['only' => ['index','store','destroy']]);
+
 Route::get('/e5n/attendanceopener', 'E5N\PresentationController@attendanceOpener');
 Route::get('/e5n/presentations/attendance/{prescode}','E5N\PresentationController@attendanceViewer');
 Route::get('/e5n/presadmin','E5N\PresentationController@presAdmin');

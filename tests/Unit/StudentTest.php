@@ -29,7 +29,7 @@ class StudentTest extends TestCase
         $presentation = \App\Event::factory()->make();
         $presentation->is_presentation = true;
         $presentation->save();
-        $student = \App\Student::factory()->make();
+        $student = \App\User::factory()->make();
         $student->save();
         $student->signUp($presentation);
     }
@@ -47,14 +47,12 @@ class StudentTest extends TestCase
         $presentation->save();
 
 
-        $student = \App\Student::factory()->make();
-        $student->allowed = true;
+        $student = \App\User::factory()->make();
         $student->save();
 
         $student->signUp($presentation);
 
-        $student = \App\Student::factory()->make();
-        $student->allowed = true;
+        $student = \App\User::factory()->make();
         $student->save();
 
         $student->signUp($presentation);
@@ -70,8 +68,7 @@ class StudentTest extends TestCase
         $this->expectException(\App\Exceptions\StudentBusyException::class);
 
 
-        $student = \App\Student::factory()->make();
-        $student->allowed = true;
+        $student = \App\User::factory()->make();
         $student->save();
 
         $presentation_a = \App\Event::factory()->make();

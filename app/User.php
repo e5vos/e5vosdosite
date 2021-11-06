@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\Exceptions\EventFullException;
+use App\Exceptions\StudentBusyException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -38,7 +41,7 @@ class User extends Authenticatable
     }
 
     public function isAdmin(){
-        return $this->permissions()->where("permission","ADM");
+        return $this->permissions()->where("permission","ADM")->exists();
     }
 
 
@@ -50,45 +53,88 @@ class User extends Authenticatable
 
 
     public function isBusy($slot){
-        return $this->presentations()->where("slot",$slot)->exists();
+        return $this->events()->where("slot",$slot)->exists();
     }
 
 
-    public function signUp(\App\Presentation $presentation){
-        if(!$this->allowed){
-            abort(403,"Diák nem jelentkezhet");
+
+    /**
+     * Sign up user to $event
+     *
+     * @param  \App\Event $event
+     * @throws StudentBusyException if user is busy at the event timeslot
+     * @throws EventFullException if the event is full
+     * @return \App\EventSignup the newly created EventSignup object
+     */
+    public function signUp(\App\Event $event){
+        if($event->slot !=null && $this->isBusy($event->slot)){
+            throw new StudentBusyException();
         }
-        if($this->isBusy($presentation->slot)){
-            abort(400, "Diák elfoglalt");
+        if(!$event->hasCapacity()){
+            throw new EventFullException();
         }
-        if($presentation->hasCapacity()){
-            $signup = new \App\PresentationSignup();
-            $signup->presentation_id = $presentation->id;
-            $signup->student_id = $this->id;
-            $signup->save();
-        }else{
-            abort(400, "Előadás betelt");
+        $signup = $this->signups()->create(['event_id'=>$event->id]);
+        $signup->save();
+        return $signup;
+    }
+
+    /**
+     * Rate an event
+     *
+     * @param  \App\Event $event
+     * @param  int $ratingValue
+     * @return \App\Rating
+     */
+    public function rate(\App\Event $event, int $ratingValue){
+        $rating = $this->ratings()->whereBelongsTo($event)->first();
+
+        if($rating == null){
+            $rating = $this->ratings()->create(['event_id'=>$event->id]);
         }
+
+        $rating->rating = $ratingValue;
+
+        $rating->save();
+        return $rating;
     }
 
     public function ejg_class(){
-        return $this->belongsTo(EJGClass::class);
+        return $this->belongsTo(EJGClass::class, 'class_id');
+    }
+    public function ejgClass(){
+        return $this->belongsTo(EJGClass::class, 'class_id');
     }
 
     public function signups(){
-        return $this->hasMany(PresentationSignup::class);
+        return $this->hasMany(EventSignup::class);
     }
 
     public function ratings(){
         return $this->hasMany(Rating::class);
     }
-    
+
+    public function events(){
+        return $this->hasManyThrough(Event::class,EventSignup::class,'user_id','id','id','event_id');
+    }
+
     public function presentations(){
-        return $this->hasManyThrough(Presentation::class,PresentationSignup::class,'student_id','id','id','presentation_id');
+        return $this->events()->where("is_presentation",true);
     }
 
     public function scores(){
         return $this->hasMany(Score::class);
+    }
+
+    public function teamMemberships(){
+        return $this->hasMany(TeamMember::class);
+    }
+
+    public function teams(){
+        return $this->hasManyThrough(Team::class,TeamMember::class,'user_id','id','id','team_id');
+    }
+
+    public function managedTeams(){
+        return teams()->where('is_manager',true);
     }
 
 }

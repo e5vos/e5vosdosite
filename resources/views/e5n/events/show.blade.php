@@ -14,15 +14,20 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="jumbotron text-center">{{$event->description}}</div>
+                <div class="jumbotron text-center" style="font-size: 18px">{{$event->description}}</div>
                 <div class="jumbotron text-center">
                     @if ($event->location != null)
                         <a href="/e5n/locations/{{$event->location_id}}"><h4>Helyszín: {{$event->location->name}}</h4></a>
                     @endif
-                    <h4 class="align-middle">Szervező osztály(ok):
-                    @foreach ($event->orga_classes as $ejg_class)
-                        {{$ejg_class->name}}
-                    @endforeach</h4>
+                    <h4 class="align-middle">Szervező(k): <br/>
+                        @if ($event->organiser_name)
+                            {{$event->organiser_name}}
+                        @else
+                            @foreach ($event->organisers()->get() as $ejg_class)
+                                {{$ejg_class->name}}<br/>
+                            @endforeach
+                        @endif
+                    </h4>
                     @if($event->is_presentation)
                         <a href="/e5n/presentations"><button class="btn btn-success">Előadás Jelentkezés</button></a>
                     @elseif ($event->capacity!=null)

@@ -34,7 +34,7 @@ Csapatok - E5N
                 <tr>
                     <th scope="row">Új csapat</th>
                     <td><input type="text" class="text" maxlength="13" placeholder="Példa Team"></td>
-                    <td><input type="text" class="text" maxlength="13" placeholder="apeldateamkod"></td>
+                    <td><input type="text" class="text" maxlength="13" placeholder="pelda-teamkod"></td>
                     <td colspan="2"><button class="btn btn-primary" type="submit">Új csapat</button></td>
                 </tr>
             </tbody>

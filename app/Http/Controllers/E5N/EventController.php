@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\Event as EventResource;
 use App\Event;
-use App\Rating;
 use App\User;
+use Error;
+use Exception;
 
 class EventController extends Controller
 {
@@ -51,46 +51,92 @@ class EventController extends Controller
     }
 
 
-    public function edit($eventCode){
-
-        $event = \App\Event::where('code',$eventCode)->firstOrFail();
-
+    public function edit(Request $request, $eventCode){
+        $event = \App\Event::withTrashed()->where('code',$eventCode)->firstOrFail();
         Gate::authorize('update',$event);
+        if($event->trashed() && !$request->user()->isAdmin()){
+            abort(403, 'Ez az esemény törölve lett, ha szervező vagy és szeretnéd visszaszerezni, akkor írj az e5n@e5vos.hu-ra.');
+        }
         return view('e5n.events.edit',["event" => $event]);
     }
 
     public function update(Request $request, $eventCode){
         $event = \App\Event::firstWhere('code',$eventCode);
         Gate::authorize('update',$event);
-
-        if(!$event->is_presentation){
-            abort(400);
+        if($event->code != $request->input('code')){
+            if(\App\Event::where('code',$request->input('code'))->exists()) {
+                throw new Error("Event code taken");
+            }
+            else {
+                $event->code = $request->input('code');
+            }
         }
 
-        if($event->code != $request->input('code') && !\App\Event::where('code',$request->input('code'))->exists()) $event->code = $request->input('code');
         $event->name = $request->input('name');
         $event->description = $request->input('description');
-        $event->weight = $request->input('weight');
-        $event->location_id = $request->input('location');
-        $event->start = $request->input('start');
-        $event->end = $request->input('end');
+        $starttime = strtotime($request->input('start'));
+        $endtime = strtotime($request->input('end'));
+
+        if ($starttime && $endtime && $endtime > $starttime){
+            $event->start = $request->input('start');
+            $event->end = $request->input('end');
+        }
+
         $event->organiser_name = $request->input('organiser_name');
-        $event->capacity = $request->input('capacity');
-        $event->slot = $request->input('slot') ;
-        $event->is_presentation = $request->input('is_presentation') == "on";
+
+        if($request->user()->isAdmin()){
+            $event->weight = $request->input('weight');
+            $event->capacity = $request->input('capacity');
+            $event->slot = $request->input('slot') ;
+            $event->location_id = $request->input('location');
+            $event->is_presentation = $request->input('is_presentation') == "on";
+        }
+
         $event->save();
 
-        return redirect()->route('event.show',$event->code);
+        return redirect()->route('event.edit',$event->code);
     }
 
-    public function destroy($presentationCode){
-        $presentation = \App\Event::firstWhere('code',$presentationCode);
-        Gate::authorize('destroy', $presentation);
-        $presentation->delete();
+    public function destroy($eventCode){
+        $event = \App\Event::where('code',$eventCode)->firstOrFail();
+        Gate::authorize('delete', $event);
+        $event->delete();
+        return redirect()->route('event.edit',$event->code);
+    }
+
+    public function restore($eventCode) {
+        $event = \App\Event::withTrashed()->where('code',$eventCode)->firstOrFail();
+        Gate::authorize('restore', $event);
+        $event->restore();
+        return redirect()->route('event.edit',$event->code);
     }
 
     public function show($eventCode){
-        return view('e5n.events.show');
+        return view('e5n.events.show',[
+            'event' => Event::where('code', $eventCode)->firstOrFail()
+        ]);
+    }
+
+    public function addOrganiser(Request $request, $eventCode)
+    {
+        $event = \App\Event::where('code',$eventCode)->firstOrFail();
+        Gate::authorize('update', $event);
+        try {
+            $user = User::where('email', $request->input('email'))->firstOrFail();
+        } catch (Exception){
+            return redirect()->route('event.edit', $eventCode);
+        }
+        $event->addOrganiser($user);
+        return redirect()->route('event.edit', $eventCode);
+    }
+
+    public function removeOrganiser(Request $request, $eventCode)
+    {
+        $event = \App\Event::where('code',$eventCode)->firstOrFail();
+        Gate::authorize('update', $event);
+        $user = User::findOrFail($request->input('orga'));
+        $event->removeOrganiser($user);
+        return redirect()->route('event.edit', $eventCode);
     }
 
     /**

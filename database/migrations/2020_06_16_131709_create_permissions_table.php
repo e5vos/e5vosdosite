@@ -17,11 +17,11 @@ class CreatePermissionsTable extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('event_id')->nullable();
-            $table->string('permission')->comment('For codes see documentation');
+            $table->enum('permission',['ORG', 'ADM'])->nullable()->comment('For codes see documentation');
 
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
         });
     }

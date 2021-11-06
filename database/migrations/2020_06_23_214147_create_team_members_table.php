@@ -18,7 +18,7 @@ class CreateTeamMembersTable extends Migration
             $table->timestamps();
             $table->integer('team_id');
             $table->integer('user_id');
-            $table->boolean('is_manager');
+            $table->boolean('is_manager')->default(false);
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');

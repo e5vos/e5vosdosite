@@ -12,8 +12,6 @@
 <title> @yield('title') </title>
 
     <!-- Scripts -->
-    <script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" ></script>
-
     <script src="/public/js/app.js" async defer> </script>
 
 

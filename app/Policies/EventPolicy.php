@@ -45,7 +45,7 @@ class EventPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update the event.
      *
      * @param  \App\User  $user
      * @param  \App\Event  $event
@@ -53,7 +53,7 @@ class EventPolicy
      */
     public function update(User $user, Event $event)
     {
-        return $user->isAdmin()  || $user->events()->get()->contains($event);//
+        return $user->isAdmin()  || $user->permissions()->where('event_id',$event->id)->exists();//
     }
 
     /**
@@ -65,7 +65,7 @@ class EventPolicy
      */
     public function delete(User $user, Event $event)
     {
-        return $user->isAdmin();//
+        return $user->isAdmin() || $event->organisers()->get()->contains($user);//
     }
 
     /**

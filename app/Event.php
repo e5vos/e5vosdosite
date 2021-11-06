@@ -99,4 +99,17 @@ class Event extends Model
         return $this->hasManyThrough(Student::class,EventSignup::class,'event_id','id','id','student_id');
     }
 
+    public function addOrganiser(User $user) {
+        if (!$this->organisers()->get()->contains($user)){
+            $user->permissions()->create([
+                'event_id' => $this->id,
+                'permission' => 'ORG',
+            ]);
+        }
+    }
+
+    public function removeOrganiser(User $user) {
+        $this->permissions()->where('users_id', $user->id)->delete();
+    }
+
 }

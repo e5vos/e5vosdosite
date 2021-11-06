@@ -72,6 +72,11 @@ Route::resource('e5n/event', \E5N\EventController::class);
 Route::resource('e5n/presentation', \E5N\PresentationController::class, ['only' => ['index'] ]);
 Route::resource('e5n/eventsignup', \E5N\EventSignupController::class, ['only' => ['index','store','destroy']]);
 
+Route::post('/e5n/event/{event_code}/restore', 'E5N\EventController@restore')->name('event.restore');
+
+Route::post('/e5n/event/{event_code}/organisers','E5N\EventController@addOrganiser')->name('event.organisers.add');
+Route::delete('/e5n/event/{event_code}/organisers','E5N\EventController@removeOrganiser')->name('event.organisers.remove');
+
 Route::get('/e5n/attendanceopener', 'E5N\PresentationController@attendanceOpener');
 Route::get('/e5n/presentations/attendance/{prescode}','E5N\PresentationController@attendanceViewer');
 Route::get('/e5n/presadmin','E5N\PresentationController@presAdmin');

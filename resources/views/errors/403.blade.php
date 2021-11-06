@@ -8,7 +8,11 @@
                 <div class="card-header">403</div>
 
                 <div class="card-body">
-                    Ehez az oldalhoz vagy be kell jelentkezned, vagy nincs jogosultságod hozzá.
+                    @if ($exception)
+                        {{$exception->getMessage()}}
+                    @else
+                        Ehhez az oldalhoz vagy be kell jelentkezned, vagy nincs jogosultságod hozzá.
+                    @endif
                 </div>
             </div>
         </div>

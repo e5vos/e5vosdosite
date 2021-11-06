@@ -45,5 +45,3 @@ Vue.use( CKEditor );
 const app = new Vue({
     el: '#app',
 });
-
-

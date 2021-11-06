@@ -153,7 +153,7 @@ class PresentationController extends Controller
             abort(403, "Student not authenticated");
         }
         $student = \App\User::find($student_id);
-        $presentation = \App\Presentation::find($request->input("presentation"));
+        $presentation = \App\Event::find($request->input("presentation"));
         $student->signUp($presentation);
     }
 
@@ -179,9 +179,7 @@ class PresentationController extends Controller
      * @return void
      */
     public function getSelectedPresentations(Request $request){
-        return response()->json(
-            Auth::User()->presentations()->get()
-        );
+        return Auth::User()->presentations()->get();
     }
 
 
@@ -193,7 +191,7 @@ class PresentationController extends Controller
      */
     public function nemjelentkezett($slot){
         //Gate::authorize('e5n-admin');
-        return \App\User::whereDoesntHave('presentations', function ($query) use ($slot) {
+        return \App\User::whereDoesntHave('events', function ($query) use ($slot) {
             $query->where('slot',$slot);
         })->get();
     }
@@ -206,12 +204,12 @@ class PresentationController extends Controller
      */
     public function fillUpPresentation(Request $request) {
         Gate::authorize('e5n-admin');
-        Presentation::find($request->input('presentation'))->fillUp();
+        \App\Event::find($request->input('presentation'))->fillUp();
     }
 
     public function fillUpAllPresentation() {
         Gate::authorize('e5n-admin');
-        foreach (\App\Presentation::all() as $presentation) {
+        foreach (\App\Event::all() as $presentation) {
             $presentation->fillUp();
         }
     }

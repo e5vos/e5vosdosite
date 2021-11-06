@@ -86,9 +86,9 @@ class Event extends Model
         if (!$this->is_presentation){
             abort(403,'Sajnos ezen az eseményen való részvételre nem lehet kötelezni a diákokat');
         }
-        $availalbeStudents = Student::where('allowed', true)->get()->reject(function(Student $student){
-            return $student->isBusy($this->slot);
-        })->take($this->capacity - $this->occupancy);
+        $availalbeStudents = User::whereDoesntHave('events',function($query){
+            $query->where('slot',$this->slot);
+        })->limit($this->capacity - $this->occupancy)->get();
         foreach($availalbeStudents as $student){
             $student->signUp($this);
         }

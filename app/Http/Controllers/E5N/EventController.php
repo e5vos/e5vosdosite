@@ -45,22 +45,11 @@ class EventController extends Controller
      * Returns the Json data for the specified event.
      *
      * @param  string $event_name
-     * @param  string $day
      * @return \Illuminate\Http\Resources\Json\EventResourceCollection
      */
-    public function event_data($day, $event_name)
+    public function event_data( $event_name)
     {
-        $day = strtolower(strtok($day, '%20'));
-        $day = [
-            "hetfő" => 0,
-            "kedd" => 1,
-            "szerda" => 2,
-            "csütörtök" => 3,
-            "péntek" => 4,
-            "szombat" => 5,
-            "vasárnap" => 6
-        ][$day];
-        return Event::where('name', '=', $event_name)->whereRaw('WEEKDAY(`start`)', '=', $day)->get();
+        return Event::firstWhere('name', $event_name);
     }
 
     /** Returns the events with the specified weight.

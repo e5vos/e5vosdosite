@@ -19,7 +19,7 @@ class CreateTeamsTable extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->integer('admin_id');
-            $table->foreign('admin_id')->references('id')->on('students')->onDelete('cascade');
+            $table->foreign('admin_id')->references('id')->on('users')->onDelete('set null');
 
         });
     }

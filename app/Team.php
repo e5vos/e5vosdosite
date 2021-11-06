@@ -12,25 +12,6 @@ class Team extends Model
 
     use HasFactory;
 
-    /**
-     * Members of this team
-     */
-    public function members(){
-        return $this->hasMany(Team_Member::class);
-    }
-    /**
-     * Scores of this team
-     */
-    public function scores(){
-        return $this->hasMany(Score::class);
-    }
-    /**
-     * Administator user for the team
-     */
-    public function admin(){
-        return $this->belongsTo(Student::class);
-    }
-
 
     /**
      * The size of the team
@@ -52,13 +33,13 @@ class Team extends Model
     }
 
     /**
-     * Returns Member object from id
+     * Returns whether $member is in team
      *
-     * @param  int $member Member's id
-     * @return Member
+     * @param \App\User $member
+     * @return bool
      */
-    public function member($member){
-        return $this->members()->where('id',$member);
+    public function isMember(\App\User $member){
+        return $this->members()->contains($member);
     }
 
 
@@ -68,9 +49,9 @@ class Team extends Model
      * @param  int $member New member's id
      * @return void
      */
-    public function add($member){
-        if(!$this->member($member)){
-            $this->members()->create(['student_id'=>$member])->save();
+    public function add(\App\User $member){
+        if(!$this->isMember($member)){
+            $this->members()->create(['user'=>$member->id])->save();
         }
     }
 
@@ -81,5 +62,28 @@ class Team extends Model
      */
     public function remove($member){
         $this->member($member)->delete();
+    }
+
+     /**
+     * Members of this team
+     */
+    public function memberships(){
+        return $this->hasMany(Team_Member::class);
+    }
+
+    public function members(){
+        return $this->hasManyThrough(User::class, Team_Member::class, 'team_id','id','id','user_id');
+    }
+    /**
+     * Scores of this team
+     */
+    public function scores(){
+        return $this->hasMany(Score::class);
+    }
+    /**
+     * Administator user for the team
+     */
+    public function admin(){
+        return $this->belongsTo(Student::class);
     }
 }

@@ -23,7 +23,7 @@ class EventFactory extends Factory
         return [
             'code' => $this->faker->unique()->regexify('[A-Za-z0-9]{4}'),
             'name' => $this->faker->word(),
-            'description' => $this->faker->paragraph,
+            'description' => $this->faker->paragraph(),
             'location_id' => $this->faker->boolean(20) ? null : $this->faker->numberBetween(0,40),
             'start'=> $this->faker->dateTimeBetween('Y-m-d', '-1 day', '+1 day'),
             'end'=> $this->faker->dateTimeBetween('Y-m-d','-1 day','+1 day'),

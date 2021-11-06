@@ -8,9 +8,8 @@ use App\Models\{
     Permission,
     Setting
 };
-use Illuminate\Support\Facades\{
-    Request
-};
+
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {

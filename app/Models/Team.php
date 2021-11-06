@@ -58,21 +58,34 @@ class Team extends Model
     /**
      * Remove member from team, based on id
      *
-     * @param  int $member
+     * @param  TeamMember $member
+     * @return bool whether the team continues to exist
      */
-    public function remove($member){
-        $this->member($member)->delete();
+    public function removeMemberShip(TeamMember $member){
+        $member->delete();
+        if($this->size()==0){
+            $this->delete();
+            return false;
+        }
+        else if($this->admins()->count()==0){
+            $this->memberships()->update(['role'=>'manager']);
+            return true;
+        }
+    }
+
+    public function removeMember(User $user){
+        return $this->removeMemberShip($user->teamMemberships()->firstWhere('team_id',$this->id));
     }
 
      /**
      * Members of this team
      */
     public function memberships(){
-        return $this->hasMany(Team_Member::class);
+        return $this->hasMany(TeamMember::class);
     }
 
     public function members(){
-        return $this->hasManyThrough(User::class, Team_Member::class, 'team_id','id','id','user_id');
+        return $this->hasManyThrough(User::class, TeamMember::class, 'team_id','id','id','user_id');
     }
     /**
      * Scores of this team
@@ -84,6 +97,20 @@ class Team extends Model
      * Administator user for the team
      */
     public function admins(){
-        return $this->members()->where('is_manager',true);
+        return $this->members()->where('role',"manager");
     }
+
+    /**
+     *
+     * @return TeamMember newly created membership
+     */
+    public function addMember(User $user, $role="member"){
+        $teamMember = new TeamMember();
+        $teamMember->team()->associate($this);
+        $teamMember->user()->associate($user);
+        $teamMember->role=$role;
+        $teamMember->save();
+        return $teamMember;
+    }
+
 }

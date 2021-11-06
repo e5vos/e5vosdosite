@@ -24,6 +24,7 @@ class TeamMemberFactory extends Factory
         return [
             'team_id' => $this->faker->numberBetween(0,69),
             'user_id' => $this->faker->numberBetween(0,420),
+            'role' => $this->faker->randomElement(['applicant','member','manager']),
 
         ];
     }

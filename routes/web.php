@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\E5N\TeamController;
 use Google\Service\AndroidPublisher\UserComment;
 use Illuminate\Support\Facades\Route;
 
@@ -26,7 +27,8 @@ Route::post('/logout', 'Auth\AuthController@logout' );
 Route::get('auth/{provider?}', 'Auth\AuthController@redirect')->name("auth");
 Route::get('auth/{provider}/callback', 'Auth\AuthController@callback');
 
-Route::resource('user', \Auth\UserController::class, ['only' => ['index', 'edit', 'destroy']]);
+Route::resource('user', \Auth\UserController::class, ['only' => ['edit','update','destroy']]);
+
 
 // Login redirection waiter
 Route::get('/home', 'HomeController@index')->name('home');
@@ -69,8 +71,22 @@ Route::get('/settings','HomeController@settingsView');
 
 
 Route::resource('e5n/event', \E5N\EventController::class);
+Route::resource('e5n/team',\E5N\TeamController::class);
 Route::resource('e5n/presentation', \E5N\PresentationController::class, ['only' => ['index'] ]);
 Route::resource('e5n/eventsignup', \E5N\EventSignupController::class);
+
+
+
+Route::post('e5n/team/{team}/member','E5N\TeamController@manageMember')->name('team.member.manage');
+
+Route::post('e5n/team/{team}/leave','E5N\TeamController@leave')->name('team.member.leave');
+
+
+Route::delete('e5n/team','E5N\TeamController@delete')->name('team.delete');
+
+
+Route::get('/qr/{code}', 'WelcomeController@qr')->name("qr.code");
+
 
 Route::get('/e5n/attendanceopener', 'E5N\PresentationController@attendanceOpener');
 Route::get('/e5n/presentations/attendance/{prescode}','E5N\PresentationController@attendanceViewer');

@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\EventSignup;
-use App\User;
+use App\Models\EventSignup;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EventSignupPolicy
@@ -41,7 +41,7 @@ class EventSignupPolicy
      */
     public function create(User $user)
     {
-        //
+        return true;//
     }
 
     /**
@@ -65,7 +65,7 @@ class EventSignupPolicy
      */
     public function delete(User $user, EventSignup $eventSignup)
     {
-        //
+        return $user->isAdmin() || $eventSignup->user()->is($user);//
     }
 
     /**

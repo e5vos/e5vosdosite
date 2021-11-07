@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\PresentationSignup;
+use App\Models\PresentationSignup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EventSignupFactory extends Factory

@@ -1,18 +1,14 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
-class Help extends Model
+class Location extends Model
 {
     use HasFactory;
-    protected $table = 'helps' ;
-
-
-    public function getSos() {
-        //
+    public function events(){
+        return $this->hasMany(Event::class);
     }
 }

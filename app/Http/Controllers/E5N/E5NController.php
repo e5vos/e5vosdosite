@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers\E5N;
 
-use App\EJGClass;
-use App\Event;
-use App\Presentations;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\{
+    Controller
+};
+
+use App\Models\{
+    EJGClass,
+    Event
+};
+
 use Illuminate\Http\Request;
-use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\Gate;
+
+use Illuminate\Support\Facades\{
+    Gate
+};
+
 use Endroid\QrCode;
 
-
-use App\Http\Resources\Student as StudentResource;
-use App\Score;
 
 class E5NController extends Controller
 {
@@ -22,7 +27,7 @@ class E5NController extends Controller
         return view('e5n.presentations');
     }
     public function attendancesheet($code){
-        $presentation = \App\Presentation::where('code',$code);
+        $presentation = Event::where('code',$code);
         return view('e5n.attendance',[
             'students' => $presentation->students()->get(), // contains student data
             'signups' => $presentation->signups()->get(), // contains attendance bool
@@ -35,7 +40,7 @@ class E5NController extends Controller
 
     public function home(){
         return view('e5n.home',[
-            "classes" => \App\EJGClass::limit(10)->get()
+            "classes" => EJGClass::limit(10)->get()
         ]);
     }
 
@@ -49,17 +54,10 @@ class E5NController extends Controller
 
     public function reset(){
         Gate::authorize('e5n-admin');
-        \App\Student::updatedatabase();
-        \App\Presentation::query()->truncate();
+        Event::query()->truncate();
         Event::query()->truncate();
 
         return view('e5n.reset');
-    }
-
-    public function codes(){
-        return view('e5n.codes',[
-            'students' => \App\Student::all()
-        ]);
     }
 
 

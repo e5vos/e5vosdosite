@@ -2,14 +2,27 @@
 
 namespace App\Http\Controllers\E5N;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\{
+    Controller
+};
+
+
+use App\Models\{
+    Event,
+    User,
+};
+
+use App\Exception;
+use App\Exceptions\DuplicateCodeException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Auth;
-use App\Event;
-use App\User;
-use Error;
-use Exception;
+
+
+use Illuminate\Support\Facades\{
+    Gate,
+    Auth,
+};
+
 
 class EventController extends Controller
 {
@@ -52,7 +65,9 @@ class EventController extends Controller
 
 
     public function edit(Request $request, $eventCode){
-        $event = \App\Event::withTrashed()->where('code',$eventCode)->firstOrFail();
+
+        $event = Event::withTrashed()->where('code',$eventCode)->firstOrFail();
+
         Gate::authorize('update',$event);
         if($event->trashed() && !$request->user()->isAdmin()){
             abort(403, 'Ez az esemény törölve lett, ha szervező vagy és szeretnéd visszaszerezni, akkor írj az e5n@e5vos.hu-ra.');
@@ -61,17 +76,20 @@ class EventController extends Controller
     }
 
     public function update(Request $request, $eventCode){
-        $event = \App\Event::firstWhere('code',$eventCode);
+        $event = Event::firstWhere('code',$eventCode);
         Gate::authorize('update',$event);
         if($event->code != $request->input('code')){
             if(\App\Event::where('code',$request->input('code'))->exists()) {
-                throw new Error("Event code taken");
+                throw new DuplicateCodeException("Event code taken");
             }
             else {
                 $event->code = $request->input('code');
             }
         }
 
+        if($event->code != $request->input('code') && !Event::where('code',$request->input('code'))->exists()){
+            $event->code = $request->input('code');
+        }
         $event->name = $request->input('name');
         $event->description = $request->input('description');
         $starttime = strtotime($request->input('start'));
@@ -98,7 +116,7 @@ class EventController extends Controller
     }
 
     public function destroy($eventCode){
-        $event = \App\Event::where('code',$eventCode)->firstOrFail();
+        $event = Event::where('code',$eventCode)->firstOrFail();
         Gate::authorize('delete', $event);
         $event->delete();
         return redirect()->route('event.edit',$event->code);
@@ -119,11 +137,11 @@ class EventController extends Controller
 
     public function addOrganiser(Request $request, $eventCode)
     {
-        $event = \App\Event::where('code',$eventCode)->firstOrFail();
+        $event = Event::where('code',$eventCode)->firstOrFail();
         Gate::authorize('update', $event);
         try {
             $user = User::where('email', $request->input('email'))->firstOrFail();
-        } catch (Exception){
+        } catch (ModelNotFoundException){
             return redirect()->route('event.edit', $eventCode);
         }
         $event->addOrganiser($user);
@@ -165,8 +183,8 @@ class EventController extends Controller
         return Event::currentEvents();
     }
 
-    public function slot($slot){
-        return Event::where('slot',$slot)->get();
+    public function presentationSlot($slot){
+        return Event::where('is_presentation',true)->where('slot',$slot)->get();
     }
 
     public function rate(Request $request){
@@ -175,7 +193,7 @@ class EventController extends Controller
          */
         $user = Auth::user();
         if($user != null){
-            $user->rate(\App\Event::find($request->input('event_id')),$request->input('rating'));
+            $user->rate(Event::find($request->input('event_id')),$request->input('rating'));
         }
     }
 }

@@ -2,10 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\BonusPoint;
-use App\Permission;
-use App\PresentationSignup;
-use App\Providers\EventServiceProvider;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder

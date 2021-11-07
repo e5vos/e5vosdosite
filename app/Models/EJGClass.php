@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,14 +28,14 @@ class EJGClass extends Model
     public static function calculatePoints(){
         $ejgclasses = EJGClass::all();
 
-        foreach($ejgclasses as $ejgclassid => &$ejgclass){
+        foreach($ejgclasses as $ejgclass){
             $ejgclass->points = $ejgclass->bonuspoints()->where('event','E5N')->sum();
-            foreach($ejgclass->students() as $studentid => &$student){
-                foreach($student->scores() as $scoreid => &$score){
+            foreach($ejgclass->students() as $student){
+                foreach($student->scores() as $score){
                     $ejgclass->points += $score->place*$score->event()->weight*Setting::firstWhere('key','e5nBasePoint')->get()->value();
                 }
-                foreach($student->teams() as $teamid => &$team){
-                    foreach($team->scores() as $scoreid =>&$score){
+                foreach($student->teams() as $team){
+                    foreach($team->scores() as $score){
                         $ejgclass->points += $score->place*$score->event()->weight*$team->sizeModifier()*Setting::firstWhere('key','e5nBasePoint')->get()->value();
                     }
                 }

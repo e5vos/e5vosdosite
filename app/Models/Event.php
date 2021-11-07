@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,10 +34,6 @@ class Event extends Model
 
     public static function currentEvents(){
         return Event::where('start','<' ,now())->where('end','>',now())->get();
-    }
-
-    public function image(){
-        return DBImage::find($this->image_id);
     }
 
     public function permissions(){

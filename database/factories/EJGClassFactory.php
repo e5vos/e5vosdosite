@@ -1,7 +1,7 @@
 <?php
 namespace Database\Factories;
 
-use App\EJGClass;
+use App\Models\EJGClass;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EJGClassFactory extends Factory

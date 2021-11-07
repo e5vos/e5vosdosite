@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Score;
+use App\Models\Score;
 
 class ScoreSeeder extends Seeder
 {

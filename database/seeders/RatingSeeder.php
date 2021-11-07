@@ -3,7 +3,11 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Rating;
+
+use App\Models\{
+    Rating,
+    Event
+};
 
 class RatingSeeder extends Seeder
 {
@@ -14,7 +18,7 @@ class RatingSeeder extends Seeder
      */
     public function run()
     {
-        foreach(\App\Event::all() as $event){
+        foreach(Event::all() as $event){
                 Rating::factory(10)->create(['event_id' => $event->id]);
         }
     }

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Rating;
+use App\Models\Rating;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RatingFactory extends Factory

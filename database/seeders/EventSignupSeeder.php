@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-
+use App\Models\Event;
 class EventSignupSeeder extends Seeder
 {
     /**
@@ -13,7 +13,7 @@ class EventSignupSeeder extends Seeder
      */
     public function run()
     {
-        foreach (\App\Event::where('is_presentation',true)->get() as $presentation) {
+        foreach (Event::where('is_presentation',true)->get() as $presentation) {
             $presentation->fillUp();
         }
     }

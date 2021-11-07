@@ -47,18 +47,28 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('auth.login') }}</a>
+                                <a class="nav-link" href="{{route('login')}}">{{ __('auth.login') }}</a>
                             </li>
                         @else
+                            @if(Auth::user()->ejgClass==null)
                             <li class="nav-item">
-                                <a href="{{ route('home')}}">Bejelentkezve mint {{ Auth::user()->user_name }}</a>
+                                <div class="align-bottom alert alert-danger">
+                                    <a class="alert-link" style="color:red" href="{{route('user.edit',Auth::user()->id)}}"> Add meg az osztályod </a>
+                                </div>
+                            </li>
+                            @endif
+                            <li class="nav-item">
+                                <a class="navbar-text" href="#">Bejelentkezve mint {{ Auth::user()->user_name }}</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
+
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('user.edit',Auth::user()->id) }}">Profil szerkesztése</a>
+                                    <a class="dropdown-item" href="{{ route('login') }}">Átjelentkezés másik fiókba</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

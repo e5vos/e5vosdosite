@@ -6,7 +6,7 @@ Felhasználói Profil - Eötvös Dö
 
 
 @php
-    $msg="classRequired"
+    if($user->ejgClass == null) $msg="classRequired"
 @endphp
 
 @section('content')
@@ -23,25 +23,26 @@ Felhasználói Profil - Eötvös Dö
         @endswitch
     @endif
 
-    <form action="/user" method="PUT">
+    <form action="{{route('user.update',$user->id)}}" method="POST">
         @csrf
+        <input type="hidden" name="_method" value="PUT">
         <div class="form-group">
             <label for="fullName">Név</label>
-            <input type="text" class="form-control" name="fullName" id="fullName" disabled value="Kovács Béla">
+            <input type="text" class="form-control" name="fullName" id="fullName" disabled value="{{$user->name}}">
         </div>
         <div class="form-group">
             <label for="emailAddr">Email</label>
-            <input type="text" class="form-control" name="emailAddr" id="emailAddr"  disabled value="kovacs.bela@e5vos.hu"/>
+            <input type="text" class="form-control" name="emailAddr" id="emailAddr"  disabled value="{{$user->email}}"/>
         </div>
         <div class="form-group">
             <label for="ejgClass">Osztály</label>
-            @if (Auth::user()->ejgClass)
+            @if ($user->ejgClass && !Auth::user()->isAdmin())
                 <select name="ejgClass" id="ejgClass" class="form-control" readonly disabled>
-                    <option value="{{Auth::user()->ejgClass->name}}">{{Auth::user()->ejgClass->name}}</option>
+                    <option value="{{$user->ejgClass->name}}">{{$user->ejgClass->name}}</option>
                 </select>
             @else
                 <select name="ejgClass" id="ejgClass" class="form-control">
-                    @foreach (\App\EJGClass::all() as $ejgclass )
+                    @foreach ($classes as $ejgclass )
                         <option value="{{$ejgclass->id}}">{{$ejgclass->name}}</option>
                     @endforeach
                 </select>
@@ -55,8 +56,9 @@ Felhasználói Profil - Eötvös Dö
             <button type="submit" class="btn btn-primary">Adatok frissítése</button>
         </div>
     </form>
-    <form action="/user" method="DELETE">
+    <form action="{{route('user.destroy',$user->id)}}" method="POST">
         @csrf
+        <input type="hidden" name="_method" value="DELETE">
         <div class="form-group">
             <button type="submit" class="btn btn-danger">Profil törlése</button>
         </div>

@@ -13,7 +13,5 @@ yarn-error.log
 /public/svg
 .idea
 .public
-composer.lock
 .env.testing
-composer.lock
 public/js/app.js

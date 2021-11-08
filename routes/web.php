@@ -57,11 +57,6 @@ Route::get('/e5n/admin','E5N\E5NController@admin');
 Route::put('e5n/admin/presentation/{presentation}/attendance','E5N\Admin\PresentationAdminController@setAttendance');
 
 
-// E5N presentation signup page
-//Route::get('/e5n/presentations','E5N\PresentationController@presentations');
-
-
-
 
 Route::get('/e5n/scanner','E5N\EventController@scanner')->middleware('auth');
 Route::get('/e5n/codes','E5N\E5NController@codes');
@@ -74,7 +69,7 @@ Route::resource('e5n/event', \E5N\EventController::class);
 Route::resource('e5n/team',\E5N\TeamController::class);
 Route::resource('e5n/presentation', \E5N\PresentationController::class, ['only' => ['index'] ]);
 Route::resource('e5n/eventsignup', \E5N\EventSignupController::class);
-Route::resource('e5n/admin/presentation',\E5N\Admin\PresentationAdminController::class);
+Route::resource('e5n/admin/presentation',\E5N\Admin\PresentationAdminController::class, ["as" => "admin"]);
 
 
 Route::post('e5n/team/{team}/member','E5N\TeamController@manageMember')->name('team.member.manage');

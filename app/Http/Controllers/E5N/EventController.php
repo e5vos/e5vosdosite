@@ -9,6 +9,7 @@ use App\Http\Controllers\{
 
 use App\Models\{
     Event,
+    Rating,
     User,
 };
 
@@ -31,7 +32,18 @@ class EventController extends Controller
 
     public function index()
     {
-        return view('e5n.events.index');
+        if (Cache::has('e5n.eventList')){ $events = Cache::get('e5n.eventList');}
+        else {
+            $events = Event::orderByRAW('WEEKDAY(`start`)')->get()->groupBy(function($event){
+                return $event->start->dayOfWeek;
+            });
+            Cache::put('e5n.eventList', $events, now()->addMinute());
+        }
+
+        return view('e5n.events.index',[
+            'events' => $events
+        ]
+    );
     }
 
 
@@ -80,7 +92,7 @@ class EventController extends Controller
         $event = Event::firstWhere('code',$eventCode);
         Gate::authorize('update',$event);
         if($event->code != $request->input('code')){
-            if(\App\Event::where('code',$request->input('code'))->exists()) {
+            if(Event::where('code',$request->input('code'))->exists()) {
                 throw new DuplicateCodeException("Event code taken");
             }
             else {
@@ -131,9 +143,8 @@ class EventController extends Controller
     }
 
     public function show($eventCode){
-        return view('e5n.events.show',[
-            'event' => Event::where('code', $eventCode)->firstOrFail()
-        ]);
+
+        return view('e5n.events.show', ['code'=>$eventCode]);
     }
 
     public function addOrganiser(Request $request, $eventCode)
@@ -159,14 +170,19 @@ class EventController extends Controller
     }
 
     /**
-     * Returns the specified event.
+     * Returns the specified eventdata.
      *
      * @param  string $event_name
      * @return \Illuminate\Http\Resources\Json\EventResourceCollection
      */
-    public function eventData($code)
+    public function event_data($eventCode)
     {
-        return Event::where('code', $code)->firstOrFail();
+        if (Cache::has('e5n.event.' . $eventCode)) {$event = Cache::get('e5n.event.' . $eventCode);}
+        else {
+            $event = Event::where('code',$eventCode)->firstOrFail();
+            Cache::put('e5n.event.' . $eventCode, $event, now()->addMinutes(3));
+        }
+        return $event;
     }
 
     /** Returns the events with the specified weight.
@@ -196,7 +212,6 @@ class EventController extends Controller
             return Cache::get('e5n.events.presentations.'.$slot);
         }
     }
-
     public function rate(Request $request, $eventCode){
         $event = Event::where('code')->firstOrFail();
         Gate::authorize('rateEvent',$event);

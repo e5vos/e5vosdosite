@@ -47,6 +47,14 @@ const app = new Vue({
 });
 
 
-window.e5n.admin.presentations.attendance.toggle = function(){
-    console.log("asd")
-}
+$('.table-switcher').on('click',function(){
+    var group = $(this).data('switchgroup');
+    var target = $(this).data('target');
+    console.log()
+    for(let i = 0; i<$("."+group).length; i++){
+        $("."+group)[i].style.display='none';
+    }
+    document.getElementsByClassName(group)[target].style.display = '';
+})
+
+

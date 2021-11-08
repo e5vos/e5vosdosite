@@ -1436,7 +1436,7 @@ var QRCode;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\projects\e5vosdosite\resources\js\qrcreator.js */"./resources/js/qrcreator.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\e5vosdosite\resources\js\qrcreator.js */"./resources/js/qrcreator.js");
 
 
 /***/ })

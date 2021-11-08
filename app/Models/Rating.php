@@ -17,6 +17,7 @@ class Rating extends Model
 
     protected $table = 'ratings';
     protected $hidden = ['created_at','updated_at'];
+    protected $guarded = [];
 
     /**
      * Returns the user who added the rating.

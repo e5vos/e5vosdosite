@@ -6,22 +6,36 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
+use \Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Event extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use HasRelationships;
 
     protected $table = 'events';
 
     protected $dates = ['start','end'];
 
-    protected $appends = ['occupancy'];
+    protected $appends = ['occupancy', 'rating', 'orgaClasses', 'userRating'];
 
     protected $casts = ['start' => 'datetime:G:i', 'end' => 'datetime:G:i'];
 
     public function getOccupancyAttribute(){
         return $this->signups()->count();
+    }
+
+    public function getRatingAttribute(){
+        return round($this->ratings()->pluck('value')->avg(), 1);
+    }
+    public function getOrgaClassesAttribute(){
+        return $this->hasManyDeep(EJGClass::class, [Permission::class, User::class],['event_id','id','id'],['id','user_id','class_id'])->pluck('ejg_classes.name')->unique();
+    }
+
+    public function getUserRatingAttribute(){
+        return Rating::where('user_id',  Auth::id())->where('event_id', $this->id)->pluck('value');
     }
 
     public function getOrgaCount(){

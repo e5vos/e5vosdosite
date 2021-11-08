@@ -29,6 +29,11 @@ Route::get('/e5n/presentation/{id}','E5N\EventController@show');
 // Get Ongoing events
 Route::get('/e5n/events/ongoing', 'E5N\EventController@ongoing');
 
+// Get Specific Event(excl. Presentations)
+Route::get('e5n/event/{event_code}', 'E5N\EventController@event_data');
+
+// Rate the specified event
+Route::post('/e5n/event/{event_code}/rate/{value}', 'E5N\EventController@rate');
 // Get the presentation list
 Route::get('/e5n/student/presentations/','E5N\EventSignupController@getSelectedPresentations') ;
 

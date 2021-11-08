@@ -10,9 +10,12 @@ use App\Models\{
 };
 
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Hash;
 
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\{
+    Hash,
+    Auth,
+    URL,
+};
 
 
 class AuthController extends Controller{

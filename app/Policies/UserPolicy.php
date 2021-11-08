@@ -52,7 +52,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        return $user->is($model);//
+        return $user->isAdmin() || $user->is($model);//
     }
 
     /**

@@ -15,6 +15,7 @@ use App\Models\{
 
 use App\Exception;
 use App\Exceptions\DuplicateCodeException;
+use App\Http\Resources\EventResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -132,19 +133,31 @@ class EventController extends Controller
         $event = Event::where('code',$eventCode)->firstOrFail();
         Gate::authorize('delete', $event);
         $event->delete();
-        return redirect()->route('event.edit',$event->code);
+        Cache::forget('e5n.event.'.$eventCode);
+        return redirect()->route('event.edit',$eventCode);
     }
 
     public function restore($eventCode) {
         $event = Event::withTrashed()->where('code',$eventCode)->firstOrFail();
         Gate::authorize('restore', $event);
         $event->restore();
+        Cache::forget('e5n.event.'.$eventCode);
         return redirect()->route('event.edit',$event->code);
     }
 
-    public function show($eventCode){
-
-        return view('e5n.events.show', ['code'=>$eventCode]);
+    public function show(Request $request, $eventCode){
+        $event = Event::where('code',$eventCode)->firstOrFail();
+        $eventResource = new EventResource($event);
+        if(Auth::check()){
+            $userRating = $request->user()->ratings()->whereBelongsTo($event)->first()->value;
+        }else{
+            $userRating = $event->rating;
+        }
+        return view('e5n.events.show', [
+            'event'=>$eventResource,
+            'isUser' => Auth::check() ? "true" : "false",
+            'userRating' => $userRating,
+        ]);
     }
 
     public function addOrganiser(Request $request, $eventCode)
@@ -177,9 +190,9 @@ class EventController extends Controller
      */
     public function event_data($eventCode)
     {
-        if (Cache::has('e5n.event.' . $eventCode)) {$event = Cache::get('e5n.event.' . $eventCode);}
+        if (false && Cache::has('e5n.event.' . $eventCode)) {$event = Cache::get('e5n.event.' . $eventCode);}
         else {
-            $event = Event::where('code',$eventCode)->firstOrFail();
+            $event = new EventResource(Event::where('code',$eventCode)->firstOrFail());
             Cache::put('e5n.event.' . $eventCode, $event, now()->addMinutes(3));
         }
         return $event;
@@ -213,8 +226,8 @@ class EventController extends Controller
         }
     }
     public function rate(Request $request, $eventCode){
-        $event = Event::where('code')->firstOrFail();
-        Gate::authorize('rateEvent',$event);
+        $event = Event::where('code',$eventCode)->firstOrFail();
+        Gate::authorize('rate',$event);
         $request->user()->rate($event,$request->input('rating'));
     }
 }

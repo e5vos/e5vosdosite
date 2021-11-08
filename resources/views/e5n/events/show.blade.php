@@ -5,5 +5,5 @@
 @endsection
 
 @section('content')
-    <show-event :eventcode="'{{$code}}'">
+    <show-event :user='{{$isUser}}' :user-rating='{{$userRating}}' :event='@json($event)' >
 @endsection

@@ -7838,53 +7838,52 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      user: false,
+      userRating: 5,
       event: {
-        userRating: 10
-      },
-      ongoing: []
+        rating: 5
+      }
     };
   },
+  created: function created() {
+    this.event = this.$attrs.event;
+    this.user = this.$attrs.user;
+    this.userRating = this.$attrs.user - rating;
+  },
   mounted: function mounted() {
-    this.eventcode = this.$attrs.eventcode;
-    this.fetchEvent();
-    this.fetchOngoing();
-    setInterval(this.fetchEvent(), 5000);
+    setInterval(this.fetchEvent, 10000);
   },
   methods: {
     fetchEvent: function fetchEvent() {
-      var _arguments = arguments,
-          _this = this;
+      var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var eventcode, requestOptions, res;
+        var requestOptions, res;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                eventcode = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : _this.eventcode;
                 requestOptions = {
                   method: "GET"
                 };
-                _context.next = 4;
-                return fetch('/api/e5n/event/' + _this.eventcode, requestOptions);
+                _context.next = 3;
+                return fetch('/api/e5n/event/' + _this.event.code, requestOptions);
 
-              case 4:
+              case 3:
                 res = _context.sent;
-                _context.next = 7;
+                _context.next = 6;
                 return res.json();
 
-              case 7:
+              case 6:
                 _this.event = _context.sent;
+                _this.event = _this.event.data;
 
-              case 8:
+                _this.$forceUpdate();
+
+              case 9:
               case "end":
                 return _context.stop();
             }
@@ -7892,7 +7891,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee);
       }))();
     },
-    fetchOngoing: function fetchOngoing() {
+    rate: function rate() {
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
@@ -7901,57 +7900,36 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                requestOptions = {
-                  method: "GET"
-                };
-                _context2.next = 3;
-                return fetch('/api/e5n/events/ongoing', requestOptions);
+                if (_this2.user) {
+                  _context2.next = 2;
+                  break;
+                }
 
-              case 3:
+                return _context2.abrupt("return");
+
+              case 2:
+                requestOptions = {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": window.Laravel.csrfToken
+                  },
+                  body: JSON.stringify({
+                    rating: _this2.userRating
+                  })
+                };
+                _context2.next = 5;
+                return fetch('/api/e5n/event/' + _this2.event.code + "/rate", requestOptions);
+
+              case 5:
                 res = _context2.sent;
-                _context2.next = 6;
-                return res.json();
 
               case 6:
-                _this2.ongoing = _context2.sent;
-
-              case 7:
               case "end":
                 return _context2.stop();
             }
           }
         }, _callee2);
-      }))();
-    },
-    fetchRate: function fetchRate() {
-      var _this3 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-        var requestOptions;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                requestOptions = {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": window.Laravel.csrfToken
-                  }
-                };
-                console.log(_this3.eventcode);
-                _context3.next = 4;
-                return fetch('/api/e5n/event/' + _this3.eventcode + '/rate/' + _this3.event.userRating, requestOptions);
-
-              case 4:
-                _this3.fetchEvent();
-
-              case 5:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
       }))();
     }
   }
@@ -45013,7 +44991,7 @@ var render = function() {
               ? _c(
                   "a",
                   {
-                    attrs: { href: "/e5n/locations/" + _vm.event.location_id }
+                    attrs: { href: "/e5n/locations/" + _vm.event.location.id }
                   },
                   [
                     _c("h4", [
@@ -45028,75 +45006,62 @@ var render = function() {
                   _vm._v("Szervező(k): " + _vm._s(_vm.event.organiser_name))
                 ])
               : _vm._l(_vm.event.organisers, function(orga) {
-                  return _c("h4", { key: orga })
+                  return _c("h4", { key: orga }, [_vm._v(_vm._s(orga))])
                 }),
-            _c("br"),
-            _vm._v(" "),
-            _vm.event.is_presentation
-              ? _c("a", { attrs: { href: "/e5n/presentations" } }, [
-                  _c("button", { staticClass: "btn btn-success" }, [
-                    _vm._v("Előadás Jelentkezés")
-                  ])
-                ])
-              : _vm.event.capacity != null
-              ? _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-success",
-                    attrs: { onclick: "signUpFunc" }
-                  },
-                  [_vm._v("Jelentkezés!")]
-                )
-              : _vm._e()
+            _c("br")
           ],
           2
         )
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col-md-3" }, [
-        _c(
-          "div",
-          { staticClass: "jumbotron text-center h-90 align-middle" },
-          [
-            _c("h2", [_vm._v("Értékelés:")]),
-            _c("br"),
-            _vm._v(" "),
-            _c("h1", [_vm._v(_vm._s(_vm.event.rating) + "/10")]),
-            _vm._v(" "),
-            _c("br"),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "form-range form-fluid",
-              attrs: { type: "range", min: "1", max: "10" },
-              domProps: { value: _vm.event.userRating }
-            }),
-            _vm._v(" "),
-            _c(
-              "button",
+        _c("div", { staticClass: "jumbotron text-center h-90 align-middle" }, [
+          _c("h2", [_vm._v("Értékelés:")]),
+          _c("br"),
+          _vm._v(" "),
+          _c("h1", [_vm._v(_vm._s(_vm.event.rating) + "/10")]),
+          _vm._v(" "),
+          _c("br"),
+          _vm._v(" "),
+          _vm.user
+            ? _c(
+                "label",
+                { staticClass: "form-label", attrs: { for: "ratingRange" } },
+                [_vm._v(_vm._s(_vm.userRating) + "/10")]
+              )
+            : _c(
+                "label",
+                { staticClass: "form-label", attrs: { for: "ratingRange" } },
+                [_vm._v("Az értékeléshez be kell jelentkezned!")]
+              ),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
               {
-                staticClass: "btn btn-primary",
-                attrs: { type: "submit", "on-click": _vm.fetchRate() }
-              },
-              [_vm._v("Értékel")]
-            ),
-            _vm._v(" "),
-            _c("h3", [_vm._v("Jelenleg futó események: ")]),
-            _vm._v(" "),
-            _vm._l(_vm.ongoing, function(event) {
-              return _c("div", { key: event.code }, [
-                _c(
-                  "a",
-                  {
-                    staticClass: "btn btn-success",
-                    attrs: { href: "/e5n/event/" + event.code }
-                  },
-                  [_vm._v(_vm._s(event.name))]
-                )
-              ])
-            })
-          ],
-          2
-        )
+                name: "model",
+                rawName: "v-model",
+                value: _vm.userRating,
+                expression: "userRating"
+              }
+            ],
+            staticClass: "form-range form-fluid",
+            attrs: {
+              type: "range",
+              id: "ratingRange",
+              name: "ratingRange",
+              min: "1",
+              max: "10",
+              disabled: !_vm.user
+            },
+            domProps: { value: _vm.userRating },
+            on: {
+              change: _vm.rate,
+              __r: function($event) {
+                _vm.userRating = $event.target.value
+              }
+            }
+          })
+        ])
       ])
     ])
   ])
@@ -45459,16 +45424,16 @@ var render = function() {
       },
       [
         _vm.signupStatus == 403
-          ? _c("div", { staticClass: "container py-2" }, [
-              _c("h3", { staticStyle: { color: "red" } }, [
+          ? _c("div", { staticClass: "alert alert-danger py-2" }, [
+              _c("h3", { staticClass: "alert-text" }, [
                 _vm._v("Nem jelentkezhetsz előadásokra")
               ])
             ])
           : _vm._e(),
         _vm._v(" "),
         _vm.signupStatus == 400
-          ? _c("div", { staticClass: "container py-2" }, [
-              _c("h3", { staticStyle: { color: "red" } }, [
+          ? _c("div", { staticClass: "alert alert-danger py-2" }, [
+              _c("h3", { staticClass: "alert-text" }, [
                 _vm._v("Az előadás betelt")
               ])
             ])
@@ -58047,10 +58012,6 @@ $('.table-switcher').on('click', function () {
   document.getElementsByClassName(group)[target].style.display = '';
 });
 
-window.e5n.admin.presentations.attendance.toggle = function () {
-  console.log("asd");
-};
-
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
@@ -58102,15 +58063,14 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*!******************************************************!*\
   !*** ./resources/js/components/events/ShowEvent.vue ***!
   \******************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ShowEvent_vue_vue_type_template_id_9c380a5c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ShowEvent.vue?vue&type=template&id=9c380a5c& */ "./resources/js/components/events/ShowEvent.vue?vue&type=template&id=9c380a5c&");
 /* harmony import */ var _ShowEvent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ShowEvent.vue?vue&type=script&lang=js& */ "./resources/js/components/events/ShowEvent.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _ShowEvent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _ShowEvent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -58140,7 +58100,7 @@ component.options.__file = "resources/js/components/events/ShowEvent.vue"
 /*!*******************************************************************************!*\
   !*** ./resources/js/components/events/ShowEvent.vue?vue&type=script&lang=js& ***!
   \*******************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58462,8 +58422,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\e5vosdosite\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\e5vosdosite\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\projects\e5vosdosite\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\projects\e5vosdosite\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -2,11 +2,11 @@
 <div>
 
     <div class="container py-2" style="width:fit-content;text-align:center;">
-        <div v-if="signupStatus == 403" class="container py-2">
-            <h3 style="color:red;">Nem jelentkezhetsz előadásokra</h3>
+        <div v-if="signupStatus == 403" class="alert alert-danger py-2">
+             <h3 class="alert-text">Nem jelentkezhetsz előadásokra</h3>
         </div>
-        <div v-if="signupStatus == 400" class="container py-2">
-            <h3 style="color:red;">Az előadás betelt</h3>
+        <div v-if="signupStatus == 400" class="alert alert-danger py-2">
+            <h3 class="alert-text">Az előadás betelt</h3>
         </div>
     </div>
     <br/>

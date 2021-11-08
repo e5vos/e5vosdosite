@@ -7,7 +7,7 @@
 
 
 @section('content')
-<div class="container-fluid">
+<div class="container">
     @foreach ($presentations->orderBy('slot')->get()->groupBy('slot') as $i=>$presentations)
         <div class="table-responsive-md">
         <table class="table table-light table-bordered" style="text-align:center;width:100%;table-layout: auto;">

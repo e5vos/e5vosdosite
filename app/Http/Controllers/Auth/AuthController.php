@@ -10,6 +10,8 @@ use App\Models\{
 };
 
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Http\Request;
+
 
 use Illuminate\Support\Facades\{
     Hash,
@@ -20,14 +22,14 @@ use Illuminate\Support\Facades\{
 
 class AuthController extends Controller{
 
-    public function redirect($provider='google')
+    public function redirect(Request $request, $provider='google')
     {
-        session()->put('intended_url', url()->previous());
+        $request->session()->put('intended_url', url()->previous());
 
         return Socialite::driver($provider)->redirect();
     }
 
-    public function callback($provider='google')
+    public function callback(Request $request, $provider='google')
     {
         $userData = Socialite::driver($provider)->user();
         $user = User::firstWhere('email',$userData->email);
@@ -40,16 +42,17 @@ class AuthController extends Controller{
             ]);
         }
         Auth::login($user);
-        return redirect()->intended(session('intended_url'));
+        return redirect()->to($request->session()->get('intended_url',''));
     }
 
-    public function logout(){
+    public function logout(Request $request){
         Auth::logout();
+
         return redirect()->route("index");
     }
 
-    public function login(){
-        return $this->redirect("google");
+    public function login(Request $request){
+        return $this->redirect($request,"google");
     }
 
 

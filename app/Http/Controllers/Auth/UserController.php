@@ -24,7 +24,7 @@ class UserController extends Controller
 {
 
     public function index(){
-        return redirect()->route('index');
+        Gate::authorize('viewAny',User::class);
         return view('user.index');
     }
 

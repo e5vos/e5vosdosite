@@ -93,12 +93,14 @@ class User extends Authenticatable
         if($rating == null){
             $rating = $this->ratings()->create([
                 'event_id'=>$event->id,
-                'user_id'=>$this->id
+                'user_id'=>$this->id,
+                'value' => $ratingValue
             ]);
+        }else{
+            $rating->value = $ratingValue;
+            $rating->save();
         }
 
-        $rating->value = $ratingValue;
-        $rating->save();
         return $rating;
     }
 
@@ -140,5 +142,6 @@ class User extends Authenticatable
     public function managedTeams(){
         return $this->teams()->where('is_manager',true);
     }
+
 
 }

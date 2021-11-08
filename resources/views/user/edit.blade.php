@@ -12,7 +12,7 @@ Felhasználói Profil - Eötvös Dö
 @section('content')
 
 <div class="card container">
-    <h1 class="text-center" style="font-size:32px;">A Te adataid</h1>
+    <h1 class="text-center" style="font-size:32px;">{{Auth::user()->is($user) ? "A Te adataid" : $user->name ." adatai"}}</h1>
     @if (isset($msg))
         @switch($msg)
             @case("classRequired")
@@ -49,7 +49,7 @@ Felhasználói Profil - Eötvös Dö
             @endif
             </select>
         </div>
-        @if (true || Auth::user()->isAdmin())
+        @if (Auth::user()->isAdmin())
             <div class="form-group">
                 <input type="text" class="form-control" name="permissions" value="{{$user->permissions()->where('event_id',null)->pluck('permission')}}">
             </div>
@@ -58,6 +58,7 @@ Felhasználói Profil - Eötvös Dö
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Adatok frissítése</button>
         </div>
+
     </form>
     <form action="{{route('user.destroy',$user->id)}}" method="POST">
         @csrf

@@ -27,7 +27,7 @@ Route::post('/logout', 'Auth\AuthController@logout' );
 Route::get('auth/{provider?}', 'Auth\AuthController@redirect')->name("auth");
 Route::get('auth/{provider}/callback', 'Auth\AuthController@callback');
 
-Route::resource('user', \Auth\UserController::class, ['only' => ['edit','update','destroy']]);
+Route::resource('user', \Auth\UserController::class, ['only' => ['index','edit','update','destroy']]);
 
 
 // Login redirection waiter
@@ -93,7 +93,4 @@ Route::post('/e5n/event/{event_code}/restore', 'E5N\EventController@restore')->n
 Route::post('/e5n/event/{event_code}/organisers','E5N\EventController@addOrganiser')->name('event.organisers.add');
 Route::delete('/e5n/event/{event_code}/organisers','E5N\EventController@removeOrganiser')->name('event.organisers.remove');
 
-Route::get('/e5n/presentations/admin', 'E5N\PresentationController@attendanceOpener');
-Route::get('/e5n/presentations/attendance/{prescode}','E5N\PresentationController@attendanceViewer');
-Route::get('/e5n/presadmin','E5N\PresentationController@presAdmin');
 

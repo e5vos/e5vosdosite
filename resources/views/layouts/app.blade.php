@@ -39,6 +39,23 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Előadások</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Programok</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Csapatok</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                               Kezelés <span class="caret"></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">Programok szerkesztése</a>
+                                <a class="dropdown-item" href="#">Tanári felület</a>
+                            </div>
 
                     </ul>
 
@@ -68,7 +85,6 @@
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('user.edit',Auth::user()->id) }}">Profil szerkesztése</a>
-                                    <a class="dropdown-item" href="{{ route('login') }}">Átjelentkezés másik fiókba</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

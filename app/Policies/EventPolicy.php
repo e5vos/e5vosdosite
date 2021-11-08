@@ -108,7 +108,7 @@ class EventPolicy
     }
 
     public function rate(User $user, Event $event){
-        return $user->events()->contains($event);
+        return $user->isAdmin() || $user->events()->get()->contains($event);
     }
 
     public function signup(User $user, Event $event){

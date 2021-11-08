@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="card container">
-    <form action="{{route(presentation.store)}}" method="POST">
+    <form action="{{route('event.store')}}" method="POST">
         @csrf
         <div class="form-group">
             <label for="slot">Előadássáv</label>

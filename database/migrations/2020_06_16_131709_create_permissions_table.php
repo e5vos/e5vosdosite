@@ -17,7 +17,7 @@ class CreatePermissionsTable extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('event_id')->nullable();
-            $table->enum('permission',['ORG', 'ADM'])->nullable()->comment('For codes see documentation');
+            $table->char('permission',10)->nullable()->comment('For codes see documentation');
 
             $table->timestamps();
 

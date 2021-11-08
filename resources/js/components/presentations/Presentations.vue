@@ -2,8 +2,11 @@
 <div>
 
     <div class="container py-2" style="width:fit-content;text-align:center;">
-        <div v-if="signupError == 403" class="container py-2">
+        <div v-if="signupStatus == 403" class="container py-2">
             <h3 style="color:red;">Nem jelentkezhetsz előadásokra</h3>
+        </div>
+        <div v-if="signupStatus == 400" class="container py-2">
+            <h3 style="color:red;">Az előadás betelt</h3>
         </div>
     </div>
     <br/>
@@ -25,36 +28,37 @@
             <tr>
                 <th scope="col">Előadó</th>
                 <th scope="col">Előadás címe</th>
-                <th scope="col">Előadás rövid leírása</th>
-                <th scope="col">Szabad</th>
+                <th scope="col">Helyek</th>
             </tr>
         </thead>
-        <tbody>
 
-            <template v-if="selected_presentations && selected_presentations[selected_slot]">
+            <tbody v-if="selected_presentations && selected_presentations[selected_slot]">
                 <tr>
                     <td colspan="4" style="font-weight:600;font-size:24px;">Az általad választott előadás:</td>
                 </tr>
                 <tr style="background-color:rgb(233, 233, 233)">
                     <td>{{selected_presentations[selected_slot].organiser_name}}</td>
                     <td>{{selected_presentations[selected_slot].name}}</td>
-                    <td>{{selected_presentations[selected_slot].description}}</td>
-                    <td><button class="btn btn-secondary">{{Math.max(selected_presentations[selected_slot].capacity-selected_presentations[selected_slot].occupancy,0)}}</button></td>
+                    <td><button class="btn btn-secondary">{{selected_presentations[selected_slot].capacity ? selected_presentations[selected_slot].capacity-selected_presentations[selected_slot].occupancy : "Korlátlan"}}</button></td>
                 </tr>
                 <tr><td colspan=4><button v-on:click="deleteSignUp(selected_presentations[selected_slot].id)" class="btn btn-danger">Jelentkezés törlése</button></td></tr>
                 <tr><td class="py-0 my-0" colspan=4><hr class="py-0 my-0" style="border-top: 1px solid black;"></td></tr>
-            </template>
+            </tbody>
 
-            <tr v-for="presentation in presentations" v-bind:key="presentation.id">
+            <tbody v-for="(presentation,index) in presentations" v-bind:key="presentation.id">
                 <template v-if="!selected_presentations || !selected_presentations[selected_slot] || presentation.id!=selected_presentations[selected_slot].id">
-                    <td>{{presentation.organiser_name}}</td>
-                    <td>{{presentation.name}}</td>
-                    <td>{{presentation.description}}</td>
-                    <td><button class="btn btn-success" :disabled="(selected_presentations!= null && selected_presentations[selected_slot]!=null) || disableSignup" v-on:click="signUp(presentation.id)">{{Math.max(presentation.capacity-presentation.occupancy,0)}}</button></td>
+                    <tr>
+                        <th scope="row">{{presentation.organiser_name}}</th>
+                        <td>{{presentation.name}}</td>
+                        <td><button class="btn btn-success" :disabled="(selected_presentations!= null && selected_presentations[selected_slot]!=null) || disableSignup" v-on:click="signUp(presentation.id)">{{presentation.capacity ? presentation.capacity-presentation.occupancy : "Korlátlan"}}</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">{{presentation.description}}</td>
+                    </tr>
+                    <tr v-if="index != presentations.length-1 "><td class="py-0 my-0" colspan=4><hr class="py-0 my-0" style="border-top: 1px dashed lightgrey;"></td></tr>
                 </template>
-            </tr>
+            </tbody>
 
-        </tbody>
     </table>
 </div>
 </template>
@@ -72,8 +76,8 @@ export default {
             statusmsg: "Az adatok automatikusan frissülnek!",
             counter: 0,
             performanceDangerLevels:{
-                warning: 400,
-                danger: 900
+                warning: 700,
+                danger: 1500
             },
             presentations: [],
             selected_slot: '',
@@ -81,28 +85,25 @@ export default {
             disableSignup: false,
             isUser: false,
             selected_presentations: [],
-            signupError : null,
+            signupStatus : null,
         }
     },
     created(){
             this.changeSlot(1)
             this.fetchUserData()
-            setTimeout(this.tick,this.refreshIntervalTime/10)
+            setTimeout(this.tickSlot,this.refreshIntervalTime/10)
 
     },
     methods: {
-
-        tick(){
-            if(this.counter > 100){
-                this.counter = 0;
-                this.refresh();
-                this.updateRefreshBarColor();
+        async tickSlot(){
+            if(this.counter >= 100){
+                await this.refreshSlot();
             }
             if(this.isUser){
                 this.counter+=10;
                 document.getElementById("refreshBar").style.width=this.counter+"%"
             }
-            setTimeout(this.tick,this.refreshIntervalTime/10)
+            setTimeout(this.tickSlot,this.refreshIntervalTime/10)
         },
 
         changeSlot(slot){
@@ -115,22 +116,25 @@ export default {
             })
         },
 
-        fetchUserData(){
+        async fetchUserData(){
             const requestOptions = {
                 method: "GET",
                 "X-CSRF-TOKEN": window.Laravel.csrfToken,
 
             }
-            return fetch('/api/e5n/student/presentations/',requestOptions).then(res =>{
+            const res = await fetch('/api/e5n/student/presentations/',requestOptions)
 
-                this.isUser = res.status==200
-                if(res!=null) return res.json().catch(() => {})
-            }).then(res=>{
-                if(res!=null) res.forEach(element => this.selected_presentations[element.slot]=element).then(() => this.$forceUpdate())
+            this.isUser = res.status==200
+
+            await res.json().then(data=>{
+                if(data!=null) data.forEach(element => this.selected_presentations[element.slot]=element)
+            }).catch(() => {
+                this.selected_presentations = []
             })
+
         },
 
-        signUp(presentationId){
+        async signUp(presentationId){
             const requestOptions = {
                 method: "POST",
                 headers:{
@@ -141,32 +145,30 @@ export default {
                     event: presentationId,
                 })
             }
-            this.disableSignup = true;
-            fetch("/e5n/eventsignup/",requestOptions)
-            .then(res => {
-                if(res.ok){
-                    this.fetchUserData().then(() => {this.disableSignup = false});
-                }else{
-                    this.signupError = res.status;
-                    this.disableSignup = false;
-                }
 
-            })
+            this.disableSignup = true;
+
+            const res = await fetch("/e5n/eventsignup/",requestOptions)
+
+            if(res.status==200){
+                await this.fetchUserData();
+            }
+
+            this.signupStatus = res.status;
+            this.$forceUpdate()
+            this.disableSignup = false
         },
-        refresh(){
+        async refreshSlot(){
+            this.counter = 0;
             performance.mark("slotRefreshMark")
 
-            this.changeSlot(this.selected_slot_before).then(()=>{
-                performance.measure("slotRefresh","slotRefreshMark");
-                performance.mark("userDataRefreshMark")
-                this.fetchUserData().then(()=>{
-                    performance.measure("userDataRefresh","userDataRefreshMark")
-                })
-            })
+            await this.changeSlot(this.selected_slot_before)
 
+            performance.measure("slotRefresh","slotRefreshMark")
+            this.updateRefreshBarColor();
 
         },
-        deleteSignUp(presentation){
+        async deleteSignUp(presentation){
             const requestOptions = {
                 method: "DELETE",
                 headers:{
@@ -178,18 +180,17 @@ export default {
                 })
             }
 
-            fetch('/e5n/eventsignup/'+presentation,requestOptions).then(res => {
-                if(res.ok){
-                    this.selected_presentations[this.selected_slot] = null
-                    this.$forceUpdate()
-                }
-            })
+            const res = await fetch('/e5n/eventsignup/'+presentation,requestOptions)
+            if(res.status==200){
+                this.selected_presentations[this.selected_slot]=null;
+                this.fetchUserData();
+                this.$forceUpdate();
+            }
+
         },
 
         updateRefreshBarColor(){
-            var userDataRefreshTime = performance.getEntriesByName("userDataRefresh").length == 0 ? 0 : performance.getEntriesByName("userDataRefresh")[performance.getEntriesByName("userDataRefresh").length-1].duration;
-            var slotRefreshTime =  performance.getEntriesByName("slotRefresh").length == 0 ? 0 : performance.getEntriesByName("slotRefresh")[performance.getEntriesByName("slotRefresh").length-1].duration;
-            var responseTime = Math.max(userDataRefreshTime,slotRefreshTime);
+            var responseTime =  performance.getEntriesByName("slotRefresh").length == 0 ? 0 : performance.getEntriesByName("slotRefresh")[performance.getEntriesByName("slotRefresh").length-1].duration;
             var refreshBar = document.getElementById("refreshBar")
             if(responseTime < this.performanceDangerLevels.warning){
                 refreshBar.classList.remove("bg-danger")

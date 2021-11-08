@@ -47,11 +47,14 @@ Felhasználói Profil - Eötvös Dö
                     @endforeach
                 </select>
             @endif
-
             </select>
-
-
         </div>
+        @if (true || Auth::user()->isAdmin())
+            <div class="form-group">
+                <input type="text" class="form-control" name="permissions" value="{{$user->permissions()->where('event_id',null)->pluck('permission')}}">
+            </div>
+        @endif
+
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Adatok frissítése</button>
         </div>

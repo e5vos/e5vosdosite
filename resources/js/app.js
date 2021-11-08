@@ -45,3 +45,8 @@ Vue.use( CKEditor );
 const app = new Vue({
     el: '#app',
 });
+
+
+window.e5n.admin.presentations.attendance.toggle = function(){
+    console.log("asd")
+}

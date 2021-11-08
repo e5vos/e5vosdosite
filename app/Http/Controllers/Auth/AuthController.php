@@ -19,6 +19,8 @@ class AuthController extends Controller{
 
     public function redirect($provider='google')
     {
+        session()->put('intended_url', url()->previous());
+
         return Socialite::driver($provider)->redirect();
     }
 
@@ -35,7 +37,7 @@ class AuthController extends Controller{
             ]);
         }
         Auth::login($user);
-        return redirect()->intended();
+        return redirect()->intended(session('intended_url'));
     }
 
     public function logout(){
@@ -44,7 +46,7 @@ class AuthController extends Controller{
     }
 
     public function login(){
-        return Socialite::driver('google')->redirect();
+        return $this->redirect("google");
     }
 
 

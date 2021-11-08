@@ -45,7 +45,23 @@ class UserController extends Controller
             $user->save();
         }
 
-        return redirect()->route('index');
+        if($request->user()->isAdmin()){
+
+            foreach($user->permissions()->get() as $permission){
+                if(!in_array($permission->permission,json_decode($request->input("permissions"),false))){
+                    $permission->delete();
+                }
+            }
+
+            foreach(json_decode($request->input("permissions"),false) as $permissionString){
+                if(!$user->permissions()->where('permission',$permissionString)->exists()){
+                    $user->permissions()->create(['permission' => $permissionString]);
+                }
+            }
+        }
+
+
+        return back();
     }
 
     public function destroy(Request $request, $userID){

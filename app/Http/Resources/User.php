@@ -4,16 +4,20 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Event extends JsonResource
+class User extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
     {
+        return [
+            'name' => $this->name,
+            'ejgClass' => new EJGClass($this->ejgClass)
+        ];
         return parent::toArray($request);
     }
 }

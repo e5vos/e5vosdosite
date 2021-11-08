@@ -28,8 +28,8 @@ class Event extends Model
         return $this->permissions()->count();
     }
 
-    public function presentations(){
-        return Event::where('is_presentation',true)->get;
+    public static function presentations(){
+        return Event::where('is_presentation',true);
     }
 
     public static function currentEvents(){

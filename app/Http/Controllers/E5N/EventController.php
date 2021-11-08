@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{
     Gate,
     Auth,
+    Cache,
 };
 
 
@@ -123,7 +124,7 @@ class EventController extends Controller
     }
 
     public function restore($eventCode) {
-        $event = \App\Event::withTrashed()->where('code',$eventCode)->firstOrFail();
+        $event = Event::withTrashed()->where('code',$eventCode)->firstOrFail();
         Gate::authorize('restore', $event);
         $event->restore();
         return redirect()->route('event.edit',$event->code);
@@ -141,7 +142,7 @@ class EventController extends Controller
         Gate::authorize('update', $event);
         try {
             $user = User::where('email', $request->input('email'))->firstOrFail();
-        } catch (ModelNotFoundException){
+        } catch (ModelNotFoundException $e){
             return redirect()->route('event.edit', $eventCode);
         }
         $event->addOrganiser($user);
@@ -150,7 +151,7 @@ class EventController extends Controller
 
     public function removeOrganiser(Request $request, $eventCode)
     {
-        $event = \App\Event::where('code',$eventCode)->firstOrFail();
+        $event = Event::where('code',$eventCode)->firstOrFail();
         Gate::authorize('update', $event);
         $user = User::findOrFail($request->input('orga'));
         $event->removeOrganiser($user);
@@ -163,9 +164,9 @@ class EventController extends Controller
      * @param  string $event_name
      * @return \Illuminate\Http\Resources\Json\EventResourceCollection
      */
-    public function event_data($code)
+    public function eventData($code)
     {
-        return Event::firstWhere('name', $code);
+        return Event::where('code', $code)->firstOrFail();
     }
 
     /** Returns the events with the specified weight.
@@ -173,7 +174,7 @@ class EventController extends Controller
      *
      * @param  int $weight the weight of the events
      */
-    public function weight($weight)
+    public function getEventByWeight($weight)
     {
         return Event::where('weight', $weight)->get();
     }
@@ -184,16 +185,21 @@ class EventController extends Controller
     }
 
     public function presentationSlot($slot){
-        return Event::where('is_presentation',true)->where('slot',$slot)->get();
+
+        if(!Cache::has('e5n.events.presentations.'.$slot)){
+            $slotEvents = Event::where('is_presentation',true)->where('slot',$slot)->get()->filter(function($event){
+                return $event->capacity == null || $event->capacity > $event->occupancy;
+            });
+            Cache::put('e5n.events.presentations.'.$slot,$slotEvents,now()->addSeconds(30));
+            return $slotEvents;
+        }else{
+            return Cache::get('e5n.events.presentations.'.$slot);
+        }
     }
 
-    public function rate(Request $request){
-        /**
-         * @var \App\User
-         */
-        $user = Auth::user();
-        if($user != null){
-            $user->rate(Event::find($request->input('event_id')),$request->input('rating'));
-        }
+    public function rate(Request $request, $eventCode){
+        $event = Event::where('code')->firstOrFail();
+        Gate::authorize('rateEvent',$event);
+        $request->user()->rate($event,$request->input('rating'));
     }
 }

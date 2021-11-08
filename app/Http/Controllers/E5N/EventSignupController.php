@@ -7,7 +7,8 @@ use App\Http\Controllers\{
     Controller
 };
 use App\Models\{
-    Event
+    Event,
+    EventSignup
 };
 
 use Illuminate\Http\Request;
@@ -35,8 +36,8 @@ class EventSignupController extends Controller
 
     public function store(Request $request){
         Gate::authorize('create',EventSignup::class);
-
         $event = Event::findOrFail($request->input("event"));
+        Gate::authorize('signup',$event);
         $request->user()->signUp($event);
     }
 
@@ -56,6 +57,7 @@ class EventSignupController extends Controller
     public function getSelectedPresentations(Request $request){
         return $request->user()->presentations()->get();
     }
+
 
 
 }

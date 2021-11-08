@@ -2,8 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Event;
-use App\Models\User;
+use App\Models\{
+    Event,
+    User,
+    Setting,
+};
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EventPolicy
@@ -91,4 +94,30 @@ class EventPolicy
     {
         return $user->isAdmin();//
     }
+
+    public function viewAnyAttendance(User $user){
+        return $user->can("TAN") || $user->isAdmin();
+    }
+
+    public function viewAttendance(User $user, Event $event){
+        return $user->can("TAN") || $user->can('update',$event);
+    }
+
+    public function setAttendance(User $user, Event $event){
+        return $user->can("TAN") || $user->can('update',$event);
+    }
+
+    public function rate(User $user, Event $event){
+        return $user->events()->contains($event);
+    }
+
+    public function signup(User $user, Event $event){
+        if($event->is_presentation){
+            return Setting::check('e5nPresentationSignup');
+        }else{
+            return $event->start->isPast() && $event->start->isFuture();
+        }
+    }
+
+
 }

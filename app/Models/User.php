@@ -91,11 +91,13 @@ class User extends Authenticatable
         $rating = $this->ratings()->whereBelongsTo($event)->first();
 
         if($rating == null){
-            $rating = $this->ratings()->create(['event_id'=>$event->id]);
+            $rating = $this->ratings()->create([
+                'event_id'=>$event->id,
+                'user_id'=>$this->id
+            ]);
         }
 
-        $rating->rating = $ratingValue;
-
+        $rating->value = $ratingValue;
         $rating->save();
         return $rating;
     }

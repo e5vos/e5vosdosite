@@ -9,6 +9,7 @@ use App\Http\Controllers\{
 
 use App\Models\{
     Event,
+    Rating,
     User,
 };
 
@@ -21,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{
     Gate,
     Auth,
+    Cache
 };
 
 
@@ -30,7 +32,18 @@ class EventController extends Controller
 
     public function index()
     {
-        return view('e5n.events.index');
+        if (Cache::has('e5n.eventList')){ $events = Cache::get('e5n.eventList');}
+        else {
+            $events = Event::orderByRAW('WEEKDAY(`start`)')->get()->groupBy(function($event){
+                return $event->start->dayOfWeek;
+            });
+            Cache::put('e5n.eventList', $events, now()->addMinute());
+        }
+
+        return view('e5n.events.index',[
+            'events' => $events
+        ]
+    );
     }
 
 
@@ -79,7 +92,7 @@ class EventController extends Controller
         $event = Event::firstWhere('code',$eventCode);
         Gate::authorize('update',$event);
         if($event->code != $request->input('code')){
-            if(\App\Event::where('code',$request->input('code'))->exists()) {
+            if(Event::where('code',$request->input('code'))->exists()) {
                 throw new DuplicateCodeException("Event code taken");
             }
             else {
@@ -123,16 +136,15 @@ class EventController extends Controller
     }
 
     public function restore($eventCode) {
-        $event = \App\Event::withTrashed()->where('code',$eventCode)->firstOrFail();
+        $event = Event::withTrashed()->where('code',$eventCode)->firstOrFail();
         Gate::authorize('restore', $event);
         $event->restore();
         return redirect()->route('event.edit',$event->code);
     }
 
     public function show($eventCode){
-        return view('e5n.events.show',[
-            'event' => Event::where('code', $eventCode)->firstOrFail()
-        ]);
+
+        return view('e5n.events.show', ['code'=>$eventCode]);
     }
 
     public function addOrganiser(Request $request, $eventCode)
@@ -150,7 +162,7 @@ class EventController extends Controller
 
     public function removeOrganiser(Request $request, $eventCode)
     {
-        $event = \App\Event::where('code',$eventCode)->firstOrFail();
+        $event = Event::where('code',$eventCode)->firstOrFail();
         Gate::authorize('update', $event);
         $user = User::findOrFail($request->input('orga'));
         $event->removeOrganiser($user);
@@ -158,14 +170,19 @@ class EventController extends Controller
     }
 
     /**
-     * Returns the specified event.
+     * Returns the specified eventdata.
      *
      * @param  string $event_name
      * @return \Illuminate\Http\Resources\Json\EventResourceCollection
      */
-    public function event_data($code)
+    public function event_data($eventCode)
     {
-        return Event::firstWhere('name', $code);
+        if (Cache::has('e5n.event.' . $eventCode)) {$event = Cache::get('e5n.event.' . $eventCode);}
+        else {
+            $event = Event::where('code', $eventCode)->firstOrFail();
+            Cache::put('e5n.event.' . $eventCode, $event, now()->addMinutes(3));
+        }
+        return $event;
     }
 
     /** Returns the events with the specified weight.
@@ -187,13 +204,14 @@ class EventController extends Controller
         return Event::where('is_presentation',true)->where('slot',$slot)->get();
     }
 
-    public function rate(Request $request){
-        /**
+    public function rate($eventCode, $value){
+        /**a
          * @var \App\User
          */
         $user = Auth::user();
+        dd($eventCode);
         if($user != null){
-            $user->rate(Event::find($request->input('event_id')),$request->input('rating'));
+            return $user->rate(Event::firstOrFail('code', $eventCode),intval($value))->value;
         }
     }
 }

@@ -45,3 +45,16 @@ Vue.use( CKEditor );
 const app = new Vue({
     el: '#app',
 });
+
+
+$('.table-switcher').on('click',function(){
+    var group = $(this).data('switchgroup');
+    var target = $(this).data('target');
+    console.log()
+    for(let i = 0; i<$("."+group).length; i++){
+        $("."+group)[i].style.display='none';
+    }
+    document.getElementsByClassName(group)[target].style.display = '';
+})
+
+

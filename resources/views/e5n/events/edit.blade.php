@@ -38,7 +38,7 @@
                     <label for="name">Esemény helye</label>
                     <select name="location" id="location" class="form-control" {{Auth::user()->isAdmin() ? "" : "disabled"}}>
                         <option value="">Nincs helye</option>
-                        @foreach (\App\Location::all() as $location )
+                        @foreach (\App\Models\Location::all() as $location )
                             <option value="{{$location->id}}" {{ $event->location->id==$location->id ? "selected" : ""}}>{{$location->name}}</option>
                         @endforeach
                     </select>

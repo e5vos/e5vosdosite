@@ -32,10 +32,13 @@
                     <h2 class="display-4">Helyezés<h2>
                     <table class="table">
                             <tbody>
+                                @foreach($classes as $class)
                                 <tr>
-                                    <td>7.A</td>
-                                    <td>50 pont</td>
+                                    <td>{{$class->name}}</td>
+                                    <td>{{$class->points}} pont</td>
                                 </tr>
+                                @endforeach
+
                             </tbody>
                         </table>
                 </div>

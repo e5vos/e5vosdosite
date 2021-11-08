@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Team;
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TeamFactory extends Factory
@@ -24,7 +24,6 @@ class TeamFactory extends Factory
         return [
             'code' => $this->faker->unique()->regexify('[A-Z]{2}[0-9]{2}'),
             'name' => $this->faker->word().$this->faker->word(),
-            'admin_id' => $this->faker->numberBetween(0,10),
         ];
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\BonusPoint;
+use App\Models\BonusPoint;
 use Illuminate\Database\Eloquent\Factories\Factory;
 class BonusPointFactory extends Factory
 {

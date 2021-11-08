@@ -8288,7 +8288,6 @@ button.bg-dark:focus {
 }
 
 .position-sticky {
-  position: -webkit-sticky !important;
   position: sticky !important;
 }
 
@@ -8308,9 +8307,8 @@ button.bg-dark:focus {
   z-index: 1030;
 }
 
-@supports ((position: -webkit-sticky) or (position: sticky)) {
+@supports (position: sticky) {
   .sticky-top {
-    position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 1020;
@@ -10955,5 +10953,10 @@ a.text-dark:focus {
   right: 0;
   left: 0;
   top: 0;
+}
+
+.qr-code {
+  position: absolute;
+  border: 10px solid red;
 }
 

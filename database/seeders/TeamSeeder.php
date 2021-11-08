@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Team;
+use App\Models\Team;
 
 class TeamSeeder extends Seeder
 {
@@ -14,6 +14,6 @@ class TeamSeeder extends Seeder
      */
     public function run()
     {
-        Team::factory(69)->create();
+        Team::factory(69)->create();//nice
     }
 }

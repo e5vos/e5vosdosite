@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\BonusPoint;
+use App\Models\BonusPoint;
 
 class BonusPointSeeder extends Seeder
 {

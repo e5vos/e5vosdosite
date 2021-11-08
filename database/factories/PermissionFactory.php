@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Permission;
+use App\Models\Permission;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PermissionFactory extends Factory
@@ -24,7 +24,7 @@ class PermissionFactory extends Factory
         return [
             'user_id' => $this->faker->numberBetween(0,499),
             'event_id' => $this->faker->numberBetween(0,49),
-            'permission' => $this->faker->asciify('********************').$this->faker->asciify('********************'),
+            'permission' => [NULL, 'ORG', 'ADM'][$this->faker->numberBetween(0,2)],
         ];
     }
 }

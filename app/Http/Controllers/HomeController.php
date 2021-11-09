@@ -41,24 +41,7 @@ class HomeController extends Controller
         ]);
     }
 
-    /**
-     * returns current settings
-     *
-     * @return void
-     */
-    public function settings(){
-        return Setting::all();
-    }
 
-    /**
-     * toggles the setting with the given id
-     *
-     * @param  mixed $request
-     * @return void
-     */
-    public function setSetting(Request $request){
-        Setting::findOrFail($request->input('setting'))->set($request->input('newSetting'));
-    }
 
     /**
      * returns the view of the settings

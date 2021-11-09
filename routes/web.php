@@ -64,8 +64,6 @@ Route::get('/e5n/codes','E5N\E5NController@codes');
 
 //Settings
 Route::resource('settings',SettingController::class);
-
-
 Route::resource('e5n/event', \E5N\EventController::class);
 Route::resource('e5n/team',\E5N\TeamController::class);
 Route::resource('e5n/presentation', \E5N\PresentationController::class, ['only' => ['index'] ]);

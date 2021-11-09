@@ -18,7 +18,7 @@ class EventSignupPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->isAdmin();//
     }
 
     /**
@@ -30,7 +30,7 @@ class EventSignupPolicy
      */
     public function view(User $user, EventSignup $eventSignup)
     {
-        return $user->isAdmin() || $user == $eventSignup->user;
+        return $user->isAdmin() || $user->is($eventSignup->user);
     }
 
     /**
@@ -53,7 +53,7 @@ class EventSignupPolicy
      */
     public function update(User $user, EventSignup $eventSignup)
     {
-        //
+        return $user->isAdmin();//
     }
 
     /**
@@ -77,7 +77,7 @@ class EventSignupPolicy
      */
     public function restore(User $user, EventSignup $eventSignup)
     {
-        //
+        return $user->isAdmin();//
     }
 
     /**
@@ -89,7 +89,7 @@ class EventSignupPolicy
      */
     public function forceDelete(User $user, EventSignup $eventSignup)
     {
-        //
+        return $user->isAdmin();//
     }
 
 }

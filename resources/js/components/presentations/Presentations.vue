@@ -41,7 +41,7 @@
                     <td>{{selected_presentations[selected_slot].name}}</td>
                     <td><button class="btn btn-secondary">{{selected_presentations[selected_slot].capacity ? selected_presentations[selected_slot].capacity-selected_presentations[selected_slot].occupancy : "Korlátlan"}}</button></td>
                 </tr>
-                <tr><td colspan=4><button v-on:click="deleteSignUp(selected_presentations[selected_slot].id)" class="btn btn-danger">Jelentkezés törlése</button></td></tr>
+                <tr><td colspan=4><button v-on:click="deleteSignUp(selected_presentations[selected_slot].code)" class="btn btn-danger">Jelentkezés törlése</button></td></tr>
                 <tr><td class="py-0 my-0" colspan=4><hr class="py-0 my-0" style="border-top: 1px solid black;"></td></tr>
             </tbody>
 
@@ -50,7 +50,7 @@
                     <tr>
                         <th scope="row">{{presentation.organiser_name}}</th>
                         <td>{{presentation.name}}</td>
-                        <td><button class="btn btn-success" :disabled="(selected_presentations!= null && selected_presentations[selected_slot]!=null) || disableSignup" v-on:click="signUp(presentation.id)">{{presentation.capacity ? presentation.capacity-presentation.occupancy : "Korlátlan"}}</button></td>
+                        <td><button class="btn btn-success" :disabled="(selected_presentations!= null && selected_presentations[selected_slot]!=null) || disableSignup" v-on:click="signUp(presentation.code)">{{presentation.capacity ? presentation.capacity-presentation.occupancy : "Korlátlan"}}</button></td>
                     </tr>
                     <tr>
                         <td colspan="3">{{presentation.description}}</td>
@@ -120,7 +120,6 @@ export default {
             const requestOptions = {
                 method: "GET",
                 "X-CSRF-TOKEN": window.Laravel.csrfToken,
-
             }
             const res = await fetch('/api/e5n/student/presentations/',requestOptions)
 
@@ -134,21 +133,15 @@ export default {
 
         },
 
-        async signUp(presentationId){
+        async signUp(presentationCodede){
             const requestOptions = {
                 method: "POST",
                 headers:{
                     "Content-Type":"application/json",
                     "X-CSRF-TOKEN": window.Laravel.csrfToken,
-                },
-                body: JSON.stringify({
-                    event: presentationId,
-                })
+                }
             }
-
-            this.disableSignup = true;
-
-            const res = await fetch("/e5n/eventsignup/",requestOptions)
+            const res = await fetch("/e5n/event/"+presentationCode+"/signup/",requestOptions)
 
             if(res.status==200){
                 await this.fetchUserData();
@@ -168,25 +161,16 @@ export default {
             this.updateRefreshBarColor();
 
         },
-        async deleteSignUp(presentation){
+        async deleteSignUp(presentationCode){
             const requestOptions = {
                 method: "DELETE",
                 headers:{
                     "Content-Type":"application/json",
                     "X-CSRF-TOKEN": window.Laravel.csrfToken,
-                },
-                body: JSON.stringify({
-
-                })
+                }
             }
-
-            const res = await fetch('/e5n/eventsignup/'+presentation,requestOptions)
-            if(res.status==200){
-                this.selected_presentations[this.selected_slot]=null;
-                this.fetchUserData();
+            constis.fetchUserData();
                 this.$forceUpdate();
-            }
-
         },
 
         updateRefreshBarColor(){
@@ -208,7 +192,7 @@ export default {
                 if(this.refreshIntervalTime<this.refreshIntervalTimeMax) this.refreshIntervalTime+= this.refreshIntervalTimeIncrement;
 
             }
-        },
+        }
     }
 }
 </script>

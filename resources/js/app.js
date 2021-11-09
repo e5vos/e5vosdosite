@@ -31,6 +31,10 @@ Vue.component(VueQrcode.name, VueQrcode);
 import CKEditor from 'ckeditor4-vue';
 Vue.use( CKEditor );
 
+import VueQrcodeReader from "vue-qrcode-reader";
+Vue.use(VueQrcodeReader);
+
+
 /* Custom components */
 
 

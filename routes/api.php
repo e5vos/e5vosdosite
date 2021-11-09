@@ -20,6 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
+//Scanner callback
+Route::post('/e5n/scanner/{decoded_string}', 'E5N\E5NController@scan');
 
 // List Presentations
 Route::get('/e5n/presentations/{slot}','E5N\EventController@presentationSlot');

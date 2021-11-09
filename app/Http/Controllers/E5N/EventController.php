@@ -16,6 +16,7 @@ use App\Models\{
 use App\Exception;
 use App\Exceptions\DuplicateCodeException;
 use App\Http\Resources\EventResource;
+use Exception as GlobalException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -149,7 +150,7 @@ class EventController extends Controller
         $event = Event::where('code',$eventCode)->firstOrFail();
         $eventResource = new EventResource($event);
         if(Auth::check()){
-            $userRating = $request->user()->ratings()->whereBelongsTo($event)->first()->value;
+            try{$userRating = $request->user()->ratings()->whereBelongsTo($event)->first()->value;} catch(GlobalException){$userRating = 10;}
         }else{
             $userRating = $event->rating;
         }

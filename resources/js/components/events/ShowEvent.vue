@@ -60,7 +60,7 @@ export default {
         async rate(){
             if(!this.user) return;
             const requestOptions = {
-                 method: "PUT",
+                method: "PUT",
                 headers:{
                     "Content-Type":"application/json",
                     "X-CSRF-TOKEN": window.Laravel.csrfToken,
@@ -69,7 +69,7 @@ export default {
                     rating : this.userRating
                 })
             }
-            const res = await fetch('/api/e5n/event/'+this.event.code+"/rate",requestOptions);
+            await fetch('/api/e5n/event/'+this.event.code+"/rate",requestOptions);
         }
 
     }

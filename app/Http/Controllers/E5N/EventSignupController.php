@@ -34,16 +34,17 @@ class EventSignupController extends Controller
     }
 
 
-    public function store(Request $request){
+    public function store(Request $request, $eventCode){
         Gate::authorize('create',EventSignup::class);
-        $event = Event::findOrFail($request->input("event"));
+        $event = Event::where('code',$eventCode)->firstOrFail();
         Gate::authorize('signup',$event);
         $request->user()->signUp($event);
     }
 
 
-    public function destroy(Request $request, $event){
-        $signUp = $request->user()->signups()->where('event_id',$event)->first();
+    public function destroy(Request $request, $eventCode){
+        $event = Event::where('code',$eventCode)->firstOrFail();
+        $signUp = $request->user()->signups()->whereBelongsTo($event)->first();
         Gate::authorize('delete',$signUp);
         $signUp->delete();
     }

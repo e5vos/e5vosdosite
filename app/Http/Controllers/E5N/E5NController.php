@@ -8,7 +8,8 @@ use App\Http\Controllers\{
 
 use App\Models\{
     EJGClass,
-    Event
+    Event,
+    User
 };
 
 use Illuminate\Http\Request;
@@ -18,7 +19,8 @@ use Illuminate\Support\Facades\{
 };
 
 use Endroid\QrCode;
-
+use Illuminate\Database\Eloquent\Model;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class E5NController extends Controller
 {
@@ -60,8 +62,14 @@ class E5NController extends Controller
         return view('e5n.reset');
     }
 
+    public function scanner(){
+        return view('e5n.events.scanner');
+    }
 
-
+    public function scan(Request $request){
+        $request->session()->put('intended_url', url()->previous());
+        return User::where('email', $request->input('email'))->firstOrFail()->redirect();//Zolifix-> it shouldnt just return, user has to go to eventvisit
+    }
 }
 
 

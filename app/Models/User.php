@@ -76,6 +76,7 @@ class User extends Authenticatable
         $signup = new EventSignup();
         $signup->event()->associate($event);
         $signup->user()->associate($this);
+        $signup->present = !$event->is_presentation;
         $signup->save();
         return $signup;
     }

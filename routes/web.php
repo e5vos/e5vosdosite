@@ -58,7 +58,7 @@ Route::put('e5n/admin/presentation/{presentation}/attendance','E5N\Admin\Present
 
 
 
-Route::get('/e5n/scanner','E5N\EventController@scanner')->middleware('auth');
+Route::get('/e5n/scanner','E5N\E5NController@scanner')->middleware('auth');
 Route::get('/e5n/codes','E5N\E5NController@codes');
 
 //Settings
@@ -68,7 +68,7 @@ Route::get('/settings','HomeController@settingsView');
 Route::resource('e5n/event', \E5N\EventController::class);
 Route::resource('e5n/team',\E5N\TeamController::class);
 Route::resource('e5n/presentation', \E5N\PresentationController::class, ['only' => ['index'] ]);
-Route::resource('e5n/eventsignup', \E5N\EventSignupController::class);
+Route::resource('e5n/event/{event}/signup', \E5N\EventSignupController::class);
 Route::resource('e5n/admin/presentation',\E5N\Admin\PresentationAdminController::class, ["as" => "admin"]);
 
 
@@ -82,8 +82,10 @@ Route::delete('e5n/team','E5N\TeamController@delete')->name('team.delete');
 
 Route::get('/qr/{code}', 'WelcomeController@qr')->name("qr.code");
 
+Route::get('/e5n/event/qr', 'E5N\EventController@qrreader')->name('event.qrreader');
 
 Route::post('/e5n/event/{event_code}/restore', 'E5N\EventController@restore')->name('event.restore');
+
 
 Route::post('/e5n/event/{event_code}/organisers','E5N\EventController@addOrganiser')->name('event.organisers.add');
 Route::delete('/e5n/event/{event_code}/organisers','E5N\EventController@removeOrganiser')->name('event.organisers.remove');

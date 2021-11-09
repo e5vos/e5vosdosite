@@ -3,7 +3,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="google-signin-client_id" content="352962433416-obdmdsbt2205mains21suujpvrfmhks4.apps.googleusercontent.com">
+
+    <meta name="description" content="A Budapesti Eötvös József Gimnázium Diákönkormányzatának weboldala">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87577526-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-87577526-2');
+    </script>
+
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -22,6 +34,8 @@
 
     <!-- Styles -->
     <link href="/public/css/app.css" rel="stylesheet">
+
+
     @yield('script')
 </head>
 <body style="background:none;">

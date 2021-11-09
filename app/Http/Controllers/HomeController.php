@@ -1,13 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Help;
+
+
+
+use App\Models\{
+    Permission,
+    Setting
+};
+
 use Illuminate\Http\Request;
-use App\Permission;
-use App\User;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
-Use App\Setting;
 
 class HomeController extends Controller
 {
@@ -34,7 +36,6 @@ class HomeController extends Controller
     public function admin()
     {
 
-        //Help::getSos();
         return view('admin.admin', [
             'permissions' => Permission::all('user_id', 'permission'),
         ]);

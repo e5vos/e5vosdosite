@@ -8,8 +8,9 @@
                 <div class="card-header">403</div>
 
                 <div class="card-body">
-                    Ehez az oldalhoz vagy be kell jelentkezned, vagy nincs jogosultságod hozzá.
+                    Ehhez az oldalhoz vagy be kell jelentkezned, vagy nincs jogosultságod hozzá.
                 </div>
+
             </div>
         </div>
     </div>

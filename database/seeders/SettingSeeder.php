@@ -1,12 +1,9 @@
 <?php
-<<<<<<< HEAD:database/seeders/SettingSeeder.php
 
 namespace Database\Seeders;
 
-=======
-namespace Database\Seeders;
->>>>>>> dev:database/seeders/SettingsSeeder.php
 use Illuminate\Database\Seeder;
+use \App\Models\Setting;
 
 class SettingSeeder extends Seeder
 {
@@ -22,7 +19,7 @@ class SettingSeeder extends Seeder
             "e5nPresentationSignup" => "0",
         ];
         foreach ($DEFAULTS as $key => &$value) {
-            $setting = new \App\Setting();
+            $setting = new Setting();
             $setting->key = $key;
             $setting->value = $value;
             $setting->save();

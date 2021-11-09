@@ -15,11 +15,12 @@ class CreateTeamsTable extends Migration
     {
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+
             $table->string('code')->unique();
             $table->string('name');
-            $table->integer('admin_id');
-            $table->foreign('admin_id')->references('id')->on('students')->onDelete('cascade');
+
+            $table->timestamps();
+            $table->softDeletes();
 
         });
     }

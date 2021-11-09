@@ -10955,3 +10955,8 @@ a.text-dark:focus {
   top: 0;
 }
 
+.qr-code {
+  position: absolute;
+  border: 10px solid red;
+}
+

@@ -56,7 +56,7 @@ class EventPolicy
      */
     public function update(User $user, Event $event)
     {
-        return $user->isAdmin()  || $user->permissions()->where('event_id',$event->id)->exists();//
+        return $user->isAdmin()  || $user->permissions()->whereBelongsTo($event)->exists();//
     }
 
     /**

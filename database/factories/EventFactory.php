@@ -28,8 +28,6 @@ class EventFactory extends Factory
             'start'=> $this->faker->dateTimeBetween('Y-m-d', '-1 day', '+1 day'),
             'end'=> $this->faker->dateTimeBetween('Y-m-d','-1 day','+1 day'),
             'weight' => $this->faker->boolean(20) ? null : $this->faker->numberBetween(1,3),
-            'image_id' => $this->faker->numberBetween(0,100),
-            'organiser_id' => $this->faker->numberBetween(0,500),
             'organiser_name' => $this->faker->name(),
             'capacity' => $this->faker->boolean(20) ? null : $this->faker->numberBetween(0,40),
             'slot' => $this->faker->boolean(50) ? null : $this->faker->numberBetween(1,3),

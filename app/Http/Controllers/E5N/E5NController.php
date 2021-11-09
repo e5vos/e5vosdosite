@@ -5,7 +5,7 @@ namespace App\Http\Controllers\E5N;
 use App\Http\Controllers\{
     Controller
 };
-
+use App\Http\Resources\EventResource;
 use App\Models\{
     EJGClass,
     Event,
@@ -40,9 +40,9 @@ class E5NController extends Controller
         return view('e5n.map');
     }
 
-    public function home(){
-        return view('e5n.home',[
-            "classes" => EJGClass::limit(10)->get()
+    public function index(){
+        return view('e5n.index',[
+            "classes" => EJGClass::orderBy('points','DESC')->limit(10)->get()
         ]);
     }
 
@@ -62,14 +62,20 @@ class E5NController extends Controller
         return view('e5n.reset');
     }
 
-    public function scanner(){
-        return view('e5n.events.scanner');
+    public function scanner(Request $request, $eventCode){
+        $event = Event::where('code',$eventCode)->firstOrFail();
+        Gate::authorize('signup',$event);
+        $eventResource = new EventResource($event);
+        return view('e5n.events.scanner',["event" => $eventResource]);
     }
 
-    public function scan(Request $request){
-        $request->session()->put('intended_url', url()->previous());
-        return User::where('email', $request->input('email'))->firstOrFail()->redirect();//Zolifix-> it shouldnt just return, user has to go to eventvisit
+    public function calculatePoints(){
+        Gate::authorize('ADM');
+        foreach(EJGClass::all() as $ejgclass){
+            $ejgclass->calculatePoints();
+        }
     }
+
 }
 
 

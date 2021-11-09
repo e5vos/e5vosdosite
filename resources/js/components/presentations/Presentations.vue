@@ -133,7 +133,7 @@ export default {
 
         },
 
-        async signUp(presentationCodede){
+        async signUp(presentationCode){
             const requestOptions = {
                 method: "POST",
                 headers:{

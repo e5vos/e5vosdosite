@@ -38,16 +38,15 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/admin', 'Homecontroller@admin');
 
 // Main Event viewer
-Route::get('/e5n/events', 'E5N\EventController@home');
+Route::get('/e5n/events', 'E5N\EventController@index');
 
 // Specific Eventpage
 Route::get('/e5n/events/{day}/{event_name}', 'E5N\EventController@event');
 
-// E5N homepage
-Route::get('/e5n/home', 'E5N\E5NController@home');
+
 
 // E5N homepage
-Route::get('/e5n', 'E5N\E5NController@home');
+Route::get('/e5n', 'E5N\E5NController@index');
 
 // E5N map of events
 Route::get('/e5n/map','E5N\E5NController@map');
@@ -59,7 +58,7 @@ Route::put('e5n/admin/presentation/{presentation}/attendance','E5N\Admin\Present
 
 
 
-Route::get('/e5n/scanner','E5N\QRController@scan')->middleware('auth')->name('e5n.scanner');
+Route::get('/e5n/event/{event}/scanner','E5N\E5NController@scanner')->middleware('auth')->name('e5n.scanner');
 Route::get('/e5n/codes','E5N\E5NController@codes');
 
 //Settings
@@ -70,6 +69,8 @@ Route::resource('e5n/presentation', \E5N\PresentationController::class, ['only' 
 Route::resource('e5n/event/{event}/signup', \E5N\EventSignupController::class);
 Route::resource('e5n/admin/presentation',\E5N\Admin\PresentationAdminController::class, ["as" => "admin"]);
 
+
+Route::get('e5n/admin/points/update','E5N\E5NController@calculatePoints');
 
 Route::post('e5n/team/{team}/member','E5N\TeamController@manageMember')->name('team.member.manage');
 

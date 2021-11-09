@@ -26,6 +26,7 @@ use function React\Promise\reduce;
 class TeamController extends Controller
 {
     public function index(){
+        Gate::authorize('create',Team::class);
         return view('e5n.teams.index');
     }
 

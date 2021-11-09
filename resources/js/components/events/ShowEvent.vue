@@ -41,7 +41,7 @@ export default {
     created(){
         this.event = this.$attrs.event
         this.user = this.$attrs.user
-        this.userRating = this.$attrs.user-rating
+        this.userRating = this.$attrs.userrating
 
     },
     mounted(){

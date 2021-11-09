@@ -32,7 +32,7 @@
                         <td>{{$presentation->name}}</td>
                         <td>{{$presentation->capacity ? $presentation->capacity : "Korlátlan"}}</td>
                         <td><button class="btn btn-warning" {{$presentation->capacity - $presentation->occupancy <= 0 ? "disabled" : ""}}>{{$presentation->occupancy}}</button></td>
-                        <td><a class="btn btn-warning" href="{{route('presentation.show',$presentation->code)}}">{{$presentation->signups()->where('present',1)->count()}}</td>
+                        <td><a class="btn btn-warning" href="{{route('admin.presentation.show',$presentation->code)}}">{{$presentation->signups()->where('present',1)->count()}}</td>
                     </tr>
 
                 @endforeach

@@ -37,7 +37,11 @@ class EventController extends Controller
         if (Cache::has('e5n.eventList')){ $events = Cache::get('e5n.eventList');}
         else {
             $events = Event::orderByRAW('WEEKDAY(`start`)')->get()->groupBy(function($event){
-                return $event->start->dayOfWeek;
+                if($event->start){
+                    return $event->start->dayOfWeek;
+                } else{
+                    return -1;
+                }
             });
             Cache::put('e5n.eventList', $events, now()->addMinute());
         }
@@ -137,13 +141,26 @@ class EventController extends Controller
     }
 
     public function show(Request $request, $eventCode){
-        $event = Event::where('code',$eventCode)->firstOrFail();
-        $eventResource = new EventResource($event);
-        if(Auth::check()){
-            try{$userRating = $request->user()->ratings()->whereBelongsTo($event)->first()->value;} catch(GlobalException){$userRating = 10;}
-        }else{
-            $userRating = $event->rating;
+
+
+        if (Cache::has('e5n.event.' . $eventCode)) {
+            $eventResource = Cache::get('e5n.event.' . $eventCode);
         }
+        else {
+            $eventResource = new EventResource(Event::where('code',$eventCode)->firstOrFail());
+            Cache::put('e5n.event.' . $eventCode, $eventResource, now()->addMinutes(3));
+        }
+        if(Auth::check()){
+            $rating = $request->user()->ratings()->whereBelongsTo($eventResource->resource)->first();
+            if($rating){
+                $userRating = $rating->value;
+            }else{
+                $userRating = $eventResource->resource->rating;
+            }
+        }else{
+            $userRating = $eventResource->resource->rating;
+        }
+
         return view('e5n.events.show', [
             'event'=>$eventResource,
             'isUser' => Auth::check() ? "true" : "false",
@@ -181,7 +198,7 @@ class EventController extends Controller
      */
     public function event_data($eventCode)
     {
-        if (false && Cache::has('e5n.event.' . $eventCode)) {$event = Cache::get('e5n.event.' . $eventCode);}
+        if (Cache::has('e5n.event.' . $eventCode)) {$event = Cache::get('e5n.event.' . $eventCode);}
         else {
             $event = new EventResource(Event::where('code',$eventCode)->firstOrFail());
             Cache::put('e5n.event.' . $eventCode, $event, now()->addMinutes(3));

@@ -9,11 +9,14 @@
         <div>
             <div class="jumbotron">
                 <h1 style="text-align:center;font-size:32px;">Programok</h1>
+                <p style="text-align: center">Válassz napot!</p>
             </div>
             <br/>
             <div class="py-2 btn-group d-flex justify-content-center" role="group" style="text-align:center">
-                @foreach ($events as $day => $dayEvents)
-                    <button data-switchgroup="switch-table1" data-target="{{$day == 0 ? 6 : $day-1}}" type="button" class="btn btn-secondary table-switcher">{{$dayEvents[0]->start->format("l")}}</button>
+                @php($i=0)
+                @foreach ($events as $dayEvents)
+                    <button data-switchgroup="switch-table1" data-target="{{$i}}" type="button" class="btn btn-secondary table-switcher">{{$dayEvents[0]->start ? $dayEvents[0]->format("l") : "Ismeretlen"}}</button>
+                    @php($i++)
                 @endforeach
             </div>
             @foreach ($events as $dayEvents)
@@ -31,8 +34,8 @@
                     @foreach ($dayEvents as $event)
                         <tr>
                             <td><a href="/e5n/event/{{$event->code}}">{{$event->name}}</a></td>
-                            <td>{{\Carbon\Carbon::parse($event->start)->format('H:i')}}</td>
-                            <td>{{\Carbon\Carbon::parse($event->end)->format('H:i')}}</td>
+                            <td>{{$event->start ? $event->start->format('H:i') : "Ismeretlen"}}</td>
+                            <td>{{$event->end ? $event->end->format('H:i') : "Ismeretlen"}}</td>
                             @if ($event->location != null)
                                 <td>{{$event->location->name}}</td>
                             @else

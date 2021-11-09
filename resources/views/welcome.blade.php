@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('title')
+    Eötvös DÖ
+@endsection
+
 @section('content')
 
 <div class="container">
@@ -14,7 +18,7 @@
             <div class="col-md-6 container">
                 <div class="jumbotron card">
                     <h1 class="display-4"><img src="{{asset('images/defaultdonci.png')}}" style="height:1em;">Előadás Jelentkezés</h1>
-                    <p class="lead"><a class="btn btn-primary btn-lg" href="/e5n/presentations" role="button">Tovább a Jelentkezéshez!</a></p>
+                    <p class="lead"><a class="btn btn-primary btn-lg" href="{{route('presentation.index')}}" role="button">Tovább a Jelentkezéshez!</a></p>
                 </div>
             </div>
             <div class="col-md-6 container" >

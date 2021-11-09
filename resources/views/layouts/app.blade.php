@@ -14,6 +14,7 @@
     <!-- Scripts -->
     <script src="/public/js/app.js" async defer> </script>
 
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('images/favicon.ico')}}">
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -39,21 +40,20 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Előadások</a>
+                            <a class="nav-link" href="{{route('presentation.index')}}">Előadások</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Programok</a>
+                            <a class="nav-link" href="{{route('event.index')}}">Programok</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Csapatok</a>
+                            <a class="nav-link" href="{{route('team.index')}}">Csapatok</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                Kezelés <span class="caret"></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Programok szerkesztése</a>
-                                <a class="dropdown-item" href="#">Tanári felület</a>
+                                <a class="dropdown-item" href="{{route('admin.presentation.index')}}">Tanári felület</a>
                             </div>
 
                     </ul>

@@ -1,4 +1,4 @@
-@extends('home')
+@extends('layouts.app')
 
 @section('title')
     E5N van, örvendjetek
@@ -21,7 +21,7 @@
                     <div class="card-body text-center">
                         <h2 class="display-4"> Eötvös Napok</h2>
                         <p class="card-text">
-                            Lorem ipsum
+                            Helyezések
                         </p>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h2 class="display-4">Map placeholder @svg ('map') </h2>
+                        <h2 class="display-4">Térkép helye @svg ('map') </h2>
                     </div>
                 </div>
             </div>

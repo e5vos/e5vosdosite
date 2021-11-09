@@ -5,5 +5,5 @@ QR kód olvasó
 @endsection
 
 @section('content')
-    <qr-reader>
+    <qr-reader :currentevent='@json($event)'>
 @endsection

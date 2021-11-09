@@ -41,6 +41,14 @@ class AuthController extends Controller{
                 'google_id'=> Hash::make($userData->id)
             ]);
         }
+        if(!$user->google_id){
+            $user->google_id = Hash::make($userData->id);
+        }
+
+        if(!Hash::check($userData->id,$user->google_id)){
+            abort(400);
+        }
+
         Auth::login($user);
         return redirect()->to($request->session()->get('intended_url',''));
     }

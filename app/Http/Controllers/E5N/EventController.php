@@ -58,22 +58,12 @@ class EventController extends Controller
 
     public function store(Request $request){
         Gate::authorize('create',Event::class);
-        if(!$request->user()->isAdmin()){
-            abort(403);
-        }
-
         $event = new Event();
         $event->code = $request->input('code');
         $event->name = $request->input('title');
-        $event->description = $request->input('description');
-        $event->location = $request->input('location');
-        $event->start = $request->input('start');
-        $event->end = $request->input('end');
-        $event->organiser_name = $request->input('organiser_name');
-        $event->capacity = $request->input('capacity');
-        $event->is_presentation = $request->input('is_presentation');
-        $event->slot = $request->input('slot');
         $event->save();
+
+        return redirect()->route('event.edit',$event->code);
 
     }
 

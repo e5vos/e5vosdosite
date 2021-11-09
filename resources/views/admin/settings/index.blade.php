@@ -5,5 +5,5 @@
 @endsection
 
 @section('content')
-    <site-settings>
+    <site-settings :settings='@json($settings)'>
 @endsection

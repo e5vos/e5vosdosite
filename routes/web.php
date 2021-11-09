@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\E5N\TeamController;
+use App\Http\Controllers\SettingController;
 use Google\Service\AndroidPublisher\UserComment;
 use Illuminate\Support\Facades\Route;
 
@@ -62,7 +63,7 @@ Route::get('/e5n/scanner','E5N\EventController@scanner')->middleware('auth');
 Route::get('/e5n/codes','E5N\E5NController@codes');
 
 //Settings
-Route::get('/settings','HomeController@settingsView');
+Route::resource('settings',SettingController::class);
 
 
 Route::resource('e5n/event', \E5N\EventController::class);

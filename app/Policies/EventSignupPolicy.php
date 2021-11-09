@@ -30,7 +30,8 @@ class EventSignupPolicy
      */
     public function view(User $user, EventSignup $eventSignup)
     {
-        return $user->isAdmin() || $user->is($eventSignup->user);
+        return $user->isAdmin() || ($eventSignup->user() && $eventSignup->user()->is($user)) || ($eventSignup->team() && $eventSignup->team()->admins()->contains($user));//
+
     }
 
     /**
@@ -65,7 +66,7 @@ class EventSignupPolicy
      */
     public function delete(User $user, EventSignup $eventSignup)
     {
-        return $user->isAdmin() || $eventSignup->user()->is($user);//
+        return $user->isAdmin() || ($eventSignup->user() && $eventSignup->user()->is($user)) || ($eventSignup->team() && $eventSignup->team()->admins()->contains($user));//
     }
 
     /**

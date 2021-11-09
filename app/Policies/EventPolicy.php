@@ -108,14 +108,14 @@ class EventPolicy
     }
 
     public function rate(User $user, Event $event){
-        return $user->isAdmin() || $user->events()->get()->contains($event);
+        return $user->isAdmin() || $user->events->contains($event);
     }
 
     public function signup(User $user, Event $event){
         if($event->is_presentation){
             return Setting::check('e5nPresentationSignup');
         }else{
-            return $event->start->isPast() && $event->start->isFuture();
+            return $user->isAdmin() || ($event->start->isPast() && $event->end->isFuture() && $event->organisers->contains($event));
         }
     }
 

@@ -6,12 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Teams;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Exceptions\EventFullException;
+
 
 class Team extends Model
 {
 
     use HasFactory;
 
+
+    public function signups(){
+        return $this->hasMany(EventSignup::class);
+    }
 
     /**
      * The size of the team
@@ -21,6 +27,8 @@ class Team extends Model
     public function size(){
         return $this->members()->count();
     }
+
+
 
 
     /**
@@ -87,12 +95,7 @@ class Team extends Model
     public function members(){
         return $this->hasManyThrough(User::class, TeamMember::class, 'team_id','id','id','user_id');
     }
-    /**
-     * Scores of this team
-     */
-    public function scores(){
-        return $this->hasMany(Score::class);
-    }
+
     /**
      * Administator user for the team
      */
@@ -111,6 +114,25 @@ class Team extends Model
         $teamMember->role=$role;
         $teamMember->save();
         return $teamMember;
+    }
+
+    /**
+     * Sign up team to $event
+     *
+     * @param  Event $event
+     * @throws EventFullException if the event is full
+     * @return EventSignup the newly created EventSignup object
+     */
+    public function signUp(Event $event){
+        if(!$event->hasCapacity()){
+            throw new EventFullException();
+        }
+        $signup = new EventSignup();
+        $signup->event()->associate($event);
+        $signup->team()->associate($this);
+        $signup->present = !$event->is_presentation;
+        $signup->save();
+        return $signup;
     }
 
 }

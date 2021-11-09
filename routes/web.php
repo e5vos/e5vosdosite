@@ -59,7 +59,7 @@ Route::put('e5n/admin/presentation/{presentation}/attendance','E5N\Admin\Present
 
 
 
-Route::get('/e5n/scanner','E5N\E5NController@scanner')->middleware('auth');
+Route::get('/e5n/scanner','E5N\QRController@scan')->middleware('auth')->name('e5n.scanner');
 Route::get('/e5n/codes','E5N\E5NController@codes');
 
 //Settings

@@ -11,6 +11,8 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 /public/svg
+/public/css
+/public/js
 .idea
 .public
 .env.testing

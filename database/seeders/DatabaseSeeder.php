@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LocationSeeder::class);
         $this->call(PermissionSeeder::class);
         $this->call(EventSignupSeeder::class);
-        $this->call(ScoreSeeder::class);
         $this->call(PostSeeder::class);
         $this->call(SettingSeeder::class);
         $this->call(TeamSeeder::class);

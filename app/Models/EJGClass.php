@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Setting;
+
 
 class EJGClass extends Model
 {
@@ -25,22 +27,20 @@ class EJGClass extends Model
      *
      * @return void
      */
-    public static function calculatePoints(){
-        $ejgclasses = EJGClass::all();
+    public function calculatePoints(){
 
-        foreach($ejgclasses as $ejgclass){
-            $ejgclass->points = $ejgclass->bonuspoints()->where('event','E5N')->sum();
-            foreach($ejgclass->students() as $student){
-                foreach($student->scores() as $score){
-                    $ejgclass->points += $score->place*$score->event()->weight*Setting::firstWhere('key','e5nBasePoint')->get()->value();
-                }
-                foreach($student->teams() as $team){
-                    foreach($team->scores() as $score){
-                        $ejgclass->points += $score->place*$score->event()->weight*$team->sizeModifier()*Setting::firstWhere('key','e5nBasePoint')->get()->value();
-                    }
+        $this->points = $this->bonuspoints()->where('event','E5N')->sum();
+        $e5nBasePoint = Setting::lookup('e5nBasePoint');
+        foreach($this->students() as $student){
+            foreach($this->scores() as $score){
+                $this->points += $score->place*$score->event()->weight*$e5nBasePoint;
+            }
+            foreach($student->teams() as $team){
+                foreach($team->signups() as $signUp){
+                    $this->points += $signUp->place*$signUp->event()->weight*$team->sizeModifier()*$e5nBasePoint;
                 }
             }
-            $ejgclass->save();
         }
+        $this->save();
     }
 }

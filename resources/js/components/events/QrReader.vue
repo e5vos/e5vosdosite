@@ -29,14 +29,26 @@ export default {
 
   methods: {
     onDecode(decodedString){
-       const requestOptions = {
+        var context = "event"
+        switch(decodedString.length){
+            case 4:
+                context = "team"
+                break;
+            case 13:
+                context = "user"
+                break;
+            default:
+                break;
+        }
+        const requestOptions = {
             method: "POST",
             headers:{
                 "Content-Type":"application/json",
                 "X-CSRF-TOKEN": window.Laravel.csrfToken,
             },
             body: JSON.stringify({
-                email: decodedString
+                code: decodedString,
+                context: context
             })
         }
         fetch('/api/scanned',requestOptions)

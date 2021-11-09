@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use App\Exceptions\EventFullException;
-use App\Exceptions\StudentBusyException;
+use App\Exceptions\{
+    EventFullException,
+    StudentBusyException
+};
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -67,7 +69,7 @@ class User extends Authenticatable
      * @return EventSignup the newly created EventSignup object
      */
     public function signUp(Event $event){
-        if($event->slot !=null && $this->isBusy($event->slot)){
+        if($event->slot != null && $this->isBusy($event->slot)){
             throw new StudentBusyException();
         }
         if(!$event->hasCapacity()){

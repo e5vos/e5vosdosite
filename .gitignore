@@ -19,3 +19,4 @@ yarn-error.log
 composer.lock
 public/js/app.js
 composer.lock
+app.yaml

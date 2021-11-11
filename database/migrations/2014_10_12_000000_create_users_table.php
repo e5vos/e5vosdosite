@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
 
-            $table->foreign('class_id')->references('id')->on('ejg_classes')->onDelete('cascade');
+            $table->foreign('class_id')->references('id')->on('ejg_classes')->onDelete('set null');
         });
     }
 

@@ -6,6 +6,11 @@
 
     <meta name="description" content="A Budapesti Eötvös József Gimnázium Diákönkormányzatának weboldala">
 
+    <meta property="og:title" content="E5vös Dö" />
+    <meta property="og:description" content="A Budapesti Eötvös József Gimnázium Diákönkormányzatának weboldala" />
+    <meta property="og:image" content="{{asset('images/defaultbackgroundimage.png')}}" />
+
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87577526-2"></script>
     <script>
@@ -24,7 +29,7 @@
 <title> @yield('title') </title>
 
     <!-- Scripts -->
-    <script src="/public/js/app.js" async defer> </script>
+    <script src="{{asset('js/app.js')}}" async defer> </script>
 
     <link rel="shortcut icon" type="image/x-icon" href="{{asset('images/favicon.ico')}}">
 
@@ -33,7 +38,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="/public/css/app.css" rel="stylesheet">
+    <link href="{{asset('css/app.css')}}" rel="stylesheet">
 
 
     @yield('script')

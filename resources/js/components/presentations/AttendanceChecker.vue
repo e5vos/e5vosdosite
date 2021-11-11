@@ -5,7 +5,7 @@
         </thead>
         <tbody>
             <tr v-for="signup in presentation.signups" v-bind:key="signup.id">
-                <td>{{signup.user.name}}</td>
+                <td>{{signup.user.class ? signup.user.class.name+" - ": ""}}{{signup.user.name}}</td>
                 <td><input type="checkbox" class="form-control" v-model="signup.present" v-on:click="toggle(signup)" ></td>
             </tr>
 

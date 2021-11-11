@@ -16,6 +16,7 @@ use App\Models\{
 use App\Exception;
 use App\Exceptions\DuplicateCodeException;
 use App\Http\Resources\EventResource;
+use App\Http\Resources\PresentationResource;
 use Exception as GlobalException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -224,10 +225,8 @@ class EventController extends Controller
     public function presentationSlot($slot){
 
         if(!Cache::has('e5n.events.presentations.'.$slot)){
-            $slotEvents = Event::where('is_presentation',true)->where('slot',$slot)->get()->filter(function($event){
-                return $event->capacity == null || $event->capacity > $event->occupancy;
-            });
-            Cache::put('e5n.events.presentations.'.$slot,$slotEvents,now()->addSeconds(30));
+            $slotEvents = Event::where('is_presentation',true)->where('slot',$slot)->get();
+            Cache::put('e5n.events.presentations.'.$slot,$slotEvents,now()->addMinutes(2));
             return $slotEvents;
         }else{
             return Cache::get('e5n.events.presentations.'.$slot);

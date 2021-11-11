@@ -112,6 +112,7 @@ class EventPolicy
     }
 
     public function signup(User $user, Event $event){
+        if($user->isAdmin()) return true;
         if($event->is_presentation){
             return Setting::check('e5nPresentationSignup');
         }else{

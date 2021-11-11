@@ -47,7 +47,7 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h2 class="display-4">Térkép helye @svg ('map') </h2>
+                        <h2 class="display-4">Térkép helye @svg ('far-map') </h2>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,4 @@
 const mix = require('laravel-mix');
-require('laravel-mix-svg');
 
 /*
  |--------------------------------------------------------------------------
@@ -20,9 +19,3 @@ mix.js('resources/js/qrcreator.js','public/js/qr.js')
 
 mix.sass('resources/sass/app.scss', 'public/css')
 
-
-mix.copy('node_modules/bootstrap-icons/icons','public/svg/icons')
-
-
-
-mix.svg()

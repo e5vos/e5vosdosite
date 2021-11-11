@@ -68,7 +68,6 @@
 export default {
     data(){
         return{
-            api : null,
             refreshIntervalTimeMin: 5000,
             refreshIntervalTime: 5000,
             refreshIntervalTimeIncrement: 1000,
@@ -91,13 +90,14 @@ export default {
     created(){
             this.changeSlot(1)
             this.fetchUserData()
-            setTimeout(this.tickSlot,this.refreshIntervalTime/10)
+            // setTimeout(this.tickSlot,this.refreshIntervalTime/10)
 
     },
     methods: {
         async tickSlot(){
             if(this.counter >= 100){
                 await this.refreshSlot();
+                await this.fetchUserData()
             }
             if(this.isUser){
                 this.counter+=10;
@@ -141,12 +141,13 @@ export default {
                     "X-CSRF-TOKEN": window.Laravel.csrfToken,
                 }
             }
+            this.disableSignup = true
+
             const res = await fetch("/e5n/event/"+presentationCode+"/signup/",requestOptions)
 
-            if(res.status==200){
-                await this.fetchUserData();
-            }
 
+            await this.fetchUserData();
+            await this.refreshSlot();
             this.signupStatus = res.status;
             this.$forceUpdate()
             this.disableSignup = false
@@ -169,8 +170,15 @@ export default {
                     "X-CSRF-TOKEN": window.Laravel.csrfToken,
                 }
             }
-            constis.fetchUserData();
-                this.$forceUpdate();
+            this.disableSignup = true
+            const res = await fetch("/e5n/event/"+presentationCode+"/signup/",requestOptions)
+            if(res.status == 200){
+                this.selected_presentations[this.selected_slot]=null
+            }
+            await this.refreshSlot();
+            await this.fetchUserData();
+            this.disableSignup = false
+            this.$forceUpdate();
         },
 
         updateRefreshBarColor(){

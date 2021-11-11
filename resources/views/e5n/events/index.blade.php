@@ -15,7 +15,7 @@
             <div class="py-2 btn-group d-flex justify-content-center" role="group" style="text-align:center">
                 @php($i=0)
                 @foreach ($events as $dayEvents)
-                    <button data-switchgroup="switch-table1" data-target="{{$i}}" type="button" class="btn btn-secondary table-switcher">{{$dayEvents[0]->start ? $dayEvents[0]->format("l") : "Ismeretlen"}}</button>
+                    <button data-switchgroup="switch-table1" data-target="{{$i}}" type="button" class="btn btn-secondary table-switcher">{{$dayEvents[0]->start ? $dayEvents[0]->start->format("l") : "Ismeretlen"}}</button>
                     @php($i++)
                 @endforeach
             </div>

@@ -26,3 +26,11 @@
     position:absolute;
     border: 10px solid red;
 }
+
+.svg {
+    height: 1em;
+    margin-top: -4px;
+    pointer-events:none;
+    vertical-align: middle;
+    width: 1em;
+}

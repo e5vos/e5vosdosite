@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-Fasszopók - E5N Csapatok
+{{$team->name}} - E5N Csapatok
 @endsection
 
 

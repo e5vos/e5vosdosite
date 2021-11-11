@@ -66,8 +66,10 @@ Route::resource('settings',SettingController::class);
 Route::resource('e5n/event', \E5N\EventController::class);
 Route::resource('e5n/team',\E5N\TeamController::class);
 Route::resource('e5n/presentation', \E5N\PresentationController::class, ['only' => ['index'] ]);
-Route::resource('e5n/event/{event}/signup', \E5N\EventSignupController::class);
 Route::resource('e5n/admin/presentation',\E5N\Admin\PresentationAdminController::class, ["as" => "admin"]);
+
+Route::post('e5n/event/{event}/signup','E5N\EventSignupController@store');
+Route::delete('e5n/event/{event}/signup','E5N\EventSignupController@destroy');
 
 
 Route::get('e5n/admin/points/update','E5N\E5NController@calculatePoints');

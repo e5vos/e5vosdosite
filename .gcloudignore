@@ -12,6 +12,7 @@
 # below:
 .git
 .gitignore
+!public/*
 
 # PHP Composer dependencies:
 /vendor/

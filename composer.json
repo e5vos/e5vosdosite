@@ -10,19 +10,19 @@
     "require": {
         "php": "7.4",
         "arcanedev/laravel-lang": "^9.0",
-        "blade-ui-kit/blade-icons": "^1.1",
         "ckeditor/ckeditor": "^4.14",
         "doctrine/dbal": "^3.1",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
         "fzaninotto/faker": "^1.9",
+        "google/cloud-error-reporting": "^0.18.4",
+        "google/cloud-logging": "^1.22",
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "^2.5",
         "laravel/framework": "^8.0",
         "laravel/socialite": "^5.2",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.3",
-        "owenvoke/blade-fontawesome": "^1.10",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-cookie-consent": "^2.12",
         "staudenmeir/eloquent-has-many-deep": "^1.7"
@@ -75,13 +75,14 @@
             "@php artisan key:generate --ansi"
         ],
         "post-install-cmd": [
-            "composer dump-autoload",
+            "composer dump-autoload --no-dev",
             "php artisan config:clear",
             "php artisan cache:clear",
             "php artisan view:clear",
             "php artisan cache:clear",
-            "php artisan regenerate:schoolCSS",
-            "php artisan optimize"
+            "php artisan config:cache",
+            "php artisan route:cache"
+
         ]
 
     }

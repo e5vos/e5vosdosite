@@ -23,7 +23,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.3",
         "simplesoftwareio/simple-qrcode": "^4.2",
-        "spatie/laravel-cookie-consent": "^2.12",
+        "spatie/laravel-cookie-consent": "^3.2",
         "staudenmeir/eloquent-has-many-deep": "^1.7"
     },
     "require-dev": {

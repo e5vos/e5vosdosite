@@ -1,2 +1,0 @@
-# Eötvös DÖ Honlap
-

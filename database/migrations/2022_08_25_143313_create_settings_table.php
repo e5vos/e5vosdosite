@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
             $table->tinyText('key');
-            $table->tinyText('value');
+            $table->boolean('value');
             $table->timestamps();
         });
     }

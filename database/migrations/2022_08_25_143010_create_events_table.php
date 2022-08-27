@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('decription');
             $table->foreignIdFor(Slot::class);
-            $table->enum('signup_type',['team','student', 'team_student'])->nullable()->comment('null if no signup required');
+            $table->foreignIdFor(Location::class);
+            $table->enum('signup_type',['team','user', 'team_user'])->nullable()->comment('null if no signup required');
             $table->dateTime('signup_deadline');
             $table->tinyInteger('capacity')->nullable()->comment('null if infinite capacity');
             $table->string('img_url')->nullable();

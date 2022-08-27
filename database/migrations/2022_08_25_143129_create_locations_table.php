@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
             $table->tinyText('name');
-            $table->enum('floor', FloorType::cases());
+            $table->enum('floor', array_column(FloorType::cases(),'name'));
             $table->timestamps();
         });
     }

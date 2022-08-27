@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email',73)->unique();//64 max namelength + @e5vos.hu length
             $table->string('google_id')->unique()->nullable()->comment('null befor first login');
-            $table->enum('ejg_class',EjgClassType::cases())->default('none');
+            $table->enum('ejg_class',array_column(EjgClassType::cases(),'name'))->nullable();
             $table->string('img_url')->nullable();
             $table->timestamps();
         });

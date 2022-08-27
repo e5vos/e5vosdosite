@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Attendance;
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('team_member_attendances', function (Blueprint $table) {
-            $table->primary(['user_id', 'attendance_id']);
+        Schema::create('ratings', function (Blueprint $table) {
+            $table->primary(['user_id', 'event_id']);
+            $table->tinyInteger('value');
             $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Attendance::class);
+            $table->foreingIdFor(Event::class);
             $table->timestamps();
-
         });
     }
 
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('team_member_attendance');
+        Schema::dropIfExists('ratings');
     }
 };

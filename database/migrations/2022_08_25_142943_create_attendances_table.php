@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Schema\ForeignKeyDefinition;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -18,8 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->nullable()->comment('null if team attendance=>team_code cant be null');
             $table->foreignIdFor(Team::class)->nullable()->comment('null if user attendance=>user_id cant be null');
+            $table->string('display_name')->default('No name')->comment('Display name of the user or team');
             $table->foreignIdFor(Event::class);
-            $table->boolean('is_present');
+            $table->boolean('is_present')->default(false);
             $table->tinyInteger('rank')->nullable()->comment('null if not competition or no rank achieved');
             $table->timestamps();
         });

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
-export default function Button({ type = 'submit', className = '', processing, children }) {
+export default function Button({ type = 'submit', className = '', processing, children }:{type: "submit" | "reset" | "button", className: string, processing:boolean, children:ReactNode}) {
     return (
         <button
             type={type}

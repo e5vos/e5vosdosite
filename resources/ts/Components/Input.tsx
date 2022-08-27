@@ -10,11 +10,11 @@ export default function Input({
     isFocused,
     handleChange,
 }) {
-    const input = useRef();
+    const input = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         if (isFocused) {
-            input.current.focus();
+            input.current?.focus();
         }
     }, []);
 

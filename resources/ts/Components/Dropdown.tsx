@@ -2,7 +2,7 @@ import React, { useState, useContext, Fragment } from 'react';
 import { Link } from '@inertiajs/inertia-react';
 import { Transition } from '@headlessui/react';
 
-const DropDownContext = React.createContext();
+const DropDownContext = React.createContext({});
 
 const Dropdown = ({ children }) => {
     const [open, setOpen] = useState(false);

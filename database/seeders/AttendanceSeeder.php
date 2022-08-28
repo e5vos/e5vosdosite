@@ -23,53 +23,48 @@ class AttendanceSeeder extends Seeder
         $users = user::all();
         $teams = Team::all();
         foreach ($events as $event) {
-            $event->attendances()->saveMany(
-                Attendance::factory()->count($event->capacity/2 ?? 10)->create()->each(function ($attendance) use ($event, $users, $teams) {
-                    $attendance->event_id = $event->id;
-                    $user = fake()->randomElement($users);
-                    $team = fake()->randomElement($teams);
-                    $team_members = $team->members()->toArray();
-                    $willattend = rand(0, $team->members->count());
-                    switch($event->signup_type){
-                        case 'user':
-                            $attendance->user_id = $user->id;
-                            break;
-                        case 'team':
-                            $attendance->team_id = $team->id;
-                            TeamMemeberAttendanceFactory::new()->count($willattend)->create(
-                                function ($team_member_attendance) use ($event) {
-                                    $team_member_attendance->attendance_id = $event->attendance;
-                                }
-                            )->each(
-                                function ($team_member_attendance) use ($team_members) {
-                                    $team_member_attendance->user_id = $team_members[0]->id;
-                                    array_shift($team_members);
-                                }
-                            );
-                            break;
-                        case 'team_user':
-                            if (fake()->boolean()){
-                                $attendance->user_id = $user->id;
-
-                            }else {
-                                $attendance->team_id = $team->id;
-                                TeamMemeberAttendanceFactory::new()->count($willattend)->create(
-                                    function ($team_member_attendance) use ($event) {
-                                        $team_member_attendance->attendance_id = $event->attendance;
-                                    }
-                                )->each(
-                                    function ($team_member_attendance) use ($team_members) {
-                                        $team_member_attendance->user_id = $team_members[0]->id;
-                                        array_shift($team_members);
-                                    }
-                                );
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                })
-            );
+            $individualAttendanceCount = 10;
+            Attendance::factory()
+                ->count($individualAttendanceCount)
+                ->state(
+                    new Sequence(
+                        $users
+                            ->random($individualAttendanceCount)
+                            ->map(
+                                fn($user) => ['user_id' => $user->id, 'event_id' => $event->id]
+                            )
+                        )
+                    )
+                ->create();
+            $teamAttendanceCount = 10;
+            $teamAttendances = Attendance::factory()
+                ->count($teamAttendanceCount)
+                ->state(
+                    new Sequence(
+                        $teams
+                            ->random($teamAttendanceCount)
+                            ->map(
+                                fn($team) => ['team_id' => $team->id, 'event_id' => $event->id]
+                            )
+                        )
+                    )
+                ->create();
+            foreach($teamAttendances as &$teamAttendance){
+                $team = $teamAttendance->team();
+                $attendedSize = rand(1, $team->members()->count());
+                $members = $team->members()->get()->random($attendedSize);
+                Attendance::factory()
+                    ->count($attendedSize)
+                    ->state(
+                        new Sequence(
+                            $members
+                                ->map(
+                                    fn($member) => ['user_id' => $member->id, 'event_id' => $event->id]
+                                )
+                            )
+                        )
+                    ->create();
+            }
         }
     }
 }

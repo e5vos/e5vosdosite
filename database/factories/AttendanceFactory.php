@@ -13,13 +13,6 @@ class AttendanceFactory extends Factory
 {
     protected $model = Attendance::class;
 
-    public function configure(){
-        return $this->afterMaking(function(Attendance $attendance){
-            $randomEvent = Event::inRandomOrder()->first();;
-            $attendance->event()->associate($randomEvent);
-        });
-    }
-
     /**
      * Define the model's default state.
      *
@@ -32,6 +25,7 @@ class AttendanceFactory extends Factory
         return [
             'is_present' => $present,
             'rank' => $present ? fake()->numberBetween(1, 5) : null,
+            'rating' => $present ? fake()->numberBetween(1, 10) : null,
         ];
     }
 }

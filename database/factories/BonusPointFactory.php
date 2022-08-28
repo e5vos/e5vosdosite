@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Helpers\EjgClassType;
+use App\Models\BonusPoint;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,8 +20,9 @@ class BonusPointFactory extends Factory
     public function definition()
     {
         return [
-            'ejg_class' => fake()->randomelement(EjgClassType::cases()),
+            'ejg_class' => fake()->randomelement(array_column(EjgClassType::cases(),'name')),
             'quantity' => fake()->numberBetween(-10,100),
         ];
     }
 }
+

@@ -6,7 +6,7 @@ use App\Exceptions\NotAllowedException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use MembershipType;
+use App\Helpers\MembershipType;
 
 /**
  * App\Models\TeamMembership

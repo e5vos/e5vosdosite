@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreignIdFor(Event::class);
             $table->boolean('is_present')->default(false);
             $table->tinyInteger('rank')->nullable()->comment('null if not competition or no rank achieved');
+            $table->tinyInteger('rating')->nullable()->comment('null if no rating given');
             $table->timestamps();
         });
     }

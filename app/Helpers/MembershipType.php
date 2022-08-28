@@ -1,4 +1,6 @@
 <?php
+namespace App\Helpers;
+
 enum MembershipType {
     case Invited;
     case Member;

@@ -8,7 +8,7 @@ use App\Models\Slot;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class EventLocationSeeder extends Seeder
+class EventSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -23,13 +23,11 @@ class EventLocationSeeder extends Seeder
         $events = Event::factory()
             ->count(100)
             ->create();
-
         foreach ($events as $event) {
             $event->location()->associate($locations->random());
-            if (fake()->random_int(0, 10) > 8) {
+            if (rand(0, 10) > 8) {
                 $event->slot()->associate($slots->random());
             }
-        }
-        $events->save();
+        };
     }
 }

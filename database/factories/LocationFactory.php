@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Helpers\FloorType;
+use App\Models\Location;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +22,7 @@ class LocationFactory extends Factory
     {
         return [
             'name' => fake()->words(2, true),
-            'floor' => fake()->randomElement(FloorType::cases()),
+            'floor' => fake()->randomElement(array_column(FloorType::cases(),'name')),
         ];
     }
 }

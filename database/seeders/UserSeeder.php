@@ -18,10 +18,11 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()->count(1000)->has(Permission::factory(2)->each(
-            function ($permission) {
-                $permission->code == PermissionType::Organiser ? $permission->event_id = Event::inRandomOrder()->first()->id : $permission->event_id = null;
+        $events = Event::all();
+        User::factory()->count(1000)->has(Permission::factory(2))->create()->each(
+            function ($permission) use ($events) {
+                $permission->code == PermissionType::Organiser ? $permission->event_id = $events->random()->id : $permission->event_id = null;
             }
-        ))->create();
+        );
     }
 }

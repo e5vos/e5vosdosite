@@ -19,18 +19,13 @@ class TeamSeeder extends Seeder
     public function run()
     {
         $teamsize = 10;
-        $users = User::inRandomOrder()->limit($teamsize)->get();
+        $users = User::inRandomOrder()->limit($teamsize*10)->get();
         Team::factory()
             ->has(
                 TeamMembership::factory()
-                    ->count($teamsize)
-                    ->state(
-                        new Sequence(
-                            $users->map(function ($user) {
-                                return ['user_id' => $user->id];
-                            })
-                        )
-                    )
+                ->count($teamsize)
+                ->sequence(fn ($sequence) => ['user_id' => $users[$sequence->index]->id]),
+                'members'
             )
             ->count(10)
             ->create();

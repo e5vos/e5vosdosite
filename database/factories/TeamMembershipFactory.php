@@ -3,15 +3,13 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use MembershipType;
+use App\Helpers\MembershipType;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Team>
  */
-class TeamFactory extends Factory
+class TeamMembershipFactory extends Factory
 {
-    protected $model = Team::class;
-
     /**
      * Define the model's default state.
      *
@@ -20,7 +18,7 @@ class TeamFactory extends Factory
     public function definition()
     {
         return [
-            'role' => $this->fake()->randomElement(MembershipType::cases()),
+            'role' => fake()->randomElement(array_column(MembershipType::cases(),'name')),
         ];
     }
 }

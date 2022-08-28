@@ -1,9 +1,13 @@
 <?php
 
+use App\Helpers\MembershipType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
+use App\Models\{
+    User,
+    Team
+};
 return new class extends Migration
 {
     /**
@@ -13,10 +17,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('bonuspoints', function (Blueprint $table) {
-            $table->id();
-            $table->tinyText('ejg_class');
-            $table->integer('quantity');
+        Schema::create('team_memberships', function (Blueprint $table) {
+            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(Team::class);
+            $table->enum('role', array_column(MembershipType::cases(), 'name'));
             $table->timestamps();
         });
     }
@@ -28,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bonuspoints');
+        Schema::dropIfExists('team_members');
     }
 };

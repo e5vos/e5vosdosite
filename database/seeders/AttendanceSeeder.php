@@ -24,7 +24,7 @@ class AttendanceSeeder extends Seeder
         $teams = Team::all();
         foreach ($events as $event) {
             $event->attendances()->saveMany(
-                Attendance::factory()->create($event->capacity/2 ?? 10)->each(function ($attendance) use ($event, $users, $teams) {
+                Attendance::factory()->count($event->capacity/2 ?? 10)->create()->each(function ($attendance) use ($event, $users, $teams) {
                     $attendance->event_id = $event->id;
                     $user = fake()->randomElement($users);
                     $team = fake()->randomElement($teams);

@@ -36,6 +36,7 @@ class Event extends Model
     use HasFactory;
     use SoftDeletes;
 
+    protected $table = 'events';
 
     protected $dates = ['start','end'];
     protected $casts = ['start' => 'datetime:G:i', 'end' => 'datetime:G:i'];

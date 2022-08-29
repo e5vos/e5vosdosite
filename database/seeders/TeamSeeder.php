@@ -6,11 +6,12 @@ use App\Models\Team;
 use App\Models\TeamMembership;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
+use App\Helpers\MembershipType;
 
 class TeamSeeder extends Seeder
 {
+
     /**
      * Run the database seeds.
      *
@@ -19,15 +20,22 @@ class TeamSeeder extends Seeder
     public function run()
     {
         $teamsize = 10;
-        $users = User::inRandomOrder()->limit($teamsize*10)->get();
+        $users = User::all();
         Team::factory()
-            ->has(
-                TeamMembership::factory()
+        ->has(
+            TeamMembership::factory()
                 ->count($teamsize)
-                ->sequence(fn ($sequence) => ['user_id' => $users[$sequence->index]->id]),
-                'members'
-            )
-            ->count(10)
-            ->create();
+                ->state(
+                    fn ($attributes, Team $team) => [
+                        'user_id' => $users->shuffle()
+                        ->filter(
+                            fn($user) => !array_search($user->id, $team->members->toArray())
+                        )->first()->id,
+                    ]
+                ),
+            'members'
+        )
+        ->count(10)
+        ->create();
     }
 }

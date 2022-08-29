@@ -20,7 +20,7 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $ejgclass = fake()->randomelement(array_column(EjgClassType::cases(),'name'));
+        $ejgclass = fake()->randomelement(array_column(EjgClassType::cases(),'value'));
         return [
             'name' => fake()->name('male'),
             'email' => fake()->unique()->safeEmail() ,

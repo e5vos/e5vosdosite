@@ -15,6 +15,8 @@ class Location extends Model
 {
     use HasFactory;
 
+    protected $table = 'locations';
+
     public function events()
     {
         return $this->hasMany(Event::class);

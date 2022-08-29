@@ -18,9 +18,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('permissions', function (Blueprint $table) {
-            $table->string('code', 3);
-            $table->foreignIdFor(Event::class)->nullable()->comment('not null if event orga');
             $table->foreignIdFor(User::class);
+            $table->foreignIdFor(Event::class)->nullable()->comment('not null if event orga');
+            $table->string('code', 3);
+            $table->unique(['user_id', 'event_id', 'code']);
             $table->timestamps();
         });
     }

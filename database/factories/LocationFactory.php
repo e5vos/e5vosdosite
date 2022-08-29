@@ -22,7 +22,7 @@ class LocationFactory extends Factory
     {
         return [
             'name' => fake()->words(2, true),
-            'floor' => fake()->randomElement(array_column(FloorType::cases(),'name')),
+            'floor' => fake()->randomElement(array_column(FloorType::cases(), 'value')),
         ];
     }
 }

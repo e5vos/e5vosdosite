@@ -18,7 +18,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Permission extends Model
 {
     use HasFactory;
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'permissions';
 
+    protected $primaryKey = ['user_id','event_id', 'code'];
+
+    public $incrementing = false;
 
     /**
      * Get the user that owns the permission.

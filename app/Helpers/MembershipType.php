@@ -1,9 +1,9 @@
 <?php
 namespace App\Helpers;
 
-enum MembershipType {
-    case Invited;
-    case Member;
-    case Leader;
-    case Owner;
+enum MembershipType: string {
+    case Invited = 'meghívott';
+    case Member = 'tag';
+    case Leader = 'vezető';
+    case Owner = 'tulajdonos';
 }

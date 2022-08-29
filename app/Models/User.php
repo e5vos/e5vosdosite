@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Exceptions\EventFullException;
 use App\Exceptions\StudentBusyException;
+use App\Helpers\PermissionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -66,21 +67,21 @@ class User extends Authenticatable
     /**
      * Get all of the Events oranised by the User
      */
-    public function organisedEvents(): HasManyThrough
+    public function organisedEvents(): BelongsToMany
     {
-        return $this->hasManyThrough(Event::class, Permission::class)->where('permission.role','=','event_orga');
+        return $this->belongsToMany(Event::class, 'permissions', 'user_id', 'event_id')->where('code', '=', PermissionType::Organiser);
     }
 
     /**
      * determine if the user is an organiser of the $event
      *
-     * @param Event::class $event
+     * @param int $eventId
      *
      * @return boolean
      */
-    public function organisesEvent(Event $event)
+    public function organisesEvent(int $eventId): bool
     {
-        return $this->organisedEvents()->find($event->id)->exists();
+        return $this->organisedEvents()->find($eventId) != null;
     }
 
     /**

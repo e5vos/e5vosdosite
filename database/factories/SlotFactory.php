@@ -20,9 +20,9 @@ class SlotFactory extends Factory
     public function definition()
     {
         $starts_at = fake()->dateTimeBetween('now', '+1 year');
-        $presentation = fake()->boolean();
+        $presentation = fake()->boolean(50);
         return [
-            'name' => fake()->word().$presentation ? ' előadássáv': ' programsáv',
+            'name' => fake()->word().($presentation ? ' előadássáv': ' programsáv'),
             'starts_at' => $starts_at,
             'ends_at' => fake()->dateTimeBetween($starts_at, '+1 year'),
             'is_presentation' => $presentation,

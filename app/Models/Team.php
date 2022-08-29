@@ -11,7 +11,6 @@ use App\Helpers\MembershipType;
 
 /**
  * App\Models\Team
- * @property int $id
  * @property string $name
  * @property string $code
  */
@@ -19,9 +18,21 @@ class Team extends Model
 {
     use HasFactory;
 
+    protected $table = 'teams';
+
     protected $primaryKey = 'code';
 
-    protected $fillable = ['name'];
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
+    protected $fillable = ['code','name'];
+
+    static public $sneakAttributes = true;
+
+    protected $casts = [
+        'code' => 'string',
+    ];
 
 
     /**

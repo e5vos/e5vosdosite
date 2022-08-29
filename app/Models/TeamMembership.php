@@ -17,6 +17,16 @@ use App\Helpers\MembershipType;
 class TeamMembership extends Model
 {
     use HasFactory;
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'team_memberships';
+
+    protected $primaryKey = ['user_id','team_id'];
+
+    public $incrementing = false;
 
     protected $fillable = ['role'];
 

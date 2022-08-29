@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email',73)->unique();//64 max namelength + @e5vos.hu length
             $table->string('google_id')->unique()->nullable()->comment('null befor first login');
-            $table->enum('ejg_class',array_column(EjgClassType::cases(),'name'))->nullable();
+            $table->enum('ejg_class',array_column(EjgClassType::cases(),'value'))->nullable();
             $table->string('img_url')->nullable();
             $table->timestamps();
         });

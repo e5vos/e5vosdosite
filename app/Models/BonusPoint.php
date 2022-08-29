@@ -16,4 +16,6 @@ class BonusPoint extends Model
 */
 {
     use HasFactory;
+
+    protected $table = 'bonus_points';
 }

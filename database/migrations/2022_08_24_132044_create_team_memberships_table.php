@@ -20,7 +20,7 @@ return new class extends Migration
         Schema::create('team_memberships', function (Blueprint $table) {
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Team::class);
-            $table->enum('role', array_column(MembershipType::cases(), 'name'));
+            $table->enum('role', array_column(MembershipType::cases(), 'value'));
             $table->timestamps();
         });
     }

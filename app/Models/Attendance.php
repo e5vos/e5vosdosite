@@ -23,6 +23,8 @@ class Attendance extends Model
 {
     use HasFactory;
 
+    protected $table = 'attendances';
+
     /**
     * toggle the presence of the attendee at the event
     */

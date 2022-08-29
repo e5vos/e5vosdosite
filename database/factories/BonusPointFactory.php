@@ -20,7 +20,7 @@ class BonusPointFactory extends Factory
     public function definition()
     {
         return [
-            'ejg_class' => fake()->randomelement(array_column(EjgClassType::cases(),'name')),
+            'ejg_class' => fake()->randomelement(array_column(EjgClassType::cases(),'value')),
             'quantity' => fake()->numberBetween(-10,100),
         ];
     }

@@ -20,7 +20,7 @@ class TeamFactory extends Factory
     public function definition()
     {
         return [
-            'code' => fake()->unique()->asciify('**********'),
+            'code' => fake()->unique()->regexify('[A-Z]{10}'),
             'name' => fake()->words(2, true),
         ];
     }

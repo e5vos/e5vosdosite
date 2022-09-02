@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
             ->count($permissions_count)
             ->state(
                 function ($attributes) use ($events, $permissions_count, &$i, $events_count) {
-                    $eventId = $events[rand(0, round(($events->count())/$permissions_count)-1)+($i < $permissions_count-1 ? ++$i : $i = 0)*$events_count/$permissions_count]->id;
+                    $eventId = $events[rand(0, round(($events_count)/$permissions_count)-1)+($i < $permissions_count-1 ? ++$i : $i = 0)*$events_count/$permissions_count]->id;
                     return ['event_id' => $attributes["code"] == PermissionType::Organiser->value ? $eventId : null];
                 }
             )

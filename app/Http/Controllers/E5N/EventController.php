@@ -41,8 +41,17 @@ class EventController extends Controller
      * Show event list
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(int $slotId = null)
     {
+        if ($slotId){
+            if (Cache::has('e5n.eventList'.$slotId)){ $events = Cache::get('e5n.eventList');}
+            else {$events = Event::where('slot',$slotId)->get(); Cache::put('e5n.eventList'.$slotId, $events, now()->addMinute());}
+        }
+        else {
+            $events = Event::all();
+        }
+
+
         if (Cache::has('e5n.eventList')){ $events = Cache::get('e5n.eventList');}
         else {
             $events = Event::orderByRAW('WEEKDAY(`start`)')->get()->groupBy(function($event){
@@ -61,7 +70,7 @@ class EventController extends Controller
      * Show the form for creating a new event.
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request){
+    public function create(){
         Gate::authorize('create',Event::class);
         return view('e5n.events.create');
     }

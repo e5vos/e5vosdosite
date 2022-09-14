@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+
 use App\Http\Controllers\{
     Controller
 };
@@ -31,14 +32,14 @@ class AuthController extends Controller{
 
     public function callback(Request $request, $provider='google')
     {
-        $userData = Socialite::driver($provider)->user();
+        $userData = Socialite::driver($provider)->stateless()->user();
         $user = User::firstWhere('email',$userData->email);
-
         if(!$user){
             $user = User::create([
                 'name' => $userData->name,
                 'email' => $userData->email,
-                'google_id'=> Hash::make($userData->id)
+                'google_id'=> Hash::make($userData->id),
+                'img_url' => $userData->avatar,
             ]);
         }
         if(!$user->google_id){
@@ -48,7 +49,7 @@ class AuthController extends Controller{
         if(!Hash::check($userData->id,$user->google_id)){
             abort(400);
         }
-
+        $user->save();
         Auth::login($user);
         return redirect()->to($request->session()->get('intended_url',''));
     }

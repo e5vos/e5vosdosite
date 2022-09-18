@@ -1,9 +1,15 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
+import {atomWithStorage} from 'jotai/utils'
 import "./App.scss";
+import { useAtom } from "jotai";
+
+const counterAtom = atomWithStorage('counter', 0)
+
+
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useAtom(counterAtom);
 
   return (
     <div className="App">

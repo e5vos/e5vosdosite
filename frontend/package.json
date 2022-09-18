@@ -23,6 +23,7 @@
     "test": "jest --coverage "
   },
   "dependencies": {
+    "@capacitor-community/electron": "^4.1.2",
     "@capacitor/android": "^4.2.0",
     "@capacitor/core": "^4.2.0",
     "@capacitor/ios": "^4.2.0",

@@ -3,7 +3,7 @@ import { CapacitorConfig } from "@capacitor/cli";
 const config: CapacitorConfig = {
   appId: "hu.e5vosdo.app",
   appName: "E5vös DÖ",
-  webDir: "www",
+  webDir: "dist",
   bundledWebRuntime: false,
 };
 

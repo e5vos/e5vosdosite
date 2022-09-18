@@ -4,7 +4,6 @@
     "lib": ["dom", "DOM.Iterable", "esnext"],
     "allowJs": false,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
     "composite": true,
     "incremental": true,
     "module": "ESNext",

@@ -2,7 +2,7 @@
 import { TypedUseSelectorHook, useDispatch as originalDispatchHook, useSelector as originalSelectorHook } from "react-redux/es/exports";
 import { createBrowserHistory, History } from "history";
 import {configureStore} from "@reduxjs/toolkit"
-import {routerMiddleware, connectRouter, RouterState} from "connected-react-router"
+import {routerMiddleware, connectRouter} from "connected-react-router"
 
 
 export const history =  createBrowserHistory()

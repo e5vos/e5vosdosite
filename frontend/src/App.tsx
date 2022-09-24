@@ -1,4 +1,3 @@
-import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import {atomWithStorage} from 'jotai/utils'
 import "./App.scss";
@@ -13,10 +12,10 @@ function App() {
   return (
     <div className="App">
       <div>
-        <a href="https://vitejs.dev" rel="noopener" target="_blank">
+        <a href="https://vitejs.dev" target="_blank" rel="noopener noreferrer">
           <img src="/vite.svg" className="logo" alt="Vite logo" />
         </a>
-        <a href="https://reactjs.org"  rel="noopener" target="_blank">
+        <a href="https://reactjs.org" target="_blank" rel="noopener noreferrer" >
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>

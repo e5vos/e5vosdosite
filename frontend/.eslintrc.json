@@ -1,4 +1,8 @@
 {
-    "extends" : ["prettier"],
-    "ignorePatterns" : ["node_modules/"]
+    "extends" : ["react-app","prettier"],
+    "ignorePatterns" : ["node_modules/"],
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+    }
 }

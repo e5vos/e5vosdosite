@@ -1,4 +1,4 @@
-
+import { SWRInfiniteKeyLoader } from "swr/infinite/dist/infinite";
 /**
  * Cursor pagination (cursor,nextCursor) for SWR
  *

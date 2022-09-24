@@ -10,7 +10,6 @@ const counterAtom = atomWithStorage('counter', 0)
 
 function App() {
   const [count, setCount] = useAtom(counterAtom);
-
   return (
     <div className="App">
       <div>

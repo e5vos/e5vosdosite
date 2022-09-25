@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": "src",
-    "types": ["node", "/src/types/*.d.ts"],
+    "types": ["node"],
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

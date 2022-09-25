@@ -18,7 +18,7 @@ module.exports = {
     return mergeConfig(config, {
       ...userConfig,
       plugins: [
-        tsconfigPaths(),
+        tsconfigPaths("../tsconfig.json"),
         svgr()
       ]
     });

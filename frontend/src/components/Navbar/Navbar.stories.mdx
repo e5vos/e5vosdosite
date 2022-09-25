@@ -1,0 +1,16 @@
+import {Canvas,Meta,Story} from "@storybook/addon-docs";
+import Navbar from "./Navbar";
+
+<Meta title="Navbar/Navbar" component={Navbar} />
+
+export const Template = (args) => <Navbar />;
+
+# Navbar
+
+<Canvas>
+  <Story
+    name="Navbar"
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>

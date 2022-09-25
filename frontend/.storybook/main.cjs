@@ -1,13 +1,27 @@
-const react = require("@vitejs/plugin-react");
-const tsconfigPaths = require("vite-tsconfig-paths");
+const {
+  loadConfigFromFile,
+  mergeConfig
+} = require("vite")
+const { default: tsconfigPaths } = require('vite-tsconfig-paths')
 const svgr = require("vite-plugin-svgr")
+
+const path = require("path")
+
 
 module.exports = {
   "viteFinal": async (config, {
     configType
   }) => {
-    config.plugins = [...config.plugins,svgr()]
-    return config;
+    const {
+      config: userConfig
+    } = await loadConfigFromFile(path.resolve(__dirname, "../vite.config.ts"))
+    return mergeConfig(config, {
+      ...userConfig,
+      plugins: [
+        tsconfigPaths(),
+        svgr()
+      ]
+    });
   },
   "stories": [
     "../src/**/*.stories.mdx",

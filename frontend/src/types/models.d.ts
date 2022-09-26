@@ -1,12 +1,33 @@
-export type User = {
+export interface User{
     first_name: string,
     last_name: string
-    name: string,
     id: number,
     class: string,
 }
+interface BasicAttendance {
+    present: boolean,
+    created_at: string,
+    updated_at: string,
+    signup_at: string,
+    scan_at: string,
+    place?: number,
+    point: number
+}
+export interface IndivitualAttendance extends BasicAttendance {
+    user: User
+}
+export interface TeamAttendance extends BasicAttendance{
+    team: Team,
+    users: User[]
+}
+
+export const isTeamAttendance = (attendance: IndivitualAttendance | TeamAttendance): attendance is TeamAttendance => {
+    return (attendance as TeamAttendance).team !== undefined;
+}
+
+export type Attendance = IndivitualAttendance | TeamAttendance
 export type Role = "admin" | "user"
-export type Team = {
+export interface Team {
     name: string
     code: string,
     description: string,

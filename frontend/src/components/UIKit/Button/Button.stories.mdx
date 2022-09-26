@@ -12,6 +12,16 @@ export const Template = (args) => <Button {...args} />;
     name="Button"
     args={{
       children: "Button",
+      variant: "primary"
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+  <Story
+    name="Button"
+    args={{
+      children: "Button",
+      variant: "danger"
     }}
   >
     {Template.bind({})}

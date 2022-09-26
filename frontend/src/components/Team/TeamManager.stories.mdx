@@ -1,13 +1,22 @@
 import { Canvas, Meta, Story } from "@storybook/addon-docs";
 import TeamManager from "./TeamManager";
 
-<Meta title="Team/Manage" component={TeamManager} argTypes={{
-    team: { control: { type: 'object' } },
-}} />
+<Meta title="Team/Manage" component={TeamManager} />
 
 export const Template = (args) => <TeamManager {...args} />;
 
 # TeamManager
+
+This component is used to manage a team.
+
+Features:
+- [ ] Add members to the team
+- [ ] Remove members from the team
+- [ ] Promote members to team leader
+- [ ] Demote members from team leader
+- [ ] Leave team
+- [ ] Change the team name
+
 
 <Canvas>
   <Story
@@ -15,17 +24,30 @@ export const Template = (args) => <TeamManager {...args} />;
     args={{
       team: {
         name: "Team 1",
+        code: "Asd",
+        description: "Description",
         members: [
           {
             role: "admin",
             user: {
-              id: "1",
-              name: "User 1",
+              id: 1,
+              first_name: "Béla",
+              last_name: "Példa",
+              class: "2014A",
+            },
+          },
+          {
+            role: "member",
+            user: {
+              id: 2,
+              first_name: "József",
+              last_name: "Példa",
+              class: "2014A",
+            },
           },
         ],
       },
-    }}
-  >
+    }}>
     {Template.bind({})}
   </Story>
 </Canvas>

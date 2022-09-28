@@ -5,6 +5,7 @@
   "hints": {
     "compat-api/css": "off",
     "no-inline-styles": "off",
-    "axe/structure": "off"
+    "axe/structure": "off",
+    "compat-api/html": "off"
   }
 }

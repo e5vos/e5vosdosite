@@ -19,12 +19,11 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(302);
     }
 
-   //public function test_users_can_login_with_oauth()
-   //{
-   //    $user = UserFactory::new()->create();
-
-   //    Socialite::shouldReceive('driver->google')->andReturn($user);
-
-   //    $response = $this->get('/auth/callback');
-   //}
+   public function test_users_can_login_with_oauth()
+   {
+    $this->markTestIncomplete('This test has not been implemented yet.');
+    $user = UserFactory::new()->create();
+    Socialite::shouldReceive('driver->google')->andReturn($user);
+    $response = $this->get('/auth/callback');
+   }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Event;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -14,7 +15,7 @@ class EventTest extends TestCase
      */
     public function test_events_can_be_created()
     {
-        $this->markTestSkipped('This test has not been implemented yet.');
+        $this->markTestIncomplete('This test has not been implemented yet.');
         $event = Event::factory()->count(1)->make();
         $event->slot_id = 1;
         $response = $this->post('/api/event', $event->toArray());
@@ -28,8 +29,8 @@ class EventTest extends TestCase
     */
     public function test_events_can_be_updated()
     {
-        $this->seed();
-        $this->markTestSkipped('This test has not been implemented yet.');
+        dd(Event::first());
+        $this->markTestIncomplete('This test has not been implemented yet.');
         $event = Event::inRandomOrder()->first();
         $event->title = 'New Title';
 
@@ -51,7 +52,7 @@ class EventTest extends TestCase
      */
     public function test_events_can_be_requested()
     {
-        $this->markTestSkipped('This test has not been implemented yet.');
+        $this->markTestIncomplete('This test has not been implemented yet.');
         $response = $this->get('/api/events');
         $response->assertStatus(200);
     }
@@ -61,8 +62,7 @@ class EventTest extends TestCase
      */
     public function test_events_can_be_deleted()
     {
-        $this->seed();
-        $this->markTestSkipped('This test has not been implemented yet.');
+        $this->markTestIncomplete('This test has not been implemented yet.');
         $event = Event::inRandomOrder()->first();
 
         $response = $this->delete('/api/event/' . $event->id);
@@ -78,8 +78,7 @@ class EventTest extends TestCase
      */
     public function test_event_can_be_requested()
     {
-        $this->seed();
-        $this->markTestSkipped('This test has not been implemented yet.');
+        $this->markTestIncomplete('This test has not been implemented yet.');
         $event = Event::inRandomOrder()->first();
 
         $response = $this->get('/api/event/' . $event->id);

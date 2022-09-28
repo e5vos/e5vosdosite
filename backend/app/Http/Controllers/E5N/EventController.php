@@ -60,10 +60,7 @@ class EventController extends Controller
             Cache::put('e5n.eventList', $events, now()->addMinute());
         }
 
-        return view('e5n.events.index',[
-            'events' => $events
-        ]
-    );
+        return new EventResourceCollection($events);
     }
 
     /**
@@ -71,26 +68,6 @@ class EventController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(){
-        Gate::authorize('create',Event::class);
-        return view('e5n.events.create');
-    }
-
-
-
-    /**
-     * Store a newly created event in storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request){
-        Gate::authorize('create',Event::class);
-        $event = new Event();
-        $event->code = $request->input('code');
-        $event->name = $request->input('title');
-        $event->save();
-
-        return redirect()->route('event.edit',$event->code);
-
     }
 
     /**
@@ -106,7 +83,6 @@ class EventController extends Controller
         if($event->trashed() && !$request->user()->isAdmin()){
             abort(403, 'Ez az esemény törölve lett, ha szervező vagy és szeretnéd visszaszerezni, akkor írj az e5n@e5vos.hu-ra.');
         }
-        return view('e5n.events.edit',["event" => $event]);
     }
 
     /**

@@ -39,8 +39,10 @@ const TeamManager = ({ team }: { team: Team }) => {
         </tbody>
       </table>
       <h4>Csapat aktivitása</h4>
-      <Activity name="StarCraft">Yay</Activity>
-      <Activity name="Karamu">Yay</Activity>
+      {
+        //<Activity name="StarCraft">Yay</Activity>
+        //<Activity name="Karamu">Yay</Activity>
+      }
     </div>
     
   );

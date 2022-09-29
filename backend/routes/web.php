@@ -19,7 +19,7 @@ use function PHPUnit\Framework\callback;
 |
 */
 
-Route::get('/', function () {
+Route::get('/asd', function () {
     return view('welcome');
 });
 
@@ -30,6 +30,6 @@ Route::get('/', function () {
 require __DIR__.'/auth.php';
 
 
-Route::get('/login', [AuthController::class ,'login'])->name('login');
+
 
 Route::get('/auth/callback', [AuthController::class, 'callback']);

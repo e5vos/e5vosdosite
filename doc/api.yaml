@@ -9,7 +9,7 @@ info:
     name: Zoltán Mészáros
     email: zoltan.m@tuta.io
 servers:
-  - url: https://e5vosdo.hu/api
+  - url: http://e5vosdo.hu/api
 tags:
   - name: event
     description: Everything about events
@@ -40,7 +40,7 @@ paths:
         - event
       responses:
         '200':
-          description: Event list  
+          description: Event list
           content:
             application/json:
               schema:
@@ -61,13 +61,13 @@ paths:
       security:
         - e5vosdo_auth:
           - write:events
-      
+
 
   /event/{eventId}:
     parameters:
       - name: eventId
         in: path
-        description: ID of event 
+        description: ID of event
         required: true
         schema:
           type: integer
@@ -113,7 +113,7 @@ paths:
           description: Event doesn't exist
   /event/{eventId}/attendees:
     description: Event attendance management
-    
+
     get:
       description: Get event attendances
       responses:
@@ -123,7 +123,7 @@ paths:
           description: Forbidden
         '404':
           description: Event not found
-        
+
     post:
       description: Create event attendance
       responses:
@@ -148,7 +148,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Team'
-          
+
     post:
       summary: "Create team"
       tags:
@@ -169,7 +169,7 @@ paths:
         required: true
         schema:
           type: integer
-          format: int64 
+          format: int64
     get:
       summary: Get team
       tags:
@@ -205,7 +205,7 @@ paths:
           description: Team deleted
         '404':
           description: Team not found
-  
+
 components:
   schemas:
     User:

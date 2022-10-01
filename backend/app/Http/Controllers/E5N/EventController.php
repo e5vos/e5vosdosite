@@ -147,11 +147,10 @@ class EventController extends Controller
      * Restore the specified event to storage.
      * @return \Illuminate\Http\Response
      */
-    public function restore($eventCode) {
-        $event = Event::withTrashed()->where('code',$eventCode)->firstOrFail();
-        Gate::authorize('restore', $event);
+    public function restore($eventId) {
+        $event = Event::withTrashed()->where('id',$eventId)->firstOrFail();
         $event->restore();
-        Cache::forget('e5n.event.'.$eventCode);
+        Cache::forget('e5n.event.'.$eventId);
         return redirect()->route('event.edit',$event->code);
     }
 
@@ -162,18 +161,10 @@ class EventController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, $eventCode){
+        dd('anyád');
         $event = Event::where('code',$eventCode)->firstOrFail();
         $eventResource = new EventResource($event);
-        if(Auth::check()){
-            $userRating = $request->user()->ratings()->whereBelongsTo($event)->first()->value;
-        }else{
-            $userRating = $event->rating;
-        }
-        return view('e5n.events.show', [
-            'event'=>$eventResource,
-            'isUser' => Auth::check() ? "true" : "false",
-            'userRating' => $userRating,
-        ]);
+        return $eventResource;
     }
 
     /**

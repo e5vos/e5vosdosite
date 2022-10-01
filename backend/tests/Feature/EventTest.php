@@ -29,7 +29,6 @@ class EventTest extends TestCase
     */
     public function test_events_can_be_updated()
     {
-        dd(Event::first());
         $this->markTestIncomplete('This test has not been implemented yet.');
         $event = Event::inRandomOrder()->first();
         $event->title = 'New Title';

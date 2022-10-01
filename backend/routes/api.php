@@ -34,9 +34,8 @@ Route::controller(EventController::class)->group(function () {
     Route::get('/events/{slot_id}', 'index');
     Route::prefix('/event')->group(function () {
         Route::post('/', 'store')->can('create', Event::class)->name('event.store');
-        //Route::get('/{id}', 'show')->name('event.show');
+        Route::get('/{id}', 'show')->name('event.show');
         Route::middleware(['auth:sanctum'])->group(function () {
-            Route::get('/{id}', 'show')->name('event.show');
             Route::put('/{id}', 'update')->can('update', Event::class)->name('event.update');
             Route::delete('/{id}', 'destroy')->can('destroy', Event::class)->name('event.destroy');
             Route::put('/{id}/restore', 'restore')->can('restore', Event::class)->name('event.restore');

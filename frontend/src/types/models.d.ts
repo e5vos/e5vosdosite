@@ -38,6 +38,6 @@ export interface Event {
     id: string,
     description: string,
     presenter: string,
-    spaces: string
+    capacity: number
     //TODO
 }

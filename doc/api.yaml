@@ -17,6 +17,10 @@ tags:
     description: Everything about users
   - name: team
     description: Everything about teams
+  - name: auth
+    description: Everything about authentication
+  - name: settings
+    description: Everything about settings
 paths:
   /user:
     description: Returns current user
@@ -33,7 +37,35 @@ paths:
                 $ref: "#/components/schemas/User"
         "401":
           description: "Current user does not exist"
-  /event:
+
+  /user/{id}:
+    description: Returns user by id
+    get:
+      summary: Get user by id
+      tags:
+        - user
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: "User does not exist"
+        "403":
+          description: "User does not have permission to access this resource"
+
+
+  /events/:
+    description: Returns all events
     get:
       summary: Get Event List
       tags:
@@ -61,6 +93,55 @@ paths:
       security:
         - e5vosdo_auth:
           - write:events
+
+  /events/{slotId}:
+    description: Returns events in a slot
+    get:
+      summary: Get Event List
+      tags:
+        - event
+      parameters:
+        - name: slotId
+          in: path
+          required: true
+          description: Slot ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '404':
+          description: Slot not found
+    put:
+      summary: Update event
+      tags:
+        - event
+      parameters:
+        - name: slotId
+          in: path
+          required: true
+          description: Slot ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found
+      security:
+        - e5vosdo_auth:
+          - write:events
+
 
 
   /event/{eventId}:
@@ -205,6 +286,135 @@ paths:
           description: Team deleted
         '404':
           description: Team not found
+  /team/{teamId}/members:
+    description: Team member management
+
+    get:
+      description: Get team members
+      responses:
+        '200':
+          description: Team members
+        '403':
+          description: Forbidden
+        '404':
+          description: Team not found
+
+    post:
+      description: Create team member
+      responses:
+        '201':
+          description: Member created
+        '403':
+          description: Forbidden
+        '404':
+          description: Team not found
+  /team/{teamId}/members/{userId}:
+    parameters:
+      - name: teamId
+        in: path
+        description: ID of TEAM
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: userId
+        in: path
+        description: ID of USER
+        required: true
+        schema:
+          type: integer
+          format: int64
+    post:
+      description: Add user to team
+      responses:
+        '201':
+          description: User added to team
+        '403':
+          description: Forbidden
+        '404':
+          description: Team or user not found
+    delete:
+      description: Delete team member
+      responses:
+        '200':
+          description: Member deleted
+        '403':
+          description: Forbidden
+        '404':
+          description: Team or user not found
+    put:
+      description: Update team member
+      responses:
+        '200':
+          description: Member updated
+        '403':
+          description: Forbidden
+        '404':
+          description: Team not found
+  /settings:
+    get:
+      summary: "Settings"
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setting'
+        '404':
+          description: Forbidden
+  /setting:
+    post:
+      summary: "Create settings"
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Settings updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setting'
+        '403':
+          description: Forbidden
+  /setting/{key}:
+    summary: perform action on setting
+    parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    put:
+      summary: toggle a setting
+      tags:
+        - settings
+      responses:
+        '404':
+          description: Setting not found -- or -- Forbidden
+        '200':
+          description: setting toggled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setting'
+    delete:
+      summary: delete a setting
+      tags:
+        - settings
+      responses:
+        '404':
+          description: Setting not found -- or -- Forbidden
+        '200':
+          description: setting deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setting'
+
 
 components:
   schemas:
@@ -290,11 +500,18 @@ components:
         floor:
           type: string
           enum: [0, 1, 2, 3]
+    Setting:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: boolean
   securitySchemes:
     e5vosdo_auth:
       type: oauth2
       flows:
         implicit:
-          authorizationUrl: https://e5vosdo.hu/oauth/authorize
+          authorizationUrl: https://e5vosdo.hu/login
           scopes:
             write:events: Modify events

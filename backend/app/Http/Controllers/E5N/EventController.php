@@ -43,24 +43,21 @@ class EventController extends Controller
      */
     public function index(int $slotId = null)
     {
+        $events = null;
         if ($slotId){
             if (Cache::has('e5n.eventList'.$slotId)){ $events = Cache::get('e5n.eventList');}
-            else {$events = Event::where('slot',$slotId)->get(); Cache::put('e5n.eventList'.$slotId, $events, now()->addMinute());}
+            else {$events = Event::where('slot_Id',$slotId)->get(); Cache::put('e5n.eventList'.$slotId, $events, now()->addMinute());}
         }
         else {
-            $events = Event::all();
+            if (Cache::has('e5n.eventList')){ $events = Cache::get('e5n.eventList');}
+            else {
+                $events = Event::groupBy(function($event){
+                    return $event->start->dayOfWeek;
+                })->get();
+                Cache::put('e5n.eventList', $events, now()->addMinute(3));
+            }
         }
-
-
-        if (Cache::has('e5n.eventList')){ $events = Cache::get('e5n.eventList');}
-        else {
-            $events = Event::orderByRAW('WEEKDAY(`start`)')->get()->groupBy(function($event){
-                return $event->start->dayOfWeek;
-            });
-            Cache::put('e5n.eventList', $events, now()->addMinute());
-        }
-
-        return new EventResourceCollection($events);
+        return response()->json($events);
     }
 
     /**

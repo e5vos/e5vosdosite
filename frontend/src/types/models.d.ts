@@ -28,8 +28,16 @@ export const isTeamAttendance = (attendance: IndivitualAttendance | TeamAttendan
 export type Attendance = IndivitualAttendance | TeamAttendance
 export type Role = "admin" | "user"
 export interface Team {
-    name: string
+    name: string,
     code: string,
     description: string,
     members: {user: User, role: Role}[]
+}
+export interface Event {
+    name: string,
+    id: string,
+    description: string,
+    presenter: string,
+    capacity: number
+    //TODO
 }

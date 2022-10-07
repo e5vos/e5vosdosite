@@ -27,7 +27,7 @@ class SettingController extends Controller
      */
     public function create(Request $request)
     {
-        $setting = Setting::create(['key' => $request->key, 'value' => false]);
+        $setting = Setting::create(['key' => $request->key, 'value' => $request->value]);
         return new SettingResource($setting);
     }
 
@@ -37,10 +37,10 @@ class SettingController extends Controller
      * @param  string  $key
      * @return \Illuminate\Http\Response
      */
-    public function toggle($key)
+    public function set($key, $value)
     {
         $setting = Setting::where('key', $key)->firstOrFail();
-        $setting->value = !$setting->value;
+        $setting->value = $value;
         $setting->save();
         return new SettingResource($setting);
     }

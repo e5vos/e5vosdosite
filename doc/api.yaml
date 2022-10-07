@@ -387,19 +387,6 @@ paths:
         schema:
           type: integer
           format: int64
-    put:
-      summary: toggle a setting
-      tags:
-        - settings
-      responses:
-        '404':
-          description: Setting not found -- or -- Forbidden
-        '200':
-          description: setting toggled
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Setting'
     delete:
       summary: delete a setting
       tags:
@@ -409,6 +396,34 @@ paths:
           description: Setting not found -- or -- Forbidden
         '200':
           description: setting deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setting'
+  /setting/{key}/{value}:
+    summary: set a setting
+    parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: value
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    put:
+      summary: set a setting
+      tags:
+        - settings
+      responses:
+        '404':
+          description: Setting not found -- or -- Forbidden
+        '200':
+          description: setting toggled
           content:
             application/json:
               schema:

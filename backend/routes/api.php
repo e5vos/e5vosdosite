@@ -53,7 +53,7 @@ Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingContr
     function () {
         Route::get('/', 'index')->can('viewAny', Setting::class);
         Route::post('/', 'create')->can('create', Setting::class);
-        Route::put('/{key}', 'toggle')->can('set', Setting::class);
+        Route::put('/{key}/{value}', 'set')->can('set', Setting::class);
         Route::delete('/{key}', 'destroy')->can('delete', Setting::class);
     }
 );

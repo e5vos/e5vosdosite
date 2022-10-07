@@ -9,10 +9,6 @@ use App\Models\User;
 
 class AuthenticationTest extends TestCase
 {
-    use RefreshDatabase;
-
-
-
     /**
      * Test if auth fails if user is already logged in.
      */

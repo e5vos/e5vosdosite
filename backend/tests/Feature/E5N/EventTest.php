@@ -4,13 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Event;
 use App\Models\Permission;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class EventTest extends TestCase
 {
-    use RefreshDatabase;
     /**
      * A test to check if events can be created.
      */

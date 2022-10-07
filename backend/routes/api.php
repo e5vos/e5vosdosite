@@ -51,7 +51,7 @@ Route::controller(EventController::class)->group(function () {
 //setting routes
 Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingController::class)->group(
     function () {
-        Route::get('s', 'index')->can('viewAny', Setting::class);
+        Route::get('/', 'index')->can('viewAny', Setting::class);
         Route::post('/', 'create')->can('create', Setting::class);
         Route::put('/{key}', 'toggle')->can('set', Setting::class);
         Route::delete('/{key}', 'destroy')->can('delete', Setting::class);

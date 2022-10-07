@@ -351,7 +351,7 @@ paths:
           description: Forbidden
         '404':
           description: Team not found
-  /settings:
+  /setting:
     get:
       summary: "Settings"
       tags:
@@ -365,7 +365,6 @@ paths:
                 $ref: '#/components/schemas/Setting'
         '404':
           description: Forbidden
-  /setting:
     post:
       summary: "Create settings"
       tags:

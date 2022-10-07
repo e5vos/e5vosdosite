@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Event;
+use App\Models\Permission;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -40,7 +41,7 @@ class EventTest extends TestCase
         $response = $this->put('/api/event/' . $event->id, $event->toArray());
         $response->assertStatus(200);
 
-        $this->actingAs($event->permissions()->firstWhere('code', 'ADM')->user);
+        $this->actingAs(Permission::firstWhere('code', 'ADM')->user);
         $response = $this->put('/api/event/' . $event->id, $event->toArray());
         $response->assertStatus(200);
     }

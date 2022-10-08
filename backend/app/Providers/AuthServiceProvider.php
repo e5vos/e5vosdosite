@@ -25,10 +25,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        Event::class => EventPolicy::class,
-        Location::class => LocationPolicy::class,
-        BonusPoint::class => BonusPointPolicy::class,
-        User::class => UserPolicy::class,
+
     ];
     /**
      * Register any authentication / authorization services.

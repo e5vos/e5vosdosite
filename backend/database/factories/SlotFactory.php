@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Helpers\SlotType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Slot;
 
@@ -20,12 +21,12 @@ class SlotFactory extends Factory
     public function definition()
     {
         $starts_at = fake()->dateTimeBetween('now', '+1 year');
-        $presentation = fake()->boolean(50);
+        $type = fake()->randomElement(array_column(SlotType::cases(), 'value'));
         return [
-            'name' => fake()->word().($presentation ? ' előadássáv': ' programsáv'),
+            'name' => fake()->word().' '.$type,
             'starts_at' => $starts_at,
             'ends_at' => fake()->dateTimeBetween($starts_at, '+1 year'),
-            'is_presentation' => $presentation,
+            'type' => $type,
         ];
     }
 }

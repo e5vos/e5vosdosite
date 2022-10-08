@@ -6,10 +6,16 @@ use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\{
     E5N\EventController,
     Auth\AuthController,
+    E5N\SlotController,
 };
 use App\Http\Controllers\Admin\SettingController;
-use App\Models\Attendance;
-use App\Models\Setting;
+use App\Models\{
+    Attendance,
+    Event,
+    Slot,
+    User,
+    Setting
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +36,16 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::get('login', [AuthController::class, 'redirect'])->name('login');
 
+
+//routes telated to e5n slots
+Route::controller(SlotController::class)->prefix('/slot')->group(function () {
+    Route::get('/', 'index')->name('slot.index');
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::post('/', 'store')->can('create', Slot::class)->name('slot.store');
+        Route::delete('/{slot}', 'destroy')->can('delete', Slot::class)->name('slot.destroy');
+        Route::put('/{slot}', 'update')->can('update', Slot::class)->name('slot.update');
+    });
+});
 
 //routes related to E5N events
 Route::controller(EventController::class)->group(function () {

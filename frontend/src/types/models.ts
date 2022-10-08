@@ -28,7 +28,7 @@ export const isTeamAttendance = (
 };
 
 export type Attendance = IndivitualAttendance | TeamAttendance;
-export type Role = "admin" | "user";
+export type Role = "operator" | "admin" | "user";
 export interface Team {
   name: string;
   code: string;
@@ -39,7 +39,10 @@ export interface Event {
   name: string;
   id: string;
   description: string;
-  presenter: string;
+  organiser: string;
   capacity: number;
   //TODO
 }
+
+export interface Presentation extends Event{}
+export interface Challange extends Event{}

@@ -14,10 +14,11 @@ const Button = ({
   if (variant === "submit") type = "submit";
   const classname = {
     primary:
-      "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
-    submit: "block bg-black text-white px-4 py-2 rounded-md text-center",
+      "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 first:rounded-l last:rounded-r",
+    submit:
+      "block bg-black text-white px-4 py-2 rounded-md text-center first:rounded-l last:rounded-r",
     danger:
-      "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded",
+      "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 first:rounded-l last:rounded-r",
   }[variant];
   return (
     <button {...rest} type={type} className={classname + " " + className ?? ""}>

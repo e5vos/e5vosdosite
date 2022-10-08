@@ -20,7 +20,7 @@ class AttendanceSeeder extends Seeder
     public function run()
     {
         $events = Event::all();
-        $users = user::all();
+        $users = User::all();
         $teams = Team::all();
         foreach ($events as &$event) {
             $attendance_count = rand(0, $event->capacity ?? 30);

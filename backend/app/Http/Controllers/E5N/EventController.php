@@ -43,27 +43,21 @@ class EventController extends Controller
      */
     public function index(int $slotId = null)
     {
+        $events = null;
         if ($slotId){
             if (Cache::has('e5n.eventList'.$slotId)){ $events = Cache::get('e5n.eventList');}
-            else {$events = Event::where('slot',$slotId)->get(); Cache::put('e5n.eventList'.$slotId, $events, now()->addMinute());}
+            else {$events = Event::where('slot_Id',$slotId)->get(); Cache::put('e5n.eventList'.$slotId, $events, now()->addMinute());}
         }
         else {
-            $events = Event::all();
+            if (Cache::has('e5n.eventList')){ $events = Cache::get('e5n.eventList');}
+            else {
+                $events = Event::groupBy(function($event){
+                    return $event->start->dayOfWeek;
+                })->get();
+                Cache::put('e5n.eventList', $events, now()->addMinute(3));
+            }
         }
-
-
-        if (Cache::has('e5n.eventList')){ $events = Cache::get('e5n.eventList');}
-        else {
-            $events = Event::orderByRAW('WEEKDAY(`start`)')->get()->groupBy(function($event){
-                return $event->start->dayOfWeek;
-            });
-            Cache::put('e5n.eventList', $events, now()->addMinute());
-        }
-
-        return view('e5n.events.index',[
-            'events' => $events
-        ]
-    );
+        return response()->json($events);
     }
 
     /**
@@ -71,26 +65,6 @@ class EventController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(){
-        Gate::authorize('create',Event::class);
-        return view('e5n.events.create');
-    }
-
-
-
-    /**
-     * Store a newly created event in storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request){
-        Gate::authorize('create',Event::class);
-        $event = new Event();
-        $event->code = $request->input('code');
-        $event->name = $request->input('title');
-        $event->save();
-
-        return redirect()->route('event.edit',$event->code);
-
     }
 
     /**
@@ -106,7 +80,6 @@ class EventController extends Controller
         if($event->trashed() && !$request->user()->isAdmin()){
             abort(403, 'Ez az esemény törölve lett, ha szervező vagy és szeretnéd visszaszerezni, akkor írj az e5n@e5vos.hu-ra.');
         }
-        return view('e5n.events.edit',["event" => $event]);
     }
 
     /**
@@ -171,11 +144,10 @@ class EventController extends Controller
      * Restore the specified event to storage.
      * @return \Illuminate\Http\Response
      */
-    public function restore($eventCode) {
-        $event = Event::withTrashed()->where('code',$eventCode)->firstOrFail();
-        Gate::authorize('restore', $event);
+    public function restore($eventId) {
+        $event = Event::withTrashed()->where('id',$eventId)->firstOrFail();
         $event->restore();
-        Cache::forget('e5n.event.'.$eventCode);
+        Cache::forget('e5n.event.'.$eventId);
         return redirect()->route('event.edit',$event->code);
     }
 
@@ -186,18 +158,10 @@ class EventController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, $eventCode){
+        dd('anyád');
         $event = Event::where('code',$eventCode)->firstOrFail();
         $eventResource = new EventResource($event);
-        if(Auth::check()){
-            $userRating = $request->user()->ratings()->whereBelongsTo($event)->first()->value;
-        }else{
-            $userRating = $event->rating;
-        }
-        return view('e5n.events.show', [
-            'event'=>$eventResource,
-            'isUser' => Auth::check() ? "true" : "false",
-            'userRating' => $userRating,
-        ]);
+        return $eventResource;
     }
 
     /**

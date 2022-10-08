@@ -35,3 +35,11 @@ export interface Team {
   description: string;
   members: { user: User; role: Role }[];
 }
+export interface Event {
+  name: string;
+  id: string;
+  description: string;
+  presenter: string;
+  capacity: number;
+  //TODO
+}

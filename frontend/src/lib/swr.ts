@@ -19,7 +19,8 @@ export const fetcher = (key: string) => {
       .then((res) => res.data)
       .catch((error) => {
         if (error instanceof AxiosError) {
-          throw error;
+          console.log(error)
+          //throw error;
         } else throw error;
       });
 };

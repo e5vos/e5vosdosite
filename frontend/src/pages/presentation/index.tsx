@@ -1,11 +1,46 @@
-import {useState} from "react";
-import PresentationSignup from "components/PresentationSignup";
+import { useState } from "react";
+import PresentationsTable from "components/PresentationsTable";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
+import useSWR from "lib/swr";
+import routeSwitcher from "lib/route";
+import { Presentation } from "types/models";
+import Loader from "components/UIKit/Loader";
+import axios from "axios";
+
+const slotCount = 3;
 
 const PresentationsPage = () => {
-  const [currentSlot, setcurrentSlot] = useState(0)
-  const slotCount = 3;
+  const [currentSlot, setcurrentSlot] = useState(0);
+
+  
+
+  useSWR<(Presentation | null)[]>(routeSwitcher("presentations.selected"));
+
+  const { data: selectedPresentations, mutate: mutateSelectedPresentations } =
+    useSWR<(Presentation | null)[]>(routeSwitcher("presentations.selected"));
+  const { data: presentations } = useSWR<Presentation[]>(
+    () => routeSwitcher("presentations.all", { slot: currentSlot }),
+    { refreshInterval: 2000 }
+  );
+
+  const signUpAction = async (presentation: Presentation) => {
+    console.log("SIGNUP", presentation);
+    let newSelectedPresentations = selectedPresentations;
+    newSelectedPresentations![currentSlot] = presentation;
+    mutateSelectedPresentations(newSelectedPresentations);
+    const res = await axios.post(routeSwitcher("presentations.signup"), {
+      slot: currentSlot,
+      presentation: presentation.id,
+    });
+    if (res.status !== 200) {
+      console.error("Signup failed");
+      // TODO : better error handling
+    }
+  };
+
+  if (!selectedPresentations || !presentations) return <Loader />;
+
   return (
     <div className="container mx-auto">
       <h1 className="text-center text-gray-800 text-5xl pb-4">
@@ -17,18 +52,28 @@ const PresentationsPage = () => {
           {Array(slotCount)
             .fill(null)
             .map((_, index) => (
-              <Button key={index} disabled={index === currentSlot} onClick={() => setcurrentSlot(index)}>{index + 1}.előadássáv</Button>
+              <Button
+                variant="secondary"
+                key={index}
+                disabled={index === currentSlot}
+                onClick={() => setcurrentSlot(index)}
+              >
+                {index + 1}.előadássáv
+              </Button>
             ))}
         </ButtonGroup>
-
         <div className="flex flex-row items-center">
           <div>Általad választott előadás:</div>
           <div className="mx-2 px-6 bg-emerald-700 py-2 rounded-2xl">
-            Aliquip nulla ipsum culpa sunt anim
+            {selectedPresentations[currentSlot]?.name ??
+              "Nincs előadás kiválasztva"}
           </div>
         </div>
       </div>
-      <PresentationSignup presentations={[]} />
+      <PresentationsTable
+        presentations={presentations}
+        callback={signUpAction}
+      />
     </div>
   );
 };

@@ -1,8 +1,6 @@
 const Loader = () => {
   return (
-    <div className="loader">
-      <div className="loader__spinner" />
-    </div>
+    <div className="text-center text-5xl text-bold">TÖLTÉS</div>
   );
 };
 export default Loader;

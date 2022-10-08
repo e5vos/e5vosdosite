@@ -23,7 +23,7 @@ export default function Paginator({
         <Button
           key={i}
           onClick={() => setCurrentPage(i)}
-          active={i === currentPage}
+          disabled={i === currentPage}
         >
           {i}
         </Button>
@@ -42,7 +42,7 @@ export default function Paginator({
       middleButtons.push(
         <Button
           onClick={() => setCurrentPage(i)}
-          active={i === currentPage}
+          disabled={i === currentPage}
           key={i}
         >
           {i}
@@ -58,7 +58,7 @@ export default function Paginator({
       endButtons.push(
         <Button
           onClick={() => setCurrentPage(i)}
-          active={i === currentPage}
+          disabled={i === currentPage}
           key={i}
         >
           {i}
@@ -92,7 +92,7 @@ export default function Paginator({
               <Button
                 key={index + 1}
                 onClick={() => setCurrentPage(index + 1)}
-                active={currentPage === index + 1}
+                disabled={currentPage === index + 1}
               >
                 {index + 1}
               </Button>

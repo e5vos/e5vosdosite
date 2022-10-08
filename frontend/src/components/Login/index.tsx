@@ -1,9 +1,23 @@
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
+import { useFormik } from "formik";
+import * as Yup from "yup"
+
 
 const LoginForm = () => {
+  
+  const formik = useFormik({
+    initialValues: {
+      
+    },
+    validationSchema: Yup.object({
+
+    }),
+    onSubmit: async (values) => {}
+  })
+  
   return (
-    <Form className="max-w-xs mx-auto">
+    <Form className="max-w-xs mx-auto" onSubmit={formik.handleSubmit}>
       <Form.Group>
         <Form.Label>Felhasználónév</Form.Label>
         <Form.Control type="text" placeholder="Username" />
@@ -12,7 +26,7 @@ const LoginForm = () => {
         <Form.Label>Jelszó</Form.Label>
         <Form.Control type="password" placeholder="Username" />
       </Form.Group>
-      <Button variant="submit" className="mx-auto">
+      <Button variant="success" type="submit" className="mx-auto">
         Bejelentkezés
       </Button>
     </Form>

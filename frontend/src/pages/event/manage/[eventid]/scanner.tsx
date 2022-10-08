@@ -1,4 +1,4 @@
 const Scanner = () => {
-    return <></>
-}
+  return <></>;
+};
 export default Scanner;

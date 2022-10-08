@@ -1,4 +1,4 @@
 const AttendanceSheet = () => {
-    return <></>
-}
+  return <></>;
+};
 export default AttendanceSheet;

@@ -24,7 +24,8 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "lint": "eslint src",
-    "cypress": "cypress open"
+    "cypress": "cypress open",
+    "serve": "serve dist"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.2",

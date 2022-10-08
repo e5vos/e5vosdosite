@@ -4,19 +4,19 @@ import { Team } from "types/models";
 // Function to convert date string between timezones
 // Language: typescript
 
-
-
 /**
  * Team Manager Component
- * 
+ *
  * Manages the team memberships, activity, and other team related data.
- *  
+ *
  */
 const TeamManager = ({ team }: { team: Team }) => {
   return (
     <div className="text-center">
       <h1>Team Manager</h1>
-      <h3 className="font-bold text-3xl">{team.name} - {team.code}</h3>
+      <h3 className="font-bold text-3xl">
+        {team.name} - {team.code}
+      </h3>
       <p>{team.description}</p>
       <h4>Csapat tagjai</h4>
       <div className="flex justify-center">
@@ -72,7 +72,6 @@ const TeamManager = ({ team }: { team: Team }) => {
         //<Activity name="Karamu">Yay</Activity>
       }
     </div>
-    
   );
 };
 export default TeamManager;

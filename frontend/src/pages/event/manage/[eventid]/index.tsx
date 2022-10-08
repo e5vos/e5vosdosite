@@ -1,4 +1,2 @@
-const EventManager = () => {
-    
-}
+const EventManager = () => {};
 export default EventManager;

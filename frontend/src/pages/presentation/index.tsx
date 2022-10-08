@@ -1,4 +1,4 @@
 const PresentationsPage = () => {
-    return <></>
-}
+  return <></>;
+};
 export default PresentationsPage;

@@ -1,4 +1,4 @@
 const TeamManagePage = () => {
-    return <></>
-}
+  return <></>;
+};
 export default TeamManagePage;

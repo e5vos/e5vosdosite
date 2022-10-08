@@ -1,4 +1,4 @@
 const TeamPage = () => {
-    return <></>
-}
+  return <></>;
+};
 export default TeamPage;

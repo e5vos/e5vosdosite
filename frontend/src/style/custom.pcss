@@ -1,0 +1,36 @@
+
+form {
+  label.form-group {
+    @apply block mb-2;
+    span {
+      @apply -mt-2 -ml-1 text-gray-500 bg-white px-1 text-sm;
+    }
+
+    select,
+    input {
+      @apply mt-0 block w-full border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black;
+      &[type="checkbox"] {
+        height: 1.5rem;
+        width: 1.5rem;
+
+      }      
+    }
+    button[type="submit"] {
+      @apply mt-6;
+    }
+  }
+}
+
+div.buttongroup{
+  button{
+    @apply rounded-none;
+  }
+
+  button:first-child{
+    @apply rounded-l-md;
+  }
+  
+  button:last-child{
+    @apply rounded-r-md;
+  } 
+}

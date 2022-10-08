@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\SlotType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->tinyText('name');
             $table->dateTime('starts_at');
             $table->dateTime('ends_at');
-            $table->boolean('is_presentation');
+            $table->enum('type', array_column(SlotType::cases(), 'value'));
             $table->timestamps();
         });
     }

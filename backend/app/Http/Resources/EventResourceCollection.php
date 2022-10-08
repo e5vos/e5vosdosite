@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Json;
 
 class EventResourceCollection extends ResourceCollection
 {

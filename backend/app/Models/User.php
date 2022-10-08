@@ -6,7 +6,8 @@ use App\Exceptions\EventFullException;
 use App\Exceptions\StudentBusyException;
 use App\Helpers\PermissionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\User as Authenticable;
+use Illuminate\Auth\Authenticatable as AuthenticableTrait;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property string $ejg_class
  * @property string|null $img_url
  */
-class User extends Authenticatable
+class User extends Authenticable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -47,6 +48,11 @@ class User extends Authenticatable
     protected $hidden = [
         'google_id',
     ];
+
+    /**
+     * The primary key associated with the table.
+     */
+    protected $primaryKey = 'id';
 
     /**
      * Get all of the permissions for the User

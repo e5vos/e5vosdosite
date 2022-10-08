@@ -3,7 +3,7 @@ import ButtonGroup from "components/UIKit/ButtonGroup";
 import ButtonToolbar from "components/UIKit/ButtonToolbar";
 
 /**
- * Paginator button group component for pagination of data lists. 
+ * Paginator button group component for pagination of data lists.
  */
 export default function Paginator({
   pageCount,

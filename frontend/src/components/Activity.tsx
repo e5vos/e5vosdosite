@@ -1,24 +1,25 @@
 import { Disclosure, Transition } from "@headlessui/react";
-import React, { ReactNode } from "react";
-import { Attendance, isTeamAttendance } from "types/models";
+import { Attendance, isTeamAttendance } from "types/models"
 
 const Activity = ({
   name,
   attendance,
-  children,
 }: {
   name: string;
   attendance: Attendance;
-  children: ReactNode;
 }) => {
-  const Members = ({ attendance }: {attendance: Attendance}) => {
+  const Members = ({ attendance }: { attendance: Attendance }) => {
     if (isTeamAttendance(attendance))
       return (
         <>
           <hr className="bg-gray-400 rounded h-1" />
           <h4 className="text-center">Jelenlévők</h4>
           <ul className="mx-5 border-2 rounded border-red-500 flex flex-row flex-wrap">
-            {attendance.users.map((user) => <li className="mr-2">{user.last_name} {user.first_name}</li>)}
+            {attendance.users.map((user) => (
+              <li className="mr-2 border-red-300 border-4 rounded-lg m-3">
+                {user.last_name} {user.first_name} - {user.class}
+              </li>
+            ))}
           </ul>
         </>
       );
@@ -28,7 +29,7 @@ const Activity = ({
   return (
     <Disclosure
       as="div"
-      className="w-full mx-auto max-w-md rounded-2xl bg-white p-2"
+      className="w-full mx-auto max-w-md rounded-2xl bg-white p-2 mb-3"
     >
       <Disclosure.Button className="flex w-full justify-between bg-purple-100 px-4 py-2 text-left text-sm font-medium text-purple-900 hover:bg-purple-200">
         <div>{name}</div>

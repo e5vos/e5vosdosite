@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->tinyText('key');
-            $table->boolean('value');
+            $table->string('key', 8)->unique();
+            $table->string('value');
             $table->timestamps();
         });
     }

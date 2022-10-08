@@ -1,4 +1,4 @@
-import {Canvas,Meta,Story} from "@storybook/addon-docs";
+import { Canvas, Meta, Story } from "@storybook/addon-docs";
 import Login from ".";
 
 <Meta title="Login/Login" component={Login} />
@@ -8,9 +8,5 @@ export const Template = (args) => <Login />;
 # Login
 
 <Canvas>
-  <Story
-    name="Login"
-  >
-    {Template.bind({})}
-  </Story>
+  <Story name="Login">{Template.bind({})}</Story>
 </Canvas>

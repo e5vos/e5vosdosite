@@ -1,4 +1,4 @@
-import {Canvas,Meta,Story} from "@storybook/addon-docs";
+import { Canvas, Meta, Story } from "@storybook/addon-docs";
 import Button from ".";
 
 <Meta title="Button/Button" component={Button} />
@@ -12,8 +12,18 @@ export const Template = (args) => <Button {...args} />;
     name="Button"
     args={{
       children: "Button",
-      variant: "primary"
+      variant: "primary",
     }}
+    argTypes={
+      {
+        variant: {
+          control: {
+            type: "select",
+          options: ["primary", "secondary", "success", "danger", "default"],
+          },
+        },
+      }
+    }
   >
     {Template.bind({})}
   </Story>
@@ -21,7 +31,7 @@ export const Template = (args) => <Button {...args} />;
     name="Button"
     args={{
       children: "Button",
-      variant: "danger"
+      variant: "danger",
     }}
   >
     {Template.bind({})}

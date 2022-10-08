@@ -1,5 +1,5 @@
 import { Canvas, Meta, Story } from "@storybook/addon-docs";
-import TeamManager from "./TeamManager";
+import TeamManager from ".";
 
 <Meta title="Team/Manage" component={TeamManager} />
 
@@ -10,13 +10,13 @@ export const Template = (args) => <TeamManager {...args} />;
 This component is used to manage a team.
 
 Features:
+
 - [ ] Add members to the team
 - [ ] Remove members from the team
 - [ ] Promote members to team leader
 - [ ] Demote members from team leader
 - [ ] Leave team
 - [ ] Change the team name
-
 
 <Canvas>
   <Story
@@ -47,7 +47,8 @@ Features:
           },
         ],
       },
-    }}>
+    }}
+  >
     {Template.bind({})}
   </Story>
 </Canvas>

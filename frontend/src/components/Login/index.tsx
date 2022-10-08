@@ -12,7 +12,9 @@ const LoginForm = () => {
         <Form.Label>Jelszó</Form.Label>
         <Form.Control type="password" placeholder="Username" />
       </Form.Group>
-      <Button variant="submit" className="mx-auto">Bejelentkezés</Button>
+      <Button variant="submit" className="mx-auto">
+        Bejelentkezés
+      </Button>
     </Form>
   );
 };

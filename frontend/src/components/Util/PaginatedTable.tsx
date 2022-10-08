@@ -2,7 +2,7 @@ import React, { ReactNode, useState } from "react";
 import useSWR, { useSWRInfinite } from "lib/swr";
 import { paginatedLoader } from "lib/paginatedLoader";
 import Loader from "components/UIKit/Loader";
-import Paginator from "./Paginator"
+import Paginator from "./Paginator";
 
 interface Props<T> {
   Head: ReactNode;
@@ -19,7 +19,11 @@ export default function PaginatedTable<T>({
   Loader: CustomLoader,
   pageSize = 10,
   ...rest
-}: Props<T> & React.DetailedHTMLProps<React.TableHTMLAttributes<HTMLTableElement>, HTMLTableElement>) {
+}: Props<T> &
+  React.DetailedHTMLProps<
+    React.TableHTMLAttributes<HTMLTableElement>,
+    HTMLTableElement
+  >) {
   const pageCountURL = url ? new URL(url) : undefined;
   if (pageCountURL) {
     pageCountURL.pathname = pageCountURL.pathname.concat("/pagecount");
@@ -46,8 +50,15 @@ export default function PaginatedTable<T>({
       <table {...rest}>
         <>
           {Head}
-          {pageCount === 0 ||  (data && data[currentPage - 1] && data[currentPage - 1].data) ? (
-            <Body data={data && data[currentPage - 1] !== undefined ? data[currentPage-1].data : undefined} />
+          {pageCount === 0 ||
+          (data && data[currentPage - 1] && data[currentPage - 1].data) ? (
+            <Body
+              data={
+                data && data[currentPage - 1] !== undefined
+                  ? data[currentPage - 1].data
+                  : undefined
+              }
+            />
           ) : (
             <UsedLoader />
           )}

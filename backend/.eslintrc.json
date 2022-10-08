@@ -1,4 +1,0 @@
-{
-    "extends" :["pretties"],
-    "ignorePatterns": ["**/node_modules/*"]
-}

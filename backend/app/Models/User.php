@@ -50,6 +50,11 @@ class User extends Authenticable
     ];
 
     /**
+     * The primary key associated with the table.
+     */
+    protected $primaryKey = 'id';
+
+    /**
      * Get all of the permissions for the User
      */
     public function permissions(): HasMany

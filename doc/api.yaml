@@ -428,7 +428,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Setting'
-
+  /slot:
+    post:
+      summary: "Create slot"
+      tags:
+        - slot
+      responses:
+        '201':
+          description: Slot created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slot'
+        '403':
+          description: Forbidden
+    get:
+      summary: Get slots
+      tags:
+        - slot
+      responses:
+        '200':
+          description: Slot data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slot'
+        '404':
+          description: Slot not found
+  /slot/{slotId}:
+    parameters:
+      - name: slotId
+        in: path
+        description: ID of SLOT
+        required: true
+        schema:
+          type: integer
+          format: int64
+    put:
+      summary: Update slot
+      tags:
+        - slot
+      responses:
+        '200':
+          description: Slot updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slot'
+        '404':
+          description: Slot not found
+        '403':
+          description: Forbidden
+    delete:
+      summary: Delete slot
+      tags:
+        - slot
+      responses:
+        '200':
+          description: Slot deleted
+        '403':
+          description: Forbidden
+        '404':
+          description: Slot not found
 
 components:
   schemas:
@@ -498,14 +559,13 @@ components:
         name:
           type: string
           example: 1. előadássáv
-        is_presentation:
-          type: boolean
+        slot_type:
+          type: string
+          enum: ["Programsáv", "Előadássáv"]
         starts_at:
           type: string
-          nullable: true
         ends_at:
           type: string
-          nullable: true
     Location:
       type: object
       properties:

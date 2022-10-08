@@ -4,7 +4,6 @@
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 use function PHPUnit\Framework\callback;
 
@@ -22,11 +21,6 @@ use function PHPUnit\Framework\callback;
 Route::get('/asd', function () {
     return view('welcome');
 });
-
-//Route::get('/dashboard', function () {
-//    return Inertia::render('Dashboard');
-//})->middleware(['auth', 'verified'])->name('dashboard');
-
 require __DIR__.'/auth.php';
 
 

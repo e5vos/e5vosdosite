@@ -157,11 +157,10 @@ class EventController extends Controller
      * @param string $eventCode
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $eventCode){
-        dd('anyád');
-        $event = Event::where('code',$eventCode)->firstOrFail();
-        $eventResource = new EventResource($event);
-        return $eventResource;
+    public function show(Request $request, $eventCode)
+    {
+        $event = Event::where('code', $eventCode)->firstOrFail();
+        return new EventResource($event);
     }
 
     /**

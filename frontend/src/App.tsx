@@ -1,4 +1,4 @@
-import "style/App.scss";
+import "style/App.pcss";
 import { Provider } from "react-redux";
 import store from "lib/store";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -9,10 +9,13 @@ import TeamsPage from "pages/team";
 import TeamPage from "pages/team/[teamcode]";
 import EventsPage from "pages/event";
 import EventPage from "pages/event/[eventid]";
+import TeamManager from "components/Team";
+import { Team } from "types/models";
 
 const Home = React.lazy(() => import("pages/Home"));
 const Error = React.lazy(() => import("components/Error"));
 
+const PresentationPage = React.lazy(() => import("pages/presentation"));
 function App() {
   return (
     <Provider store={store}>
@@ -48,7 +51,7 @@ function App() {
                   </Route>
                 </Route>
                 <Route path="eloadas">
-                  <Route index element={<>LecturePage</>} />
+                  <Route index element={<PresentationPage/>} />
                   <Route
                     path=":presentationCode"
                     element={<>PresentationAttendancePage</>}

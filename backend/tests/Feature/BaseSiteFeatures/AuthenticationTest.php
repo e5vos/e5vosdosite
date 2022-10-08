@@ -41,6 +41,5 @@ class AuthenticationTest extends TestCase
     $this->markTestSkipped('This test is bad, function works though');
     $user = User::first();
     Socialite::shouldReceive('driver->google')->andReturn($user);
-    //$response = $this->get('/auth/callback');
    }
 }

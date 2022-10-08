@@ -141,9 +141,6 @@ paths:
       security:
         - e5vosdo_auth:
           - write:events
-
-
-
   /event/{eventId}:
     parameters:
       - name: eventId
@@ -214,6 +211,49 @@ paths:
           description: Forbidden
         '404':
           description: Event not found
+  /presentation/selected:
+    get:
+      summary: Get presentations user is signed up to (user selected them)
+      tags:
+        - event
+      responses:
+        '200':
+          description: Presentations user is signed up to
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '401':
+          description: Unauthorized
+  /presentation/{slotid}:
+    parameters:
+      - name: slotid
+        in: path
+        description: Id of corresponding slot
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      summary: Fetch presentations in slot
+      tags:
+        - event
+      responses:
+        '200':
+          description: Presentations in slot
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Slot not found
+  
 
   /team:
     get:

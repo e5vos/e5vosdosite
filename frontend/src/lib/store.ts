@@ -26,4 +26,3 @@ export const useDispatch: () => AppDispatch = originalDispatchHook;
 export const useSelector: TypedUseSelectorHook<RootState> =
   originalSelectorHook;
 export default store;
-  

@@ -1,4 +1,4 @@
-import {Canvas,Meta,Story} from "@storybook/addon-docs";
+import { Canvas, Meta, Story } from "@storybook/addon-docs";
 import Footer from ".";
 
 <Meta title="Footer/Footer" component={Footer} />
@@ -8,9 +8,5 @@ export const Template = (args) => <Footer />;
 # Navbar
 
 <Canvas>
-  <Story
-    name="Footer"
-  >
-    {Template.bind({})}
-  </Story>
+  <Story name="Footer">{Template.bind({})}</Story>
 </Canvas>

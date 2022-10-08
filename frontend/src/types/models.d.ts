@@ -1,35 +1,37 @@
-export interface User{
-    first_name: string,
-    last_name: string
-    id: number,
-    class: string,
+export interface User {
+  first_name: string;
+  last_name: string;
+  id: number;
+  class: string;
 }
 interface BasicAttendance {
-    present: boolean,
-    created_at: string,
-    updated_at: string,
-    signup_at: string,
-    scan_at: string,
-    place?: number,
-    point: number
+  present: boolean;
+  created_at: string;
+  updated_at: string;
+  signup_at: string;
+  scan_at: string;
+  place?: number;
+  point: number;
 }
 export interface IndivitualAttendance extends BasicAttendance {
-    user: User
+  user: User;
 }
-export interface TeamAttendance extends BasicAttendance{
-    team: Team,
-    users: User[]
-}
-
-export const isTeamAttendance = (attendance: IndivitualAttendance | TeamAttendance): attendance is TeamAttendance => {
-    return (attendance as TeamAttendance).team !== undefined;
+export interface TeamAttendance extends BasicAttendance {
+  team: Team;
+  users: User[];
 }
 
-export type Attendance = IndivitualAttendance | TeamAttendance
-export type Role = "admin" | "user"
+export const isTeamAttendance = (
+  attendance: IndivitualAttendance | TeamAttendance
+): attendance is TeamAttendance => {
+  return (attendance as TeamAttendance).team !== undefined;
+};
+
+export type Attendance = IndivitualAttendance | TeamAttendance;
+export type Role = "admin" | "user";
 export interface Team {
-    name: string
-    code: string,
-    description: string,
-    members: {user: User, role: Role}[]
+  name: string;
+  code: string;
+  description: string;
+  members: { user: User; role: Role }[];
 }

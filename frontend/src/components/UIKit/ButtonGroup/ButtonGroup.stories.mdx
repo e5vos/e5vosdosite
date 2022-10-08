@@ -1,7 +1,6 @@
-import {Canvas,Meta,Story} from "@storybook/addon-docs";
+import { Canvas, Meta, Story } from "@storybook/addon-docs";
 import ButtonGroup from ".";
 import Button from "../Button";
-
 
 <Meta title="Button/ButtonGroup" component={ButtonGroup} />
 
@@ -13,7 +12,12 @@ export const Template = (args) => <ButtonGroup {...args} />;
   <Story
     name="ButtonGroup"
     args={{
-      children: <><Button>Button</Button><Button>Button</Button></>,
+      children: (
+        <>
+          <Button>Button</Button>
+          <Button>Button</Button>
+        </>
+      ),
     }}
   >
     {Template.bind({})}

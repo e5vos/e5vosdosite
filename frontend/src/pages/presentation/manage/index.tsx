@@ -1,4 +1,4 @@
 const PresentationManagePage = () => {
-    return <></>
-}
+  return <></>;
+};
 export default PresentationManagePage;

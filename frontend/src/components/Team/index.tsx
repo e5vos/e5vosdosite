@@ -1,4 +1,5 @@
 import Activity from "components/Activity";
+import { api } from "lib/api";
 import { Team } from "types/models";
 
 // Function to convert date string between timezones
@@ -12,6 +13,10 @@ import { Team } from "types/models";
  */
 const TeamManager = ({ team }: { team: Team }) => {
   
+  const {data: activitys} = api.useGetTeamActivityQuery(team.code);
+
+  const deleteMember = (memberId: number) => {}
+
   return (
     <div className="text-center">
       <h1>Team Manager</h1>
@@ -46,12 +51,12 @@ const TeamManager = ({ team }: { team: Team }) => {
                     </td>
                     {/* line below should only appear if user is admin of his team*/}
                     <td>
-                      <a
+                      <span
                         className="mx-auto py-2 text-sm font-medium text-red-500 hover:text-red-700"
-                        href="#"
+                        onClick={() => deleteMember(member.user.id)}
                       >
                         Delete
-                      </a>
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -81,7 +86,7 @@ const TeamManager = ({ team }: { team: Team }) => {
         </div>
       </div>
       <h4>Csapat aktivitása</h4>
-      
+      {activitys?.map((activity) => <Activity name={activity.event.name} attendance={activity.attendance} />)}
     </div>
   );
 };

@@ -1,5 +1,4 @@
 import React, { ReactNode, useState } from "react";
-import useSWR, { useSWRInfinite } from "lib/swr";
 import { paginatedLoader } from "lib/paginatedLoader";
 import Loader from "components/UIKit/Loader";
 import Paginator from "./Paginator";
@@ -32,12 +31,8 @@ export default function PaginatedTable<T>({
   }
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const { data, setSize } = useSWRInfinite<T>(
-    paginatedLoader(url ?? null, pageSize)
-  );
-  const { data: pageCount } = useSWR<number>(
-    pageCountURL ? pageCountURL.toString() : null
-  );
+  const { data, setSize }: {data: {data:any}[], setSize: (e:number) => any} = {data: [], setSize: (newSize: number) => {}};
+  const { data: pageCount } = {data: 5}
 
   const setPage = (page: number) => {
     setSize(page);

@@ -2,33 +2,25 @@ import { useState } from "react";
 import PresentationsTable from "components/PresentationsTable";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
-import useSWR from "lib/swr";
 import routeSwitcher from "lib/route";
 import { Presentation } from "types/models";
 import Loader from "components/UIKit/Loader";
 import axios from "axios";
+import { api } from "lib/api";
 
 const slotCount = 3;
 
 const PresentationsPage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
-
   
-
-  useSWR<(Presentation | null)[]>(routeSwitcher("presentations.selected"));
-
-  const { data: selectedPresentations, mutate: mutateSelectedPresentations } =
-    useSWR<(Presentation | null)[]>(routeSwitcher("presentations.selected"));
-  const { data: presentations } = useSWR<Presentation[]>(
-    () => routeSwitcher("presentations.all", { slot: currentSlot }),
-    { refreshInterval: 2000 }
-  );
+  const { data: selectedPresentations } = api.useGetUsersPresentationsQuery() ;
+  const { data: presentations, } = api.useGetPersentationsQuery(1);
 
   const signUpAction = async (presentation: Presentation) => {
     console.log("SIGNUP", presentation);
     let newSelectedPresentations = selectedPresentations;
     newSelectedPresentations![currentSlot] = presentation;
-    mutateSelectedPresentations(newSelectedPresentations);
+    // dispatch)
     const res = await axios.post(routeSwitcher("presentations.signup"), {
       slot: currentSlot,
       presentation: presentation.id,
@@ -71,7 +63,7 @@ const PresentationsPage = () => {
         </div>
       </div>
       <PresentationsTable
-        presentations={presentations}
+        presentations={presentations ?? []}
         callback={signUpAction}
       />
     </div>

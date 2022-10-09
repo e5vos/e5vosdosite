@@ -1,9 +1,15 @@
-import { Reducer } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-const eventsReducer: Reducer = (state, action) => {
-    switch(action.type){
+interface EventsState {
 
-    }
 }
+const initialState : EventsState = {} 
 
-export default eventsReducer;
+export const eventSlice = createSlice({
+    name: "events",
+    initialState,
+    reducers:{}
+
+})
+
+export default eventSlice.reducer;

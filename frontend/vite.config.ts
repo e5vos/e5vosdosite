@@ -40,10 +40,14 @@ const pwaOptions: Partial<VitePWAOptions> = {
 };
 
 export const config = {
+  server: {
+    port: 3000,
+  },
   build:{
     sourcemap: process.env.SOURCE_MAP === 'true',
   },
   plugins: [tsconfigPaths(), react(), svgr(), VitePWA(pwaOptions)],
+  
 };
 
 export default defineConfig(config);

@@ -53,6 +53,13 @@ export interface TeamActivity extends BaseActivity {
 
 export type Activity = IndivitualActivity | TeamActivity; 
 
+export interface Slot{
+  id: number;
+  start: string;
+  end: string;
+  events?: Event[]
+}
+
 export interface Event {
   name: string;
   id: string;
@@ -60,6 +67,7 @@ export interface Event {
   organiser: string;
   capacity: number;
   attendees?: Attendance[]
+  slot: Slot
   //TODO
 }
 

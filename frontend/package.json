@@ -30,7 +30,6 @@
   "dependencies": {
     "@headlessui/react": "^1.7.2",
     "@reduxjs/toolkit": "^1.8.5",
-    "axios": "^0.27.2",
     "chart.js": "^3.9.1",
     "chartjs-adapter-moment": "^1.0.0",
     "connected-react-router": "^6.9.3",

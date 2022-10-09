@@ -14,7 +14,7 @@ import { RootState } from "./store";
 export const api = createApi({
   reducerPath: "e5nApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/api",
+    baseUrl: import.meta.env.VITE_BACKEND,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {
@@ -25,32 +25,21 @@ export const api = createApi({
   }),
   tagTypes: ["Event", "Presentation", "Attendance", "TeamActivity"],
   endpoints: (builder) => ({
-    getEvents: builder.query<Event[], void>({
-      query: () => routeSwitcher("events"),
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.map(({ id }) => ({ type: "Event", id: id } as const)),
-              { type: "Event", id: "LIST" },
-            ]
-          : [{ type: "Event", id: "LIST" }],
-    }),
-    getEvent: builder.query<Event, string>({
-      query: (id) => routeSwitcher("event", id),
-      providesTags: (result, error, id) => [{ type: "Event", id }],
-    }),
-    createEvent: builder.mutation<Event, Event>({
-      query: (event) => ({
-        url: routeSwitcher("events"),
-        method: "POST",
-        body: event,
-      }),
-      invalidatesTags: [{ type: "Event", id: "LIST" }],
-    }),
-
-    getPersentations: builder.query<Presentation[], number>({
-      query: (slot) => routeSwitcher("presentations", { slot: slot }),
-      providesTags: (result, error, id) => [{ type: "Event", id }],
+    getEvents: builder.query<Event[], number | void>({
+      query: (slot?) =>
+        slot ? routeSwitcher("events.slot", { slot }) : routeSwitcher("events.index"),
+      providesTags: (result) => {
+        if (result) {
+          
+          return [
+            ...result.map(({ id }) => ({ type: "Event", id: id } as const)),
+            ...result.map(({slot})=> ({type: "Event", id:`LIST${slot}`} as const)),
+            { type: "Event", id: "LIST" }
+          ];
+        } else {
+          return [{ type: "Event", id: "LIST" }];
+        }
+      },
       onCacheEntryAdded: async (
         arg,
         { cacheDataLoaded, updateCachedData, cacheEntryRemoved }
@@ -58,8 +47,8 @@ export const api = createApi({
         try {
           await cacheDataLoaded;
 
-          const listener = (event: MessageEvent) => {
-            const data = event.data;
+          const listener = (msg: MessageEvent) => {
+            const data = msg.data;
 
             updateCachedData((draft) => {
               draft.push(data);
@@ -73,6 +62,18 @@ export const api = createApi({
         await cacheEntryRemoved;
         // echo.close()
       },
+    }),
+    getEvent: builder.query<Event, string>({
+      query: (id) => routeSwitcher("event.show", id),
+      providesTags: (result, error, id) => [{ type: "Event", id }],
+    }),
+    createEvent: builder.mutation<Event, Event>({
+      query: (event) => ({
+        url: routeSwitcher("events"),
+        method: "POST",
+        body: event,
+      }),
+      invalidatesTags: (result) => [{type: "Event", id: `LIST${result?.slot.id}`},{ type: "Event", id: "LIST" }],
     }),
     getUsersPresentations: builder.query<Presentation[], void>({
       query: () => routeSwitcher("user.presentations"),

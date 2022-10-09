@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignIdFor(Location::class)->default(0)->comment('0 if event is not location specific');
             $table->enum('signup_type', ['team', 'user' , 'team_user'])->nullable()->comment('null: no signup required');
             $table->dateTime('signup_deadline')->nullable();
+            $table->string('organiser')->nullable();
             $table->tinyInteger('capacity')->nullable()->comment('null if infinite capacity');
             $table->string('img_url')->nullable();
             $table->dateTime('starts_at');

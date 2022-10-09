@@ -125,4 +125,26 @@ class EventTest extends TestCase
         ]);
     }
 
+    /**
+     * A test to check if signup for an event can be closed.
+     * @return void
+     */
+    public function test_signup_for_an_event_can_be_closed()
+    {
+        $this->markTestIncomplete('relies on attendance system');
+
+        $event = Event::inRandomOrder()->first();
+        $user = User::first();
+        Permission::where('user_id', $user->id)->delete();
+
+        $response = $this->actingAs($user)->put('/api/event/' . $event->id . '/close');
+        $response->assertStatus(403);
+
+        Permission::create(['code' => 'ORG', 'user_id' => $user->id, 'event_id' => $event->id]);
+        $response = $this->actingAs($user)->put('/api/event/' . $event->id . '/close');
+        $response->assertStatus(200);
+
+        //assert that the event is closed
+    }
+
 }

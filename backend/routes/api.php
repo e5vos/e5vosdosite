@@ -54,7 +54,7 @@ Route::controller(EventController::class)->group(function () {
     Route::get('/events', 'index')->name('events.index');
     Route::middleware(['auth:sanctum'])->post('/events', 'store')->can('create', Event::class)->name('event.store');
     Route::get('/events/{slot_id}', 'index')->name('events.slot');
-    Route::get('/presentation/{slot_id}', 'presentations')->name('events.presentations');
+    Route::get('/presentations', 'presentations')->name('events.presentations');
     Route::prefix('/event/{id}')->group(function () {
         Route::get('/', 'show')->name('event.show');
         Route::middleware(['auth:sanctum'])->group(function () {

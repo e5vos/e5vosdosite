@@ -25,10 +25,11 @@ class EventFactory extends Factory
             'description' => fake()->paragraph(),
             'starts_at' => $startsAt,
             'ends_at' => fake()->dateTimeBetween($startsAt, '+3 days'),
+            'organiser' => fake()->word(),
             'signup_deadline' => fake()->dateTimeBetween('-3 days', $startsAt),
             'capacity' =>  fake()->boolean() ? null : rand(1, 30),
             'slot_id' => null,
-            'img_url' => rand(0,10) > 7 ? fake()->imageUrl() : null,
+            'img_url' => rand(0, 10) > 7 ? fake()->imageUrl() : null,
             'signup_type' => fake()->randomElement(['team','user', 'team_user', null]),
         ];
     }

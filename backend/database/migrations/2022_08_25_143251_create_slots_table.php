@@ -19,7 +19,7 @@ return new class extends Migration
             $table->tinyText('name');
             $table->dateTime('starts_at');
             $table->dateTime('ends_at');
-            $table->enum('type', array_column(SlotType::cases(), 'value'));
+            $table->enum('slot_type', array_column(SlotType::cases(), 'value'));
             $table->timestamps();
         });
     }

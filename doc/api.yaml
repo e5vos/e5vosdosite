@@ -224,6 +224,31 @@ paths:
           description: Can't restore event
         '404':
           description: Event doesn't exist
+  /event/{eventId}/close:
+    parameters:
+      - name: eventId
+        in: path
+        description: ID of event
+        required: true
+        schema:
+          type: integer
+          format: int64
+    put:
+      summary: Close event signup
+      tags:
+        - event
+      responses:
+        '200':
+          description: Event closed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '403':
+          description: Can't close event
+        '404':
+          description: Event doesn't exist
+
 
   /event/{eventId}/attendees:
     description: Event attendance management
@@ -267,22 +292,14 @@ paths:
                   $ref: "#/components/schemas/Event"
         "401":
           description: Unauthorized
-  /presentation/{slotid}:
-    parameters:
-      - name: slotid
-        in: path
-        description: Id of corresponding slot
-        required: true
-        schema:
-          type: integer
-          format: int64
+  /presentations:
     get:
-      summary: Fetch presentations in slot
+      summary: Fetch presentations
       tags:
         - event
       responses:
         "200":
-          description: Presentations in slot
+          description: Presentations
           content:
             application/json:
               schema:

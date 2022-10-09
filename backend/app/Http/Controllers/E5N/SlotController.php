@@ -29,7 +29,7 @@ class SlotController extends Controller
         $slot->ends_at = $request->ends_at;
         $slot->save();
         Cache::forget('e5n.slot.all');
-        return response(Cache::rememberForever('e5n.slot.'.$slot->id, fn () => Slot::all()), 201);
+        return response(Cache::rememberForever('e5n.slot.'.$slot->id, fn () => $slot), 201);
     }
 
     /**

@@ -4,14 +4,13 @@ import ziggyroute, {
   RouteParam,
 } from "ziggy-js";
 import { Capacitor } from "@capacitor/core";
-import axios from "axios";
 
 let remoteZiggyConfig: Config | undefined = undefined;
 
-axios
-  .get("api/ziggy")
-  .then((response) => {
-    remoteZiggyConfig = response.data;
+fetch(`${import.meta.env.VITE_BACKEND}/api/ziggy`)
+  .then((res) => res.json())
+  .then((res) => {
+    remoteZiggyConfig = res;
   })
   .catch((error) => console.error(error));
 
@@ -38,6 +37,7 @@ const routeSwitcher = (
   absolute?: boolean | undefined
 ): string => {
   try {
+    console.log(remoteZiggyConfig);
     if (Capacitor.getPlatform() === "web" && window.route)
       return window.route(name, params);
     else
@@ -54,5 +54,15 @@ const routeSwitcher = (
     } else throw error;
   }
 };
+
+declare global {
+  interface Window {
+    consoleZiggy: typeof routeSwitcher;
+  }
+}
+
+if (window !== undefined) {
+  window.consoleZiggy = routeSwitcher;
+}
 
 export default routeSwitcher;

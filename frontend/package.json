@@ -30,7 +30,6 @@
   "dependencies": {
     "@headlessui/react": "^1.7.2",
     "@reduxjs/toolkit": "^1.8.5",
-    "axios": "^0.27.2",
     "chart.js": "^3.9.1",
     "chartjs-adapter-moment": "^1.0.0",
     "connected-react-router": "^6.9.3",
@@ -62,6 +61,7 @@
     "@capacitor/ios": "^4.2.0",
     "@faker-js/faker": "^7.4.0",
     "@headlessui/tailwindcss": "^0.1.1",
+    "@rtk-query/codegen-openapi": "^1.0.0",
     "@storybook/addon-actions": "^6.5.12",
     "@storybook/addon-essentials": "^6.5.12",
     "@storybook/addon-interactions": "^6.5.12",

@@ -32,11 +32,12 @@ export type Attendance = IndivitualAttendance | TeamAttendance;
 
 export type UserRole = "operator" | "admin" | "user";
 export type TeamMemberRole = "captain" | "member" | "invited";
+export type TeamMembership = {user: User, role: TeamMemberRole}
 export interface Team {
   name: string;
   code: string;
   description: string;
-  members: { user: User; role: TeamMemberRole }[];
+  members: TeamMembership[];
   activity?: TeamActivity[]
 }
 export interface BaseActivity {
@@ -52,6 +53,13 @@ export interface TeamActivity extends BaseActivity {
 
 export type Activity = IndivitualActivity | TeamActivity; 
 
+export interface Slot{
+  id: number;
+  start: string;
+  end: string;
+  events?: Event[]
+}
+
 export interface Event {
   name: string;
   id: string;
@@ -59,6 +67,7 @@ export interface Event {
   organiser: string;
   capacity: number;
   attendees?: Attendance[]
+  slot: Slot
   //TODO
 }
 

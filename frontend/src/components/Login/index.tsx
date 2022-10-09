@@ -1,4 +1,3 @@
-import axios from "axios";
 import Button from "components/UIKit/Button";
 import routeSwitcher from "lib/route";
 import { useDispatch } from "lib/store";
@@ -21,7 +20,7 @@ import { tokenSlice } from "reducers/tokenReducer";
   /** @ts-ignore */
   const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screen.left
   /** @ts-ignore */
-  const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screen.top
+  const dualScreenTop = window.swcreenTop !== undefined ? window.screenTop : window.screen.top
   const width = window.innerWidth || document.documentElement.clientWidth || window.screen.width
   const height = window.innerHeight || document.documentElement.clientHeight || window.screen.height
   options.left = ((width / 2) - (options.width / 2)) + dualScreenLeft
@@ -39,7 +38,7 @@ import { tokenSlice } from "reducers/tokenReducer";
 
 const logIn = async () => {
   const newWindow = openWindow('', 'Google Login')
-  const url = await axios.get(routeSwitcher("login")).then(res => res.data.url)
+  const url = await fetch(routeSwitcher("login")).then(res => res.json()).then(res => res.url)
   if(newWindow) newWindow.location.href = url
 }
 

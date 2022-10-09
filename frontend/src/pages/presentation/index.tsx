@@ -5,7 +5,6 @@ import ButtonGroup from "components/UIKit/ButtonGroup";
 import routeSwitcher from "lib/route";
 import { Presentation } from "types/models";
 import Loader from "components/UIKit/Loader";
-import axios from "axios";
 import { api } from "lib/api";
 
 const slotCount = 3;
@@ -14,21 +13,14 @@ const PresentationsPage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
   
   const { data: selectedPresentations } = api.useGetUsersPresentationsQuery() ;
-  const { data: presentations, } = api.useGetPersentationsQuery(1);
+  const { data: presentations, } = api.useGetEventsQuery(1);
 
   const signUpAction = async (presentation: Presentation) => {
     console.log("SIGNUP", presentation);
     let newSelectedPresentations = selectedPresentations;
     newSelectedPresentations![currentSlot] = presentation;
     // dispatch)
-    const res = await axios.post(routeSwitcher("presentations.signup"), {
-      slot: currentSlot,
-      presentation: presentation.id,
-    });
-    if (res.status !== 200) {
-      console.error("Signup failed");
-      // TODO : better error handling
-    }
+    
   };
 
   if (!selectedPresentations || !presentations) return <Loader />;

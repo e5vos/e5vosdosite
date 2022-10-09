@@ -4,7 +4,7 @@ import {
   useSelector as originalSelectorHook,
 } from "react-redux/es/exports";
 import { createBrowserHistory } from "history";
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { $CombinedState, combineReducers, configureStore } from "@reduxjs/toolkit";
 import { routerMiddleware, } from "connected-react-router";
 import {
   persistReducer,

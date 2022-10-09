@@ -37,23 +37,37 @@ class Event extends Model
 
     protected $table = 'events';
 
-    protected $dates = ['start','end'];
-    protected $casts = ['start' => 'datetime:G:i', 'end' => 'datetime:G:i'];
+    protected $fillable = [
+        'slot_id',
+        'name',
+        'description',
+        'signup_type',
+        'capacity',
+        'occupancy',
+        'rating',
+        'orgaCount',
+        'img_url',
+        'starts_at',
+        'ends_at',
+        'signup_deadline',
+    ];
 
-
-    public function occupancy() : Attribute{
+    public function occupancy() : Attribute
+    {
         return Attribute::make(
             get: fn($value) => $value->signups()->count()
         )->shouldCache();
     }
 
-    public function rating() : Attribute{
+    public function rating() : Attribute
+    {
         return Attribute::make(
             get: fn($value) => round($value->ratings()->avg('rating'),0)
         )->shouldCache();
     }
 
-    public function orgaCount() : Attribute{
+    public function orgaCount() : Attribute
+    {
         return Attribute::make(
             get: fn($value) => $value->permissions()->count()
         )->shouldCache();

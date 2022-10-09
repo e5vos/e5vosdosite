@@ -18,7 +18,7 @@ class EventPolicy
      */
     public function before(User $user)
     {
-        if ($user->hasPermissionTo('OPT')) {
+        if ($user->hasPermission('OPT')) {
             return true;
         }
     }
@@ -30,18 +30,29 @@ class EventPolicy
      * @param  \App\Models\Event  $event
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Event $event)
+    public function update(User $user, Event $event = null)
     {
-        return $user->organisesEvent($event->id);
+        $eventId = $event->id ?? request()->id;
+        return $user->hasPermission('ADM') || $user->organisesEvent($eventId);
     }
+
 
     /**
      * Determine if the user can view the model.
      */
-    public function view(User $user, Event $event)
+    public function view()
     {
         return true;
     }
+
+    /**
+     * Determine if the user can create the model.
+     */
+    public function create()
+    {
+        return true;
+    }
+
     /**
      * Determine whether the user can delete the model.
      *
@@ -49,9 +60,10 @@ class EventPolicy
      * @param  \App\Models\Event  $event
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Event $event)
+    public function delete(User $user, Event $event = null)
     {
-        return $user->organisesEvent($event->id);
+        $eventId = $event->id ?? request()->id;
+        return $user->hasPermission('ADM') || $user->organisesEvent($eventId);
     }
 
     /**
@@ -62,7 +74,7 @@ class EventPolicy
      */
     public function restore($user)
     {
-        return $user->hasPermissionTo('ADM');
+        return $user->hasPermission('ADM');
     }
 
     /**

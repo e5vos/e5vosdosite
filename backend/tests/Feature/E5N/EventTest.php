@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Event;
+use App\Models\Slot;
+use App\Models\User;
 use App\Models\Permission;
 use Tests\TestCase;
 
@@ -13,45 +15,71 @@ class EventTest extends TestCase
      */
     public function test_events_can_be_created()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
-        $event = Event::factory()->count(1)->make();
-        $event->slot_id = 1;
-        $response = $this->post('/api/event', $event->toArray());
+        $event = Event::factory()->count(1)->make()->toArray()[0];
+        $event["slot_id"] = Slot::first()->get()[0]->id;
+        $event["starts_at"] = $event["starts_at"]->format('Y-m-d H:i:s');
+        $event["ends_at"] = $event["ends_at"]->format('Y-m-d H:i:s');
+        $event["signup_deadline"] = $event["signup_deadline"]->format('Y-m-d H:i:s');
+        $user = User::first();
+        Permission::where('user_id', $user->id)->delete();
+        $response = $this->actingAs($user)->post('/api/events', $event);
         $response->assertStatus(201);
-
+        $this->assertDatabaseHas('events', $event);
     }
 
+    /**
+     * A test to check if the events can be retrieved.
+     */
+    public function test_events_can_be_requested()
+    {
+        $response = $this->get('/api/events');
+        $response->assertStatus(200);
+    }
+
+    /**
+     * A test to check if evets can be retrieved for a slot
+     */
+    public function test_events_can_be_requested_for_a_slot()
+    {
+        $response = $this->get('/api/events/'. Slot::first()->id);
+        $response->assertStatus(200);
+    }
+
+    /**
+     * A test to check if an event can be retrieved.
+     */
+    public function test_event_can_be_requested()
+    {
+        $event = Event::inRandomOrder()->first();
+
+        $response = $this->get('/api/event/' . $event->id);
+        $response->assertStatus(200);
+    }
 
     /*
     * A test to check if events can be updated.
     */
     public function test_events_can_be_updated()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
         $event = Event::inRandomOrder()->first();
-        $event->title = 'New Title';
+        $eventData = Event::factory()->count(1)->make()->toArray()[0];
+        $eventData["starts_at"] = $eventData["starts_at"]->format('Y-m-d H:i:s');
+        $eventData["ends_at"] = $eventData["ends_at"]->format('Y-m-d H:i:s');
+        $eventData["signup_deadline"] = $eventData["signup_deadline"]->format('Y-m-d H:i:s');
+        $user = User::first();
+        Permission::where('user_id', $user->id)->delete();
 
-        $response = $this->put('/api/event/' . $event->id, $event->toArray());
+        $response = $this->actingAs($user)->put('/api/event/' . $event->id, $eventData);
         $response->assertStatus(403);
 
-        $this->actingAs($event->permissions()->firstWhere('code', 'ORG')->user);
-        $response = $this->put('/api/event/' . $event->id, $event->toArray());
+        Permission::create(['code' => 'ORG', 'user_id' => $user->id, 'event_id' => $event->id]);
+        $response = $this->actingAs($user)->put('/api/event/' . $event->id, $eventData);
         $response->assertStatus(200);
 
-        $this->actingAs(Permission::firstWhere('code', 'ADM')->user);
-        $response = $this->put('/api/event/' . $event->id, $event->toArray());
-        $response->assertStatus(200);
-    }
-
-
-    /**
-     *  A test to check if the event page is working.
-     */
-    public function test_events_can_be_requested()
-    {
-        $this->markTestIncomplete('This test has not been implemented yet.');
-        $response = $this->get('/api/events');
-        $response->assertStatus(200);
+        $this->assertDatabaseHas('events', [
+            'id' => $event->id,
+            'name' => $eventData['name'],
+        ]);
     }
 
     /**
@@ -59,26 +87,42 @@ class EventTest extends TestCase
      */
     public function test_events_can_be_deleted()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
         $event = Event::inRandomOrder()->first();
 
-        $response = $this->delete('/api/event/' . $event->id);
+        $user = User::first();
+        Permission::where('user_id', $user->id)->delete();
+
+        $response = $this->actingAs($user)->delete('/api/event/' . $event->id);
         $response->assertStatus(403);
 
-        $this->actingAs($event->permissions()->firstWhere('code', 'ADM')->user);
-        $response = $this->delete('/api/event/' . $event->id);
+        Permission::create(['code' => 'ADM', 'user_id' => $user->id]);
+        $response = $this->actingAs($user)->delete('/api/event/' . $event->id);
         $response->assertStatus(200);
+
+        $this->assertEquals(null, Event::find($event->id));
     }
+
 
     /**
-     * A test to check if events can be requested.
+     * A test to check if events can be restored.
      */
-    public function test_event_can_be_requested()
+    public function test_events_can_be_restored()
     {
-        $this->markTestIncomplete('This test has not been implemented yet.');
         $event = Event::inRandomOrder()->first();
+        $event->delete();
+        $user = User::first();
+        Permission::where('user_id', $user->id)->delete();
 
-        $response = $this->get('/api/event/' . $event->id);
+        $response = $this->actingAs($user)->put('/api/event/' . $event->id . '/restore');
+        $response->assertStatus(403);
+
+        Permission::create(['code' => 'ADM', 'user_id' => $user->id]);
+        $response = $this->actingAs($user)->put('/api/event/' . $event->id . '/restore');
         $response->assertStatus(200);
+
+        $this->assertDatabaseHas('events', [
+            'id' => $event->id
+        ]);
     }
+
 }

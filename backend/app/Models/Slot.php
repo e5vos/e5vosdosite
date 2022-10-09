@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * App\Models\Slot
  *
  * @property int $id
- * @property int $starts_at
- * @property int $ends_at
+ * @property string $starts_at
+ * @property string $ends_at
  * @property bool $is_presentation
  */
 class Slot extends Model

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\E5N;
 use App\Http\Controllers\Controller;
 use App\Models\Slot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class SlotController extends Controller
 {
@@ -13,7 +14,7 @@ class SlotController extends Controller
      */
     public function index()
     {
-        return Slot::all();
+        return Cache::rememberForever('e5n.slot.all', fn () => Slot::all());
     }
 
     /**
@@ -27,7 +28,8 @@ class SlotController extends Controller
         $slot->starts_at = $request->starts_at;
         $slot->ends_at = $request->ends_at;
         $slot->save();
-        return $slot;
+        Cache::forget('e5n.slot.all');
+        return response(Cache::rememberForever('e5n.slot.'.$slot->id, fn () => Slot::all()), 201);
     }
 
     /**
@@ -41,7 +43,9 @@ class SlotController extends Controller
         $slot->starts_at = $request->starts_at;
         $slot->ends_at = $request->ends_at;
         $slot->save();
-        return $slot;
+        Cache::forget('e5n.slot.all');
+        Cache::put('e5n.slot.'.$slot->id, $slot);
+        return Cache::get('e5n.slot.'.$slot->id);
     }
 
     /**
@@ -51,6 +55,7 @@ class SlotController extends Controller
     {
         $slot = Slot::findOrFail($slotId);
         $slot->delete();
-        return $slot;
+        Cache::forget('e5n.slot.all');
+        return Cache::pull('e5n.slot.'.$slot->id);
     }
 }

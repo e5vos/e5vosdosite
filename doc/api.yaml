@@ -149,29 +149,8 @@ paths:
                   $ref: "#/components/schemas/Event"
         "404":
           description: Slot not found
-    put:
-      summary: Update event
-      tags:
-        - event
-      parameters:
-        - name: slotId
-          in: path
-          required: true
-          description: Slot ID
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: Event updated
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Event"
-        "404":
-          description: Event not found
-      security:
-        - e5vosdo_auth:
-            - write:events
+
+
   /event/{eventId}:
     parameters:
       - name: eventId
@@ -220,13 +199,39 @@ paths:
           description: Can't delete event
         "404":
           description: Event doesn't exist
+
+  /event/{eventId}/restore:
+    parameters:
+      - name: eventId
+        in: path
+        description: ID of event
+        required: true
+        schema:
+          type: integer
+          format: int64
+    put:
+      summary: Restore event
+      tags:
+        - event
+      responses:
+        '200':
+          description: Event restored
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '403':
+          description: Can't restore event
+        '404':
+          description: Event doesn't exist
+
   /event/{eventId}/attendees:
     description: Event attendance management
 
     get:
       tags:
-        - event
-      summary: Get event attendances
+        - attendance
+      description: Get event attendances
       responses:
         "200":
           description: Event attendances
@@ -236,9 +241,9 @@ paths:
           description: Event not found
 
     post:
+      description: Create event attendance
       tags:
-        - event
-      summary: Create event attendance
+        - attendance
       responses:
         "201":
           description: Attendance created

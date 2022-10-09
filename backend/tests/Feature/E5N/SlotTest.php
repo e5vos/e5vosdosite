@@ -74,9 +74,6 @@ class SlotTest extends TestCase
         $slot = Slot::first();
         $response = $this->actingAs($user)->deleteJson('api/slot/' . $slot->id);
         $response->assertStatus(200);
-        $this->assertDatabaseMissing('slots', ['id' =>$slot->id]);
+        $this->assertDatabaseMissing('slots', ['id' => $slot->id]);
     }
-
-
-
 }

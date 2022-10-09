@@ -27,7 +27,14 @@ class Permission extends Model
 
     protected $primaryKey = ['user_id','event_id', 'code'];
 
+    protected $fillable = [
+        'user_id',
+        'event_id',
+        'code',
+    ];
+
     public $incrementing = false;
+
 
     /**
      * Get the user that owns the permission.

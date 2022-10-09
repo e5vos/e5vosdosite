@@ -13,9 +13,9 @@ use App\Models\{
     Attendance,
     Event,
     Slot,
-    User,
     Setting
 };
+use Tightenco\Ziggy\Ziggy;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +34,8 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('ziggy', fn () => response()->json(new Ziggy));
+
 Route::get('login', [AuthController::class, 'redirect'])->name('login');
 
 
@@ -50,13 +52,13 @@ Route::controller(SlotController::class)->prefix('/slot')->group(function () {
 //routes related to E5N events
 Route::controller(EventController::class)->group(function () {
     Route::get('/events', 'index')->name('events.index');
+    Route::middleware(['auth:sanctum'])->post('/events', 'store')->can('create', Event::class)->name('event.store');
     Route::get('/events/{slot_id}', 'index')->name('events.index');
-    Route::post('/', 'store')->can('create', Event::class)->name('event.store');
     Route::prefix('/event/{id}')->group(function () {
         Route::get('/', 'show')->name('event.show');
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::put('/', 'update')->can('update', Event::class)->name('event.update');
-            Route::delete('/', 'destroy')->can('destroy', Event::class)->name('event.destroy');
+            Route::delete('/', 'delete')->can('delete', Event::class)->name('event.delete');
             Route::put('/restore', 'restore')->can('restore', Event::class)->name('event.restore');
             Route::get('/attendees,')->can('viewAny', Attendance::class)->name('event.attendees');
         });

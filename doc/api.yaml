@@ -721,7 +721,7 @@ components:
               event:
                 $ref: "#/components/schemas/Event"
               attendance:
-                $ref: "#/components/schemas/Attendance"
+                $ref: "#/components/schemas/TeamAttendance"
 
     Event:
       type: object

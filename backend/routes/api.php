@@ -53,14 +53,17 @@ Route::controller(SlotController::class)->prefix('/slot')->group(function () {
 Route::controller(EventController::class)->group(function () {
     Route::get('/events', 'index')->name('events.index');
     Route::middleware(['auth:sanctum'])->post('/events', 'store')->can('create', Event::class)->name('event.store');
-    Route::get('/events/{slot_id}', 'index')->name('events.index');
+    Route::get('/events/{slot_id}', 'index')->name('events.slot');
+    Route::get('/presentation/{slot_id}', 'presentations')->name('events.presentations');
     Route::prefix('/event/{id}')->group(function () {
         Route::get('/', 'show')->name('event.show');
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::put('/', 'update')->can('update', Event::class)->name('event.update');
             Route::delete('/', 'delete')->can('delete', Event::class)->name('event.delete');
             Route::put('/restore', 'restore')->can('restore', Event::class)->name('event.restore');
+            Route::put('/close', 'close_sigup')->can('update', Event::class)->name('event.close_signup');
             Route::get('/attendees,')->can('viewAny', Attendance::class)->name('event.attendees');
+
         });
     });
 });
@@ -69,9 +72,9 @@ Route::controller(EventController::class)->group(function () {
 //setting routes
 Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingController::class)->group(
     function () {
-        Route::get('/', 'index')->can('viewAny', Setting::class);
-        Route::post('/', 'create')->can('create', Setting::class);
-        Route::put('/{key}/{value}', 'set')->can('set', Setting::class);
-        Route::delete('/{key}', 'destroy')->can('delete', Setting::class);
+        Route::get('/', 'index')->can('viewAny', Setting::class)->name('setting.index');
+        Route::post('/', 'create')->can('create', Setting::class)->name('setting.create');
+        Route::put('/{key}/{value}', 'set')->can('set', Setting::class)->name('setting.set');
+        Route::delete('/{key}', 'destroy')->can('delete', Setting::class)->name('setting.destroy');
     }
 );

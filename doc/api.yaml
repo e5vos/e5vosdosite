@@ -21,6 +21,8 @@ tags:
     description: Everything about authentication
   - name: settings
     description: Everything about settings
+  - name: slot
+    description: Everything about slots
 paths:
   /user:
     description: Returns current user
@@ -62,8 +64,37 @@ paths:
           description: "User does not exist"
         "403":
           description: "User does not have permission to access this resource"
-
-
+  /user/{id}/activity:
+    description: Returns user activity by id
+    get:
+      summary: Get user activity by id
+      tags:
+        - user
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User activity data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    event:
+                      $ref: "#/components/schemas/Event"
+                    attendance:
+                      $ref: "#/components/schemas/IndivitualAttendance"
+        "404":
+          description: "User does not exist"
+        "403":
+          description: "User does not have permission to access this resource"
   /events/:
     description: Returns all events
     get:
@@ -71,28 +102,28 @@ paths:
       tags:
         - event
       responses:
-        '200':
+        "200":
           description: Event list
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Event'
+                  $ref: "#/components/schemas/Event"
     post:
       summary: Create event
       tags:
         - event
       responses:
-        '201':
+        "201":
           description: Event created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Event'
+                $ref: "#/components/schemas/Event"
       security:
         - e5vosdo_auth:
-          - write:events
+            - write:events
 
   /events/{slotId}:
     description: Returns events in a slot
@@ -108,15 +139,15 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Events
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Event'
-        '404':
+                  $ref: "#/components/schemas/Event"
+        "404":
           description: Slot not found
 
 
@@ -134,40 +165,41 @@ paths:
       tags:
         - event
       responses:
-        '200':
+        "200":
           description: Event
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Event'
-        '404':
+                $ref: "#/components/schemas/Event"
+        "404":
           description: Event doesn't exist
     put:
       summary: Update Event
       tags:
         - event
       responses:
-        '200':
+        "200":
           description: Event updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Event'
-        '403':
+                $ref: "#/components/schemas/Event"
+        "403":
           description: Can't update event
-        '404':
+        "404":
           description: Event doesn't exist
     delete:
       summary: Delete event
       tags:
         - event
       responses:
-        '200':
+        "200":
           description: Event deleted
-        '403':
+        "403":
           description: Can't delete event
-        '404':
+        "404":
           description: Event doesn't exist
+
   /event/{eventId}/restore:
     parameters:
       - name: eventId
@@ -201,11 +233,11 @@ paths:
         - attendance
       description: Get event attendances
       responses:
-        '200':
+        "200":
           description: Event attendances
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Event not found
 
     post:
@@ -213,12 +245,54 @@ paths:
       tags:
         - attendance
       responses:
-        '201':
+        "201":
           description: Attendance created
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Event not found
+  /presentation/selected:
+    get:
+      summary: Get presentations user is signed up to (user selected them)
+      tags:
+        - event
+      responses:
+        "200":
+          description: Presentations user is signed up to
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+        "401":
+          description: Unauthorized
+  /presentation/{slotid}:
+    parameters:
+      - name: slotid
+        in: path
+        description: Id of corresponding slot
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      summary: Fetch presentations in slot
+      tags:
+        - event
+      responses:
+        "200":
+          description: Presentations in slot
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Slot not found
 
   /team:
     get:
@@ -226,26 +300,26 @@ paths:
       tags:
         - team
       responses:
-        '200':
+        "200":
           description: Team list
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Team'
+                  $ref: "#/components/schemas/Team"
 
     post:
       summary: "Create team"
       tags:
         - team
       responses:
-        '201':
+        "201":
           description: Team created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Team'
+                $ref: "#/components/schemas/Team"
 
   /team/{teamId}:
     parameters:
@@ -261,100 +335,115 @@ paths:
       tags:
         - team
       responses:
-        '200':
+        "200":
           description: Team data
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Team'
-        '404':
+                $ref: "#/components/schemas/Team"
+        "404":
           description: Team not found
     put:
       summary: Update team
       tags:
         - team
       responses:
-        '200':
+        "200":
           description: Team updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Team'
-        '404':
+                $ref: "#/components/schemas/Team"
+        "404":
           description: Team not found
     delete:
       summary: Delete team
       tags:
         - team
       responses:
-        '200':
+        "200":
           description: Team deleted
-        '404':
+        "404":
           description: Team not found
   /team/{teamId}/members:
     description: Team member management
-
-    get:
-      description: Get team members
-      responses:
-        '200':
-          description: Team members
-        '403':
-          description: Forbidden
-        '404':
-          description: Team not found
-
     post:
-      description: Create team member
+      tags:
+        - team
+      summary: Create team member
+      parameters:
+        - name: member
+          description: Member to create
+          in: query
+          schema:
+            type: number
+            format: int64
       responses:
-        '201':
+        "201":
           description: Member created
-        '403':
+        "401":
+          description: Unauthorized
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Team not found
-  /team/{teamId}/members/{userId}:
-    parameters:
-      - name: teamId
-        in: path
-        description: ID of TEAM
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: userId
-        in: path
-        description: ID of USER
-        required: true
-        schema:
-          type: integer
-          format: int64
-    post:
-      description: Add user to team
-      responses:
-        '201':
-          description: User added to team
-        '403':
-          description: Forbidden
-        '404':
-          description: Team or user not found
-    delete:
-      description: Delete team member
-      responses:
-        '200':
-          description: Member deleted
-        '403':
-          description: Forbidden
-        '404':
-          description: Team or user not found
     put:
-      description: Update team member
+      tags:
+        - team
+      summary: Update team member
+      parameters:
+        - name: member
+          description: Member to affect
+          in: query
+          schema:
+            type: number
+            format: int64
+        - name: promote
+          description: Promote member to team leader / accept invite
+          in: query
+          schema:
+            type: boolean
+            nullable: true
+        - name: demote
+          description: Demote member to team member / Kick
+          in: query
+          schema:
+            type: boolean
+            nullable: true
       responses:
-        '200':
+        "200":
           description: Member updated
-        '403':
+        "401":
+          description: Unauthorized
+        "403":
           description: Forbidden
-        '404':
+        "404":
+          description: Team or member not found
+  /team/{teamId}/activity:
+    description: Team activity view
+    get:
+      tags:
+        - team
+      summary: Get team activity
+      responses:
+        "200":
+          description: Team activity
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    event:
+                      $ref: "#/components/schemas/Event"
+                    attendance:
+                      $ref: "#/components/schemas/TeamAttendance"
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
           description: Team not found
   /setting:
     get:
@@ -362,26 +451,26 @@ paths:
       tags:
         - settings
       responses:
-        '200':
+        "200":
           description: Settings
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Setting'
-        '404':
+                $ref: "#/components/schemas/Setting"
+        "404":
           description: Forbidden
     post:
       summary: "Create settings"
       tags:
         - settings
       responses:
-        '200':
+        "200":
           description: Settings updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Setting'
-        '403':
+                $ref: "#/components/schemas/Setting"
+        "403":
           description: Forbidden
   /setting/{key}:
     summary: perform action on setting
@@ -397,14 +486,14 @@ paths:
       tags:
         - settings
       responses:
-        '404':
+        "404":
           description: Setting not found -- or -- Forbidden
-        '200':
+        "200":
           description: setting deleted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Setting'
+                $ref: "#/components/schemas/Setting"
   /setting/{key}/{value}:
     summary: set a setting
     parameters:
@@ -425,40 +514,40 @@ paths:
       tags:
         - settings
       responses:
-        '404':
+        "404":
           description: Setting not found -- or -- Forbidden
-        '200':
+        "200":
           description: setting toggled
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Setting'
+                $ref: "#/components/schemas/Setting"
   /slot:
     post:
       summary: "Create slot"
       tags:
         - slot
       responses:
-        '201':
+        "201":
           description: Slot created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Slot'
-        '403':
+                $ref: "#/components/schemas/Slot"
+        "403":
           description: Forbidden
     get:
       summary: Get slots
       tags:
         - slot
       responses:
-        '200':
+        "200":
           description: Slot data
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Slot'
-        '404':
+                $ref: "#/components/schemas/Slot"
+        "404":
           description: Slot not found
   /slot/{slotId}:
     parameters:
@@ -474,28 +563,52 @@ paths:
       tags:
         - slot
       responses:
-        '200':
+        "200":
           description: Slot updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Slot'
-        '404':
+                $ref: "#/components/schemas/Slot"
+        "404":
           description: Slot not found
-        '403':
+        "403":
           description: Forbidden
     delete:
       summary: Delete slot
       tags:
         - slot
       responses:
-        '200':
+        "200":
           description: Slot deleted
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Slot not found
-
+  /login:
+    post:
+      summary: Get Login URL
+      tags:
+        - auth
+      responses:
+        "200":
+          description: OAuth provider's url
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: url
+                    description: URL to redirect to
+  /logout:
+    post:
+      summary: Logout
+      tags:
+        - auth
+      responses:
+        "200":
+          description: Logged out
 components:
   schemas:
     User:
@@ -512,6 +625,89 @@ components:
         last_name:
           type: string
           example: Doe
+        activity:
+          type: array
+          nullable: true
+          items:
+            type: object
+            properties:
+              event:
+                $ref: "#/components/schemas/Event"
+              attendance:
+                $ref: "#/components/schemas/Attendance"
+        teams:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/Team"
+    IndivitualAttendance:
+      type: object
+      properties:
+        present:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          format: date-time
+          example: 2019-01-01T00:00:00Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2019-01-01T00:00:00Z
+        scan_at:
+          type: string
+          format: date-time
+          example: 2019-01-01T00:00:00Z
+        point:
+          type: integer
+          format: int64
+          example: 10
+        place:
+          type: string
+          nullable: true
+          format: int64
+          example: 1
+        user:
+          $ref: "#/components/schemas/User"
+          nullable: true
+    TeamAttendance:
+      type: object
+      properties:
+        present:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          format: date-time
+          example: 2019-01-01T00:00:00Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2019-01-01T00:00:00Z
+        scan_at:
+          type: string
+          format: date-time
+          example: 2019-01-01T00:00:00Z
+        point:
+          type: integer
+          format: int64
+          example: 10
+        place:
+          type: string
+          nullable: true
+          format: int64
+          example: 1
+        team:
+          $ref: "#/components/schemas/Team"
+          nullable: true
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+    Attendance:
+      oneOf:
+        - $ref: "#/components/schemas/IndivitualAttendance"
+        - $ref: "#/components/schemas/TeamAttendance"
     Team:
       type: object
       properties:
@@ -521,6 +717,17 @@ components:
         name:
           type: string
           example: Sauercloud
+        activity:
+          type: array
+          nullable: true
+          items:
+            type: object
+            properties:
+              event:
+                $ref: "#/components/schemas/Event"
+              attendance:
+                $ref: "#/components/schemas/TeamAttendance"
+
     Event:
       type: object
       properties:

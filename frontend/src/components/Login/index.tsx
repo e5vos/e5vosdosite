@@ -1,21 +1,73 @@
+import axios from "axios";
 import Button from "components/UIKit/Button";
-import Form from "components/UIKit/Form";
+import routeSwitcher from "lib/route";
+import { useDispatch } from "lib/store";
+import { useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { tokenSlice } from "reducers/tokenReducer";
+
+
+
+/**
+ * @param  {Object} options
+ * @return {Window}
+ */
+ const openWindow =  (url: string, title: string, options: {[key:string]:any} = {}) => {
+  if (typeof url === 'object') {
+    options = url
+    url = ''
+  }
+  options = { url, title, width: 600, height: 720, ...options }
+  /** @ts-ignore */
+  const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screen.left
+  /** @ts-ignore */
+  const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screen.top
+  const width = window.innerWidth || document.documentElement.clientWidth || window.screen.width
+  const height = window.innerHeight || document.documentElement.clientHeight || window.screen.height
+  options.left = ((width / 2) - (options.width / 2)) + dualScreenLeft
+  options.top = ((height / 2) - (options.height / 2)) + dualScreenTop
+  const optionsStr = Object.keys(options).reduce((acc, key) => {
+    /** @ts-ignore */
+    acc.push(`${key}=${options[key]}`)
+    return acc
+  }, []).join(',')
+  const newWindow = window.open(url, title, optionsStr)
+  newWindow?.focus()
+  return newWindow
+}
+
+
+const logIn = async () => {
+  const newWindow = openWindow('', 'Google Login')
+  const url = await axios.get(routeSwitcher("login")).then(res => res.data.url)
+  if(newWindow) newWindow.location.href = url
+}
 
 const LoginForm = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const onMessage = useCallback<(this: Window, e:MessageEvent<any>) => any>((e)=>{
+    if(e.origin !== window.origin || !e.data.token){
+      return
+    }
+    // e.data.token contains token
+    dispatch(tokenSlice.actions.setToken(e.data.token))
+    navigate("/dashboard")
+  },[dispatch, navigate])
+
+  useEffect(() => {
+    window.addEventListener('message', onMessage)
+    return () => {
+      window.removeEventListener('message', onMessage)
+    }
+  }, [onMessage])
+
+
+
+
   return (
-    <Form className="max-w-xs mx-auto">
-      <Form.Group>
-        <Form.Label>Felhasználónév</Form.Label>
-        <Form.Control type="text" placeholder="Username" />
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Jelszó</Form.Label>
-        <Form.Control type="password" placeholder="Username" />
-      </Form.Group>
-      <Button variant="submit" className="mx-auto">
-        Bejelentkezés
-      </Button>
-    </Form>
+    <Button onClick={logIn}>Log In With Google</Button>
   );
 };
 

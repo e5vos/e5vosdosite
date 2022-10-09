@@ -1,4 +1,4 @@
-import "../src/style/App.scss"
+import "../src/style/App.pcss"
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {

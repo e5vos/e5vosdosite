@@ -1,67 +1,67 @@
 import { Canvas, Meta, Story } from "@storybook/addon-docs";
-import EventManager from "./EventManager";
+import PresentationSignup from "."
 
-<Meta title="Events/Manage" component={EventManager} />
+<Meta title="Presentations/Signup" component={PresentationSignup} />
 
-export const Template = (args) => <EventManager {...args} />;
+export const Template = (args) => <PresentationSignup {...args} />;
 
-# EventManager
+# PresentationSignup
 
 Features:
 ???
 
 <Canvas>
   <Story
-    name="EventManager"
+    name="PresentationSignup"
     args={{
-      events: [
+      presentations: [
         {
           name: "Hogyan készítsünk honlapot",
           id: "id1",
           description: "",
-          presenter: "Dr. Aladár Béla",
+          oraganiser: "Dr. Aladár Béla",
           capacity: 30,
         },
         {
           name: "Hogyan készítsünk honlapot, de hosszabb",
           id: "id2",
           description: "",
-          presenter: "Kovács János",
+          oraganiser: "Kovács János",
           capacity: 25,
         },
         {
           name: "x",
           id: "id3",
           description: "",
-          presenter: "x y",
+          oraganiser: "x y",
           capacity: 20,
         },
         {
           name: "x",
           id: "id4",
           description: "",
-          presenter: "x y",
+          oraganiser: "x y",
           capacity: 15,
         },
         {
           name: "x",
           id: "id5",
           description: "",
-          presenter: "x y",
+          oraganiser: "x y",
           capacity: 10,
         },
         {
           name: "x",
           id: "id6",
           description: "",
-          presenter: "x y",
+          oraganiser: "x y",
           capacity: 5,
         },
         {
           name: "x",
           id: "id6",
           description: "",
-          presenter: "x y",
+          oraganiser: "x y",
           capacity: 0,
         },
       ],

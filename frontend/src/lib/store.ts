@@ -3,22 +3,47 @@ import {
   useDispatch as originalDispatchHook,
   useSelector as originalSelectorHook,
 } from "react-redux/es/exports";
-import { createBrowserHistory, History } from "history";
-import { configureStore } from "@reduxjs/toolkit";
-import { routerMiddleware, connectRouter } from "connected-react-router";
+import { createBrowserHistory } from "history";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { routerMiddleware, } from "connected-react-router";
+import {
+  persistReducer,
+  persistStore,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import TokenReducer from "reducers/tokenReducer";
+import { api } from "./api";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
 
 export const history = createBrowserHistory();
 
-const rootReducer = (history: History) => ({
-  router: connectRouter(history),
-});
+const rootReducer = persistReducer(
+  { key: "root", storage: storage, blacklist: [api.reducerPath] },
+  combineReducers({
+    auth: TokenReducer,
+    [api.reducerPath]: api.reducer,
+  })
+);
 
 const store = configureStore({
-  reducer: rootReducer(history),
+  reducer: rootReducer,
+  devTools: process.env.NODE_ENV === "development",
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(routerMiddleware(history)),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    })
+      .concat(routerMiddleware(history))
+      .concat(api.middleware),
 });
-
+setupListeners(store.dispatch);
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
 
@@ -26,3 +51,5 @@ export const useDispatch: () => AppDispatch = originalDispatchHook;
 export const useSelector: TypedUseSelectorHook<RootState> =
   originalSelectorHook;
 export default store;
+
+export const persistor = persistStore(store);

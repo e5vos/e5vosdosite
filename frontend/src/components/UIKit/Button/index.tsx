@@ -5,23 +5,39 @@ const Button = ({
   type = "button",
   children,
   className,
-  active,
   ...rest
 }: React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
-> & { variant?: string; active?: boolean }) => {
+> & { variant?: string }) => {
   if (variant === "submit") type = "submit";
-  const classname = {
-    primary:
-      "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 first:rounded-l last:rounded-r",
-    submit:
-      "block bg-black text-white px-4 py-2 rounded-md text-center first:rounded-l last:rounded-r",
-    danger:
-      "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 first:rounded-l last:rounded-r",
-  }[variant];
+
+  let buttonclass;
+  switch (variant) {
+    case "primary":
+      buttonclass = "bg-blue-500 hover:bg-blue-700 disabled:bg-blue-900";
+      break;
+    case "secondary":
+      buttonclass = "border-hidden rounded-3xl shadow-md bg-white";
+      break;
+    case "danger":
+      buttonclass = "bg-red-500 hover:bg-red-700";
+      break;
+    case "outline-primary":
+      buttonclass = "bg-white hover:bg-blue-500 text-blue-700 font-semibold hover:text-white border border-blue-500 hover:border-transparent rounded";  
+      break;
+    default:
+      buttonclass = "bg-blue-500 hover:bg-blue-700";
+  }
+
   return (
-    <button {...rest} type={type} className={classname + " " + className ?? ""}>
+    <button
+      {...rest}
+      type={type}
+      className={`py-2 px-4 font-semibold rounded ${buttonclass} ${
+        className ?? ""
+      }`}
+    >
       {children}
     </button>
   );

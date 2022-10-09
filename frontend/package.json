@@ -62,6 +62,7 @@
     "@capacitor/ios": "^4.2.0",
     "@faker-js/faker": "^7.4.0",
     "@headlessui/tailwindcss": "^0.1.1",
+    "@rtk-query/codegen-openapi": "^1.0.0",
     "@storybook/addon-actions": "^6.5.12",
     "@storybook/addon-essentials": "^6.5.12",
     "@storybook/addon-interactions": "^6.5.12",

@@ -22,12 +22,7 @@ class SlotController extends Controller
      */
     public function store(Request $request)
     {
-        $slot = new Slot();
-        $slot->name = $request->name;
-        $slot->type = $request->type;
-        $slot->starts_at = $request->starts_at;
-        $slot->ends_at = $request->ends_at;
-        $slot->save();
+        $slot = Slot::create($request->all());
         Cache::forget('e5n.slot.all');
         return response(Cache::rememberForever('e5n.slot.'.$slot->id, fn () => $slot), 201);
     }
@@ -37,12 +32,8 @@ class SlotController extends Controller
      */
     public function update(Request $request, $slotId)
     {
-        $slot = Slot::findOrFail($slotId);
-        $slot->name = $request->name;
-        $slot->type = $request->type;
-        $slot->starts_at = $request->starts_at;
-        $slot->ends_at = $request->ends_at;
-        $slot->save();
+        $slot = (Slot::find($slotId) ?? abort(404));
+        $slot->update($request->all());
         Cache::forget('e5n.slot.all');
         Cache::put('e5n.slot.'.$slot->id, $slot);
         return Cache::get('e5n.slot.'.$slot->id);

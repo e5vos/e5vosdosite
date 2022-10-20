@@ -9,6 +9,7 @@ use App\Http\Controllers\{
     E5N\SlotController,
 };
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Auth\PermissionController;
 use App\Models\{
     Attendance,
     Event,
@@ -57,14 +58,25 @@ Route::controller(EventController::class)->group(function () {
     Route::get('/presentations', 'presentations')->name('events.presentations');
     Route::prefix('/event/{id}')->group(function () {
         Route::get('/', 'show')->name('event.show');
+        Route::get('/orgas', 'orgaisers')->name('event.orgas');
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::put('/', 'update')->can('update', Event::class)->name('event.update');
             Route::delete('/', 'delete')->can('delete', Event::class)->name('event.delete');
             Route::put('/restore', 'restore')->can('restore', Event::class)->name('event.restore');
             Route::put('/close', 'close_sigup')->can('update', Event::class)->name('event.close_signup');
             Route::get('/attendees,')->can('viewAny', Attendance::class)->name('event.attendees');
-
         });
+    });
+});
+
+//routes related to permissions
+Route::controller(PermissionController::class)->prefix('permissions/{userId}')->middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('/event/{eventId}')->group(function () {
+        Route::post('/', 'addPermission')->can('update', Event::class)->name('permission.add_organiser');
+        Route::delete('/', 'removePermission')->can('update', Event::class)->name('permission.remove_organiser');
+    });
+    Route::prefix('/{code}')->group(function () {
+        //
     });
 });
 

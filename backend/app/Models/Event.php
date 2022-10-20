@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Exceptions\NotPresentationException;
 use App\Helpers\PermissionType;
+use App\Helpers\SlotType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
 
 /**
@@ -20,6 +22,7 @@ use Illuminate\Support\Collection;
  * @property string $name
  * @property string $description
  * @property string $signup_type
+ * @property string $organiser
  * @property int $capacity
  * @property int $occupancy
  * @property float $rating
@@ -50,27 +53,28 @@ class Event extends Model
         'starts_at',
         'ends_at',
         'signup_deadline',
+        'organiser',
     ];
 
     public function occupancy() : Attribute
     {
         return Attribute::make(
             get: fn($value) => $value->signups()->count()
-        )->shouldCache();
+        );
     }
 
     public function rating() : Attribute
     {
         return Attribute::make(
             get: fn($value) => round($value->ratings()->avg('rating'),0)
-        )->shouldCache();
+        );
     }
 
     public function orgaCount() : Attribute
     {
         return Attribute::make(
             get: fn($value) => $value->permissions()->count()
-        )->shouldCache();
+        );
     }
 
     /**
@@ -127,11 +131,11 @@ class Event extends Model
     }
 
     /**
-     * get the permissions of an event
+     * get the organisers of the event
      */
-    public function permissions(): HasMany
+    public function organisers(): HasManyThrough
     {
-        return $this->hasMany(Permission::class);
+        return $this->hasManyThrough(User::class, Permission::class, 'event_id', 'id', 'id', 'user_id');
     }
 
     /**
@@ -142,23 +146,13 @@ class Event extends Model
         return $this->hasMany(Rating::class);
     }
 
-    /**
-     * Determine if the event is a presentation
-     *
-     * @return boolean
-     */
-    public function is_presentation()
-    {
-        return $this->slot()->get('is_presentation');
-    }
-
     public function participants(): Collection{
         return $this->attendances()->user()->merge($this->attendances()->usersInTeam())->unique();
     }
 
 
     public function fillUp(){
-        if (!$this->slot()->get('is_presentation')){
+        if (!$this->slot()->where('slot_type', array_column(SlotType::cases(), 'value'))->get()) {
             throw new NotPresentationException();
         }
         $availalbeStudents = User::whereDoesntHave('events',function($query){
@@ -181,8 +175,4 @@ class Event extends Model
     public function removeOrganiser(User $user) {
         $this->permissions()->where('users_id', $user->id)->delete();
     }
-
-
-
-
 }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('description');
             $table->foreignIdFor(Slot::class)->nullable()->comment('null if event is not in a slot');
             $table->foreignIdFor(Location::class)->default(0)->comment('0 if event is not location specific');
-            $table->enum('signup_type', ['team', 'user' , 'team_user'])->nullable()->comment('null: no signup required');
+            $table->enum('signup_type', ['team', 'user' , 'team_user'])->nullable()->comment('null: signup unrequired');
             $table->dateTime('signup_deadline')->nullable();
             $table->string('organiser')->nullable();
             $table->tinyInteger('capacity')->nullable()->comment('null if infinite capacity');

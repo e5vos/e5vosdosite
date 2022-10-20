@@ -7,7 +7,6 @@ use App\Exceptions\StudentBusyException;
 use App\Helpers\PermissionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticable;
-use Illuminate\Auth\Authenticatable as AuthenticableTrait;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;

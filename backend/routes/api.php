@@ -17,6 +17,10 @@ use App\Models\{
     Setting
 };
 use Tightenco\Ziggy\Ziggy;
+use App\Events\{
+    Ping
+};
+
 
 /*
 |--------------------------------------------------------------------------
@@ -90,3 +94,9 @@ Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingContr
         Route::delete('/{key}', 'destroy')->can('delete', Setting::class)->name('setting.destroy');
     }
 );
+
+//test websocket broadcast
+
+Route::get('/ping', function () {
+    Ping::dispatch();
+});

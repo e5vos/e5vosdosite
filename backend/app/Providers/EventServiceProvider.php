@@ -5,6 +5,17 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use App\Events\{
+    EventSignup,
+    EventAttendance,
+    Ping
+};
+use App\Listeners\{
+    AttendanceHandler,
+    SignUpHandler,
+    PongListener
+};
+
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,12 +26,14 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         EventSignup::class => [
-
+            SignUpHandler::class,
         ],
         EventAttendance::class => [
-
+            AttendanceHandler::class,
         ],
-        
+        Ping::class => [
+            PongListener::class,
+        ],
     ];
 
     /**
@@ -40,6 +53,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function shouldDiscoverEvents()
     {
-        return false;
+        return true;
     }
 }

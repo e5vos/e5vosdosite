@@ -25,7 +25,6 @@ class AttendanceFactory extends Factory
         return [
             'is_present' => $present,
             'rank' => $present ? fake()->numberBetween(1, 5) : null,
-            'rating' => $present ? fake()->numberBetween(1, 10) : null,
         ];
     }
 }

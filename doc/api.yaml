@@ -274,6 +274,97 @@ paths:
           description: Forbidden
         '404':
           description: Event doesn't exist
+  /event/{eventId}/attendance:
+    parameters:
+      - name: eventId
+        in: path
+        description: ID of event
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      summary: Get events attending entities (users and teams) and their attendance
+      tags:
+        - event
+      responses:
+        '200':
+          description: Event attendance
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IndivitualAttendance'
+        '403':
+          description: Forbidden
+        '404':
+          description: Event doesn't exist
+  /event/{eventId}/signup:
+    parameters:
+      - name: eventId
+        in: path
+        description: ID of event
+        required: true
+        schema:
+          type: integer
+          format: int64
+    post:
+      summary: Signup for event
+      tags:
+        - event
+      responses:
+        '200':
+          description: Signup successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndivitualAttendance'
+        '403':
+          description: Can't signup for event
+        '404':
+          description: Event doesn't exist
+  /event/{eventId}/attend:
+    parameters:
+      - name: eventId
+        in: path
+        description: ID of event
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: attender
+        in: query
+        description: ID of user or team attending, and the type of the attender
+        required: true
+        schema:
+          type: object
+          properties:
+            id:
+              type: string
+              format: int64 || string
+            type:
+              type: string
+              enum:
+                - user
+                - team
+    post:
+      summary: Attend event
+      tags:
+        - event
+      responses:
+        '200':
+          description: Event attended
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '403':
+          description: Can't attend event
+        '404':
+          description: Event doesn't exist
+
+
   /permissions/{userId}/event/{eventId}:
     parameters:
       - name: eventId

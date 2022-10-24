@@ -46,9 +46,6 @@ class Event extends Model
         'description',
         'signup_type',
         'capacity',
-        'occupancy',
-        'rating',
-        'orgaCount',
         'img_url',
         'starts_at',
         'ends_at',
@@ -56,25 +53,26 @@ class Event extends Model
         'organiser',
     ];
 
+
+    protected $casts = [
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
+        'signup_deadline' => 'datetime',
+    ];
+
+    protected $appends = [
+        'occupancy',
+    ];
+
+    protected $with = [
+        'slot',
+    ];
+
     public function occupancy() : Attribute
     {
         return Attribute::make(
-            get: fn($value) => $value->signups()->count()
-        );
-    }
-
-    public function rating() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => round($value->ratings()->avg('rating'),0)
-        );
-    }
-
-    public function orgaCount() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => $value->permissions()->count()
-        );
+            get: fn() => $this->signups()->count(),
+        )->shouldCache();
     }
 
     /**
@@ -97,15 +95,15 @@ class Event extends Model
      *
      * @return int visitor count of an event
      */
-    public function visitorcount(){
+    public function visitorcount()
+    {
         return $this->present()->count();
     }
 
-    public function present(){
-        return $this->attendances()->where("attendance.is_present","=",true);
+    public function present()
+    {
+        return $this->attendances()->where("attendance.is_present", true);
     }
-
-
 
     /**
      * Get the slot that has the Event
@@ -113,6 +111,14 @@ class Event extends Model
     public function slot(): BelongsTo
     {
         return $this->belongsTo(Slot::class);
+    }
+
+    /**
+     * Get all of the signups for the Event
+     */
+    public function signups(): HasMany
+    {
+        return $this->hasMany(Attendance::class);
     }
 
 
@@ -127,7 +133,7 @@ class Event extends Model
      */
     public function attendances(): HasMany
     {
-        return $this->hasMany(Attendance::class);
+        return $this->hasMany(Attendance::class)->where('is_present', true);
     }
 
     /**
@@ -150,8 +156,17 @@ class Event extends Model
         return $this->attendances()->user()->merge($this->attendances()->usersInTeam())->unique();
     }
 
+    /**
+     * return all users participating in an event
+     */
+    public function users(): HasManyThrough
+    {
+        return $this->hasManyThrough(User::class, Attendance::class, 'event_id', 'id', 'id', 'user_id');
+    }
 
-    public function fillUp(){
+
+    public function fillUp()
+    {
         if (!$this->slot()->where('slot_type', array_column(SlotType::cases(), 'value'))->get()) {
             throw new NotPresentationException();
         }
@@ -174,5 +189,14 @@ class Event extends Model
 
     public function removeOrganiser(User $user) {
         $this->permissions()->where('users_id', $user->id)->delete();
+    }
+
+
+    /**
+     * return if the even signup is open
+     */
+    public function isSignupOpen()
+    {
+        return $this->signup_type != null && $this->signup_deadline > now();
     }
 }

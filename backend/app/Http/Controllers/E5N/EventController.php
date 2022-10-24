@@ -8,8 +8,8 @@ use App\Http\Controllers\{
 
 
 use App\Models\{
+    Attendance,
     Event,
-    Slot,
 };
 
 use App\Helpers\SlotType;
@@ -128,5 +128,35 @@ class EventController extends Controller
                 ->where('slots.slot_type', SlotType::presentation)
                 ->get()
         );
+    }
+
+    /**
+     * signup user or team to event
+     */
+    public function signup(Request $request, $eventId)
+    {
+        $event = Event::findOrFail($eventId)->append('signups');
+        $attender = json_decode($request->attender);
+        $attendance = Attendance::create(['event_id' => $event->id, $attender->type.'_id' => $attender->id]);
+        Cache::forget('e5n.events.all');
+        Cache::forget('e5n.events.presentations');
+        Cache::put('e5n.events'.$event->id.'signups', $event->signups);
+        return response($attendance);
+    }
+
+    /**
+     * make user atend at an event
+     */
+    public function attend(Request $request, $eventId)
+    {
+        $event = Event::findOrFail($eventId)->append('signups');
+        $attender = json_decode($request->attender);
+        $attendance = Attendance::where('event_id', $eventId)->where($attender->type.'_id', $attender->id)->first() ??
+            Attendance::create(['event_id' => $event->id, $attender->type.'_id' => $attender->id]);
+        $attendance->update(['is_present' => true]);
+        Cache::forget('e5n.events.all');
+        Cache::forget('e5n.events.presentations');
+        Cache::put('e5n.events'.$event->id.'signups', $event->signups);
+        return response($attendance);
     }
 }

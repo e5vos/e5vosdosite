@@ -25,6 +25,15 @@ class Attendance extends Model
 
     protected $table = 'attendances';
 
+    protected $fillable = [
+        'user_id',
+        'team_id',
+        'event_id',
+        'is_present',
+        'rank',
+        'rating',
+    ];
+
     /**
     * toggle the presence of the attendee at the event
     */

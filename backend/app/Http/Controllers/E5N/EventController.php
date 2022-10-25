@@ -10,6 +10,7 @@ use App\Http\Controllers\{
 use App\Models\{
     Attendance,
     Event,
+    TeamMemberAttendance,
 };
 
 use App\Helpers\SlotType;
@@ -33,7 +34,7 @@ class EventController extends Controller
     {
         return !isset($slotId) ?
             Cache::rememberForever('e5n.events.all', fn () => Event::all()) :
-            Cache::rememberForever('e5n.events'.$slotId, fn () => Event::where('slot_Id', $slotId)->get());
+            Cache::rememberForever('e5n.events'.$slotId, fn () => Event::where('slot_id', $slotId)->get());
     }
 
     /**
@@ -137,11 +138,13 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($eventId)->append('signups');
         $attender = json_decode($request->attender);
-        $attendance = Attendance::create(['event_id' => $event->id, $attender->type.'_id' => $attender->id]);
+        $individual = isset($attender->team_code) ? false : true;
+        $attendance_attributes = ['event_id' => $event->id, ($individual ? 'user_id' : 'team_code') => ($individual ? $attender->id : $attender->team_code)];
+        $attendance = Attendance::create($attendance_attributes);
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
         Cache::put('e5n.events'.$event->id.'signups', $event->signups);
-        return response($attendance);
+        return response($attendance, 201);
     }
 
     /**
@@ -151,12 +154,30 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($eventId)->append('signups');
         $attender = json_decode($request->attender);
-        $attendance = Attendance::where('event_id', $eventId)->where($attender->type.'_id', $attender->id)->first() ??
-            Attendance::create(['event_id' => $event->id, $attender->type.'_id' => $attender->id]);
-        $attendance->update(['is_present' => true]);
+        $individual = isset($attender->team_code) ? false : true;
+        $attendance = Attendance::where('event_id', $eventId)->where(
+            ($individual ? 'user_id' : 'team_code'),
+            ($individual ? $attender->id : $attender->team_code)
+        )->first() ??
+            $this->signup($request, $eventId)->original;
+        $individual ? $attendance->togglePresent() : $teamMemberAttendance = TeamMemberAttendance::create(['attendance_id' => $attendance->id, 'user_id' => $attender->id]);
+        if (isset($teamMemberAttendance)) {
+            $teamMemberAttendance->togglePresent();
+        }
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
         Cache::put('e5n.events'.$event->id.'signups', $event->signups);
         return response($attendance);
+    }
+
+    /**
+     * return all participating entities for an event
+     */
+    public function participants($eventId)
+    {
+        return Cache::rememberForever(
+            'e5n.events'.$eventId.'signups',
+            fn () => Event::findOrFail($eventId)->signuppers()
+        );
     }
 }

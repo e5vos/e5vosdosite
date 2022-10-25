@@ -9,15 +9,17 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class AttendancePolicy
 {
     use HandlesAuthorization;
+
     /**
      * Grant all permissions to admin users.
      */
-    public function before(User $user, $ability)
+    public function before(User $user)
     {
-        if ($user->hasPermissionTo('ADM') || $user->hasPermissionTo('OPT')) {
+        if ($user->hasPermission('ADM') || $user->hasPermission('OPT')) {
             return true;
         }
     }
+
     /**
      * Determine whether the user can view any models.
      *
@@ -48,9 +50,9 @@ class AttendancePolicy
      * @param  int $event_id
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user, $event_id)
+    public function create(User $user, $eventId)
     {
-        return $user->organisesEvent($event_id);
+        return $user->organisesEvent($eventId);
     }
 
     /**

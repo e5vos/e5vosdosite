@@ -5,14 +5,17 @@ namespace App\Models;
 use App\Exceptions\NotPresentationException;
 use App\Helpers\PermissionType;
 use App\Helpers\SlotType;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\{
+    Factories\HasFactory,
+    Model,
+    Builder,
+    SoftDeletes,
+    Casts\Attribute,
+    Relations\BelongsTo,
+    Relations\HasMany,
+    Relations\HasManyThrough,
+};
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
 /**
@@ -71,7 +74,7 @@ class Event extends Model
     public function occupancy() : Attribute
     {
         return Attribute::make(
-            get: fn() => $this->signups()->count(),
+            get: fn() => $this->visitorcount(),
         )->shouldCache();
     }
 
@@ -97,12 +100,15 @@ class Event extends Model
      */
     public function visitorcount()
     {
-        return $this->present()->count();
+        return $this->attendances()->count();
     }
 
-    public function present()
+    /**
+     * get all attendances of an event
+     */
+    public function attendances(): HasMany
     {
-        return $this->attendances()->where("attendance.is_present", true);
+        return $this->hasMany(Attendance::class);
     }
 
     /**
@@ -114,34 +120,19 @@ class Event extends Model
     }
 
     /**
-     * Get all of the signups for the Event
-     */
-    public function signups(): HasMany
-    {
-        return $this->hasMany(Attendance::class);
-    }
-
-
-    /**
      * Get the location of an event
      */
-    public function location(){
-        return $this->belongsTo(Location::class);
-    }
-    /*
-     * Get the attendeances of an event
-     */
-    public function attendances(): HasMany
+    public function location()
     {
-        return $this->hasMany(Attendance::class)->where('is_present', true);
+        return $this->belongsTo(Location::class);
     }
 
     /**
      * get the organisers of the event
      */
-    public function organisers(): HasManyThrough
+    public function organisers(): BelongsToMany
     {
-        return $this->hasManyThrough(User::class, Permission::class, 'event_id', 'id', 'id', 'user_id');
+        return $this->belongsToMany(User::class, Permission::class, 'event_id', 'id', 'id', 'user_id');
     }
 
     /**
@@ -152,22 +143,42 @@ class Event extends Model
         return $this->hasMany(Rating::class);
     }
 
-    public function participants(): Collection{
-        return $this->attendances()->user()->merge($this->attendances()->usersInTeam())->unique();
+    /**
+     * return all users participating in an event as individuals
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'attendances', 'event_id', 'user_id', 'id', 'id');
     }
 
     /**
-     * return all users participating in an event
+     * return all teams participating in an event
      */
-    public function users(): HasManyThrough
+    public function teams(): BelongsToMany
     {
-        return $this->hasManyThrough(User::class, Attendance::class, 'event_id', 'id', 'id', 'user_id');
+        return $this->belongsToMany(Team::class, 'attendances', 'event_id', 'team_code', 'id', 'code');
+    }
+
+    /**
+     * get all the users who attended the event
+     */
+    public function attendees(): Collection
+    {
+        return $this->signuppers()->where('attendances.is_present', true);
+    }
+
+    /**
+     * Get all of the signups for the Event
+     */
+    public function signuppers(): Collection
+    {
+        return $this->users()->withPivot('is_present', 'rank')->get()->merge($this->teams()->withPivot('is_present', 'rank')->get());
     }
 
 
     public function fillUp()
     {
-        if (!$this->slot()->where('slot_type', array_column(SlotType::cases(), 'value'))->get()) {
+        if (!$this->slot()->where('slot_type', '!=', SlotType::presentation->value)->get()) {
             throw new NotPresentationException();
         }
         $availalbeStudents = User::whereDoesntHave('events',function($query){

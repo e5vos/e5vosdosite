@@ -59,8 +59,7 @@ class AttendanceSeeder extends Seeder
                                 'user_id' => $members_attending[$sequence->index]->user_id,
                                 'attendance_id' => $teamAttendance->id,
                             ]
-                        )
-                        ->create();
+                        )->create();
                 }
             }
         }

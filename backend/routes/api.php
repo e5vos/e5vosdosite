@@ -68,10 +68,9 @@ Route::controller(EventController::class)->group(function () {
             Route::delete('/', 'delete')->can('delete', Event::class)->name('event.delete');
             Route::put('/restore', 'restore')->can('restore', Event::class)->name('event.restore');
             Route::put('/close', 'close_sigup')->can('update', Event::class)->name('event.close_signup');
-            Route::get('/attendees,')->can('viewAny', Attendance::class)->name('event.attendees');
+            Route::get('/participants', 'participants')->can('viewAny', Attendance::class)->name('event.participants');
             Route::post('/signup', 'signup')->can('signup', Event::class)->name('event.signup');
             Route::post('/attend', 'attend')->can('attend', Event::class)->name('event.attend');
-
         });
     });
 });

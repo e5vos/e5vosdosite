@@ -274,7 +274,7 @@ paths:
           description: Forbidden
         '404':
           description: Event doesn't exist
-  /event/{eventId}/attendance:
+  /event/{eventId}/participants:
     parameters:
       - name: eventId
         in: path
@@ -284,7 +284,7 @@ paths:
           type: integer
           format: int64
     get:
-      summary: Get events attending entities (users and teams) and their attendance
+      summary: Get events attending users and their attendance
       tags:
         - event
       responses:
@@ -309,6 +309,19 @@ paths:
         schema:
           type: integer
           format: int64
+      - name: attender
+        in: query
+        description: ID of user or attending, and the team_code if attending in a team
+        required: true
+        schema:
+          type: object
+          properties:
+            id:
+              type: string
+              format: int64
+            team_code:
+              type: string
+              description: null if attending individually
     post:
       summary: Signup for event
       tags:
@@ -335,19 +348,18 @@ paths:
           format: int64
       - name: attender
         in: query
-        description: ID of user or team attending, and the type of the attender
+        description: ID of user or attending, and the team_code if attending in a team
         required: true
         schema:
           type: object
           properties:
             id:
               type: string
-              format: int64 || string
-            type:
+              format: int64
+            team_code:
               type: string
-              enum:
-                - user
-                - team
+              description: null if attending individually
+
     post:
       summary: Attend event
       tags:

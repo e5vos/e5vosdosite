@@ -6,7 +6,6 @@ use App\Helpers\SlotType;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Symfony\Component\HttpFoundation\Request;
 
 class EventPolicy
 {
@@ -91,8 +90,6 @@ class EventPolicy
 
     /**
      * Determine if the user can attend the event.
-     *  adm és signupable
-     *  nem adm és signupable és magam signupolom
      * @param User $user
      * @param Event $event
      *
@@ -110,8 +107,6 @@ class EventPolicy
     }
     /**
      * Determine if the user can attend the event.
-     *  adm és signupable
-     *  nem adm és signupable és magam signupolom
      * @param User $user
      * @param Event $event
      *
@@ -121,8 +116,7 @@ class EventPolicy
     {
         $event = $event ?? Event::findOrFail(request()->id);
         $attender = json_decode(request()->attender) ?? $user->id;
-        if (!$event->isSignupOpen() || !($event->signup_type === 'team_user' || $attender->type === $event->signup_type)) {
-
+        if ($event->signup_type && !$event->signuppers()->find($attender->id)) {
             return false;
         }
         return $event->slot->slot_type == SlotType::presentation ? $user->hasPermission('TCH') : ($user->organisesEvent($event->id) || $user->hasPermission('ADM'));

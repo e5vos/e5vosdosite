@@ -41,14 +41,14 @@ const PresentationsTable = ({
           </thead>
           <tbody>
             {presentations.map((presentation) => (
-              <tr className="shadow-md">
+              <tr key={presentation.id} className="shadow-md">
               <td className="px-2 py-0.5 text-center  border-hidden rounded-l-lg">{presentation.organiser}</td>
               <td className="px-2 py-0.5 text-center ">{presentation.name}</td>
               <td className="px-2 py-0.5 text-center ">{presentation.description}</td>
               {/*TODO: dynamically set cell color and button placement*/}
               <td className={"px-2 text-center whitespace-normal border-hidden rounded-r-lg " + getColor(presentation.capacity)}>
                   <div className="py-0.5">
-                      <div>{presentation.capacity}</div>
+                      <div>{presentation.capacity ?? "Korlátlan"}</div>
                       {presentation.capacity !== 0 && callback ? <div><Button variant="secondary" className="px-2 py-0" onClick={() => callback(presentation)}>Kiválaszt</Button></div> :  <></>}
                       
                   </div>

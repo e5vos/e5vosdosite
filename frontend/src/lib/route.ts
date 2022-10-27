@@ -3,31 +3,41 @@ import ziggyroute, {
   RouteParamsWithQueryOverload,
   RouteParam,
 } from "ziggy-js";
+import includedZiggy  from "./ziggy.json";
 import { Capacitor } from "@capacitor/core";
 
-let remoteZiggyConfig: Config | undefined = undefined;
-
-fetch(`${import.meta.env.VITE_BACKEND}/api/ziggy`)
-  .then((res) => res.json())
-  .then((res) => {
-    remoteZiggyConfig = res;
-  })
-  .catch((error) => console.error(error));
-
-const ziggyConfig: Config = {
-  url: "http://localhost:8000",
-  routes: {},
-  defaults: {},
-};
-
-declare global {
+declare global{
   interface Window {
-    route:
+      Ziggy: any;
+      route:
       | ((
           name: string,
           params?: RouteParamsWithQueryOverload | RouteParam
         ) => string)
       | undefined;
+  }
+}
+
+if (typeof window !== 'undefined' && typeof window.Ziggy !== 'undefined') {
+  Object.assign(includedZiggy.routes, window.Ziggy.routes);
+}
+
+
+
+let remoteZiggyConfig: Config | undefined = undefined;
+
+
+
+
+fetch(`${import.meta.env.VITE_BACKEND}/api/ziggy`,{credentials: 'include'})
+  .then((res) => res.json())
+  .then((res) => {
+    remoteZiggyConfig = res;
+  })
+  .catch((error) => console.error(error));
+declare global {
+  interface Window {
+    
   }
 }
 
@@ -37,7 +47,6 @@ const routeSwitcher = (
   absolute?: boolean | undefined
 ): string => {
   try {
-    console.log(remoteZiggyConfig);
     if (Capacitor.getPlatform() === "web" && window.route)
       return window.route(name, params);
     else
@@ -45,7 +54,7 @@ const routeSwitcher = (
         name,
         params,
         absolute,
-        remoteZiggyConfig ?? ziggyConfig
+        remoteZiggyConfig ?? includedZiggy as Config
       );
   } catch (error) {
     if (process.env.NODE_ENV === "development") {

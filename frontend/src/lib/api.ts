@@ -19,15 +19,19 @@ export const api = createApi({
       const token = (getState() as RootState).auth.token;
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
+
       }
+      
       return headers;
     },
+    credentials: 'include',
+    
   }),
   tagTypes: ["Event", "Presentation", "Attendance", "TeamActivity"],
   endpoints: (builder) => ({
     getEvents: builder.query<Event[], number | void>({
       query: (slot?) =>
-        slot ? routeSwitcher("events.slot", { slot }) : routeSwitcher("events.index"),
+        slot ? routeSwitcher("events.slot", { slot_id:slot }) : routeSwitcher("events.index"),
       providesTags: (result) => {
         if (result) {
           

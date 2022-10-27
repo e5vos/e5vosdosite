@@ -38,12 +38,6 @@ class Attendance extends Model
         'is_present' => 'boolean',
     ];
 
-    protected $with = [
-        'user',
-        'team',
-    ];
-
-
 
     /**
     * toggle the presence of the attendee at the event

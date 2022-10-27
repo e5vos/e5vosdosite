@@ -359,7 +359,6 @@ paths:
             team_code:
               type: string
               description: null if attending individually
-
     post:
       summary: Attend event
       tags:

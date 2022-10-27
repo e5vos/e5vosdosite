@@ -7,6 +7,7 @@ use App\Http\Controllers\{
     E5N\EventController,
     Auth\AuthController,
     E5N\SlotController,
+    E5N\TeamController,
 };
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\PermissionController;
@@ -14,7 +15,8 @@ use App\Models\{
     Attendance,
     Event,
     Slot,
-    Setting
+    Setting,
+    TeamMembership
 };
 use Tightenco\Ziggy\Ziggy;
 use App\Events\{
@@ -60,6 +62,7 @@ Route::controller(EventController::class)->group(function () {
     Route::middleware(['auth:sanctum'])->post('/events', 'store')->can('create', Event::class)->name('event.store');
     Route::get('/events/{slot_id}', 'index')->name('events.slot');
     Route::get('/presentations', 'presentations')->name('events.presentations');
+    Route::middleware(['auth:sanctum'])->get('/mypresentations', 'myPresentations')->name('events.mypresentations');
     Route::prefix('/event/{id}')->group(function () {
         Route::get('/', 'show')->name('event.show');
         Route::get('/orgas', 'orgaisers')->name('event.orgas');
@@ -71,6 +74,24 @@ Route::controller(EventController::class)->group(function () {
             Route::get('/participants', 'participants')->can('viewAny', Attendance::class)->name('event.participants');
             Route::post('/signup', 'signup')->can('signup', Event::class)->name('event.signup');
             Route::post('/attend', 'attend')->can('attend', Event::class)->name('event.attend');
+        });
+    });
+});
+
+//routes related to E5N teams
+Route::controller(TeamController::class)->middleware(['auth:sanctum'])->group(function () {
+    Route::get('/team', 'index')->can('viewAny', Team::class)->name('teams.index');
+    Route::get('/team/{teamCode}', 'show')->can('view', Team::class)->name('team.show');
+    Route::post('/team', 'store')->can('create', Team::class)->name('team.store');
+    Route::prefix('/teams/{teamCode}')->group(function () {
+        Route::delete('/', 'destroy')->can('delete', Team::class)->name('team.destroy');
+        Route::put('/', 'update')->can('update', Team::class)->name('team.update');
+        Route::put('/restore', 'restore')->can('restore', Team::class)->name('team.restore');
+        Route::get('/members', 'members')->can('viewAny', TeamMembership::class)->name('team.members');
+        Route::prefix('/members/{userId}')->group(function () {
+            Route::post('/', 'add_member')->can('add_member', Team::class)->name('team.add_member');
+            Route::delete('/', 'remove_member')->can('remove_member', Team::class)->name('team.remove_member');
+            Route::put('/', 'promote')->can('promote', Team::class)->name('team.promote');
         });
     });
 });

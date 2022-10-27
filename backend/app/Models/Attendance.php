@@ -25,6 +25,26 @@ class Attendance extends Model
 
     protected $table = 'attendances';
 
+    protected $fillable = [
+        'user_id',
+        'team_code',
+        'event_id',
+        'is_present',
+        'rank',
+        'rating',
+    ];
+
+    protected $casts = [
+        'is_present' => 'boolean',
+    ];
+
+    protected $with = [
+        'user',
+        'team',
+    ];
+
+
+
     /**
     * toggle the presence of the attendee at the event
     */
@@ -54,7 +74,7 @@ class Attendance extends Model
      */
     public function usersInTeam(): BelongsToMany
     {
-        return $this->belongsToMany(User::class,'team_member_attendances');
+        return $this->belongsToMany(User::class, 'team_member_attendances');
     }
 
     /**

@@ -26,7 +26,7 @@ class SlotFactory extends Factory
             'name' => fake()->word().' '.$type,
             'starts_at' => $starts_at,
             'ends_at' => fake()->dateTimeBetween($starts_at, '+1 year'),
-            'type' => $type,
+            'slot_type' => $type,
         ];
     }
 }

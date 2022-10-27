@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\SlotType;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -85,5 +86,39 @@ class EventPolicy
     public function forceDelete()
     {
         return false;
+    }
+
+    /**
+     * Determine if the user can attend the event.
+     * @param User $user
+     * @param Event $event
+     *
+     * @return bool
+     */
+    public function signup(User $user, Event $event = null)
+    {
+        $event = $event ?? Event::findOrFail(request()->id);
+        $attender = json_decode(request()->attender) ?? $user->id;
+        if (!$event->isSignupOpen() || !($event->signup_type === 'team_user' || $attender->type === $event->signup_type)) {
+            return false;
+        }
+        $attender = $attender->type == 'user' ? $user->id == $attender->id : $user->teams->contains($attender->id);
+        return $user->hasPermission('ADM') || $attender;
+    }
+    /**
+     * Determine if the user can attend the event.
+     * @param User $user
+     * @param Event $event
+     *
+     * @return bool
+     */
+    public function attend(User $user, Event $event = null)
+    {
+        $event = $event ?? Event::findOrFail(request()->id);
+        $attender = json_decode(request()->attender) ?? $user->id;
+        if ($event->signup_type && !$event->signuppers()->find($attender->id)) {
+            return false;
+        }
+        return $event->slot->slot_type == SlotType::presentation ? $user->hasPermission('TCH') : ($user->organisesEvent($event->id) || $user->hasPermission('ADM'));
     }
 }

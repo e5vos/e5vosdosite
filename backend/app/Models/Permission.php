@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Helpers\PermissionType;
 
 /**
  * App\Models\Permission
@@ -33,7 +34,20 @@ class Permission extends Model
         'code',
     ];
 
+    /**
+     * override the find method for composite key
+     */
+    public static function find($id)
+    {
+        return static::where('user_id', $id[0])
+            ->where('event_id', $id[1])
+            ->where('code', $id[1] ? PermissionType::Organiser->value : $id[2])
+            ->limit(1) ?? null;
+    }
+
     public $incrementing = false;
+
+
 
 
     /**

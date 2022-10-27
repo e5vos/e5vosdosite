@@ -5,9 +5,9 @@ namespace App\Models;
 use App\Exceptions\EventFullException;
 use App\Exceptions\StudentBusyException;
 use App\Helpers\PermissionType;
+use App\Helpers\SlotType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticable;
-use Illuminate\Auth\Authenticatable as AuthenticableTrait;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -150,10 +150,10 @@ class User extends Authenticable
      * @return EventSignup the newly created EventSignup object
      */
     public function signUp(Event $event){
-        if($event->slot !=null && $this->isBusy($event->slot)){
+        if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusy($event->slot)) {
             throw new StudentBusyException();
         }
-        if(!$event->hasCapacity()){
+        if (!$event->hasCapacity()) {
             throw new EventFullException();
         }
         $signup = new Attendance();

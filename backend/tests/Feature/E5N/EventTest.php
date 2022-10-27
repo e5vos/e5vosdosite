@@ -17,9 +17,8 @@ class EventTest extends TestCase
     {
         $event = Event::factory()->count(1)->make()->toArray()[0];
         $event["slot_id"] = Slot::first()->get()[0]->id;
-        $event["starts_at"] = $event["starts_at"]->format('Y-m-d H:i:s');
-        $event["ends_at"] = $event["ends_at"]->format('Y-m-d H:i:s');
-        $event["signup_deadline"] = $event["signup_deadline"]->format('Y-m-d H:i:s');
+        $event["occupancy"] = null;
+        unset($event["occupancy"]);
         $user = User::first();
         Permission::where('user_id', $user->id)->delete();
         $response = $this->actingAs($user)->post('/api/events', $event);
@@ -63,9 +62,6 @@ class EventTest extends TestCase
     {
         $event = Event::inRandomOrder()->first();
         $eventData = Event::factory()->count(1)->make()->toArray()[0];
-        $eventData["starts_at"] = $eventData["starts_at"]->format('Y-m-d H:i:s');
-        $eventData["ends_at"] = $eventData["ends_at"]->format('Y-m-d H:i:s');
-        $eventData["signup_deadline"] = $eventData["signup_deadline"]->format('Y-m-d H:i:s');
         $user = User::first();
         Permission::where('user_id', $user->id)->delete();
 
@@ -123,6 +119,28 @@ class EventTest extends TestCase
         $this->assertDatabaseHas('events', [
             'id' => $event->id
         ]);
+    }
+
+    /**
+     * A test to check if signup for an event can be closed.
+     * @return void
+     */
+    public function test_signup_for_an_event_can_be_closed()
+    {
+        $this->markTestIncomplete('relies on attendance system');
+
+        $event = Event::inRandomOrder()->first();
+        $user = User::first();
+        Permission::where('user_id', $user->id)->delete();
+
+        $response = $this->actingAs($user)->put('/api/event/' . $event->id . '/close');
+        $response->assertStatus(403);
+
+        Permission::create(['code' => 'ORG', 'user_id' => $user->id, 'event_id' => $event->id]);
+        $response = $this->actingAs($user)->put('/api/event/' . $event->id . '/close');
+        $response->assertStatus(200);
+
+        //assert that the event is closed
     }
 
 }

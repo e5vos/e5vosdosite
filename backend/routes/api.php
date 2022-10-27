@@ -9,6 +9,7 @@ use App\Http\Controllers\{
     E5N\SlotController,
 };
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Auth\PermissionController;
 use App\Models\{
     Attendance,
     Event,
@@ -16,6 +17,10 @@ use App\Models\{
     Setting
 };
 use Tightenco\Ziggy\Ziggy;
+use App\Events\{
+    Ping
+};
+
 
 /*
 |--------------------------------------------------------------------------
@@ -54,17 +59,30 @@ Route::controller(EventController::class)->group(function () {
     Route::get('/events', 'index')->name('events.index');
     Route::middleware(['auth:sanctum'])->post('/events', 'store')->can('create', Event::class)->name('event.store');
     Route::get('/events/{slot_id}', 'index')->name('events.slot');
-    Route::get('/presentation/{slot_id}', 'presentations')->name('events.presentations');
+    Route::get('/presentations', 'presentations')->name('events.presentations');
     Route::prefix('/event/{id}')->group(function () {
         Route::get('/', 'show')->name('event.show');
+        Route::get('/orgas', 'orgaisers')->name('event.orgas');
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::put('/', 'update')->can('update', Event::class)->name('event.update');
             Route::delete('/', 'delete')->can('delete', Event::class)->name('event.delete');
             Route::put('/restore', 'restore')->can('restore', Event::class)->name('event.restore');
             Route::put('/close', 'close_sigup')->can('update', Event::class)->name('event.close_signup');
-            Route::get('/attendees,')->can('viewAny', Attendance::class)->name('event.attendees');
-
+            Route::get('/participants', 'participants')->can('viewAny', Attendance::class)->name('event.participants');
+            Route::post('/signup', 'signup')->can('signup', Event::class)->name('event.signup');
+            Route::post('/attend', 'attend')->can('attend', Event::class)->name('event.attend');
         });
+    });
+});
+
+//routes related to permissions
+Route::controller(PermissionController::class)->prefix('permissions/{userId}')->middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('/event/{eventId}')->group(function () {
+        Route::post('/', 'addPermission')->can('update', Event::class)->name('permission.add_organiser');
+        Route::delete('/', 'removePermission')->can('update', Event::class)->name('permission.remove_organiser');
+    });
+    Route::prefix('/{code}')->group(function () {
+        //
     });
 });
 
@@ -78,3 +96,9 @@ Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingContr
         Route::delete('/{key}', 'destroy')->can('delete', Setting::class)->name('setting.destroy');
     }
 );
+
+//test websocket broadcast
+
+Route::get('/ping', function () {
+    Ping::dispatch();
+});

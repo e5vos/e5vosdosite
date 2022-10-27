@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('teams', function (Blueprint $table) {
-            $table->string('code',10)->unique();
+            $table->string('code', 10)->unique();
             $table->string('name');
             $table->timestamps();
         });

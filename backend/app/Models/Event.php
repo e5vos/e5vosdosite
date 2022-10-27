@@ -4,13 +4,18 @@ namespace App\Models;
 
 use App\Exceptions\NotPresentationException;
 use App\Helpers\PermissionType;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Helpers\SlotType;
+use Illuminate\Database\Eloquent\{
+    Factories\HasFactory,
+    Model,
+    Builder,
+    SoftDeletes,
+    Casts\Attribute,
+    Relations\BelongsTo,
+    Relations\HasMany,
+    Relations\HasManyThrough,
+};
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
 /**
@@ -20,6 +25,7 @@ use Illuminate\Support\Collection;
  * @property string $name
  * @property string $description
  * @property string $signup_type
+ * @property string $organiser
  * @property int $capacity
  * @property int $occupancy
  * @property float $rating
@@ -43,33 +49,32 @@ class Event extends Model
         'description',
         'signup_type',
         'capacity',
-        'occupancy',
-        'rating',
-        'orgaCount',
         'img_url',
         'starts_at',
         'ends_at',
         'signup_deadline',
+        'organiser',
+    ];
+
+
+    protected $casts = [
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
+        'signup_deadline' => 'datetime',
+    ];
+
+    protected $appends = [
+        'occupancy',
+    ];
+
+    protected $with = [
+        'slot',
     ];
 
     public function occupancy() : Attribute
     {
         return Attribute::make(
-            get: fn($value) => $value->signups()->count()
-        )->shouldCache();
-    }
-
-    public function rating() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => round($value->ratings()->avg('rating'),0)
-        )->shouldCache();
-    }
-
-    public function orgaCount() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => $value->permissions()->count()
+            get: fn() => $this->visitorcount(),
         )->shouldCache();
     }
 
@@ -93,15 +98,18 @@ class Event extends Model
      *
      * @return int visitor count of an event
      */
-    public function visitorcount(){
-        return $this->present()->count();
+    public function visitorcount()
+    {
+        return $this->attendances()->count();
     }
 
-    public function present(){
-        return $this->attendances()->where("attendance.is_present","=",true);
+    /**
+     * get all attendances of an event
+     */
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class);
     }
-
-
 
     /**
      * Get the slot that has the Event
@@ -111,27 +119,20 @@ class Event extends Model
         return $this->belongsTo(Slot::class);
     }
 
-
     /**
      * Get the location of an event
      */
-    public function location(){
-        return $this->belongsTo(Location::class);
-    }
-    /*
-     * Get the attendeances of an event
-     */
-    public function attendances(): HasMany
+    public function location()
     {
-        return $this->hasMany(Attendance::class);
+        return $this->belongsTo(Location::class);
     }
 
     /**
-     * get the permissions of an event
+     * get the organisers of the event
      */
-    public function permissions(): HasMany
+    public function organisers(): BelongsToMany
     {
-        return $this->hasMany(Permission::class);
+        return $this->belongsToMany(User::class, Permission::class, 'event_id', 'id', 'id', 'user_id');
     }
 
     /**
@@ -143,22 +144,41 @@ class Event extends Model
     }
 
     /**
-     * Determine if the event is a presentation
-     *
-     * @return boolean
+     * return all users participating in an event as individuals
      */
-    public function is_presentation()
+    public function users(): BelongsToMany
     {
-        return $this->slot()->get('is_presentation');
+        return $this->belongsToMany(User::class, 'attendances', 'event_id', 'user_id', 'id', 'id');
     }
 
-    public function participants(): Collection{
-        return $this->attendances()->user()->merge($this->attendances()->usersInTeam())->unique();
+    /**
+     * return all teams participating in an event
+     */
+    public function teams(): BelongsToMany
+    {
+        return $this->belongsToMany(Team::class, 'attendances', 'event_id', 'team_code', 'id', 'code');
+    }
+
+    /**
+     * get all the users who attended the event
+     */
+    public function attendees(): Collection
+    {
+        return $this->signuppers()->where('attendances.is_present', true);
+    }
+
+    /**
+     * Get all of the signups for the Event
+     */
+    public function signuppers(): Collection
+    {
+        return $this->users()->withPivot('is_present', 'rank')->get()->merge($this->teams()->withPivot('is_present', 'rank')->get());
     }
 
 
-    public function fillUp(){
-        if (!$this->slot()->get('is_presentation')){
+    public function fillUp()
+    {
+        if (!$this->slot()->where('slot_type', '!=', SlotType::presentation->value)->get()) {
             throw new NotPresentationException();
         }
         $availalbeStudents = User::whereDoesntHave('events',function($query){
@@ -183,6 +203,11 @@ class Event extends Model
     }
 
 
-
-
+    /**
+     * return if the even signup is open
+     */
+    public function isSignupOpen()
+    {
+        return $this->signup_type != null && $this->signup_deadline > now();
+    }
 }

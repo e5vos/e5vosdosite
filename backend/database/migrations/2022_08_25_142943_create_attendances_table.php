@@ -21,11 +21,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->nullable()->comment('null if team attendance=>team_code cant be null');
             $table->foreignIdFor(Team::class)->nullable()->comment('null if user attendance=>user_id cant be null');
-            $table->string('display_name')->default('No name')->comment('Display name of the user or team');
             $table->foreignIdFor(Event::class);
             $table->boolean('is_present')->default(false);
             $table->tinyInteger('rank')->nullable()->comment('null if not competition or no rank achieved');
-            $table->tinyInteger('rating')->nullable()->comment('null if no rating given');
             $table->timestamps();
         });
     }

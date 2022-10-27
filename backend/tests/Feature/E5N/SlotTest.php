@@ -27,15 +27,15 @@ class SlotTest extends TestCase
         $user = User::first();
         Permission::factory()->create(['code' => 'ADM', 'user_id' => $user->id]);
         $response = $this->actingAs($user)->postJson('api/slot', [
-            'name' => 'Test slot',
-            'type' => SlotType::presentation,
+            'name' => 'Test slot ',
+            'slot_type' => SlotType::presentation,
             'starts_at' => '2021-01-01 00:00:00',
             'ends_at' => '2021-01-01 00:00:00',
         ]);
         $response->assertStatus(201);
         $this->assertDatabaseHas('slots', [
-            'name' => 'Test slot',
-            'type' => SlotType::presentation,
+            'name' => 'Test slot ',
+            'slot_type' => SlotType::presentation,
             'starts_at' => '2021-01-01 00:00:00',
             'ends_at' => '2021-01-01 00:00:00',
         ]);
@@ -50,15 +50,15 @@ class SlotTest extends TestCase
         Permission::factory()->create(['code' => 'ADM', 'user_id' => $user->id]);
         $slot = Slot::first();
         $response = $this->actingAs($user)->putJson('api/slot/' . $slot->id, [
-            'name' => 'Test slot'. $slot->name,
-            'type' => $slot->type == SlotType::presentation ? SlotType::program : SlotType::presentation,
+            'name' => 'Test slot '. $slot->name,
+            'slot_type' => $slot->type == SlotType::presentation ? SlotType::program : SlotType::presentation,
             'starts_at' => '2021-01-01 00:00:00',
             'ends_at' => '2021-02-01 00:00:00',
         ]);
         $response->assertStatus(200);
         $this->assertDatabaseHas('slots', [
-            'name' => 'Test slot'. $slot->name,
-            'type' => $slot->type == SlotType::presentation ? SlotType::program : SlotType::presentation,
+            'name' => 'Test slot '. $slot->name,
+            'slot_type' => $slot->type == SlotType::presentation ? SlotType::program : SlotType::presentation,
             'starts_at' => '2021-01-01 00:00:00',
             'ends_at' => '2021-02-01 00:00:00',
         ]);

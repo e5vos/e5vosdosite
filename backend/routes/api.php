@@ -16,7 +16,8 @@ use App\Models\{
     Event,
     Slot,
     Setting,
-    TeamMembership
+    TeamMembership,
+    Team,
 };
 use Tightenco\Ziggy\Ziggy;
 use App\Events\{
@@ -39,7 +40,7 @@ Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
-});
+})->name('user');
 
 Route::get('ziggy', fn () => response()->json(new Ziggy));
 
@@ -63,7 +64,7 @@ Route::controller(EventController::class)->group(function () {
     Route::get('/events/{slot_id}', 'index')->name('events.slot');
     Route::get('/presentations', 'presentations')->name('events.presentations');
     Route::middleware(['auth:sanctum'])->get('/mypresentations', 'myPresentations')->name('events.mypresentations');
-    Route::prefix('/event/{id}')->group(function () {
+    Route::prefix('/event/{eventId}')->group(function () {
         Route::get('/', 'show')->name('event.show');
         Route::get('/orgas', 'orgaisers')->name('event.orgas');
         Route::middleware(['auth:sanctum'])->group(function () {
@@ -81,10 +82,10 @@ Route::controller(EventController::class)->group(function () {
 //routes related to E5N teams
 Route::controller(TeamController::class)->middleware(['auth:sanctum'])->group(function () {
     Route::get('/team', 'index')->can('viewAny', Team::class)->name('teams.index');
-    Route::get('/team/{teamCode}', 'show')->can('view', Team::class)->name('team.show');
     Route::post('/team', 'store')->can('create', Team::class)->name('team.store');
+    Route::get('/team/{teamCode}', 'show')->can('view', Team::class)->name('team.show');
     Route::prefix('/teams/{teamCode}')->group(function () {
-        Route::delete('/', 'destroy')->can('delete', Team::class)->name('team.destroy');
+        Route::delete('/', 'delete')->can('delete', Team::class)->name('team.destroy');
         Route::put('/', 'update')->can('update', Team::class)->name('team.update');
         Route::put('/restore', 'restore')->can('restore', Team::class)->name('team.restore');
         Route::get('/members', 'members')->can('viewAny', TeamMembership::class)->name('team.members');

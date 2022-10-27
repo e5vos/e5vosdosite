@@ -12,18 +12,23 @@ const slotCount = 3;
 const PresentationsPage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
   
-  const { data: selectedPresentations } = api.useGetUsersPresentationsQuery() ;
-  const { data: presentations, } = api.useGetEventsQuery(1);
-
+  const { data: selectedPresentations, isLoading: isMyPresentationsLoading }:  {data:(null | Presentation)[], isLoading:boolean} = {data: [null,null,null], isLoading:false} // api.useGetUsersPresentationsQuery() ;
+  const { data: presentations, isLoading: isEventsLoading } = api.useGetEventsQuery(1);
+  const [signUp, {isLoading: signupInProgress}] = api.useSignUpMutation();
   const signUpAction = async (presentation: Presentation) => {
     console.log("SIGNUP", presentation);
     let newSelectedPresentations = selectedPresentations;
-    newSelectedPresentations![currentSlot] = presentation;
-    // dispatch)
+    newSelectedPresentations[currentSlot] = presentation;
+    try{
+      const attendance = await signUp(presentation).unwrap()
+      console.log("ATTENDANCE", attendance)
+    }catch(err){
+      console.error("ERROR", err)
+    }
     
   };
 
-  if (!selectedPresentations || !presentations) return <Loader />;
+  if (isMyPresentationsLoading || isEventsLoading) return <Loader />;
 
   return (
     <div className="container mx-auto">

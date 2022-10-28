@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { BaseLayout } from "templates";
 import React from "react";
 import Loader from "components/UIKit/Loader";
+import PresentationAttendancePage from "pages/presentation/manage/attendance";
 
 const Home = React.lazy(() => import("pages/Home"));
 const Error = React.lazy(() => import("components/Error"));
@@ -61,10 +62,10 @@ function App() {
                     <Route index element={<PresentationPage />} />
                     <Route
                       path=":presentationCode"
-                      element={<>PresentationAttendancePage</>}
+                      element={<PresentationAttendancePage />}
                     />
                     <Route path="kezel">
-                      <Route index element={<>PresentationAttendancePage</>} />
+                      <Route index element={<PresentationAttendancePage />} />
                       <Route path="admin" element={<>TeamAdminPage</>} />
                     </Route>
                   </Route>

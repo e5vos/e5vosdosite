@@ -32,7 +32,7 @@ const useUser = (
     }
 
     if (user && !user.code) {
-      if(redirectToStudentCode) navigate(redirectToStudentCode);
+      if (redirectToStudentCode) navigate(redirectToStudentCode);
     }
   }, [user, error, navigate, redirectToLogin, redirectToStudentCode]);
 

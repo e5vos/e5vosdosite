@@ -20,26 +20,27 @@ export const api = createApi({
       const token = (getState() as RootState).auth.token;
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
-
       }
-      
+
       return headers;
     },
-    credentials: 'include',
-    
+    credentials: "include",
   }),
   tagTypes: ["Event", "Presentation", "Attendance", "TeamActivity", "User"],
   endpoints: (builder) => ({
     getEvents: builder.query<Event[], number | void>({
       query: (slot?) =>
-        slot ? routeSwitcher("events.slot", { slot_id:slot }) : routeSwitcher("events.index"),
+        slot
+          ? routeSwitcher("events.slot", { slot_id: slot })
+          : routeSwitcher("events.index"),
       providesTags: (result) => {
         if (result) {
-          
           return [
             ...result.map(({ id }) => ({ type: "Event", id: id } as const)),
-            ...result.map(({slot})=> ({type: "Event", id:`LIST${slot}`} as const)),
-            { type: "Event", id: "LIST" }
+            ...result.map(
+              ({ slot }) => ({ type: "Event", id: `LIST${slot}` } as const)
+            ),
+            { type: "Event", id: "LIST" },
           ];
         } else {
           return [{ type: "Event", id: "LIST" }];
@@ -78,7 +79,10 @@ export const api = createApi({
         method: "POST",
         params: event,
       }),
-      invalidatesTags: (result) => [{type: "Event", id: `LIST${result?.slot.id}`},{ type: "Event", id: "LIST" }],
+      invalidatesTags: (result) => [
+        { type: "Event", id: `LIST${result?.slot.id}` },
+        { type: "Event", id: "LIST" },
+      ],
     }),
     getUsersPresentations: builder.query<Presentation[], void>({
       query: () => routeSwitcher("user.presentations"),
@@ -90,11 +94,14 @@ export const api = createApi({
             ]
           : [{ type: "Event", id: "MYLIST" }],
     }),
-    signUp: builder.mutation<Attendance, {attender: string, event: Pick<Event, "id"> }>({
+    signUp: builder.mutation<
+      Attendance,
+      { attender: string; event: Pick<Event, "id"> }
+    >({
       query: (body) => ({
-        url: routeSwitcher("event.signup",{id:body.event.id}),
+        url: routeSwitcher("event.signup", { id: body.event.id }),
         method: "POST",
-        params: {attender: body.attender},
+        params: { attender: body.attender },
       }),
       onQueryStarted: async (arg) => {
         /** TODO: OPTIMISTIC UPDATE */
@@ -134,7 +141,7 @@ export const api = createApi({
         url: routeSwitcher("user.studentcode"),
         method: "POST",
         params: { code },
-      })
-    })
+      }),
+    }),
   }),
 });

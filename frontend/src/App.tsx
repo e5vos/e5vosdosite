@@ -6,9 +6,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { BaseLayout } from "templates";
 import React from "react";
 import Loader from "components/UIKit/Loader";
-import LogoutPage from "pages/logout";
-import StudentCodePage from "pages/studentcode";
-
 
 const Home = React.lazy(() => import("pages/Home"));
 const Error = React.lazy(() => import("components/Error"));
@@ -18,6 +15,9 @@ const TeamPage = React.lazy(() => import("pages/team/[teamcode]"));
 const EventsPage = React.lazy(() => import("pages/event"));
 const EventPage = React.lazy(() => import("pages/event/[eventid]"));
 const LoginPage = React.lazy(() => import("pages/login"));
+const LogoutPage = React.lazy(() => import("pages/logout"));
+const StudentCodePage = React.lazy(() => import("pages/studentcode"));
+const LegalPage = React.lazy(() => import("pages/Legal"));
 
 function App() {
   return (
@@ -70,7 +70,7 @@ function App() {
                   </Route>
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/studentcode" element={<StudentCodePage />} />
-                  <Route path="/logout" element={<LogoutPage/>} />
+                  <Route path="/logout" element={<LogoutPage />} />
                   <Route path="*" element={<Error code={404} />} />
                 </Route>
               </Routes>

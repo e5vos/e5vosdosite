@@ -1,4 +1,3 @@
+const eventSignupAction = (payload: any) => {};
 
-const eventSignupAction = (payload: any) => {}
-
-export default eventSignupAction
+export default eventSignupAction;

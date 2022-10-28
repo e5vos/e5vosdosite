@@ -3,13 +3,13 @@ import ziggyroute, {
   RouteParamsWithQueryOverload,
   RouteParam,
 } from "ziggy-js";
-import includedZiggy  from "./ziggy.json";
+import includedZiggy from "./ziggy.json";
 import { Capacitor } from "@capacitor/core";
 
-declare global{
+declare global {
   interface Window {
-      Ziggy: any;
-      route:
+    Ziggy: any;
+    route:
       | ((
           name: string,
           params?: RouteParamsWithQueryOverload | RouteParam
@@ -18,27 +18,20 @@ declare global{
   }
 }
 
-if (typeof window !== 'undefined' && typeof window.Ziggy !== 'undefined') {
+if (typeof window !== "undefined" && typeof window.Ziggy !== "undefined") {
   Object.assign(includedZiggy.routes, window.Ziggy.routes);
 }
 
-
-
 let remoteZiggyConfig: Config | undefined = undefined;
 
-
-
-
-fetch(`${import.meta.env.VITE_BACKEND}/api/ziggy`,{credentials: 'include'})
+fetch(`${import.meta.env.VITE_BACKEND}/api/ziggy`, { credentials: "include" })
   .then((res) => res.json())
   .then((res) => {
     remoteZiggyConfig = res;
   })
   .catch((error) => console.error(error));
 declare global {
-  interface Window {
-    
-  }
+  interface Window {}
 }
 
 const routeSwitcher = (
@@ -54,7 +47,7 @@ const routeSwitcher = (
         name,
         params,
         absolute,
-        remoteZiggyConfig ?? includedZiggy as Config
+        remoteZiggyConfig ?? (includedZiggy as Config)
       );
   } catch (error) {
     if (process.env.NODE_ENV === "development") {

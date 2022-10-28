@@ -18,7 +18,7 @@ const PresentationsPage = () => {
     refetch: refetchSelected,
   } =
     //api.useGetUsersPresentationsQuery();
-    { data: [{name:"ASd"}] } as any;
+    { data: [{ name: "ASd" }] } as any;
   const {
     data: presentations,
     isLoading: isEventsLoading,
@@ -26,8 +26,8 @@ const PresentationsPage = () => {
   } = api.useGetEventsQuery(currentSlot);
   const [signUp, { isLoading: signupInProgress }] = api.useSignUpMutation();
 
-  const {user} = useUser();
-  console.log(user)
+  const { user } = useUser();
+  console.log(user);
 
   const signUpAction = async (presentation: Presentation) => {
     console.log("SIGNUP", presentation);
@@ -41,7 +41,7 @@ const PresentationsPage = () => {
         event: presentation,
       }).unwrap();
       console.log("ATTENDANCE", attendance);
-      refetchSelected()
+      refetchSelected();
     } catch (err) {
       console.error("ERROR", err);
     }

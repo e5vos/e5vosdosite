@@ -7,11 +7,11 @@ import { authSlice } from "reducers/authReducer";
 const LogoutPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  useEffect(() =>{
+  useEffect(() => {
     dispatch(authSlice.actions.setToken(""));
-    navigate("/",{replace: true});
-  },[navigate,dispatch])
-  return <Loader/>
+    navigate("/", { replace: true });
+  }, [navigate, dispatch]);
+  return <Loader />;
 };
 
 export default LogoutPage;

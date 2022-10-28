@@ -1,5 +1,5 @@
 import { Disclosure, Transition } from "@headlessui/react";
-import { Attendance, isTeamAttendance } from "types/models"
+import { Attendance, isTeamAttendance } from "types/models";
 
 const Activity = ({
   name,

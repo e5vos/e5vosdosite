@@ -20,7 +20,7 @@ const Button = ({
     | "success"
     | "outline-success";
 }) => {
-  if ( type === "submit" && !variant) variant = "success";
+  if (type === "submit" && !variant) variant = "success";
 
   let buttonclass;
   switch (variant) {

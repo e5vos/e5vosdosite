@@ -17,7 +17,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import TokenReducer from "reducers/tokenReducer";
+import AuthReducer from "reducers/authReducer";
 import { api } from "./api";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
 
@@ -26,7 +26,7 @@ export const history = createBrowserHistory();
 const rootReducer = persistReducer(
   { key: "root", storage: storage, blacklist: [api.reducerPath] },
   combineReducers({
-    auth: TokenReducer,
+    auth: AuthReducer,
     [api.reducerPath]: api.reducer,
   })
 );

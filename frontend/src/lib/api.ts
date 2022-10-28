@@ -7,6 +7,7 @@ import {
   TeamActivity,
   Team,
   TeamMembership,
+  User,
 } from "types/models";
 import routeSwitcher from "./route";
 import { RootState } from "./store";
@@ -27,7 +28,7 @@ export const api = createApi({
     credentials: 'include',
     
   }),
-  tagTypes: ["Event", "Presentation", "Attendance", "TeamActivity"],
+  tagTypes: ["Event", "Presentation", "Attendance", "TeamActivity", "User"],
   endpoints: (builder) => ({
     getEvents: builder.query<Event[], number | void>({
       query: (slot?) =>
@@ -89,11 +90,11 @@ export const api = createApi({
             ]
           : [{ type: "Event", id: "MYLIST" }],
     }),
-    signUp: builder.mutation<Attendance, Pick<Event, "id">>({
+    signUp: builder.mutation<Attendance, {attender: string, event: Pick<Event, "id"> }>({
       query: (body) => ({
-        url: routeSwitcher("event.signup"),
+        url: routeSwitcher("event.signup",{id:body.event.id}),
         method: "POST",
-        body: body,
+        params: {attender: body.attender},
       }),
       onQueryStarted: async (arg) => {
         /** TODO: OPTIMISTIC UPDATE */
@@ -124,5 +125,9 @@ export const api = createApi({
         body: data,
       }),
     }),
+    getUserData: builder.query<User, void>({
+      query: () => routeSwitcher("user"),
+      providesTags: (result) => [{ type: "User", id: result?.id }],
+    })
   }),
 });

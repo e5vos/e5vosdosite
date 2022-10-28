@@ -3,7 +3,7 @@ import routeSwitcher from "lib/route";
 import { useDispatch } from "lib/store";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { tokenSlice } from "reducers/tokenReducer";
+import { authSlice } from "reducers/authReducer";
 
 
 
@@ -47,11 +47,12 @@ const LoginForm = () => {
   const dispatch = useDispatch()
 
   const onMessage = useCallback<(this: Window, e:MessageEvent<any>) => any>((e)=>{
-    if(e.origin !== window.origin || !e.data.token){
+    console.log("onMessage", e)
+    if(!e.data.token){
       return
     }
     // e.data.token contains token
-    dispatch(tokenSlice.actions.setToken(e.data.token))
+    dispatch(authSlice.actions.setToken(e.data.token))
     navigate("/dashboard")
   },[dispatch, navigate])
 

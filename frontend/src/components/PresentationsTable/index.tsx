@@ -1,31 +1,34 @@
 import Button from "components/UIKit/Button";
+import Loader from "components/UIKit/Loader";
 import { Presentation } from "types/models";
 
 function getColor(capacity: number) {
   switch (true) {
-    case capacity > 25:
-      return "bg-[#43B547]";
+    case capacity === null:
+      return "bg-green-400";
     case capacity > 20:
-      return "bg-[#7BBB47]";
+      return "bg-green-400";
     case capacity > 15:
-      return "bg-[#AAC847]";
+      return "bg-yellow-400";
     case capacity > 10:
-      return "bg-[#BCBB47]";
+      return "bg-yellow-600";
     case capacity > 5:
-      return "bg-[#BCA447]";
-    case capacity > 0:
-      return "bg-[#BC8547]";
+      return "bg-red-400";
     default:
-      return "bg-[#BC4647]";
+      return "bg-red-600";
   }
 }
 
 const PresentationsTable = ({
   presentations,
-  callback
+  callback,
+  disabled,
+  isLoading
 }: {
   presentations: Presentation[];
   callback?: (presentation: Presentation) => void;
+  disabled? : boolean;
+  isLoading?: boolean;
 }) => {
   return (
     <div className="mx-auto max-w-6xl">
@@ -40,7 +43,8 @@ const PresentationsTable = ({
             </tr>
           </thead>
           <tbody>
-            {presentations.map((presentation) => (
+            {isLoading && <tr><td colSpan={4}><Loader/></td></tr>}
+            {!isLoading && presentations.map((presentation) => (
               <tr key={presentation.id} className="shadow-md">
               <td className="px-2 py-0.5 text-center  border-hidden rounded-l-lg">{presentation.organiser}</td>
               <td className="px-2 py-0.5 text-center ">{presentation.name}</td>
@@ -49,7 +53,7 @@ const PresentationsTable = ({
               <td className={"px-2 text-center whitespace-normal border-hidden rounded-r-lg " + getColor(presentation.capacity)}>
                   <div className="py-0.5">
                       <div>{presentation.capacity ?? "Korlátlan"}</div>
-                      {presentation.capacity !== 0 && callback ? <div><Button variant="secondary" className="px-2 py-0" onClick={() => callback(presentation)}>Kiválaszt</Button></div> :  <></>}
+                      {presentation.capacity !== 0 && callback ? <div><Button variant="secondary" className="px-2 py-0" onClick={() => callback(presentation)} disabled={disabled}>Kiválaszt</Button></div> :  <></>}
                       
                   </div>
               </td>

@@ -1,4 +1,5 @@
 export interface User {
+  code: string;
   first_name: string;
   last_name: string;
   id: number;
@@ -67,7 +68,8 @@ export interface Event {
   organiser: string;
   capacity: number;
   attendees?: Attendance[]
-  slot: Slot
+  slot: Slot;
+  slot_id: number;
   //TODO
 }
 

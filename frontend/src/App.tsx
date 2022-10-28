@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { BaseLayout } from "templates";
 import React from "react";
 import Loader from "components/UIKit/Loader";
+import LogoutPage from "pages/logout";
 
 
 const Home = React.lazy(() => import("pages/Home"));
@@ -67,6 +68,7 @@ function App() {
                     </Route>
                   </Route>
                   <Route path="/login" element={<LoginPage />} />
+                  <Route path="/logout" element={<LogoutPage/>} />
                   <Route path="*" element={<Error code={404} />} />
                 </Route>
               </Routes>

@@ -18,7 +18,7 @@ const Button = ({
       buttonclass = "bg-blue-500 hover:bg-blue-700 disabled:bg-blue-900";
       break;
     case "secondary":
-      buttonclass = "border-hidden rounded-3xl shadow-md bg-white";
+      buttonclass = "border-hidden rounded-3xl shadow-md bg-white disabled:bg-gray-500";
       break;
     case "danger":
       buttonclass = "bg-red-500 hover:bg-red-700";

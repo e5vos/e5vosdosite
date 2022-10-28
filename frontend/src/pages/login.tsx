@@ -1,9 +1,11 @@
 import LoginForm from "components/Login";
+import { useSelector } from "lib/store";
+
 
 const LoginPage = () => {
-    return (
-        <LoginForm/>
-    )
+    const token = useSelector(state => state.auth.token)
+    return token !== "" ? "Már bejelentkezve" + token : <LoginForm />
+    
 }
 
 export default LoginPage;

@@ -33,8 +33,9 @@ class TeamController extends Controller
      * Display a listing of teams.
      * @return \Illuminate\Http\Response
      */
-    public function index(){
-        return view('e5n.teams.index');
+    public function index()
+    {
+        return Team::all();
     }
 
     /**
@@ -60,10 +61,10 @@ class TeamController extends Controller
     }
 
     /**
-     *
+     * Display the specified team.
      */
-    public function show(Request $request, $teamCode){
-        return $this->edit($request,$teamCode);
+    public function show($teamCode){
+        return Team::findOrFail($teamCode);
     }
 
     /**

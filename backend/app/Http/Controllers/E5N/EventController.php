@@ -11,6 +11,8 @@ use App\Models\{
     Attendance,
     Event,
     TeamMemberAttendance,
+    User,
+    Team,
 };
 
 use App\Helpers\SlotType;
@@ -124,10 +126,7 @@ class EventController extends Controller
     {
         return Cache::rememberForever(
             'e5n.events.presentations',
-            fn () => DB::table('events')
-                ->join('slots', 'events.slot_id', '=', 'slots.id')
-                ->where('slots.slot_type', SlotType::presentation)
-                ->get()
+            fn () => Event::join('slots', 'events.slot_id', '=', 'slots.id')->where('slots.slot_type', SlotType::presentation)->get(['events.*'])
         );
     }
 
@@ -136,15 +135,12 @@ class EventController extends Controller
      */
     public function signup(Request $request, $eventId)
     {
-        $event = Event::findOrFail($eventId)->append('signups');
-        $attender = json_decode($request->attender);
-        $individual = isset($attender->team_code) ? false : true;
-        $attendance_attributes = ['event_id' => $event->id, ($individual ? 'user_id' : 'team_code') => ($individual ? $attender->id : $attender->team_code)];
-        $attendance = Attendance::create($attendance_attributes);
+        $event = Cache::rememberForever('e5n.events'.$eventId , fn()=> Event::findOrFail($eventId));
+        $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOFail();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::put('e5n.events'.$event->id.'signups', $event->signups);
-        return response($attendance, 201);
+        Cache::put('e5n.events'.$event->id.'signups', $event->attendances()->get());
+        return response($attender->signUp($event), 201);
     }
 
     /**
@@ -152,22 +148,12 @@ class EventController extends Controller
      */
     public function attend(Request $request, $eventId)
     {
-        $event = Event::findOrFail($eventId)->append('signups');
-        $attender = json_decode($request->attender);
-        $individual = isset($attender->team_code) ? false : true;
-        $attendance = Attendance::where('event_id', $eventId)->where(
-            ($individual ? 'user_id' : 'team_code'),
-            ($individual ? $attender->id : $attender->team_code)
-        )->first() ??
-            $this->signup($request, $eventId)->original;
-        $individual ? $attendance->togglePresent() : $teamMemberAttendance = TeamMemberAttendance::create(['attendance_id' => $attendance->id, 'user_id' => $attender->id]);
-        if (isset($teamMemberAttendance)) {
-            $teamMemberAttendance->togglePresent();
-        }
+        $event = Cache::rememberForever('e5n.events'.$eventId , fn()=> Event::findOrFail($eventId));
+        $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOFail();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::put('e5n.events'.$event->id.'signups', $event->signups);
-        return response($attendance);
+        Cache::put('e5n.events'.$event->id.'signups', $event->attendances()->with('user')->get());
+        return response($attender->attend($event), 200);
     }
 
     /**
@@ -178,6 +164,18 @@ class EventController extends Controller
         return Cache::rememberForever(
             'e5n.events'.$eventId.'signups',
             fn () => Event::findOrFail($eventId)->signuppers()
+        );
+    }
+
+    /**
+     * return all presentations where the user has signed up
+     */
+    public function myPresentations(Request $request)
+    {
+        $user = User::findOrFail($request->user()->id);
+        return Cache::rememberForever(
+            'e5n.events.mypresentations'.$user->id,
+            fn () => $user->presentations()->get(['events.*'])
         );
     }
 }

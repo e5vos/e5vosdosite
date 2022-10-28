@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\AlreadySignedUpException;
 use App\Exceptions\EventFullException;
 use App\Exceptions\StudentBusyException;
 use App\Helpers\PermissionType;
@@ -13,6 +14,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+
 /**
  * App\Models\User
  * @property int $id
@@ -96,9 +98,9 @@ class User extends Authenticable
     /**
      * The teams that the User is part of
      */
-    public function teams(): HasManyThrough
+    public function teams(): BelongsToMany
     {
-        return $this->hasManyThrough(Team::class, TeamMember::class);
+        return $this->belongsToMany(Team::class, 'team_memberships', 'user_id', 'team_code');
     }
     /**
      * The teammemberships for the User
@@ -116,21 +118,25 @@ class User extends Authenticable
     {
         return $this->hasMany(Attendance::class);
     }
-    public function events(){
-        return $this->hasManyThrough(Event::class,Attendance::class,'user_id','id','id','event_id');
+
+    /**
+     * Get all events the user has signed up for
+     */
+    public function events(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'attendances', 'user_id', 'event_id');
     }
 
     /*
     * Get all attended events of the user that are presentations
     */
-    public function presentations(): HasManyThrough
+    public function presentations()//: BelongsToMany
     {
-        return $this->attendances()->event()->where(function($q){
-            $q->join('slots', 'event.slot_id', '=', 'slot.id')->where('slot.is_presentation', '=', true);
-        });
+        return $this->events()->join('slots', 'events.slot_id', '=', 'slots.id')->where('slots.slot_type', SlotType::presentation);
     }
 
-    public function managedEvents(){
+    public function managedEvents()
+    {
         return $this->permissions()->events();
     }
     /**
@@ -153,8 +159,11 @@ class User extends Authenticable
         if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusy($event->slot)) {
             throw new StudentBusyException();
         }
-        if (!$event->hasCapacity()) {
+        if (isset($event->capacity) && $event->occupancy >= $event->capacity) {
             throw new EventFullException();
+        }
+        if (Attendance::where('user_id', $this->id)->where('event_id', $event->id)->exists()) {
+            throw new AlreadySignedUpException();
         }
         $signup = new Attendance();
         $signup->event()->associate($event);
@@ -163,6 +172,31 @@ class User extends Authenticable
         return $signup;
     }
 
+    /**
+     * make user attend $event
+     *
+     * @param  Event $event
+     * @throws StudentBusyException if user is busy at the event timeslot
+     * @throws EventFullException if the event is full
+     * @return EventSignup the newly created EventSignup object
+     */
+    public function attend(Event $event){
+        if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusy($event->slot)) {
+            throw new StudentBusyException();
+        }
+        if (isset($event->capacity) && $event->occupancy >= $event->capacity) {
+            throw new EventFullException();
+        }
+        $signup = Attendance::where('user_id', $this->id)->where('event_id', $event->id)->first();
+        if (!isset($signup)) {
+            $signup = new Attendance();
+            $signup->event()->associate($event);
+            $signup->user()->associate($this);
+        }
+        $signup->togglePresent();
+        $signup->save();
+        return $signup;
+    }
 
     /**
      * Rate an event

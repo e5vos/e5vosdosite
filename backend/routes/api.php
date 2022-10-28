@@ -39,13 +39,13 @@ use App\Events\{
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+    return $request->user()->load('permissions');
 })->name('user');
 
-Route::get('ziggy', fn () => response()->json(new Ziggy));
+Route::get('/ziggy', fn () => response()->json(new Ziggy));
 
-Route::get('login', [AuthController::class, 'redirect'])->name('login');
-
+Route::get('/login', [AuthController::class, 'redirect'])->name('login');
+Route::middleware(['auth:sanctum'])->patch('/e5code', [AuthController::class, 'setE5code'])->name('user.e5code');
 
 //routes telated to e5n slots
 Route::controller(SlotController::class)->prefix('/slot')->group(function () {
@@ -88,11 +88,11 @@ Route::controller(TeamController::class)->middleware(['auth:sanctum'])->group(fu
         Route::delete('/', 'delete')->can('delete', Team::class)->name('team.destroy');
         Route::put('/', 'update')->can('update', Team::class)->name('team.update');
         Route::put('/restore', 'restore')->can('restore', Team::class)->name('team.restore');
-        Route::get('/members', 'members')->can('viewAny', TeamMembership::class)->name('team.members');
+        Route::get('/members', 'members')->can('view', TeamMembership::class)->name('team.members');
         Route::prefix('/members/{userId}')->group(function () {
-            Route::post('/', 'add_member')->can('add_member', Team::class)->name('team.add_member');
-            Route::delete('/', 'remove_member')->can('remove_member', Team::class)->name('team.remove_member');
-            Route::put('/', 'promote')->can('promote', Team::class)->name('team.promote');
+            Route::post('/', 'add_member')->can('add_member', TeamMembership::class)->name('team.add_member');
+            Route::delete('/', 'remove_member')->can('remove_member', TeamMembership::class)->name('team.remove_member');
+            Route::put('/', 'promote')->can('promote', TeamMemberShip::class)->name('team.promote');
         });
     });
 });

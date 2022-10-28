@@ -7,6 +7,7 @@ use App\Http\Controllers\{
 };
 use App\Http\Resources\UserResourceCollection;
 use App\Models\{
+    Permission,
     User
 };
 
@@ -17,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{
     Hash,
     Auth,
+    Http,
 };
 
 
@@ -35,11 +37,17 @@ class AuthController extends Controller{
     {
         $userData = Socialite::driver($provider)->stateless()->user();
         $user = User::firstWhere('email', $userData->email);
-        $user ?? $user = new User();
-
-        $user->name = $userData->name;
-        $user->email = $userData->email;
-        $user->img_url = $userData->avatar;
+        if (!isset($user)) {
+            $user = User::create([
+                'name' => $userData->name,
+                'email' => $userData->email,
+                'img_url' => $userData->avatar,
+            ]);
+            Permission::create([
+                'user_id' => $user->id,
+                'code' => 'STD',
+            ]);
+        }
         if (!$user->google_id) {
             $user->google_id = Hash::make($userData->id);
         }
@@ -48,11 +56,11 @@ class AuthController extends Controller{
             abort(400);
         }
         $user->save();
+        Auth::login($user);
         $token = $user->createToken($request->header('User-Agent'), ['JOIN THE USSR'])->plainTextToken;
-        Auth::login($user); //only for testing
-        return view('oauth/callback', [
+        return response()->json([
             'token' => $token,
-            'token_type' => 'bearer',
+            'user' => new UserResourceCollection($user)
         ]);
     }
 
@@ -60,5 +68,27 @@ class AuthController extends Controller{
         Auth::logout();
 
         return response();
+    }
+
+    /**
+     * validate with pál ádám
+     */
+    public function setE5code(Request $request){
+        $validated = Http::post('https://e5vos.dev/api/student/verify', [
+            'email' => $request->user()->email,
+            'studentId' => $request->user()->e5code,
+            'api_token' => env('E5VOS_API_TOKEN')
+        ]);
+        if ($validated->body() === "true") {
+            $request->user()->e5code = $request->e5code;
+            $request->user()->save();
+            return response()->json([
+                'message' => 'E5 code set'
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'invalid e5code'
+            ], 400);
+        }
     }
 }

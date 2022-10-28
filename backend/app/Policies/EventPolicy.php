@@ -33,7 +33,7 @@ class EventPolicy
      */
     public function update(User $user, Event $event = null)
     {
-        $eventId = $event->id ?? request()->id;
+        $eventId = $event->id ?? request()->eventId;
         return $user->hasPermission('ADM') || $user->organisesEvent($eventId);
     }
 
@@ -63,7 +63,7 @@ class EventPolicy
      */
     public function delete(User $user, Event $event = null)
     {
-        $eventId = $event->id ?? request()->id;
+        $eventId = $event->id ?? request()->eventId;
         return $user->hasPermission('ADM') || $user->organisesEvent($eventId);
     }
 
@@ -97,7 +97,7 @@ class EventPolicy
      */
     public function signup(User $user, Event $event = null)
     {
-        $event = $event ?? Event::findOrFail(request()->id);
+        $event = $event ?? Event::findOrFail(request()->eventId);
         $attender = json_decode(request()->attender) ?? $user->id;
         if (!$event->isSignupOpen() || !($event->signup_type === 'team_user' || $attender->type === $event->signup_type)) {
             return false;
@@ -114,7 +114,7 @@ class EventPolicy
      */
     public function attend(User $user, Event $event = null)
     {
-        $event = $event ?? Event::findOrFail(request()->id);
+        $event = $event ?? Event::findOrFail(request()->eventId);
         $attender = json_decode(request()->attender) ?? $user->id;
         if ($event->signup_type && !$event->signuppers()->find($attender->id)) {
             return false;

@@ -31,8 +31,14 @@ export default function PaginatedTable<T>({
   }
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const { data, setSize }: {data: {data:any}[], setSize: (e:number) => any} = {data: [], setSize: (newSize: number) => {}};
-  const { data: pageCount } = {data: 5}
+  const {
+    data,
+    setSize,
+  }: { data: { data: any }[]; setSize: (e: number) => any } = {
+    data: [],
+    setSize: (newSize: number) => {},
+  };
+  const { data: pageCount } = { data: 5 };
 
   const setPage = (page: number) => {
     setSize(page);

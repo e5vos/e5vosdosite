@@ -7,6 +7,7 @@ import {
   TeamActivity,
   Team,
   TeamMembership,
+  User,
 } from "types/models";
 import routeSwitcher from "./route";
 import { RootState } from "./store";
@@ -19,26 +20,27 @@ export const api = createApi({
       const token = (getState() as RootState).auth.token;
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
-
       }
-      
+
       return headers;
     },
-    credentials: 'include',
-    
+    credentials: "include",
   }),
-  tagTypes: ["Event", "Presentation", "Attendance", "TeamActivity"],
+  tagTypes: ["Event", "Presentation", "Attendance", "TeamActivity", "User"],
   endpoints: (builder) => ({
     getEvents: builder.query<Event[], number | void>({
       query: (slot?) =>
-        slot ? routeSwitcher("events.slot", { slot_id:slot }) : routeSwitcher("events.index"),
+        slot
+          ? routeSwitcher("events.slot", { slot_id: slot })
+          : routeSwitcher("events.index"),
       providesTags: (result) => {
         if (result) {
-          
           return [
             ...result.map(({ id }) => ({ type: "Event", id: id } as const)),
-            ...result.map(({slot})=> ({type: "Event", id:`LIST${slot}`} as const)),
-            { type: "Event", id: "LIST" }
+            ...result.map(
+              ({ slot }) => ({ type: "Event", id: `LIST${slot}` } as const)
+            ),
+            { type: "Event", id: "LIST" },
           ];
         } else {
           return [{ type: "Event", id: "LIST" }];
@@ -75,9 +77,12 @@ export const api = createApi({
       query: (event) => ({
         url: routeSwitcher("events"),
         method: "POST",
-        body: event,
+        params: event,
       }),
-      invalidatesTags: (result) => [{type: "Event", id: `LIST${result?.slot.id}`},{ type: "Event", id: "LIST" }],
+      invalidatesTags: (result) => [
+        { type: "Event", id: `LIST${result?.slot.id}` },
+        { type: "Event", id: "LIST" },
+      ],
     }),
     getUsersPresentations: builder.query<Presentation[], void>({
       query: () => routeSwitcher("user.presentations"),
@@ -89,11 +94,14 @@ export const api = createApi({
             ]
           : [{ type: "Event", id: "MYLIST" }],
     }),
-    signUp: builder.mutation<Attendance, Pick<Event, "id">>({
+    signUp: builder.mutation<
+      Attendance,
+      { attender: string; event: Pick<Event, "id"> }
+    >({
       query: (body) => ({
-        url: routeSwitcher("event.signup"),
+        url: routeSwitcher("event.signup", { id: body.event.id }),
         method: "POST",
-        body: body,
+        params: { attender: body.attender },
       }),
       onQueryStarted: async (arg) => {
         /** TODO: OPTIMISTIC UPDATE */
@@ -112,7 +120,7 @@ export const api = createApi({
       query: (data) => ({
         url: routeSwitcher("team.create"),
         method: "POST",
-        body: data,
+        params: data,
       }),
     }),
     promote: builder.mutation<TeamMembership, { promote: boolean }>({
@@ -121,7 +129,18 @@ export const api = createApi({
           ? routeSwitcher("team.promote")
           : routeSwitcher("team.demote"),
         method: "POST",
-        body: data,
+        params: data,
+      }),
+    }),
+    getUserData: builder.query<User, void>({
+      query: () => routeSwitcher("user"),
+      providesTags: (result) => [{ type: "User", id: result?.id }],
+    }),
+    setStudentCode: builder.mutation<User, string>({
+      query: (code) => ({
+        url: routeSwitcher("user.studentcode"),
+        method: "POST",
+        params: { code },
       }),
     }),
   }),

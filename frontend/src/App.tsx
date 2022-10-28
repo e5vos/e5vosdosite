@@ -7,7 +7,6 @@ import { BaseLayout } from "templates";
 import React from "react";
 import Loader from "components/UIKit/Loader";
 
-
 const Home = React.lazy(() => import("pages/Home"));
 const Error = React.lazy(() => import("components/Error"));
 const PresentationPage = React.lazy(() => import("pages/presentation"));
@@ -16,6 +15,9 @@ const TeamPage = React.lazy(() => import("pages/team/[teamcode]"));
 const EventsPage = React.lazy(() => import("pages/event"));
 const EventPage = React.lazy(() => import("pages/event/[eventid]"));
 const LoginPage = React.lazy(() => import("pages/login"));
+const LogoutPage = React.lazy(() => import("pages/logout"));
+const StudentCodePage = React.lazy(() => import("pages/studentcode"));
+const LegalPage = React.lazy(() => import("pages/Legal"));
 
 function App() {
   return (
@@ -67,6 +69,9 @@ function App() {
                     </Route>
                   </Route>
                   <Route path="/login" element={<LoginPage />} />
+                  <Route path="/studentcode" element={<StudentCodePage />} />
+                  <Route path="/logout" element={<LogoutPage />} />
+                  <Route path="/legal" element={<LegalPage />} />
                   <Route path="*" element={<Error code={404} />} />
                 </Route>
               </Routes>

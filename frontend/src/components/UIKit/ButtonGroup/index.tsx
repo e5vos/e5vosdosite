@@ -1,6 +1,6 @@
 const ButtonGroup = ({
   children,
-  className
+  className,
 }: React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
   HTMLDivElement

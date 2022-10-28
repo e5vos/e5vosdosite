@@ -12,10 +12,9 @@ import { Team } from "types/models";
  *
  */
 const TeamManager = ({ team }: { team: Team }) => {
-  
-  const {data: activitys} = api.useGetTeamActivityQuery(team.code);
+  const { data: activitys } = api.useGetTeamActivityQuery(team.code);
 
-  const deleteMember = (memberId: number) => {}
+  const deleteMember = (memberId: number) => {};
 
   return (
     <div className="text-center">
@@ -86,7 +85,9 @@ const TeamManager = ({ team }: { team: Team }) => {
         </div>
       </div>
       <h4>Csapat aktivitása</h4>
-      {activitys?.map((activity) => <Activity name={activity.event.name} attendance={activity.attendance} />)}
+      {activitys?.map((activity) => (
+        <Activity name={activity.event.name} attendance={activity.attendance} />
+      ))}
     </div>
   );
 };

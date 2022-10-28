@@ -14,16 +14,14 @@ export const Template = (args) => <Button {...args} />;
       children: "Button",
       variant: "primary",
     }}
-    argTypes={
-      {
-        variant: {
-          control: {
-            type: "select",
+    argTypes={{
+      variant: {
+        control: {
+          type: "select",
           options: ["primary", "secondary", "success", "danger", "default"],
-          },
         },
-      }
-    }
+      },
+    }}
   >
     {Template.bind({})}
   </Story>

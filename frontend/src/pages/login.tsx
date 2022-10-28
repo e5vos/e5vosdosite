@@ -5,14 +5,14 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const LoginPage = () => {
   const token = useSelector((state) => state.auth.token);
-  const navigate = useNavigate()
-  const params = useParams()  
-  useEffect(() =>{
-    if(token !== "") {
-      navigate(params.next ?? "/dashboard", {replace:true});
+  const navigate = useNavigate();
+  const params = useParams();
+  useEffect(() => {
+    if (token !== "") {
+      navigate(params.next ?? "/dashboard", { replace: true });
     }
-  },[navigate, token, params.next])
-  
+  }, [navigate, token, params.next]);
+
   return token !== "" ? <>Már bejelentkezve</> : <LoginForm />;
 };
 

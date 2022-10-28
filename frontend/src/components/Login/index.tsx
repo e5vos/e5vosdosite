@@ -19,11 +19,12 @@ const openWindow = (
     url = "";
   }
   options = { url, title, width: 600, height: 720, ...options };
-  /** @ts-ignore */
   const dualScreenLeft =
+    /** @ts-ignore */
+
     window.screenLeft !== undefined ? window.screenLeft : window.screen.left;
-  /** @ts-ignore */
   const dualScreenTop =
+    /** @ts-ignore */
     window.swcreenTop !== undefined ? window.screenTop : window.screen.top;
   const width =
     window.innerWidth ||

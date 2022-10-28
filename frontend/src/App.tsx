@@ -7,6 +7,7 @@ import { BaseLayout } from "templates";
 import React from "react";
 import Loader from "components/UIKit/Loader";
 import LogoutPage from "pages/logout";
+import StudentCodePage from "pages/studentcode";
 
 
 const Home = React.lazy(() => import("pages/Home"));
@@ -68,6 +69,7 @@ function App() {
                     </Route>
                   </Route>
                   <Route path="/login" element={<LoginPage />} />
+                  <Route path="/studentcode" element={<StudentCodePage />} />
                   <Route path="/logout" element={<LogoutPage/>} />
                   <Route path="*" element={<Error code={404} />} />
                 </Route>

@@ -76,7 +76,7 @@ export const api = createApi({
       query: (event) => ({
         url: routeSwitcher("events"),
         method: "POST",
-        body: event,
+        params: event,
       }),
       invalidatesTags: (result) => [{type: "Event", id: `LIST${result?.slot.id}`},{ type: "Event", id: "LIST" }],
     }),
@@ -113,7 +113,7 @@ export const api = createApi({
       query: (data) => ({
         url: routeSwitcher("team.create"),
         method: "POST",
-        body: data,
+        params: data,
       }),
     }),
     promote: builder.mutation<TeamMembership, { promote: boolean }>({
@@ -122,12 +122,19 @@ export const api = createApi({
           ? routeSwitcher("team.promote")
           : routeSwitcher("team.demote"),
         method: "POST",
-        body: data,
+        params: data,
       }),
     }),
     getUserData: builder.query<User, void>({
       query: () => routeSwitcher("user"),
       providesTags: (result) => [{ type: "User", id: result?.id }],
+    }),
+    setStudentCode: builder.mutation<User, string>({
+      query: (code) => ({
+        url: routeSwitcher("user.studentcode"),
+        method: "POST",
+        params: { code },
+      })
     })
   }),
 });

@@ -26,7 +26,8 @@ const PresentationsPage = () => {
   } = api.useGetEventsQuery(currentSlot);
   const [signUp, { isLoading: signupInProgress }] = api.useSignUpMutation();
 
-  const user = useUser();
+  const {user} = useUser();
+  console.log(user)
 
   const signUpAction = async (presentation: Presentation) => {
     console.log("SIGNUP", presentation);

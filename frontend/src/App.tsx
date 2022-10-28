@@ -71,6 +71,7 @@ function App() {
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/studentcode" element={<StudentCodePage />} />
                   <Route path="/logout" element={<LogoutPage />} />
+                  <Route path="/legal" element={<LegalPage />} />
                   <Route path="*" element={<Error code={404} />} />
                 </Route>
               </Routes>

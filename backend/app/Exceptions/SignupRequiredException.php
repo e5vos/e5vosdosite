@@ -4,15 +4,15 @@ namespace App\Exceptions;
 
 use Exception;
 
-class NotAllowedException extends Exception
+class SignupRequiredException extends Exception
 {
     /**
-     * On exception exit with 403 status code
+     * On exception return a 403 response
      */
     public function render()
     {
         return response()->json([
-            'message' => 'Not allowed',
+            'message' => 'Signup required',
         ], 403);
     }
 }

@@ -18,9 +18,9 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\{
     Gate,
-    Auth
+    Auth,
+    Cache
 };
-
 use Illuminate\Support\Str;
 use MembershipType;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -29,6 +29,7 @@ use function React\Promise\reduce;
 
 class TeamController extends Controller
 {
+
     /**
      * Display a listing of teams.
      * @return \Illuminate\Http\Response
@@ -39,25 +40,32 @@ class TeamController extends Controller
     }
 
     /**
+     * create a team
      *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
      */
-    public function create(){
-        return redirect()->route('team.index');
+    public function store(Request $request)
+    {
+        $team = Team::create($request->all());
+        Cache::forget('e5n.teams.all');
+        Cache::forget('e5n.teams.presentations');
+        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => $team);
     }
 
 
 
     /**
-     *
+     * update a team
      */
-    public function edit(Request $request, $teamCode){
-        $team = Team::where('code',$teamCode)->firstOrFail();
-        Gate::authorize('view',$team);
-        if($request->user()->cannot('update',$team)){
-            return view('e5n.teams.view',["team" => $team]);
-        }else{
-            return view('e5n.teams.edit',["team"=>$team]);
-        }
+    public function update(Request $request, $teamCode)
+    {
+        $team = Team::findOrFail($teamCode);
+        $team->update($request->all());
+        Cache::forget('e5n.teams.all');
+        Cache::forget('e5n.teams.presentations');
+        Cache::put('e5n.teams.'.$team->code, $team);
+        return Cache::get('e5n.teams.'.$team->code);
     }
 
     /**
@@ -68,92 +76,39 @@ class TeamController extends Controller
     }
 
     /**
-     *
+     * Delete a team from the database
      */
-    public function destroy(Request $request, $teamCode){
-        $team = Team::where('code',$teamCode)->firstOrFail();
-
-        Gate::authorize('delete',$team);
-
-        $team->removeMember($request->user());
-
-        return redirect()->route('team.index');
-    }
-
-
-    /**
-     *
-     */
-    public function store(Request $request){
-        Gate::authorize('create',Team::class);
-        $teamcodes = Team::pluck('code');
-        do{
-            $teamcode = Str::random(4);
-        } while($teamcodes->contains($teamcode));
-
-
-        $team = new Team();
-        $team->code = $teamcode;
-        $team->name = $request->input('name');
-        $team->save();
-
-        $team->addMember($request->user(),'manager');
-
-
-
-        return redirect()->route('team.edit',$team->code);
+    public function delete(Request $request, $teamCode){
+        $team = Team::where('code', $teamCode)->firstOrFail();
+        $team->delete();
+        Cache::forget('e5n.teams.all');
+        Cache::forget('e5n.teams.presentations');
+        Cache::forget('e5n.teams.'.$team->code);
+        return response()->json(null, 204);
     }
 
     /**
-     *
+     * restore a team from the database
      */
-    public function invite(){
-        return view('e5n.teams.invite');
+    public function restore(Request $request, $teamCode)
+    {
+        $team = Team::withTrashed()->where('code', $teamCode)->firstOrFail();
+        $team->restore();
+        Cache::forget('e5n.teams.all');
+        Cache::forget('e5n.teams.presentations');
+        Cache::forget('e5n.teams.'.$team->code);
+        return Cache::rememberForever('e5n.teams'.$team->code, fn () => $team);
     }
 
     /**
-     *
+     * Display a listing of team members.
+     * @return \Illuminate\Http\Response
      */
-    public function delete(Request $request){
-        return $this->destroy($request,$request->input("team"));
+    public function members($teamCode = null)
+    {
+        $teamCode = $teamCode ?? $this->code ?? abort(400, 'No team code provided');
+        return Cache::rememberForever('e5n.teams.'.$teamCode, fn() => Team::with('members')->where('teams.code', $teamCode)->firstOrFail());
     }
 
-    /**
-     *
-     */
-    public function manageMember(Request $request, $teamCode){
-        /** @var User $currentUser */
-        $currentUser = Auth::user();
-        $team = Team::where('code',$teamCode)->firstOrFail();
-
-        if($request->input('new')) {
-            $user = User::where('email',$request->input('email'))->firstOrFail();
-            // Send email to user
-
-
-            $team->addMember($user);
-            return redirect()->route('team.edit',$teamCode);
-        }
-
-        /** @var TeamMembership $currentUsersMembership */
-        $currentUsersMembership = $currentUser->teamMemberships()->whereBelongsTo($team)->firstOrFail(); // Authenticated user's membership
-
-        /** @var TeamMembership $memberShip */
-        $memberShip= User::findOrFail($request->input('target'))->teamMemberships()->whereBelongsTo($team)->firstOrFail(); // Membership to be promoted or demoted
-
-
-        try{
-            if($request->input('promote')) {
-                $currentUsersMembership->promote($memberShip);
-            }else if($request->input('demote') ) {
-                    $currentUsersMembership->demote($memberShip);
-            }
-        }catch(NotAllowedException $e){
-            return abort(403,$e->getMessage());
-        }
-
-
-        return redirect()->route('team.edit',$teamCode);
-    }
 
 }

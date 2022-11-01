@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Exceptions\SignupRequiredException;
 use App\Helpers\SlotType;
 use App\Models\Event;
 use App\Models\User;
@@ -98,12 +99,13 @@ class EventPolicy
     public function signup(User $user, Event $event = null)
     {
         $event = $event ?? Event::findOrFail(request()->eventId);
-        $attender = json_decode(request()->attender) ?? $user->id;
-        if (!$event->isSignupOpen() || !($event->signup_type === 'team_user' || $attender->type === $event->signup_type)) {
+        $attenderCode = request()->attender ?? $user->e5code ?? null;
+        $attenderType = strlen($attenderCode) === 13 ? 'user' : 'team';
+        if (!$event->isSignupOpen() || ($event->signup_type !== 'team_user' && $event->signup_type !== $attenderType)) {
             return false;
         }
-        $attender = $attender->type == 'user' ? $user->id == $attender->id : $user->teams->contains($attender->id);
-        return $user->hasPermission('ADM') || $attender;
+        $attender = $attenderType == 'user' ? $user->e5code === $attenderCode : $user->isLeaderOfTeam($attenderCode);
+        return $attender || $user->hasPermission('ADM');
     }
     /**
      * Determine if the user can attend the event.
@@ -115,9 +117,9 @@ class EventPolicy
     public function attend(User $user, Event $event = null)
     {
         $event = $event ?? Event::findOrFail(request()->eventId);
-        $attender = json_decode(request()->attender) ?? $user->id;
-        if ($event->signup_type && !$event->signuppers()->find($attender->id)) {
-            return false;
+        $attender = request()->attender ?? request()->user()->e5code;
+        if (isset($event->signup_type) && !$event->signuppers()->find(strlen($attender) === 13 ? 'e5code' : 'code', $attender)) {
+            return new SignupRequiredException();
         }
         return $event->slot->slot_type == SlotType::presentation ? $user->hasPermission('TCH') : ($user->organisesEvent($event->id) || $user->hasPermission('ADM'));
     }

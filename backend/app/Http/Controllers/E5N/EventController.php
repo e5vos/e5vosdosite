@@ -135,8 +135,8 @@ class EventController extends Controller
      */
     public function signup(Request $request, $eventId)
     {
-        $event = Cache::rememberForever('e5n.events'.$eventId , fn()=> Event::findOrFail($eventId));
-        $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOFail();
+        $event = Cache::rememberForever('e5n.events'.$eventId, fn()=> Event::findOrFail($eventId));
+        $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
         Cache::put('e5n.events'.$event->id.'signups', $event->attendances()->get());
@@ -148,8 +148,8 @@ class EventController extends Controller
      */
     public function attend(Request $request, $eventId)
     {
-        $event = Cache::rememberForever('e5n.events'.$eventId , fn()=> Event::findOrFail($eventId));
-        $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOFail();
+        $event = Cache::rememberForever('e5n.events'.$eventId, fn()=> Event::findOrFail($eventId));
+        $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
         Cache::put('e5n.events'.$event->id.'signups', $event->attendances()->with('user')->get());

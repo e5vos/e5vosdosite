@@ -4,15 +4,15 @@ namespace App\Exceptions;
 
 use Exception;
 
-class StudentBusyException extends Exception
+class SignupNotRequiredException extends Exception
 {
     /**
-     * On exception exit with 422 status code
+     * On exception return a 422 response
      */
     public function render()
     {
         return response()->json([
-            'message' => 'Student is busy',
+            'message' => 'Signup not required',
         ], 422);
     }
 }

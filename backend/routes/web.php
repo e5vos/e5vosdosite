@@ -18,7 +18,7 @@ use function PHPUnit\Framework\callback;
 |
 */
 
-Route::get('/asd', function () {
+Route::get('/', function () {
     return view('welcome');
 });
 require __DIR__.'/auth.php';

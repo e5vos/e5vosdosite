@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import Cookies from "js-cookie";
 import { Result } from "postcss";
 import {
   Attendance,
@@ -23,10 +24,10 @@ export const api = createApi({
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
       }
-
-      const csrfToken = state.auth.csrf;
-      if (csrfToken) headers.set("X-CSRF-TOKEN", csrfToken);
-
+      const xsrfToken = Cookies.get("XSRF-TOKEN");
+      if (xsrfToken) {
+        headers.set("X-XSRF-TOKEN", xsrfToken);
+      }
       return headers;
     },
     credentials: "include",

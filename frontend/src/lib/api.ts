@@ -10,6 +10,7 @@ import {
   TeamMembership,
   User,
 } from "types/models";
+import refreshCSRF from "./csrf";
 import routeSwitcher from "./route";
 import { RootState } from "./store";
 
@@ -17,12 +18,12 @@ export const api = createApi({
   reducerPath: "e5nApi",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BACKEND,
-    prepareHeaders: (headers, { getState }) => {
+    prepareHeaders: async (headers, { getState }) => {
       const state = getState() as RootState;
 
       const token = state.auth.token;
       if (token) {
-        headers.set("authorization", `Bearer ${token}`);
+        headers.set("Authorization", `Bearer ${token}`);
       }
       const xsrfToken = Cookies.get("XSRF-TOKEN");
       if (xsrfToken) {
@@ -33,7 +34,14 @@ export const api = createApi({
     credentials: "include",
     mode: "cors",
   }),
-  tagTypes: ["Event", "Presentation", "Attendance", "TeamActivity", "User"],
+  tagTypes: [
+    "Event",
+    "Presentation",
+    "Attendance",
+    "TeamActivity",
+    "User",
+    "EventParticipants",
+  ],
   endpoints: (builder) => ({
     getEvents: builder.query<Event[], number | void>({
       query: (slot?) =>
@@ -80,6 +88,10 @@ export const api = createApi({
       query: (id) => routeSwitcher("event.show", id),
       providesTags: (result, error, id) => [{ type: "Event", id }],
     }),
+    getEventParticipants: builder.query<Array<User | Team>, string>({
+      query: (id) => routeSwitcher("event.participants", id),
+      providesTags: (result, error, id) => [{ type: "EventParticipants", id }],
+    }),
     createEvent: builder.mutation<Event, Event>({
       query: (event) => ({
         url: routeSwitcher("events"),
@@ -92,7 +104,7 @@ export const api = createApi({
       ],
     }),
     getUsersPresentations: builder.query<Presentation[], void>({
-      query: () => routeSwitcher("user.presentations"),
+      query: () => routeSwitcher("events.mypresentations"),
       providesTags: (result) =>
         result
           ? [
@@ -148,12 +160,6 @@ export const api = createApi({
         url: routeSwitcher("user.e5code"),
         method: "PATCH",
         params: { e5code: code },
-      }),
-    }),
-    getAttendances: builder.query<Attendance[], Pick<Event, "id">>({
-      query: ({ id }) => ({
-        url: routeSwitcher("event.participants", { event_id: id }),
-        method: "GET",
       }),
     }),
   }),

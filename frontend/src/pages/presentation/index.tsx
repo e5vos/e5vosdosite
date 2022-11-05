@@ -16,9 +16,7 @@ const PresentationsPage = () => {
     data: selectedPresentations,
     isFetching: isMyPresentationsFetching,
     refetch: refetchSelected,
-  } =
-    //api.useGetUsersPresentationsQuery();
-    { data: [{ name: "ASd" }] } as any;
+  } = api.useGetUsersPresentationsQuery();
   const {
     data: presentations,
     isLoading: isEventsLoading,
@@ -27,7 +25,6 @@ const PresentationsPage = () => {
   const [signUp, { isLoading: signupInProgress }] = api.useSignUpMutation();
 
   const { user } = useUser();
-  console.log(user);
 
   const signUpAction = async (presentation: Presentation) => {
     console.log("SIGNUP", presentation);
@@ -52,7 +49,6 @@ const PresentationsPage = () => {
     }
   };
 
-  console.log("eload", isEventsFetching);
   if (!selectedPresentations || !presentations) return <Loader />;
 
   return (

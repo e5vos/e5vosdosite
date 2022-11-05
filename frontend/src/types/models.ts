@@ -14,6 +14,11 @@ export interface User {
   teams?: Team[];
   permissions?: Permission[];
 }
+
+export const isUser = (user: any): user is User => {
+  return user.first_name !== undefined;
+};
+
 interface BasicAttendance {
   present: boolean;
   created_at: string;

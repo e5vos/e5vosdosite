@@ -4,9 +4,10 @@ import store, { persistor } from "lib/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { BaseLayout } from "templates";
-import React from "react";
+import React, { useEffect } from "react";
 import Loader from "components/UIKit/Loader";
 import PresentationAttendancePage from "pages/presentation/manage/attendance";
+import refreshCSRF from "lib/csrf";
 
 const Home = React.lazy(() => import("pages/Home"));
 const Error = React.lazy(() => import("components/Error"));
@@ -23,7 +24,13 @@ const PresentationManagePage = React.lazy(
   () => import("pages/presentation/manage")
 );
 
+const AttendanceSheet = React.lazy(() => import("pages/attendance"));
+
 function App() {
+  useEffect(() => {
+    refreshCSRF();
+  }, []);
+
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor} loading={<Loader />}>
@@ -66,6 +73,7 @@ function App() {
                     <Route path="kezel">
                       <Route index element={<PresentationManagePage />} />
                       <Route path="admin" element={<>TeamAdminPage</>} />
+                      <Route path=":eventid" element={<AttendanceSheet />} />
                     </Route>
                   </Route>
                   <Route path="/login" element={<LoginPage />} />

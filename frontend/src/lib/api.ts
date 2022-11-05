@@ -17,10 +17,15 @@ export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BACKEND,
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth.token;
+      const state = getState() as RootState;
+
+      const token = state.auth.token;
       if (token) {
         headers.set("authorization", `Bearer ${token}`);
       }
+
+      const csrfToken = state.auth.csrf;
+      if (csrfToken) headers.set("X-CSRF-TOKEN", csrfToken);
 
       return headers;
     },

@@ -1,4 +1,5 @@
 import LoginForm from "components/Login";
+import refreshCSRF from "lib/csrf";
 import { useSelector } from "lib/store";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,7 +10,9 @@ const LoginPage = () => {
   const params = useParams();
   useEffect(() => {
     if (token !== "") {
-      navigate(params.next ?? "/dashboard", { replace: true });
+      refreshCSRF().then(() => {
+        navigate(params.next ?? "/dashboard", { replace: true });
+      });
     }
   }, [navigate, token, params.next]);
 

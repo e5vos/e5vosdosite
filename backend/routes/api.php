@@ -42,6 +42,11 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user()->load('permissions');
 })->name('user');
 
+//return csrf token sanctum
+Route::get('/csrf', function () {
+    return csrf_token();
+})->name('csrf');
+
 Route::get('/ziggy', fn () => response()->json(new Ziggy));
 
 Route::get('/login', [AuthController::class, 'redirect'])->name('login');
@@ -84,15 +89,14 @@ Route::controller(TeamController::class)->middleware(['auth:sanctum'])->group(fu
     Route::get('/team', 'index')->can('viewAny', Team::class)->name('teams.index');
     Route::post('/team', 'store')->can('create', Team::class)->name('team.store');
     Route::get('/team/{teamCode}', 'show')->can('view', Team::class)->name('team.show');
-    Route::prefix('/teams/{teamCode}')->group(function () {
+    Route::prefix('/team/{teamCode}')->group(function () {
         Route::delete('/', 'delete')->can('delete', Team::class)->name('team.destroy');
         Route::put('/', 'update')->can('update', Team::class)->name('team.update');
         Route::put('/restore', 'restore')->can('restore', Team::class)->name('team.restore');
-        Route::get('/members', 'members')->can('view', TeamMembership::class)->name('team.members');
-        Route::prefix('/members/{userId}')->group(function () {
-            Route::post('/', 'add_member')->can('add_member', TeamMembership::class)->name('team.add_member');
-            Route::delete('/', 'remove_member')->can('remove_member', TeamMembership::class)->name('team.remove_member');
-            Route::put('/', 'promote')->can('promote', TeamMemberShip::class)->name('team.promote');
+        Route::prefix('/members')->group(function () {
+            Route::post('/', 'invite')->can('create', TeamMembership::class)->name('team.invite');
+            Route::delete('/', 'kick')->can('delete', TeamMembership::class)->name('team.kick');
+            Route::put('/', 'promote')->can('update', TeamMemberShip::class)->name('team.promote');
         });
     });
 });

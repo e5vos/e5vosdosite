@@ -1,43 +1,44 @@
 {
-    "sqltools.connections": [
-        {
-            "mysqlOptions": {
-                "authProtocol": "default"
-            },
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 3306,
-            "driver": "MySQL",
-            "name": "e5vosdosite",
-            "database": "e5vosdosite",
-            "username": "root",
-            "password": ""
-        },
-        {
-            "mysqlOptions": {
-                "authProtocol": "default"
-            },
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 3306,
-            "driver": "MySQL",
-            "name": "e5vosdosite",
-            "database": "e5vosdosite",
-            "username": "root",
-            "password": ""
-        },
-        {
-            "mysqlOptions": {
-                "authProtocol": "default"
-            },
-            "previewLimit": 100,
-            "server": "e5vosdo.hu",
-            "port": 3306,
-            "driver": "MySQL",
-            "name": "e5vos",
-            "database": "e5vosdosite",
-            "username": "root",
-            "password": ""
-        }
-    ]
+  "sqltools.connections": [
+    {
+      "mysqlOptions": {
+        "authProtocol": "default"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "e5vosdosite",
+      "database": "e5vosdosite",
+      "username": "root",
+      "password": ""
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "e5vosdosite",
+      "database": "e5vosdosite",
+      "username": "root",
+      "password": ""
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default"
+      },
+      "previewLimit": 100,
+      "server": "e5vosdo.hu",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "e5vos",
+      "database": "e5vosdosite",
+      "username": "root",
+      "password": ""
+    }
+  ],
+  "cSpell.enabled": false
 }

@@ -27,12 +27,12 @@ const useUser = (
   }
 
   useEffect(() => {
-    if (error && redirectToLogin) {
+    if (!user && error && redirectToLogin) {
       navigate(redirectToLogin);
     }
 
     if (user && !user.code) {
-      if (redirectToStudentCode) navigate(redirectToStudentCode);
+      if (redirectToStudentCode && false) navigate(redirectToStudentCode);
     }
   }, [user, error, navigate, redirectToLogin, redirectToStudentCode]);
 

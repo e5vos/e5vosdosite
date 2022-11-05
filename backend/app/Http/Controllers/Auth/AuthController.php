@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\{
     Controller
 };
+use App\Http\Resources\UserResource;
 use App\Http\Resources\UserResourceCollection;
 use App\Models\{
     Permission,
@@ -60,7 +61,7 @@ class AuthController extends Controller{
         $token = $user->createToken($request->header('User-Agent'), ['JOIN THE USSR'])->plainTextToken;
         return response()->json([
             'token' => $token,
-            'user' => new UserResourceCollection($user)
+            'user' => new UserResource($user)
         ]);
     }
 

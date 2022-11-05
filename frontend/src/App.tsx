@@ -19,6 +19,9 @@ const LoginPage = React.lazy(() => import("pages/login"));
 const LogoutPage = React.lazy(() => import("pages/logout"));
 const StudentCodePage = React.lazy(() => import("pages/studentcode"));
 const LegalPage = React.lazy(() => import("pages/Legal"));
+const PresentationManagePage = React.lazy(
+  () => import("pages/presentation/manage")
+);
 
 function App() {
   return (
@@ -60,12 +63,8 @@ function App() {
                   </Route>
                   <Route path="eloadas">
                     <Route index element={<PresentationPage />} />
-                    <Route
-                      path=":presentationCode"
-                      element={<PresentationAttendancePage />}
-                    />
                     <Route path="kezel">
-                      <Route index element={<PresentationAttendancePage />} />
+                      <Route index element={<PresentationManagePage />} />
                       <Route path="admin" element={<>TeamAdminPage</>} />
                     </Route>
                   </Route>

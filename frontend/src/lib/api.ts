@@ -25,6 +25,7 @@ export const api = createApi({
       return headers;
     },
     credentials: "include",
+    mode: "cors",
   }),
   tagTypes: ["Event", "Presentation", "Attendance", "TeamActivity", "User"],
   endpoints: (builder) => ({
@@ -138,8 +139,8 @@ export const api = createApi({
     }),
     setStudentCode: builder.mutation<User, string>({
       query: (code) => ({
-        url: routeSwitcher("user.studentcode"),
-        method: "PUT",
+        url: routeSwitcher("user.e5code"),
+        method: "PATCH",
         params: { e5code: code },
       }),
     }),

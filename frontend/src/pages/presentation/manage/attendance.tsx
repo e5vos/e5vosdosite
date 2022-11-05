@@ -7,13 +7,6 @@ const PresentationAttendancePage = () => {
   return (
     <div className="container mx-auto">
       <h1>Jelenléti Ív</h1>
-      <div className="flex flex-row">
-        <Form.Group>
-          <Form.Label>Előadás kódja</Form.Label>
-          <Form.Control type="text" />
-        </Form.Group>
-        <Button type="submit">OK</Button>
-      </div>
       <div>
         <ul>
           {signedup.map((attendance) => (

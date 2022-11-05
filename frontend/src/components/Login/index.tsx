@@ -63,10 +63,10 @@ const LoginForm = () => {
 
   const onMessage = useCallback<(this: Window, e: MessageEvent<any>) => any>(
     (e) => {
-      console.log("onMessage", e);
       if (!e.data.token) {
         return;
       }
+      console.log("onMessage", e);
       // e.data.token contains token
       dispatch(authSlice.actions.setToken(e.data.token));
       navigate(params.next ?? "/dashboard");

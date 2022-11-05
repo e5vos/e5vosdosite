@@ -6,48 +6,48 @@ import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 // https://vitejs.dev/config/
 
 const pwaOptions: Partial<VitePWAOptions> = {
-  mode: 'development',
-  base: '/',
-  includeAssets:['favicon.svg'],
-  manifest:{
-    name: 'Eötvös DÖ',
-    short_name: 'Eötvös DÖ',
-    theme_color: '#ffffff',
+  mode: "development",
+  base: "/",
+  includeAssets: ["favicon.svg"],
+  manifest: {
+    name: "Eötvös DÖ",
+    short_name: "Eötvös DÖ",
+    theme_color: "#ffffff",
     icons: [
       {
-        src: '/pwa-192x192.png',
-        sizes: '192x192',
-        type: 'image/png',
+        src: "/pwa-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
       },
       {
-        src: '/pwa-512x512.png',
-        sizes: '512x512',
-        type: 'image/png',
+        src: "/pwa-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
       },
       {
-        src: '/pwa-512x512.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'any maskable',
+        src: "/pwa-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any maskable",
       },
     ],
   },
   devOptions: {
-    enabled: process.env.SW_DEV === 'true',
-    type: 'module',
-    navigateFallback: 'index.html',
+    enabled: process.env.SW_DEV === "true",
+    type: "module",
+    navigateFallback: "index.html",
   },
 };
 
 export const config = {
   server: {
     port: 3000,
+    crossOriginIsolated: false,
   },
-  build:{
-    sourcemap: process.env.SOURCE_MAP === 'true',
+  build: {
+    sourcemap: process.env.SOURCE_MAP === "true",
   },
   plugins: [tsconfigPaths(), react(), svgr(), VitePWA(pwaOptions)],
-  
 };
 
 export default defineConfig(config);

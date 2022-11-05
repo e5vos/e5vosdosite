@@ -5,7 +5,7 @@ export interface Permission {
 }
 
 export interface User {
-  code: string;
+  e5code: string;
   first_name: string;
   last_name: string;
   id: number;
@@ -77,7 +77,14 @@ export interface Event {
   attendees?: Attendance[];
   slot: Slot;
   slot_id: number;
+  location_id: number | null;
+  location?: Location;
   //TODO
+}
+
+export interface Location {
+  id: number;
+  name: string;
 }
 
 export interface Presentation extends Event {}

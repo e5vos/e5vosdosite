@@ -59,10 +59,7 @@ class AuthController extends Controller{
         $user->save();
         Auth::login($user);
         $token = $user->createToken($request->header('User-Agent'), ['JOIN THE USSR'])->plainTextToken;
-        return response()->json([
-            'token' => $token,
-            'user' => new UserResource($user)
-        ]);
+        return view('oauth.callback', ['token' => $token]);
     }
 
     public function logout(Request $request){

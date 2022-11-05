@@ -1,3 +1,9 @@
+export interface Permission {
+  user_id: number;
+  event_id: number;
+  code: string;
+}
+
 export interface User {
   code: string;
   first_name: string;
@@ -6,6 +12,7 @@ export interface User {
   class: string;
   activity?: IndivitualActivity[];
   teams?: Team[];
+  permissions?: Permission[];
 }
 interface BasicAttendance {
   present: boolean;

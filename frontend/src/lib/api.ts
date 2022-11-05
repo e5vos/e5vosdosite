@@ -139,8 +139,14 @@ export const api = createApi({
     setStudentCode: builder.mutation<User, string>({
       query: (code) => ({
         url: routeSwitcher("user.studentcode"),
-        method: "POST",
-        params: { code },
+        method: "PUT",
+        params: { e5code: code },
+      }),
+    }),
+    getAttendances: builder.query<Attendance[], Pick<Event, "id">>({
+      query: ({ id }) => ({
+        url: routeSwitcher("event.participants", { event_id: id }),
+        method: "GET",
       }),
     }),
   }),

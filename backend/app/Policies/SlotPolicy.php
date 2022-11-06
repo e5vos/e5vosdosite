@@ -56,4 +56,14 @@ class SlotPolicy
     {
         return false;
     }
+
+    /**
+     * Determine whether the user can see free students.
+     * @param User $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function freeStudents(User $user)
+    {
+        return $user->hasPermission('TCH') || $user->hasPermission('TAD');
+    }
 }

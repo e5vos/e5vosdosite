@@ -52,8 +52,9 @@ Route::controller(SlotController::class)->prefix('/slot')->group(function () {
     Route::get('/', 'index')->name('slot.index');
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/', 'store')->can('create', Slot::class)->name('slot.store');
-        Route::delete('/{slot}', 'destroy')->can('delete', Slot::class)->name('slot.destroy');
-        Route::put('/{slot}', 'update')->can('update', Slot::class)->name('slot.update');
+        Route::delete('/{slotId}', 'destroy')->can('delete', Slot::class)->name('slot.destroy');
+        Route::put('/{slotId}', 'update')->can('update', Slot::class)->name('slot.update');
+        Route::get('/{slotId}/free_students', 'freeStudents')->can('freeStudents', Slot::class)->name('slot.free_students');
     });
 });
 

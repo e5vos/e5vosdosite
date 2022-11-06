@@ -27,7 +27,7 @@ const PresentationManagePage = () => {
     presentation.name.toLowerCase().includes(searchterm)
   );
 
-  const fillAllowed = useMemo(() => isOperator(user), [user]);
+  const fillAllowed = useMemo(() => user && isOperator(user), [user]);
 
   return (
     <div className="mx-10">
@@ -62,7 +62,7 @@ const PresentationManagePage = () => {
               key={presentation.id}
               presentation={presentation as Presentation}
               className="mb-3 md:mb-0"
-              fillAllowed={fillAllowed}
+              fillAllowed={fillAllowed ?? false}
             />
           ))
         )}

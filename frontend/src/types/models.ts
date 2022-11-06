@@ -70,8 +70,6 @@ export interface BaseActivity {
   attendance: Attendance;
 }
 
-export type Activity = IndivitualActivity | TeamActivity;
-
 export interface Slot {
   id: number;
   start: string;

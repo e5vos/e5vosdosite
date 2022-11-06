@@ -76,28 +76,6 @@ export const api = createApi({
           return [{ type: "Event", id: "LIST" }];
         }
       },
-      onCacheEntryAdded: async (
-        arg,
-        { cacheDataLoaded, updateCachedData, cacheEntryRemoved }
-      ) => {
-        try {
-          await cacheDataLoaded;
-
-          const listener = (msg: MessageEvent) => {
-            const data = msg.data;
-
-            updateCachedData((draft) => {
-              draft.push(data);
-            });
-          };
-
-          // echo.addEventListener('message',listener)
-        } catch (e) {
-          // No-op if removed before loaded, thus cacheDataLoaded throws
-        }
-        await cacheEntryRemoved;
-        // echo.close()
-      },
     }),
     getEvent: builder.query<Event, string>({
       query: (id) => routeSwitcher("event.show", id),

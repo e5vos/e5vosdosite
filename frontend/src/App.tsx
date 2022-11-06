@@ -6,10 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { BaseLayout } from "templates";
 import React, { useEffect } from "react";
 import Loader from "components/UIKit/Loader";
-import PresentationAttendancePage from "pages/presentation/manage/attendance";
 import refreshCSRF from "lib/csrf";
-import Gate from "components/Gate";
-import { isTeacher } from "lib/gates";
 
 const Home = React.lazy(() => import("pages/Home"));
 const Error = React.lazy(() => import("components/Error"));

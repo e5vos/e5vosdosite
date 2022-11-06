@@ -499,7 +499,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Team"
-
     post:
       summary: "Create team"
       tags:
@@ -561,10 +560,10 @@ paths:
     post:
       tags:
         - team
-      summary: Create team member
+      summary: Invite a user to a team
       parameters:
-        - name: member
-          description: Member to create
+        - name: UserId
+          description: User to invite
           in: query
           schema:
             type: number
@@ -581,9 +580,9 @@ paths:
     put:
       tags:
         - team
-      summary: Update team member
+      summary: Promote or demote a team member
       parameters:
-        - name: member
+        - name: UserId
           description: Member to affect
           in: query
           schema:
@@ -591,12 +590,6 @@ paths:
             format: int64
         - name: promote
           description: Promote member to team leader / accept invite
-          in: query
-          schema:
-            type: boolean
-            nullable: true
-        - name: demote
-          description: Demote member to team member / Kick
           in: query
           schema:
             type: boolean

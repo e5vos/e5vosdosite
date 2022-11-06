@@ -42,11 +42,6 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user()->load('permissions');
 })->name('user');
 
-//return csrf token sanctum
-Route::get('/csrf', function () {
-    return csrf_token();
-})->name('csrf');
-
 Route::get('/ziggy', fn () => response()->json(new Ziggy));
 
 Route::get('/login', [AuthController::class, 'redirect'])->name('login');

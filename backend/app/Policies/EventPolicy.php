@@ -98,6 +98,7 @@ class EventPolicy
      */
     public function signup(User $user, Event $event = null)
     {
+
         $event = $event ?? Event::findOrFail(request()->eventId);
         $attenderCode = request()->attender ?? $user->e5code ?? null;
         $attenderType = strlen($attenderCode) === 13 ? 'user' : 'team';
@@ -121,6 +122,6 @@ class EventPolicy
         if (isset($event->signup_type) && !$event->signuppers()->find(strlen($attender) === 13 ? 'e5code' : 'code', $attender)) {
             return new SignupRequiredException();
         }
-        return $event->slot->slot_type == SlotType::presentation ? $user->hasPermission('TCH') : ($user->organisesEvent($event->id) || $user->hasPermission('ADM'));
+        return $event->slot->slot_type === SlotType::presentation->value ? $user->hasPermission('TCH') : ($user->organisesEvent($event->id) || $user->hasPermission('ADM'));
     }
 }

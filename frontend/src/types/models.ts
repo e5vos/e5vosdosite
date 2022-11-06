@@ -8,9 +8,11 @@ export interface User {
   e5code: string;
   name: string;
   id: number;
-  class: string;
+  ejg_class: string;
+  activity?: IndivitualActivity[];
   teams?: Team[];
   permissions?: Permission[];
+  presentations?: Event[];
 }
 
 export const isTeam = (team: any): team is Team => {

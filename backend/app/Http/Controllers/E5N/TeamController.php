@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\E5N;
 
+use App\Exceptions\AlreadyInTeamException;
 use App\Exceptions\NotAllowedException;
+use App\Helpers\MembershipType;
 use App\Http\Controllers\{
     Controller
 };
@@ -22,7 +24,6 @@ use Illuminate\Support\Facades\{
     Cache
 };
 use Illuminate\Support\Str;
-use MembershipType;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 
 use function React\Promise\reduce;
@@ -36,7 +37,7 @@ class TeamController extends Controller
      */
     public function index()
     {
-        return Team::all();
+        return Cache::rememberForever('e5n.teams.all', fn () => Team::all()->load('members'));
     }
 
     /**
@@ -48,9 +49,11 @@ class TeamController extends Controller
     public function store(Request $request)
     {
         $team = Team::create($request->all());
+        $team->members()->attach(Auth::user()->id, ['role' => MembershipType::Leader]);
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.presentations');
-        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => $team);
+        Cache::forever('e5n.teams'.$team->code, $team);
+        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => $team->load('members'));
     }
 
 
@@ -60,19 +63,19 @@ class TeamController extends Controller
      */
     public function update(Request $request, $teamCode)
     {
-        $team = Team::findOrFail($teamCode);
+        $team = Cache::pull('e5n.teams.'.$teamCode) ?? Team::findOrFail($teamCode);
         $team->update($request->all());
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.presentations');
-        Cache::put('e5n.teams.'.$team->code, $team);
-        return Cache::get('e5n.teams.'.$team->code);
+        return Cache::rememberForever('e5n.teams.'.$team->code, $team->load('members'));
     }
 
     /**
      * Display the specified team.
      */
-    public function show($teamCode){
-        return Team::findOrFail($teamCode);
+    public function show($teamCode)
+    {
+        return Cache::rememberForever('e5n.teams.'.$teamCode, fn () => Team::findOrFail($teamCode)->load('members'));
     }
 
     /**
@@ -82,7 +85,6 @@ class TeamController extends Controller
         $team = Team::where('code', $teamCode)->firstOrFail();
         $team->delete();
         Cache::forget('e5n.teams.all');
-        Cache::forget('e5n.teams.presentations');
         Cache::forget('e5n.teams.'.$team->code);
         return response()->json(null, 204);
     }
@@ -95,20 +97,51 @@ class TeamController extends Controller
         $team = Team::withTrashed()->where('code', $teamCode)->firstOrFail();
         $team->restore();
         Cache::forget('e5n.teams.all');
-        Cache::forget('e5n.teams.presentations');
         Cache::forget('e5n.teams.'.$team->code);
-        return Cache::rememberForever('e5n.teams'.$team->code, fn () => $team);
+        return Cache::rememberForever('e5n.teams'.$team->code, fn () => $team->load('members'));
+    }
+
+
+    /**
+     * invite team members
+     */
+    public function invite(Request $request, $teamCode)
+    {
+        $team = Cache::pull('e5n.teams.'.$teamCode, Team::findOrFail($teamCode)->load('members'));
+        if ($team->members->pluck('e5code')->contains($request->userCode)) {
+            throw new AlreadyInTeamException();
+        }
+        $team->members()->attach(User::where('e5code', $request->userCode)->firstOrFail(), ['role' => MembershipType::Invited]);
+        Cache::forget('e5n.teams.all');
+        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => $team->load('members'));
     }
 
     /**
-     * Display a listing of team members.
-     * @return \Illuminate\Http\Response
+     * kick team members
      */
-    public function members($teamCode = null)
+    public function kick(Request $request, $teamCode)
     {
-        $teamCode = $teamCode ?? $this->code ?? abort(400, 'No team code provided');
-        return Cache::rememberForever('e5n.teams.'.$teamCode, fn() => Team::with('members')->where('teams.code', $teamCode)->firstOrFail());
+        $team = Cache::pull('e5n.teams.'.$teamCode, Team::findOrFail($teamCode)->load('members'));
+        $team->members()->detach(User::where('e5code', $request->userCode)->firstOrFail());
+        Cache::forget('e5n.teams.all');
+        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => $team->load('members'));
     }
 
-
+    /**
+     * promote or demote team members
+     */
+    public function promote(Request $request, $teamCode)
+    {
+        $team = Cache::pull('e5n.teams.'.$teamCode, Team::findOrFail($teamCode)->load('members'));
+        $user = User::where("e5code", $request->userCode)->firstOrFail();
+        $role = TeamMembership::where('team_code', $team->code)->where('user_id', $user->id)->first()->role;
+        if ($request->promote === 'promote') {
+            $role = $role === MembershipType::Invited->value ? MembershipType::Member->value : MembershipType::Leader->value;
+        } elseif ($request->promote === 'demote') {
+            $role = MembershipType::Member->value;
+        }
+        $team->members()->updateExistingPivot($user, ['role' => $role]);
+        Cache::forget('e5n.teams.all');
+        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => $team->load('members'));
+    }
 }

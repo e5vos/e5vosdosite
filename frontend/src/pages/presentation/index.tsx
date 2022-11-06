@@ -6,29 +6,24 @@ import { Presentation } from "types/models";
 import Loader from "components/UIKit/Loader";
 import { api } from "lib/api";
 import useUser from "hooks/useUser";
-
-const slotCount = 3;
+import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
 
 const PresentationsPage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
-
+  const { data: slots } = useGetPresentationSlotsQuery();
   const {
     data: selectedPresentations,
     isFetching: isMyPresentationsFetching,
     refetch: refetchSelected,
-  } =
-    //api.useGetUsersPresentationsQuery();
-    { data: [{ name: "ASd" }] } as any;
+  } = api.useGetUsersPresentationsQuery();
   const {
     data: presentations,
     isLoading: isEventsLoading,
     isFetching: isEventsFetching,
-  } = api.useGetEventsQuery(currentSlot);
+  } = api.useGetEventsQuery((slots && slots[currentSlot]?.id) ?? -1);
   const [signUp, { isLoading: signupInProgress }] = api.useSignUpMutation();
 
   const { user } = useUser();
-  console.log(user);
-
   const signUpAction = async (presentation: Presentation) => {
     console.log("SIGNUP", presentation);
     if (signupInProgress) {
@@ -52,8 +47,7 @@ const PresentationsPage = () => {
     }
   };
 
-  console.log("eload", isEventsFetching);
-  if (!selectedPresentations || !presentations) return <Loader />;
+  if (!slots || !selectedPresentations || !presentations) return <Loader />;
 
   return (
     <div className="container mx-auto">
@@ -63,7 +57,7 @@ const PresentationsPage = () => {
 
       <div className="flex flex-row items-center mx-auto max-w-6xl justify-center">
         <ButtonGroup className="mx-2">
-          {Array(slotCount)
+          {Array(slots.length)
             .fill(null)
             .map((_, index) => (
               <Button

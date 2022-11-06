@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Presentation } from "types/models";
 import Button from "./UIKit/Button";
 import ButtonGroup from "./UIKit/ButtonGroup";
@@ -23,7 +24,9 @@ const PresentationCard = ({ presentation }: { presentation: Presentation }) => {
         </div>
 
         <ButtonGroup className="w-full">
-          <Button className="w-6/12">Jelenléti Ív</Button>
+          <Button className="w-6/12">
+            <Link to={`${presentation.id}`}>Jelenléti Ív</Link>
+          </Button>
           <Button className="w-6/12">Feltöltés</Button>
         </ButtonGroup>
       </div>

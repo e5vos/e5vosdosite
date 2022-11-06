@@ -3,12 +3,8 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { api } from "lib/api";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { User } from "types/models";
 
-const useUser = (
-  redirect: boolean = true,
-  destination?: string
-): { user?: User; error?: FetchBaseQueryError | SerializedError | Error } => {
+const useUser = (redirect: boolean = true, destination?: string) => {
   const navigate = useNavigate();
   const { data: user, error, ...rest } = api.useGetUserDataQuery();
   const location = useLocation();
@@ -31,8 +27,8 @@ const useUser = (
       navigate(redirectToLogin);
     }
 
-    if (user && !user.code) {
-      if (redirectToStudentCode && false) navigate(redirectToStudentCode);
+    if (user && !user.e5code) {
+      if (redirectToStudentCode) navigate(redirectToStudentCode);
     }
   }, [user, error, navigate, redirectToLogin, redirectToStudentCode]);
 

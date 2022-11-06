@@ -9,7 +9,12 @@ import {
   Team,
   TeamMembership,
   User,
+  isUserAttendance,
+  isUserAttendancePivot,
+  Slot,
 } from "types/models";
+import { isArray } from "util";
+import refreshCSRF from "./csrf";
 import routeSwitcher from "./route";
 import { RootState } from "./store";
 
@@ -17,12 +22,12 @@ export const api = createApi({
   reducerPath: "e5nApi",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BACKEND,
-    prepareHeaders: (headers, { getState }) => {
+    prepareHeaders: async (headers, { getState }) => {
       const state = getState() as RootState;
 
       const token = state.auth.token;
       if (token) {
-        headers.set("authorization", `Bearer ${token}`);
+        headers.set("Authorization", `Bearer ${token}`);
       }
       const xsrfToken = Cookies.get("XSRF-TOKEN");
       if (xsrfToken) {
@@ -33,13 +38,25 @@ export const api = createApi({
     credentials: "include",
     mode: "cors",
   }),
-  tagTypes: ["Event", "Presentation", "Attendance", "TeamActivity", "User"],
+  tagTypes: [
+    "Event",
+    "Presentation",
+    "Attendance",
+    "TeamActivity",
+    "User",
+    "EventParticipants",
+    "Slot",
+  ],
   endpoints: (builder) => ({
     getEvents: builder.query<Event[], number | void>({
       query: (slot?) =>
         slot
           ? routeSwitcher("events.slot", { slot_id: slot })
           : routeSwitcher("events.index"),
+      transformResponse: (response: any) => {
+        if (!Array.isArray(response)) return [response];
+        else return response;
+      },
       providesTags: (result) => {
         if (result) {
           return [
@@ -80,6 +97,39 @@ export const api = createApi({
       query: (id) => routeSwitcher("event.show", id),
       providesTags: (result, error, id) => [{ type: "Event", id }],
     }),
+    getEventParticipants: builder.query<Array<Attendance>, string>({
+      query: (id) => routeSwitcher("event.participants", id),
+      providesTags: (result, error, id) => [{ type: "EventParticipants", id }],
+    }),
+    getSlots: builder.query<Array<Slot>, void>({
+      query: () => routeSwitcher("slot.index"),
+      transformResponse: (response: any) => {
+        if (!Array.isArray(response)) return [response];
+        else return response;
+      },
+      providesTags: (result) => {
+        if (result) {
+          return [
+            ...result.map(({ id }) => ({ type: "Slot", id: id } as const)),
+            { type: "Slot", id: "LIST" },
+          ];
+        } else return [{ type: "Slot", id: "LIST" }];
+      },
+    }),
+    toggleAttendance: builder.mutation<Attendance, Attendance>({
+      query: (data) => {
+        const params = {
+          attender: isUserAttendance(data) ? data.e5code : data.code,
+        };
+        return {
+          url: routeSwitcher("event.attend", {
+            eventId: data.pivot.event_id,
+          }),
+          method: "POST",
+          params: params,
+        };
+      },
+    }),
     createEvent: builder.mutation<Event, Event>({
       query: (event) => ({
         url: routeSwitcher("events"),
@@ -92,7 +142,7 @@ export const api = createApi({
       ],
     }),
     getUsersPresentations: builder.query<Presentation[], void>({
-      query: () => routeSwitcher("user.presentations"),
+      query: () => routeSwitcher("events.mypresentations"),
       providesTags: (result) =>
         result
           ? [
@@ -148,12 +198,6 @@ export const api = createApi({
         url: routeSwitcher("user.e5code"),
         method: "PATCH",
         params: { e5code: code },
-      }),
-    }),
-    getAttendances: builder.query<Attendance[], Pick<Event, "id">>({
-      query: ({ id }) => ({
-        url: routeSwitcher("event.participants", { event_id: id }),
-        method: "GET",
       }),
     }),
   }),

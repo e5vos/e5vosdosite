@@ -10,9 +10,7 @@ const LoginPage = () => {
   const params = useParams();
   useEffect(() => {
     if (token !== "") {
-      refreshCSRF().then(() => {
-        navigate(params.next ?? "/dashboard", { replace: true });
-      });
+      navigate(params.next ?? "/dashboard", { replace: true });
     }
   }, [navigate, token, params.next]);
 

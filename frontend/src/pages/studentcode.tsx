@@ -1,5 +1,6 @@
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
+import Loader from "components/UIKit/Loader";
 import { useFormik } from "formik";
 import useUser from "hooks/useUser";
 import { api } from "lib/api";
@@ -8,16 +9,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 
 const StudentCodePage = () => {
-  const [updateStudentCode] = api.useSetStudentCodeMutation();
+  const [updateStudentCode, { error: apiError }] =
+    api.useSetStudentCodeMutation();
   const navigate = useNavigate();
   const { next } = useParams();
-  const { user, error } = useUser(false);
+  const { user, error, isLoading } = useUser(false);
 
   useEffect(() => {
     if (!user && error) {
       navigate("/login?next=/studentcode");
     }
-  }, [user, error, navigate]);
+    if (user && user.e5code) {
+      navigate(next || "/");
+    }
+  }, [user, error, navigate, next]);
 
   const formik = useFormik({
     initialValues: {
@@ -36,10 +41,13 @@ const StudentCodePage = () => {
         await updateStudentCode(values.studentCode).unwrap();
         navigate(next ?? "/dashboard");
       } catch (error: any) {
-        formik.errors.studentCode = error;
+        if (error.status === 400) {
+          formik.setFieldError("studentCode", "Hibás diákkód");
+        }
       }
     },
   });
+  if (isLoading) return <Loader />;
   return (
     <>
       <Form onSubmit={formik.handleSubmit}>
@@ -51,6 +59,7 @@ const StudentCodePage = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
+          <Form.Text>{formik.errors.studentCode}</Form.Text>
         </Form.Group>
         <Form.Group>
           <Button type="submit">Diákkód jóváhagyása</Button>

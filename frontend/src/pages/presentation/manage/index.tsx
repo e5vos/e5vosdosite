@@ -8,7 +8,7 @@ import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
 import { api } from "lib/api";
 import { isTeacher } from "lib/gates";
 import { useState } from "react";
-
+import { Presentation } from "types/models";
 const PresentationManagePage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
   const { data: slots } = useGetPresentationSlotsQuery();
@@ -56,7 +56,10 @@ const PresentationManagePage = () => {
           <Loader />
         ) : (
           filteredpresentations?.map((presentation) => (
-            <PresentationCard presentation={presentation} />
+            <PresentationCard
+              key={presentation.id}
+              presentation={presentation as Presentation}
+            />
           ))
         )}
       </div>

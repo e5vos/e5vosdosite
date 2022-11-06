@@ -4,7 +4,7 @@
   <title>{{ config('app.name') }}</title>
   <script>
     window.opener.postMessage({ token: "{{ $token }}" }, "*")
-    //window.close()
+    window.close()
   </script>
 </head>
 <body>

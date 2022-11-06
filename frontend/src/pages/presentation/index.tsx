@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import PresentationsTable from "components/PresentationsTable";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
@@ -46,6 +46,16 @@ const PresentationsPage = () => {
       console.error("ERROR", err);
     }
   };
+
+  const selectedPresentation = useMemo(
+    () =>
+      slots &&
+      selectedPresentations?.find(
+        (presentation) => presentation.slot_id === slots[currentSlot].id
+      ),
+    [currentSlot, selectedPresentations, slots]
+  );
+
   if (!slots || !selectedPresentations || !presentations) return <Loader />;
 
   return (
@@ -75,15 +85,14 @@ const PresentationsPage = () => {
             {isMyPresentationsFetching ? (
               <Loader />
             ) : (
-              selectedPresentations[currentSlot]?.name ??
-              "Nincs előadás kiválasztva"
+              selectedPresentation?.name ?? "Nincs előadás kiválasztva"
             )}
           </div>
         </div>
       </div>
       <PresentationsTable
-        presentations={presentations ?? []}
-        callback={selectedPresentations[currentSlot] ? undefined : signUpAction}
+        presentations={(presentations as Presentation[]) ?? []}
+        callback={selectedPresentation ? undefined : signUpAction}
         disabled={signupInProgress || isMyPresentationsFetching}
         isLoading={isEventsFetching}
       />

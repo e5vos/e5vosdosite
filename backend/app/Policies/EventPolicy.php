@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Exceptions\SignupRequiredException;
 use App\Helpers\SlotType;
+use App\Models\Attendance;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -108,6 +109,22 @@ class EventPolicy
         $attender = $attenderType == 'user' ? $user->e5code === $attenderCode : $user->isLeaderOfTeam($attenderCode);
         return $attender || $user->hasPermission('ADM');
     }
+
+    /**
+     * Determine if the user can cancel the signup for the event.
+     * @param User $user
+     * @param Event $event
+     *
+     * @return bool
+     */
+    public function unsignup(User $user, Event $event = null)
+    {
+        if (!request()->has('attender')) {
+            abort(400, 'No attender specified');
+        }
+        return request()->attender === $user->e5code || $user->isLeaderOfTeam(request()->attender) || $user->hasPermission('ADM');
+    }
+
     /**
      * Determine if the user can attend the event.
      * @param User $user

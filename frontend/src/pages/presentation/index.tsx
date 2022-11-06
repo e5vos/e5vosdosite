@@ -20,7 +20,9 @@ const PresentationsPage = () => {
     data: presentations,
     isLoading: isEventsLoading,
     isFetching: isEventsFetching,
-  } = api.useGetEventsQuery((slots && slots[currentSlot]?.id) ?? -1);
+  } = api.useGetEventsQuery((slots && slots[currentSlot]?.id) ?? -1, {
+    pollingInterval: 10000,
+  });
   const [signUp, { isLoading: signupInProgress }] = api.useSignUpMutation();
   const [cancelSignup, { isLoading: cancelSignupInProgress }] =
     api.useCancelSignUpMutation();
@@ -75,7 +77,7 @@ const PresentationsPage = () => {
 
   return (
     <div className="container mx-auto">
-      <h1 className="text-center text-gray-800 text-5xl pb-4">
+      <h1 className="text-center font-bold text-5xl pb-4">
         E5N - Előadásjelentkezés
       </h1>
 
@@ -117,8 +119,10 @@ const PresentationsPage = () => {
       <PresentationsTable
         presentations={(presentations as Presentation[]) ?? []}
         callback={selectedPresentation ? undefined : signUpAction}
-        disabled={signupInProgress || isMyPresentationsFetching}
-        isLoading={isEventsFetching}
+        disabled={
+          signupInProgress || isMyPresentationsFetching || isEventsFetching
+        }
+        isLoading={isEventsLoading}
       />
     </div>
   );

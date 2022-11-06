@@ -18,43 +18,65 @@ const Button = ({
     | "danger"
     | "outline-danger"
     | "success"
-    | "outline-success";
+    | "outline-success"
+    | "warning"
+    | "outline-warning"
+    | "info"
+    | "outline-info";
 }) => {
   if (type === "submit" && !variant) variant = "success";
 
-  let buttonclass;
+  let buttonclass = "outline outline-2 outline-offset-0  ";
   switch (variant) {
     case "primary":
-      buttonclass = "bg-blue-500 hover:bg-blue-700 disabled:bg-blue-900";
+      buttonclass +=
+        "bg-yellow outline-yellow enabled:hover:bg-yellow-700 disabled:bg-yellow-700 text-black enabled:hover:text-white disabled:text-white ";
       break;
     case "outline-primary":
-      buttonclass =
-        "bg-white hover:bg-blue-500 text-blue-700 font-semibold hover:text-white border border-blue-500 hover:border-transparent rounded";
+      buttonclass +=
+        "outline-yellow enabled:hover:bg-yellow disabled:bg-yellow text-white enabled:hover:text-black disabled:text-black";
       break;
     case "secondary":
-      buttonclass =
-        "border-hidden rounded-3xl shadow-md bg-white disabled:bg-gray-500";
+      buttonclass +=
+        "bg-white outline-white enabled:hover:bg-gray-600 disabled:bg-gray-600 text-black enabled:hover:text-white disabled:text-white";
       break;
     case "outline-secondary":
-      buttonclass =
-        "border-2 border-gray-500 rounded-3xl shadow-md bg-white disabled:bg-gray-500";
+      buttonclass +=
+        "bg-gray-600 outline-white enabled:hover:bg-white disabled:bg-white text-white enabled:hover:text-black disabled:text-black";
       break;
     case "danger":
-      buttonclass = "bg-red-500 hover:bg-red-700";
+      buttonclass +=
+        "bg-red-500 outline-red-500 enabled:hover:bg-red-700 disabled:bg-red-700 text-black enabled:hover:text-white disabled:text-white";
       break;
     case "outline-danger":
-      buttonclass =
-        "bg-white hover:bg-red-500 text-red-700 font-semibold hover:text-white border border-red-500 hover:border-transparent rounded";
+      buttonclass +=
+        "outline-red enabled:hover:bg-red disabled:bg-red text-white enabled:hover:text-black disabled:text-black";
       break;
     case "success":
-      buttonclass = "bg-green-500 hover:bg-green-700";
+      buttonclass +=
+        "bg-green outline-green enabled:hover:bg-green-700 disabled:bg-green-700 text-black enabled:hover:text-white disabled:text-white";
       break;
     case "outline-success":
-      buttonclass =
-        "bg-white hover:bg-green-500 text-green-700 font-semibold hover:text-white border border-green-500 hover:border-transparent rounded";
+      buttonclass +=
+        "outline-green enabled:hover:bg-green disabled:bg-green text-white enabled:hover:text-black disabled:text-black";
+      break;
+    case "warning":
+      buttonclass +=
+        "bg-goldenrod outline-goldenrod enabled:hover:bg-goldenrod-700 disabled:bg-goldenrod-700 text-black enabled:hover:text-white disabled:text-white";
+      break;
+    case "outline-warning":
+      buttonclass +=
+        "outline-goldenrod enabled:hover:bg-goldenrod disabled:bg-godlenrod text-white enabled:hover:text-black disabled:text-black";
+      break;
+    case "info":
+      buttonclass +=
+        "bg-blue outline-blue enabled:hover:bg-blue-700 disabled:bg-blue-700 text-black enabled:hover:text-white disabled:text-white";
+      break;
+    case "outline-info":
+      buttonclass +=
+        "outline-blue enabled:hover:bg-blue disabled:bg-blue text-white enabled:hover:text-black disabled:text-black";
       break;
     default:
-      buttonclass = "bg-blue-500 hover:bg-blue-700";
   }
 
   return (

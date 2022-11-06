@@ -5,11 +5,21 @@ import Button from "./UIKit/Button";
 import ButtonGroup from "./UIKit/ButtonGroup";
 import { useState } from "react";
 
-const PresentationCard = ({ presentation }: { presentation: Presentation }) => {
+const PresentationCard = ({
+  presentation,
+  className,
+}: {
+  presentation: Presentation;
+  className?: string;
+}) => {
   const [isDialogOpen, setisDialogOpen] = useState(false);
 
   return (
-    <div>
+    <div
+      className={`bg-gray-100 p-2 rounded-lg flex flex-col justify-between ${
+        className ?? ""
+      }`}
+    >
       <PresentationFillDialog
         event={presentation}
         open={isDialogOpen}
@@ -17,30 +27,32 @@ const PresentationCard = ({ presentation }: { presentation: Presentation }) => {
           setisDialogOpen(false);
         }}
       />
-      <div className="border border-red-500 rounded-lg flex flex-col justify-between">
-        <div>
-          <h3 className="px-2 tex-lg font-bold">{presentation.name}</h3>
-          <hr />
-          <h4 className="px-2">{presentation.organiser}</h4>
-        </div>
-        <p className="px-2">{presentation.description}</p>
-        <div>
-          <div className="flex flew-row justify-between w-full px-2">
-            <div>{presentation.location?.name ?? "Ismeretlen"}</div>
-            <div>
-              {presentation.slot_id ?? "-"}/{presentation.id}
-            </div>
-            <div>?/?/{presentation.capacity ?? <>&infin;</>}</div>
+      <div>
+        <h3 className="px-2 tex-lg font-bold">{presentation.name}</h3>
+        <hr />
+        <h4 className="px-2">{presentation.organiser}</h4>
+      </div>
+      <p className="px-2">{presentation.description}</p>
+      <div>
+        <div className="flex flew-row justify-between w-full px-2 mb-1">
+          <div>{presentation.location?.name ?? "Ismeretlen"}</div>
+          <div>
+            {presentation.slot_id ?? "-"}/{presentation.id}
           </div>
-          <ButtonGroup className="w-full">
-            <Button className="w-6/12">
-              <Link to={`${presentation.id}`}>Jelenléti Ív</Link>
-            </Button>
-            <Button className="w-6/12" onClick={() => setisDialogOpen(true)}>
-              Feltöltés
-            </Button>
-          </ButtonGroup>
+          <div>?/?/{presentation.capacity ?? <>&infin;</>}</div>
         </div>
+        <ButtonGroup className="w-full">
+          <Button className="w-6/12" variant="success">
+            <Link to={`${presentation.id}`}>Jelenléti Ív</Link>
+          </Button>
+          <Button
+            className="w-6/12"
+            variant="danger"
+            onClick={() => setisDialogOpen(true)}
+          >
+            Feltöltés
+          </Button>
+        </ButtonGroup>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { HTMLInputProps } from "./helpers";
 
 const Control = ({ className, ...rest }: HTMLInputProps<HTMLInputElement>) => {
-  return <input {...rest} className={` ${className ?? ""}`} />;
+  return <input {...rest} className={`text-black ${className ?? ""}`} />;
 };
 
 const Text = ({
@@ -18,7 +18,11 @@ const Label = ({
   children,
   ...rest
 }: HTMLInputProps<HTMLSpanElement>) => {
-  return <span className={"text-gray-700"}>{children}</span>;
+  return (
+    <span className="font-bold mb-1 mr-1 underline underline-offset-4">
+      {children}
+    </span>
+  );
 };
 
 const Group = ({
@@ -27,7 +31,12 @@ const Group = ({
   ...rest
 }: HTMLInputProps<HTMLLabelElement>) => {
   return (
-    <label {...rest} className={`block form-group ${className ?? ""}`}>
+    <label
+      {...rest}
+      className={`flex flex-row justify-center align-middle form-group ${
+        className ?? ""
+      }`}
+    >
       {children}
     </label>
   );

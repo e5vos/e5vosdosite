@@ -15,7 +15,7 @@ function getColor(capacity: number) {
     case capacity > 5:
       return "bg-red-400";
     default:
-      return "bg-red-600";
+      return "bg-red-500";
   }
 }
 
@@ -34,7 +34,7 @@ const PresentationsTable = ({
     <div className="mx-auto max-w-6xl">
       <div className="min-w-full transition-colors duration-500">
         <table className="min-w-full text-sm md:text-lg border-separate border-spacing-y-1 md:border-spacing-y-2 border-spacing-x-0.5">
-          <thead className="bg-[#222831] text-white border-separate ">
+          <thead className="bg-gray-300 text-white border-separate ">
             <tr className="shadow-md">
               <th className="w-[20%] py-1 rounded-l-lg">Előadó</th>
               <th className="w-[25%] py-1">Előadás címe</th>
@@ -52,8 +52,8 @@ const PresentationsTable = ({
             )}
             {!isLoading &&
               presentations.map((presentation) => (
-                <tr key={presentation.id} className="shadow-md">
-                  <td className="px-2 py-0.5 text-center  border-hidden rounded-l-lg">
+                <tr key={presentation.id} className="shadow-md bg-gray-400">
+                  <td className="px-2 py-0.5 text-center font-bold  border-hidden rounded-l-lg">
                     {presentation.organiser}
                   </td>
                   <td className="px-2 py-0.5 text-center ">
@@ -65,7 +65,7 @@ const PresentationsTable = ({
                   {/*TODO: dynamically set cell color and button placement*/}
                   <td
                     className={
-                      "px-2 text-center whitespace-normal border-hidden rounded-r-lg " +
+                      "px-2 h-24 text-center whitespace-normal border-hidden rounded-r-lg text-black " +
                       getColor(presentation.capacity)
                     }
                   >

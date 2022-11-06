@@ -53,7 +53,7 @@ export const api = createApi({
     "Slot",
   ],
   endpoints: (builder) => ({
-    getEvents: builder.query<Event[], number | void>({
+    getEvents: builder.query<Event[] | undefined, number | void>({
       query: (slot?) =>
         slot
           ? routeSwitcher("events.slot", { slot_id: slot })
@@ -62,6 +62,7 @@ export const api = createApi({
         if (!Array.isArray(response)) return [response];
         else return response;
       },
+
       providesTags: (result) => {
         if (result) {
           return [
@@ -158,7 +159,7 @@ export const api = createApi({
     }),
     signUp: builder.mutation<
       Attendance,
-      { attender: string; event: Pick<Event, "id"> }
+      { event: Pick<Event, "id">; attender: string | number }
     >({
       query: (body) => ({
         url: routeSwitcher("event.signup", { id: body.event.id }),
@@ -213,7 +214,7 @@ export const api = createApi({
       }),
     }),
     getFreeUsers: builder.query<User[], number>({
-      query: (slot) => routeSwitcher("slot.free_students", { slot_id: slot }),
+      query: (slot) => routeSwitcher("slot.free_students", { slotId: slot }),
     }),
   }),
 });

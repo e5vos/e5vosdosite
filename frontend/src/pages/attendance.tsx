@@ -53,10 +53,10 @@ const AttendancePage = () => {
     };
 
   return (
-    <div className="container ">
+    <div className="container mx-auto mt-2 ">
       <div className="mx-auto text-center w-fit">
-        <h1 className="text-lg font-bold">Jelenléti Ív - {event?.name}</h1>
-        <div>
+        <h1 className="text-4xl font-bold">Jelenléti Ív - {event?.name}</h1>
+        <div className="mt-4">
           <ul className="border mb-3">
             {participants?.map((attending, index) => (
               <li

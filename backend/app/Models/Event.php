@@ -81,7 +81,8 @@ class Event extends Model
     /**
      * Adds where filtering to start_date and end_date
      */
-    public static function current(Builder $query): Builder{
+    public static function current(Builder $query): Builder
+    {
         return $query->where('start_date', '<=', now())->where('end_date', '>=', now());
     }
 
@@ -184,7 +185,7 @@ class Event extends Model
         $availalbeStudents = User::whereDoesntHave('events',function($query){
             $query->where('slot',$this->slot);
         })->limit($this->capacity - $this->occupancy)->get();
-        foreach($availalbeStudents as $student){
+        foreach ($availalbeStudents as $student) {
             $student->signUp($this);
         }
     }

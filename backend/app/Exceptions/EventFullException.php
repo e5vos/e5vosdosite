@@ -13,6 +13,6 @@ class EventFullException extends Exception
     {
         return response()->json([
             'message' => 'Event is full',
-        ], 422);
+        ], 409);
     }
 }

@@ -14,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Exceptions\SignupRequiredException;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * App\Models\User
@@ -73,7 +73,10 @@ class User extends Authenticable
      */
     public function hasPermission(string $code)
     {
-        return $this->permissions()->where('code', '=', $code)->exists();
+        $permissions = Cache::remember('users.'.$this->id.'.permissions', now()->addMinutes(5), function () {
+            return $this->permissions()->get()->pluck('code')->toArray();
+        });
+        return in_array($code, $permissions);
     }
 
     /**
@@ -157,6 +160,14 @@ class User extends Authenticable
     }
 
     /**
+     * Determine if the user has an attendance in the slot
+     */
+    public function isBusy(Slot $slot): bool
+    {
+        return $this->signups()->where('slot_id', $slot->id)->count() > 0;
+    }
+
+    /**
      * Sign up user to $event
      *
      * @param  Event $event
@@ -164,7 +175,8 @@ class User extends Authenticable
      * @throws EventFullException if the event is full
      * @return EventSignup the newly created EventSignup object
      */
-    public function signUp(Event $event){
+    public function signUp(Event $event)
+    {
         if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusy($event->slot)) {
             throw new StudentBusyException();
         }

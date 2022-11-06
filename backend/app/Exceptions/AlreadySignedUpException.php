@@ -13,6 +13,6 @@ class AlreadySignedUpException extends Exception
     {
         return response()->json([
             'message' => 'Team or User already signed up for this event',
-        ], 422);
+        ], 409);
     }
 }

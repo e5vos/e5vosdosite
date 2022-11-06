@@ -13,6 +13,7 @@ use App\Models\{
     TeamMemberAttendance,
     User,
     Team,
+    Slot,
 };
 
 use App\Helpers\SlotType;
@@ -124,10 +125,10 @@ class EventController extends Controller
      */
     public function presentations()
     {
-        return Cache::rememberForever(
+        return response()->json(Cache::rememberForever(
             'e5n.events.presentations',
-            fn () => Event::join('slots', 'events.slot_id', '=', 'slots.id')->where('slots.slot_type', SlotType::presentation)->get(['events.*'])
-        );
+            fn () => Slot::with('events')->where('type', SlotType::presentation)->get()
+        ), 200);
     }
 
     /**
@@ -135,10 +136,11 @@ class EventController extends Controller
      */
     public function signup(Request $request, $eventId)
     {
-        $event = Cache::rememberForever('e5n.events'.$eventId, fn()=> Event::findOrFail($eventId));
+        $event = Cache::rememberForever('e5n.events'.$eventId, fn() => Event::findOrFail($eventId));
         $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
+        Cache::forget('e5n.events.mypresentations'.$attender->id);
         Cache::put('e5n.events'.$event->id.'signups', $event->attendances()->get());
         return response($attender->signUp($event), 201);
     }
@@ -152,6 +154,7 @@ class EventController extends Controller
         $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
+        Cache::forget('e5n.events.mypresentations'.$attender->id);
         Cache::put('e5n.events'.$event->id.'signups', $event->attendances()->with('user')->get());
         return response($attender->attend($event), 200);
     }
@@ -172,10 +175,10 @@ class EventController extends Controller
      */
     public function myPresentations(Request $request)
     {
-        $user = User::findOrFail($request->user()->id);
+        $user = User::findOrFail($request->user()->id)->load('presentations');
         return Cache::rememberForever(
             'e5n.events.mypresentations'.$user->id,
-            fn () => $user->presentations()->get(['events.*'])
+            fn () => $user->presentations
         );
     }
 }

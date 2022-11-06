@@ -6,16 +6,16 @@ export interface Permission {
 
 export interface User {
   e5code: string;
-  first_name: string;
-  last_name: string;
+  name: string
   id: number;
-  class: string;
+  ejg_class: string;
   activity?: IndivitualActivity[];
   teams?: Team[];
   permissions?: Permission[];
+  presentations?: Event[];
 }
 interface BasicAttendance {
-  present: boolean;
+  is_present: boolean;
   created_at: string;
   updated_at: string;
   scan_at: string;

@@ -13,6 +13,6 @@ class StudentBusyException extends Exception
     {
         return response()->json([
             'message' => 'Student is busy',
-        ], 422);
+        ], 409);
     }
 }

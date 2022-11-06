@@ -2,7 +2,8 @@
 
 namespace App\Helpers;
 
-enum PermissionType: string {
+enum PermissionType: string
+{
     case Organiser = "ORG"; // progranszervező
     case Aadmin = "ADM"; // E5N admin szervező
     case Teacher = "TCH"; // tanár

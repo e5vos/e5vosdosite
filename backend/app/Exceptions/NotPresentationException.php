@@ -11,6 +11,6 @@ class NotPresentationException extends Exception
      */
     public function render()
     {
-       abort(418);
+        abort(418);
     }
 }

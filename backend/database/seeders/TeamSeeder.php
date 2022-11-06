@@ -22,20 +22,20 @@ class TeamSeeder extends Seeder
         $teamsize = 10;
         $users = User::all();
         Team::factory()
-        ->has(
-            TeamMembership::factory()
-                ->count($teamsize)
-                ->state(
-                    fn ($attributes, Team $team) => [
-                        'user_id' => $users->shuffle()
-                        ->filter(
-                            fn($user) => !array_search($user->id, $team->members->toArray())
-                        )->first()->id,
-                    ]
-                ),
-            'members'
-        )
-        ->count(10)
-        ->create();
+            ->has(
+                TeamMembership::factory()
+                    ->count($teamsize)
+                    ->state(
+                        fn ($attributes, Team $team) => [
+                            'user_id' => $users->shuffle()
+                                ->filter(
+                                    fn ($user) => !array_search($user->id, $team->members->toArray())
+                                )->first()->id,
+                        ]
+                    ),
+                'members'
+            )
+            ->count(10)
+            ->create();
     }
 }

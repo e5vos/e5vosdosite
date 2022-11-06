@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": "src",
-    "types": ["node", "vite-plugin-pwa", "vite-plugin-pwa/client"],
+    "types": ["node", "vite-plugin-pwa", "vite-plugin-pwa/client"]
   },
   "include": ["./src"],
   "references": [{ "path": "./tsconfig.node.json" }]

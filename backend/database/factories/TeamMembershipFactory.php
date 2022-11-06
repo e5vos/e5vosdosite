@@ -18,7 +18,7 @@ class TeamMembershipFactory extends Factory
     public function definition()
     {
         return [
-            'role' => fake()->randomElement(array_column(MembershipType::cases(),'value')),
+            'role' => fake()->randomElement(array_column(MembershipType::cases(), 'value')),
         ];
     }
 }

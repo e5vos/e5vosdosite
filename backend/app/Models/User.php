@@ -73,7 +73,7 @@ class User extends Authenticable
      */
     public function hasPermission(string $code)
     {
-        $permissions = Cache::remember('users.'.$this->id.'.permissions', now()->addMinutes(5), function () {
+        $permissions = Cache::remember('users.' . $this->id . '.permissions', now()->addMinutes(5), function () {
             return $this->permissions()->get()->pluck('code')->toArray();
         });
         return in_array($code, $permissions);
@@ -241,5 +241,4 @@ class User extends Authenticable
     {
         return $this->teamMemberships()->where('team_code', $team->code ?? $team)->where('role', MembershipType::Leader)->exists();
     }
-
 }

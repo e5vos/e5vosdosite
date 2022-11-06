@@ -39,7 +39,7 @@ class SettingPolicy
     /**
      * Determine whether the user can create settings.
      * @return false
-    */
+     */
     public function create()
     {
         return false;
@@ -48,7 +48,7 @@ class SettingPolicy
     /**
      * Determine whether the user can delete the setting.
      * @return false
-    */
+     */
     public function delete()
     {
         return false;

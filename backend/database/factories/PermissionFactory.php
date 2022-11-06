@@ -21,7 +21,7 @@ class PermissionFactory extends Factory
     public function definition()
     {
         return [
-            'code' => fake()->randomElement(array_column(PermissionType::cases(),'value')),
+            'code' => fake()->randomElement(array_column(PermissionType::cases(), 'value')),
         ];
     }
 }

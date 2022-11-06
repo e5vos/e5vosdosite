@@ -24,16 +24,17 @@ class UserSeeder extends Seeder
         $i = $permissions_count;
         $events_count = $events->count();
         User::factory()
-        ->count(1000)
-        ->has(Permission::factory()
-            ->count($permissions_count)
-            ->state(
-                function ($attributes) use ($events, $permissions_count, &$i, $events_count) {
-                    $eventId = $events[rand(0, round(($events_count)/$permissions_count)-1)+($i < $permissions_count-1 ? ++$i : $i = 0)*$events_count/$permissions_count]->id;
-                    return ['event_id' => $attributes["code"] == PermissionType::Organiser->value ? $eventId : null];
-                }
+            ->count(1000)
+            ->has(
+                Permission::factory()
+                    ->count($permissions_count)
+                    ->state(
+                        function ($attributes) use ($events, $permissions_count, &$i, $events_count) {
+                            $eventId = $events[rand(0, round(($events_count) / $permissions_count) - 1) + ($i < $permissions_count - 1 ? ++$i : $i = 0) * $events_count / $permissions_count]->id;
+                            return ['event_id' => $attributes["code"] == PermissionType::Organiser->value ? $eventId : null];
+                        }
+                    )
             )
-        )
-        ->create();
+            ->create();
     }
 }

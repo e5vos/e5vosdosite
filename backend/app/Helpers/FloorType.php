@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Helpers;
+
 /**
  * App\Helpers\PermissionType
  * DO NOT CHANGE, WILL FUCK UP DB
  */
-enum FloorType: string {
+enum FloorType: string
+{
     case basement = 'alagsor';
     case ground = 'földszint';
     case half = 'félemelet';

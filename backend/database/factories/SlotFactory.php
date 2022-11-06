@@ -23,7 +23,7 @@ class SlotFactory extends Factory
         $starts_at = fake()->dateTimeBetween('now', '+1 year');
         $type = fake()->randomElement(array_column(SlotType::cases(), 'value'));
         return [
-            'name' => fake()->word().' '.$type,
+            'name' => fake()->word() . ' ' . $type,
             'starts_at' => $starts_at,
             'ends_at' => fake()->dateTimeBetween($starts_at, '+1 year'),
             'slot_type' => $type,

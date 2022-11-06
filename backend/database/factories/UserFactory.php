@@ -20,14 +20,14 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $ejgclass = fake()->randomelement(array_column(EjgClassType::cases(),'value'));
+        $ejgclass = fake()->randomelement(array_column(EjgClassType::cases(), 'value'));
         return [
             'name' => fake()->name('male'),
-            'email' => fake()->unique()->safeEmail() ,
-            'google_id' => rand(0,10) > 3 ? fake()->unique()->asciify('*******************************') : null,
+            'email' => fake()->unique()->safeEmail(),
+            'google_id' => rand(0, 10) > 3 ? fake()->unique()->asciify('*******************************') : null,
             'ejg_class' => $ejgclass,
-            'img_url' => rand(0,10) > 7 ? fake()->imageUrl() : null,
-            'e5code' => rand(0,10) < 9 ? fake()->unique()->regexify('20([1-2][0-9])([A-F]{1})([0-9]{2})EJG([0-9]{3})') : null,
+            'img_url' => rand(0, 10) > 7 ? fake()->imageUrl() : null,
+            'e5code' => rand(0, 10) < 9 ? fake()->unique()->regexify('20([1-2][0-9])([A-F]{1})([0-9]{2})EJG([0-9]{3})') : null,
         ];
     }
 }

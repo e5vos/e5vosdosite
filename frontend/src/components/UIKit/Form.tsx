@@ -49,9 +49,16 @@ const Form = ({
 };
 
 const Check = ({
+  className,
   ...rest
 }: HTMLInputProps<HTMLInputElement> & { type?: never }) => {
-  return <input {...rest} type="checkbox" className="disabled:bg-gray-300" />;
+  return (
+    <input
+      {...rest}
+      type="checkbox"
+      className={`disabled:bg-gray-300 ${className}`}
+    />
+  );
 };
 
 const Select = ({ children, ...rest }: HTMLInputProps<HTMLSelectElement>) => {

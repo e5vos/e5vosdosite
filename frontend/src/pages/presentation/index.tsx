@@ -81,18 +81,16 @@ const PresentationsPage = () => {
 
       <div className="flex flex-row items-center mx-auto max-w-6xl justify-center">
         <ButtonGroup className="mx-2">
-          {Array(slots.length)
-            .fill(null)
-            .map((_, index) => (
-              <Button
-                variant="secondary"
-                key={index}
-                disabled={index === currentSlot}
-                onClick={() => setcurrentSlot(index)}
-              >
-                {index + 1}.előadássáv
-              </Button>
-            ))}
+          {slots.map((slot, index) => (
+            <Button
+              variant="secondary"
+              key={index}
+              disabled={index === currentSlot}
+              onClick={() => setcurrentSlot(index)}
+            >
+              {slot.name}
+            </Button>
+          ))}
         </ButtonGroup>
         <div className="flex flex-row items-center">
           <div>Általad választott előadás:</div>

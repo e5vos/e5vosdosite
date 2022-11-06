@@ -1,20 +1,23 @@
+import Gate, { gated } from "components/Gate";
 import PresentationCard from "components/PresentationCard";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
+import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
 import { api } from "lib/api";
+import { isTeacher } from "lib/gates";
 import { useState } from "react";
-
-const slotCount = 3;
 
 const PresentationManagePage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
+  const { data: slots } = useGetPresentationSlotsQuery();
+  console.log(slots);
   const {
     data: presentations,
     isLoading: isEventsLoading,
     isFetching: isEventsFetching,
-  } = api.useGetEventsQuery(currentSlot);
+  } = api.useGetEventsQuery((slots && slots[currentSlot]?.id) ?? -1);
 
   const [searchterm, setSearchterm] = useState("");
 
@@ -34,7 +37,7 @@ const PresentationManagePage = () => {
           />
         </Form.Group>
         <ButtonGroup className="mx-2">
-          {Array(slotCount)
+          {Array(slots?.length)
             .fill(null)
             .map((_, index) => (
               <Button
@@ -60,4 +63,5 @@ const PresentationManagePage = () => {
     </>
   );
 };
-export default PresentationManagePage;
+
+export default gated(PresentationManagePage, isTeacher);

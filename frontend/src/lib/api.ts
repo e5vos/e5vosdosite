@@ -9,7 +9,11 @@ import {
   Team,
   TeamMembership,
   User,
+  isUserAttendance,
+  isUserAttendancePivot,
+  Slot,
 } from "types/models";
+import { isArray } from "util";
 import refreshCSRF from "./csrf";
 import routeSwitcher from "./route";
 import { RootState } from "./store";
@@ -41,6 +45,7 @@ export const api = createApi({
     "TeamActivity",
     "User",
     "EventParticipants",
+    "Slot",
   ],
   endpoints: (builder) => ({
     getEvents: builder.query<Event[], number | void>({
@@ -48,6 +53,10 @@ export const api = createApi({
         slot
           ? routeSwitcher("events.slot", { slot_id: slot })
           : routeSwitcher("events.index"),
+      transformResponse: (response: any) => {
+        if (!Array.isArray(response)) return [response];
+        else return response;
+      },
       providesTags: (result) => {
         if (result) {
           return [
@@ -88,9 +97,38 @@ export const api = createApi({
       query: (id) => routeSwitcher("event.show", id),
       providesTags: (result, error, id) => [{ type: "Event", id }],
     }),
-    getEventParticipants: builder.query<Array<User | Team>, string>({
+    getEventParticipants: builder.query<Array<Attendance>, string>({
       query: (id) => routeSwitcher("event.participants", id),
       providesTags: (result, error, id) => [{ type: "EventParticipants", id }],
+    }),
+    getSlots: builder.query<Array<Slot>, void>({
+      query: () => routeSwitcher("slot.index"),
+      transformResponse: (response: any) => {
+        if (!Array.isArray(response)) return [response];
+        else return response;
+      },
+      providesTags: (result) => {
+        if (result) {
+          return [
+            ...result.map(({ id }) => ({ type: "Slot", id: id } as const)),
+            { type: "Slot", id: "LIST" },
+          ];
+        } else return [{ type: "Slot", id: "LIST" }];
+      },
+    }),
+    toggleAttendance: builder.mutation<Attendance, Pick<Attendance, "pivot">>({
+      query: (data) => {
+        const params = isUserAttendancePivot(data.pivot)
+          ? { user_id: data.pivot.user_id }
+          : { team_code: data.pivot.team_code };
+        return {
+          url: routeSwitcher("event.attend", {
+            eventId: data.pivot.event_id,
+          }),
+          method: "POST",
+          params: params,
+        };
+      },
     }),
     createEvent: builder.mutation<Event, Event>({
       query: (event) => ({

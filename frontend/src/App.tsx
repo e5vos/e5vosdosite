@@ -8,6 +8,8 @@ import React, { useEffect } from "react";
 import Loader from "components/UIKit/Loader";
 import PresentationAttendancePage from "pages/presentation/manage/attendance";
 import refreshCSRF from "lib/csrf";
+import Gate from "components/Gate";
+import { isTeacher } from "lib/gates";
 
 const Home = React.lazy(() => import("pages/Home"));
 const Error = React.lazy(() => import("components/Error"));
@@ -23,9 +25,7 @@ const LegalPage = React.lazy(() => import("pages/Legal"));
 const PresentationManagePage = React.lazy(
   () => import("pages/presentation/manage")
 );
-
 const AttendanceSheet = React.lazy(() => import("pages/attendance"));
-
 function App() {
   useEffect(() => {
     refreshCSRF();

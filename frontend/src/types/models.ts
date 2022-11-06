@@ -6,8 +6,7 @@ export interface Permission {
 
 export interface User {
   e5code: string;
-  first_name: string;
-  last_name: string;
+  name: string;
   id: number;
   class: string;
   activity?: IndivitualActivity[];
@@ -15,33 +14,47 @@ export interface User {
   permissions?: Permission[];
 }
 
-export const isUser = (user: any): user is User => {
-  return user.first_name !== undefined;
+export const isTeam = (team: any): team is Team => {
+  return team.code !== undefined;
+};
+interface BasicAttendance {
+  is_present: boolean;
+  rank: number | null;
+  event_id: number;
+}
+export interface UserAttendancePivot extends BasicAttendance {
+  user_id: number;
+}
+export interface TeamAttendancePivot extends BasicAttendance {
+  team_code: string;
+}
+
+export type TeamAttendance = Team & { pivot: TeamAttendancePivot };
+export type UserAttendance = User & { pivot: UserAttendancePivot };
+
+export type Attendance = UserAttendance | TeamAttendance;
+export const isTeamAttendancePivot = (
+  attendance: any
+): attendance is TeamAttendancePivot => {
+  return attendance.team_code !== undefined;
+};
+export const isUserAttendancePivot = (
+  attendance: any
+): attendance is UserAttendancePivot => {
+  return attendance.user_id !== undefined;
 };
 
-interface BasicAttendance {
-  present: boolean;
-  created_at: string;
-  updated_at: string;
-  scan_at: string;
-  place?: number;
-  point: number;
-}
-export interface IndivitualAttendance extends BasicAttendance {
-  user: User;
-}
-export interface TeamAttendance extends BasicAttendance {
-  team: Team;
-  users: User[];
-}
+export const isUserAttendance = (
+  attendance: any
+): attendance is UserAttendance => {
+  return isUserAttendancePivot(attendance.pivot);
+};
 
 export const isTeamAttendance = (
-  attendance: IndivitualAttendance | TeamAttendance
+  attendance: any
 ): attendance is TeamAttendance => {
-  return (attendance as TeamAttendance).team !== undefined;
+  return isTeamAttendancePivot(attendance.pivot);
 };
-
-export type Attendance = IndivitualAttendance | TeamAttendance;
 
 export type UserRole = "operator" | "admin" | "user";
 export type TeamMemberRole = "captain" | "member" | "invited";
@@ -57,12 +70,6 @@ export interface BaseActivity {
   event: Event;
   attendance: Attendance;
 }
-export interface IndivitualActivity extends BaseActivity {
-  attendance: IndivitualAttendance;
-}
-export interface TeamActivity extends BaseActivity {
-  attendance: TeamAttendance;
-}
 
 export type Activity = IndivitualActivity | TeamActivity;
 
@@ -71,6 +78,7 @@ export interface Slot {
   start: string;
   end: string;
   events?: Event[];
+  slot_type: "Előadássáv" | "Programsáv";
 }
 
 export interface Event {

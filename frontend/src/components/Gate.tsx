@@ -1,23 +1,36 @@
 import useUser from "hooks/useUser";
 import { User } from "types/models";
 import Error from "./Error";
+import { ReactNode } from "react";
+import Loader from "./UIKit/Loader";
+import { GateFunction } from "lib/gates";
 
-const Gate = <T = any,>({
+const Gate = ({
   children,
   gate,
   params,
   user: paramUser,
 }: {
-  children: React.ReactNode;
-  gate: (user: User, ...rest: T[]) => boolean;
+  children: ReactNode;
+  gate: GateFunction;
   user?: User;
-  params: T[];
+  params?: any[];
 }) => {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
   const usedUser = paramUser ?? user;
+  if (isLoading) return <Loader />;
   if (!usedUser) return <Error code={401} />;
-  if (!gate(usedUser, ...params)) return <Error code={403} />;
-  else return children;
+  if (params ? !gate(usedUser, ...params) : !gate(usedUser))
+    return <Error code={403} message={gate.message ?? "Nincs jogosultságod"} />;
+  return <>{children}</>;
 };
 
 export default Gate;
+
+export const gated = (Component: React.FC, gate: GateFunction) => {
+  return () => (
+    <Gate gate={gate}>
+      <Component />
+    </Gate>
+  );
+};

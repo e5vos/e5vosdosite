@@ -1,42 +1,76 @@
+import { fetchBaseQuery } from "@reduxjs/toolkit/dist/query";
+import Error from "components/Error";
+import Gate, { gated } from "components/Gate";
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
+import useGate from "hooks/useGate";
+import useUser from "hooks/useUser";
 import { api } from "lib/api";
+import { isTeacher } from "lib/gates";
 import { useParams } from "react-router-dom";
-import { isUser, User } from "types/models";
+import {
+  Attendance,
+  isUser,
+  isUserAttendance,
+  isUserAttendancePivot,
+  User,
+} from "types/models";
+import { MouseEventHandler } from "react";
 const AttendancePage = () => {
   const { eventid } = useParams<{ eventid: string }>();
-  const { data: event, isFetching: isEventFetching } = api.useGetEventQuery(
+  const { data: event, isLoading: isEventLoading } = api.useGetEventQuery(
     eventid ?? ""
   );
-  const { data: participants, isFetching: isParticipantsFetching } =
-    api.useGetEventParticipantsQuery(eventid ?? "");
+  const {
+    data: participantsData,
+    isLoading: isParticipantsLoading,
+    isFetching: isParticipantsFetching,
+    error: participantsError,
+    refetch,
+  } = api.useGetEventParticipantsQuery(eventid ?? "");
+
+  const participants = participantsData
+    ?.slice()
+    .sort((a, b) => (a.name > b.name ? 1 : -1));
+
+  const [toggleAPI, { isLoading }] = api.useToggleAttendanceMutation();
 
   if (!eventid) return <>Error</>;
-  if (isEventFetching || isParticipantsFetching) return <Loader />;
+  if (isEventLoading || isParticipantsLoading) return <Loader />;
+
+  const toggle =
+    (attending: Attendance): MouseEventHandler =>
+    async (e) => {
+      e.preventDefault();
+      const res = await toggleAPI(attending);
+      if ("error" in res) {
+        alert("Error");
+        refetch();
+      } else {
+        alert("Siker");
+      }
+    };
+
   return (
     <div className="container mx-auto ">
       <h1>Jelenléti Ív - {event?.name}</h1>
       <div>
-        <ul>
-          {participants?.map((attending) => (
-            <li>
-              {isUser(attending)
-                ? `${attending.first_name} ${attending.last_name}`
-                : attending.name}
-              <Form.Check checked={attendance.present} />
+        <ul className="border">
+          {participants?.map((attending, index) => (
+            <li key={index}>
+              {attending.name} -{" "}
+              <Form.Check
+                defaultChecked={attending.pivot.is_present}
+                onClick={toggle(attending)}
+                disabled={isLoading || isParticipantsFetching}
+              />
             </li>
           ))}
         </ul>
       </div>
-      <div className="flex flex-row">
-        <Form.Group>
-          <Form.Label>Rossz előadáson vett részt</Form.Label>
-          <Form.Control type="text" />
-        </Form.Group>
-        <Button type="submit">OK</Button>
-      </div>
     </div>
   );
 };
-export default AttendancePage;
+
+export default gated(AttendancePage, isTeacher);

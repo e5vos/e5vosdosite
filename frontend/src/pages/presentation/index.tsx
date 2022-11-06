@@ -46,7 +46,6 @@ const PresentationsPage = () => {
       console.error("ERROR", err);
     }
   };
-
   if (!slots || !selectedPresentations || !presentations) return <Loader />;
 
   return (

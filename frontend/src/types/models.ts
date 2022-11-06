@@ -88,8 +88,8 @@ export interface Event {
   organiser: string;
   capacity: number;
   attendees?: Attendance[];
-  slot: Slot;
-  slot_id: number;
+  slot?: Slot;
+  slot_id?: number;
   location_id: number | null;
   location?: Location;
   //TODO
@@ -100,5 +100,7 @@ export interface Location {
   name: string;
 }
 
-export interface Presentation extends Event {}
+export interface Presentation extends Event {
+  slot_id: number;
+}
 export interface Challange extends Event {}

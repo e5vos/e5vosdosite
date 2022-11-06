@@ -23,6 +23,8 @@ export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BACKEND,
     prepareHeaders: async (headers, { getState }) => {
+      headers.set("Accept", "application/json");
+
       const state = getState() as RootState;
 
       const token = state.auth.token;
@@ -137,7 +139,7 @@ export const api = createApi({
         params: event,
       }),
       invalidatesTags: (result) => [
-        { type: "Event", id: `LIST${result?.slot.id}` },
+        { type: "Event", id: `LIST${result?.slot_id}` },
         { type: "Event", id: "LIST" },
       ],
     }),
@@ -199,6 +201,9 @@ export const api = createApi({
         method: "PATCH",
         params: { e5code: code },
       }),
+    }),
+    getFreeUsers: builder.query<User[], number>({
+      query: (slot) => routeSwitcher("users.free", { slot_id: slot }),
     }),
   }),
 });

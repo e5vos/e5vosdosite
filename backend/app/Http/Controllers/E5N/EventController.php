@@ -37,7 +37,7 @@ class EventController extends Controller
     {
         return !isset($slotId) ?
             Cache::rememberForever('e5n.events.all', fn () => Event::all()) :
-            Cache::rememberForever('e5n.events'.$slotId, fn () => Event::where('slot_id', $slotId)->get());
+            Cache::rememberForever('e5n.events.slot.'.$slotId, fn () => Event::where('slot_id', $slotId)->get());
     }
 
     /**
@@ -136,12 +136,12 @@ class EventController extends Controller
      */
     public function signup(Request $request, $eventId)
     {
-        $event = Cache::rememberForever('e5n.events'.$eventId, fn() => Event::findOrFail($eventId));
+        $event = Cache::rememberForever('e5n.events.'.$eventId, fn() => Event::findOrFail($eventId));
         $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.mypresentations'.$attender->id);
-        Cache::put('e5n.events'.$event->id.'signups', $event->attendances()->get());
+        Cache::put('e5n.events-'.$event->id.'signups', $event->attendances()->get());
         return response($attender->signUp($event), 201);
     }
 

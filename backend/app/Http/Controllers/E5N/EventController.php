@@ -140,7 +140,7 @@ class EventController extends Controller
         $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forget('e5n.events.mypresentations'.$attender->id);
+        Cache::forget('e5n.events.mypresentations.'.($attender->e5code ?? $attender->code));
         Cache::put('e5n.events.'.$event->id.'.signups', $event->attendances()->get());
         return response($attender->signUp($event), 201);
     }
@@ -151,12 +151,12 @@ class EventController extends Controller
     public function unsignup(Request $request, $eventId)
     {
         $attender = strlen($request->attender) == 13 ? 'user_id' : 'team_id';
-        $attenderCode = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail()->id : $request->attender;
-        $attendance = Attendance::where('event_id', $eventId)->where($attender, $attenderCode)->firstOrFail();
+        $attenderId = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail()->id : $request->attender;
+        $attendance = Attendance::where('event_id', $eventId)->where($attender, $attenderId)->firstOrFail();
         $attendance->delete();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forget('e5n.events.mypresentations'.$attender);
+        Cache::forget('e5n.events.mypresentations.'.$request->attender);
         Cache::forget('e5n.events.'.$eventId.'.signups');
         return response("", 204);
     }
@@ -190,7 +190,7 @@ class EventController extends Controller
     {
         $user = User::findOrFail($request->user()->id)->load('presentations');
         return Cache::rememberForever(
-            'e5n.events.mypresentations.'.$user->id,
+            'e5n.events.mypresentations.'.$user->e5code,
             fn () => $user->presentations
         );
     }

@@ -169,14 +169,21 @@ export const api = createApi({
         /** TODO: OPTIMISTIC UPDATE */
       },
     }),
+    cancelSignUp: builder.mutation<
+      void,
+      { attender: string; event: Pick<Event, "id"> }
+    >({
+      query: (body) => ({
+        url: routeSwitcher("event.signup", { id: body.event.id }),
+        method: "DELETE",
+        params: { attender: body.attender },
+      }),
+    }),
     getTeams: builder.query<Team[], void>({
       query: () => routeSwitcher("teams"),
     }),
     getTeam: builder.query<Team, string>({
       query: (teamcode) => routeSwitcher("team", { team: teamcode }),
-    }),
-    getTeamActivity: builder.query<TeamActivity[], string>({
-      query: (teamcode) => routeSwitcher("team.activity", { team: teamcode }),
     }),
     createTeam: builder.mutation<Team, Pick<Team, "name" | "description">>({
       query: (data) => ({

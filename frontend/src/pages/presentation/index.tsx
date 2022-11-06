@@ -22,28 +22,43 @@ const PresentationsPage = () => {
     isFetching: isEventsFetching,
   } = api.useGetEventsQuery((slots && slots[currentSlot]?.id) ?? -1);
   const [signUp, { isLoading: signupInProgress }] = api.useSignUpMutation();
+  const [cancelSignup, { isLoading: cancelSignupInProgress }] =
+    api.useCancelSignUpMutation();
 
   const { user } = useUser();
   const signUpAction = async (presentation: Presentation) => {
-    console.log("SIGNUP", presentation);
     if (signupInProgress) {
-      console.log("SIGNUP IN PROGRESS");
       return;
     }
     try {
       if (!user || !user.e5code) {
         alert("Please enter your code first");
-        console.log(user);
         return;
       }
       const attendance = await signUp({
         attender: user.e5code,
         event: presentation,
       }).unwrap();
-      console.log("ATTENDANCE", attendance);
+      refetchSelected();
+    } catch (err) {}
+  };
+
+  const cancelSignupAction = async (presentation: Presentation) => {
+    if (cancelSignupInProgress) {
+      return;
+    }
+    try {
+      if (!user || !user.e5code) {
+        alert("Please enter your code first");
+        return;
+      }
+      await cancelSignup({
+        attender: user.e5code,
+        event: presentation,
+      }).unwrap();
       refetchSelected();
     } catch (err) {
-      console.error("ERROR", err);
+      alert("Jelentkezés törlése sikertelen");
     }
   };
 
@@ -84,8 +99,19 @@ const PresentationsPage = () => {
           <div className="mx-2 px-6 bg-emerald-700 py-2 rounded-2xl">
             {isMyPresentationsFetching ? (
               <Loader />
+            ) : selectedPresentation ? (
+              <>
+                {selectedPresentation.name} -{" "}
+                <Button
+                  variant="danger"
+                  onClick={() => cancelSignupAction(selectedPresentation)}
+                  disabled={cancelSignupInProgress}
+                >
+                  Törlés
+                </Button>
+              </>
             ) : (
-              selectedPresentation?.name ?? "Nincs előadás kiválasztva"
+              "Nincs előadás kiválasztva"
             )}
           </div>
         </div>

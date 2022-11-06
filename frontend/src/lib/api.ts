@@ -116,11 +116,11 @@ export const api = createApi({
         } else return [{ type: "Slot", id: "LIST" }];
       },
     }),
-    toggleAttendance: builder.mutation<Attendance, Pick<Attendance, "pivot">>({
+    toggleAttendance: builder.mutation<Attendance, Attendance>({
       query: (data) => {
-        const params = isUserAttendancePivot(data.pivot)
-          ? { user_id: data.pivot.user_id }
-          : { team_code: data.pivot.team_code };
+        const params = {
+          attender: isUserAttendance(data) ? data.e5code : data.code,
+        };
         return {
           url: routeSwitcher("event.attend", {
             eventId: data.pivot.event_id,

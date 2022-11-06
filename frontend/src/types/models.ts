@@ -9,7 +9,6 @@ export interface User {
   name: string;
   id: number;
   class: string;
-  activity?: IndivitualActivity[];
   teams?: Team[];
   permissions?: Permission[];
 }
@@ -47,7 +46,7 @@ export const isUserAttendancePivot = (
 export const isUserAttendance = (
   attendance: any
 ): attendance is UserAttendance => {
-  return isUserAttendancePivot(attendance.pivot);
+  return attendance.e5code !== undefined;
 };
 
 export const isTeamAttendance = (
@@ -64,7 +63,6 @@ export interface Team {
   code: string;
   description: string;
   members: TeamMembership[];
-  activity?: TeamActivity[];
 }
 export interface BaseActivity {
   event: Event;

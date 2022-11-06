@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\E5N;
 
+use App\Helpers\PermissionType;
 use App\Http\Controllers\Controller;
-use App\Models\Slot;
+use App\Models\{
+    Slot,
+    User,
+};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -48,5 +52,15 @@ class SlotController extends Controller
         $slot->delete();
         Cache::forget('e5n.slot.all');
         return Cache::pull('e5n.slot.'.$slot->id);
+    }
+
+    /**
+     * return all students who are not busy in this slot
+     */
+    public function freeStudents($slotId)
+    {
+        return User::whereRelation('permissions', 'code', PermissionType::Student->value)->whereDoesntHave('events', function ($query) use ($slotId) {
+            $query->where('slot_id', $slotId);
+        })->get();
     }
 }

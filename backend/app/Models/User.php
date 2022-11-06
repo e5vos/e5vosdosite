@@ -162,9 +162,9 @@ class User extends Authenticable
     /**
      * Determine if the user has an attendance in the slot
      */
-    public function isBusy(Slot $slot): bool
+    public function isBusy(Slot|int $slot): bool
     {
-        return $this->signups()->where('slot_id', $slot->id)->count() > 0;
+        return $this->events()->where('slot_id', $slot->id ?? $slot)->count() > 0;
     }
 
     /**

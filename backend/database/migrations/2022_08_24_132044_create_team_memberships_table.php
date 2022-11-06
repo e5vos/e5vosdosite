@@ -8,6 +8,7 @@ use App\Models\{
     User,
     Team
 };
+
 return new class extends Migration
 {
     /**

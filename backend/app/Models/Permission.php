@@ -26,7 +26,7 @@ class Permission extends Model
      */
     protected $table = 'permissions';
 
-    protected $primaryKey = ['user_id','event_id', 'code'];
+    protected $primaryKey = ['user_id', 'event_id', 'code'];
 
     protected $fillable = [
         'user_id',

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class EventFactory extends Factory
 {
-   protected $model = Event::class;
+    protected $model = Event::class;
 
     /**
      * Define the model's default state.
@@ -30,7 +30,7 @@ class EventFactory extends Factory
             'capacity' =>  fake()->boolean() ? null : rand(1, 30),
             'slot_id' => null,
             'img_url' => rand(0, 10) > 7 ? fake()->imageUrl() : null,
-            'signup_type' => fake()->randomElement(['team','user', 'team_user', null]),
+            'signup_type' => fake()->randomElement(['team', 'user', 'team_user', null]),
         ];
     }
 }

@@ -27,8 +27,8 @@ return [
 
     'enabled_overrides' => [
         'production' => false,
-//        'testing' => false,
-//        'local' => false,
+        //        'testing' => false,
+        //        'local' => false,
     ],
 
     /*
@@ -53,7 +53,7 @@ return [
         \JKocik\Laravel\Profiler\Trackers\ViewsTracker::class, // Views tab
         \JKocik\Laravel\Profiler\Trackers\EventsTracker::class, // Events tab
         \JKocik\Laravel\Profiler\Trackers\QueriesTracker::class, // Queries tab
-//        \JKocik\Laravel\Profiler\Trackers\RedisTracker::class, // Redis tab (from Laravel 5.7)
+        //        \JKocik\Laravel\Profiler\Trackers\RedisTracker::class, // Redis tab (from Laravel 5.7)
         \JKocik\Laravel\Profiler\Trackers\AuthTracker::class, // Auth tab
         \JKocik\Laravel\Profiler\Trackers\ExceptionTracker::class, // Exception tab
     ],

@@ -37,18 +37,16 @@ const PresentationManagePage = () => {
           />
         </Form.Group>
         <ButtonGroup className="mx-2">
-          {Array(slots?.length)
-            .fill(null)
-            .map((_, index) => (
-              <Button
-                variant="secondary"
-                key={index}
-                disabled={index === currentSlot}
-                onClick={() => setcurrentSlot(index)}
-              >
-                {index + 1}.előadássáv
-              </Button>
-            ))}
+          {slots?.map((slot, index) => (
+            <Button
+              variant="secondary"
+              key={index}
+              disabled={index === currentSlot}
+              onClick={() => setcurrentSlot(index)}
+            >
+              {slot.name}
+            </Button>
+          ))}
         </ButtonGroup>
       </div>
       <div className="grid grid-cols-4 gap-2">

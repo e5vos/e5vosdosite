@@ -19,12 +19,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('team_member_attendances', function (Blueprint $table) {
-            $table->primary(['user_id','attendance_id']);
+            $table->primary(['user_id', 'attendance_id']);
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Attendance::class);
             $table->boolean('is_present')->default(false);
             $table->timestamps();
-
         });
     }
 

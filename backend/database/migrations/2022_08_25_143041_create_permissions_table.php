@@ -7,6 +7,7 @@ use App\Models\{
     Event,
     User
 };
+
 return new class extends Migration
 {
     /**

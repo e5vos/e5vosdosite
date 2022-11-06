@@ -32,6 +32,6 @@ class EventSignup
      */
     public function broadcastOn()
     {
-        return new Channel('event-signup-'.$this->event->slot_id);
+        return new Channel('event-signup-' . $this->event->slot_id);
     }
 }

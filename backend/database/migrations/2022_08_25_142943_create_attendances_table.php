@@ -8,6 +8,7 @@ use App\Models\{
     Team,
     Event
 };
+
 return new class extends Migration
 {
     /**

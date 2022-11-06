@@ -40,8 +40,8 @@ class Attendance extends Model
 
 
     /**
-    * toggle the presence of the attendee at the event
-    */
+     * toggle the presence of the attendee at the event
+     */
     public function togglePresent(): void
     {
         $this->is_present = !$this->is_present;
@@ -78,6 +78,4 @@ class Attendance extends Model
     {
         return $this->belongsTo(Event::class);
     }
-
-
 }

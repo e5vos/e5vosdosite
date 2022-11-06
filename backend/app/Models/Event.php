@@ -71,10 +71,10 @@ class Event extends Model
         'slot',
     ];
 
-    public function occupancy() : Attribute
+    public function occupancy(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->visitorcount(),
+            get: fn () => $this->visitorcount(),
         )->shouldCache();
     }
 
@@ -90,7 +90,8 @@ class Event extends Model
      * Get currently running events
      *
      */
-    public static function currentEvents(){
+    public static function currentEvents()
+    {
         return Event::where(fn ($query) => Event::current($query));
     }
 
@@ -182,16 +183,17 @@ class Event extends Model
         if (!$this->slot()->where('slot_type', '!=', SlotType::presentation->value)->get()) {
             throw new NotPresentationException();
         }
-        $availalbeStudents = User::whereDoesntHave('events', function($query){
-            $query->where('slot',$this->slot);
+        $availalbeStudents = User::whereDoesntHave('events', function ($query) {
+            $query->where('slot', $this->slot);
         })->limit($this->capacity - $this->occupancy)->get();
         foreach ($availalbeStudents as $student) {
             $student->signUp($this);
         }
     }
 
-    public function addOrganiser(User $user) {
-        if (!$this->organisers()->get()->contains($user)){
+    public function addOrganiser(User $user)
+    {
+        if (!$this->organisers()->get()->contains($user)) {
             $user->permissions()->create([
                 'event_id' => $this->id,
                 'permission' => PermissionType::Organiser,
@@ -199,7 +201,8 @@ class Event extends Model
         }
     }
 
-    public function removeOrganiser(User $user) {
+    public function removeOrganiser(User $user)
+    {
         $this->permissions()->where('users_id', $user->id)->delete();
     }
 

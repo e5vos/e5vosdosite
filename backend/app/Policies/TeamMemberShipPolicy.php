@@ -27,7 +27,8 @@ class TeamMemberShipPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Team|string $team = null) {
+    public function view(User $user, Team|string $team = null)
+    {
         return $user->isInTeam($team->code ?? $team ?? request()->teamCode);
     }
 
@@ -54,7 +55,7 @@ class TeamMemberShipPolicy
         if (!request()->has('userCode') || !request()->has('promote')) {
             abort(400, 'Missing parameters');
         }
-        $team = Cache::rememberForever('e5n.teams'.request()->teamCode, fn () => Team::find(request()->teamCode)->load('members'));
+        $team = Cache::rememberForever('e5n.teams' . request()->teamCode, fn () => Team::find(request()->teamCode)->load('members'));
         if (!$team->members->pluck('e5code')->contains((request()->userCode))) {
             return false;
         }
@@ -79,7 +80,7 @@ class TeamMemberShipPolicy
         if (!request()->has('userCode')) {
             abort(400, 'Missing parameters');
         }
-        $team = Cache::rememberForever('e5n.teams'.request()->teamCode, fn () => Team::with("members")->where('code', request()->teamCode)->firstOrFail());
+        $team = Cache::rememberForever('e5n.teams' . request()->teamCode, fn () => Team::with("members")->where('code', request()->teamCode)->firstOrFail());
         if (request()->userCode === $user->e5code) {
             return $user->isLeaderOfTeam($team->code) ? $team->members->where('id', '!=', request()->userCode)->first()->pivot->role === MembershipType::Leader->value : true;
         } else {

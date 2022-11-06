@@ -79,6 +79,7 @@ export interface Slot {
   end: string;
   events?: Event[];
   slot_type: "Előadássáv" | "Programsáv";
+  name: string;
 }
 
 export interface Event {

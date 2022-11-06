@@ -54,17 +54,21 @@ const AttendancePage = () => {
 
   return (
     <div className="container ">
-      <div className="mx-auto text-center">
-        <h1>Jelenléti Ív - {event?.name}</h1>
+      <div className="mx-auto text-center w-fit">
+        <h1 className="text-lg font-bold">Jelenléti Ív - {event?.name}</h1>
         <div>
-          <ul className="border">
+          <ul className="border mb-3">
             {participants?.map((attending, index) => (
-              <li key={index}>
-                {attending.name} -{" "}
+              <li
+                key={index}
+                className="flex flex-row justify-between mx-2 my-2  align-middle"
+              >
+                <span className="mx-4">{attending.name}</span>
                 <Form.Check
                   defaultChecked={attending.pivot.is_present}
                   onClick={toggle(attending)}
                   disabled={isLoading || isParticipantsFetching}
+                  className="h-5 w-5"
                 />
               </li>
             ))}

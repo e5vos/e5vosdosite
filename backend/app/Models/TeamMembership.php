@@ -24,7 +24,7 @@ class TeamMembership extends Model
      */
     protected $table = 'team_memberships';
 
-    protected $primaryKey = ['user_id','team_id'];
+    protected $primaryKey = ['user_id', 'team_id'];
 
     public $incrementing = false;
 

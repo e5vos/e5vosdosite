@@ -29,7 +29,7 @@ class Team extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['code','name'];
+    protected $fillable = ['code', 'name'];
 
     protected $casts = [
         'code' => 'string',
@@ -74,7 +74,7 @@ class Team extends Model
     */
     public function usersAttendingEvent(Event $event): BelongsToMany
     {
-        return $this->attendances()->where('event_id',$event->id)->userInTeam();
+        return $this->attendances()->where('event_id', $event->id)->userInTeam();
     }
 
     /**
@@ -83,11 +83,12 @@ class Team extends Model
      * @param MembershipType $membershipType (optional) the type of membership to create (default: Invited)
      * @return TeamMembership newly created membership
      */
-    public function addMember(User $user, $role=MembershipType::Invited){
+    public function addMember(User $user, $role = MembershipType::Invited)
+    {
         $teamMember = new TeamMembership();
         $teamMember->team()->associate($this);
         $teamMember->user()->associate($user);
-        $teamMember->role=$role;
+        $teamMember->role = $role;
         $teamMember->save();
         return $teamMember;
     }

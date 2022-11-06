@@ -150,7 +150,6 @@ paths:
         "404":
           description: Slot not found
 
-
   /event/{eventId}:
     parameters:
       - name: eventId
@@ -214,15 +213,15 @@ paths:
       tags:
         - event
       responses:
-        '200':
+        "200":
           description: Event restored
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Event'
-        '403':
+                $ref: "#/components/schemas/Event"
+        "403":
           description: Can't restore event
-        '404':
+        "404":
           description: Event doesn't exist
   /event/{eventId}/close:
     parameters:
@@ -238,15 +237,15 @@ paths:
       tags:
         - event
       responses:
-        '200':
+        "200":
           description: Event closed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Event'
-        '403':
+                $ref: "#/components/schemas/Event"
+        "403":
           description: Can't close event
-        '404':
+        "404":
           description: Event doesn't exist
   /event/{eventId}/orgas:
     parameters:
@@ -262,17 +261,17 @@ paths:
       tags:
         - event
       responses:
-        '200':
+        "200":
           description: Event orgas
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
-        '403':
+                  $ref: "#/components/schemas/User"
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Event doesn't exist
   /event/{eventId}/participants:
     parameters:
@@ -288,17 +287,17 @@ paths:
       tags:
         - event
       responses:
-        '200':
+        "200":
           description: Event attendance
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/IndivitualAttendance'
-        '403':
+                  $ref: "#/components/schemas/IndivitualAttendance"
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Event doesn't exist
   /event/{eventId}/signup:
     parameters:
@@ -327,15 +326,15 @@ paths:
       tags:
         - event
       responses:
-        '200':
+        "200":
           description: Signup successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IndivitualAttendance'
-        '403':
+                $ref: "#/components/schemas/IndivitualAttendance"
+        "403":
           description: Can't signup for event
-        '404':
+        "404":
           description: Event doesn't exist
   /event/{eventId}/attend:
     parameters:
@@ -364,17 +363,16 @@ paths:
       tags:
         - event
       responses:
-        '200':
+        "200":
           description: Event attended
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Event'
-        '403':
+                $ref: "#/components/schemas/Event"
+        "403":
           description: Can't attend event
-        '404':
+        "404":
           description: Event doesn't exist
-
 
   /permissions/{userId}/event/{eventId}:
     parameters:
@@ -397,32 +395,31 @@ paths:
       tags:
         - event
       responses:
-        '200':
+        "200":
           description: Event orga added
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '403':
+                $ref: "#/components/schemas/User"
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Event doesn't exist
     delete:
       summary: Remove event orga
       tags:
         - event
       responses:
-        '200':
+        "200":
           description: Event orga removed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '403':
+                $ref: "#/components/schemas/User"
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Event doesn't exist
-
 
   /event/{eventId}/attendees:
     description: Event attendance management

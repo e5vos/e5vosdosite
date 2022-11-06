@@ -13,9 +13,9 @@ class TeamMemberAttendance extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['user_id','team_id'];
+    protected $fillable = ['user_id', 'team_id'];
 
-    protected $primaryKey = ['user_id','attendance_id'];
+    protected $primaryKey = ['user_id', 'attendance_id'];
 
     /**
      * toggle the presence of the attendee at the even

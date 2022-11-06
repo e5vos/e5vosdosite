@@ -8,7 +8,7 @@ const Brand = ({ href, children }: { href?: string; children: ReactNode }) => {
   const Tag = href ? "a" : "span";
   return (
     <Tag href={href} className="flex items-center">
-      <Donci />
+      <Donci fill="white" className="h-full w-12 mr-5" />
       <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
         {children}
       </span>
@@ -119,7 +119,7 @@ const Navbar = ({
               aria-controls="mobile-menu-2"
               aria-expanded="false"
             >
-              <span className="sr-only">Open main menu</span>
+              <span className="sr-only">Főmenü megnyitása</span>
               <MobileMenu />
             </Menu.Button>
             <Transition

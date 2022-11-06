@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Button from "./UIKit/Button";
 import { api } from "lib/api";
 import Loader from "./UIKit/Loader";
+import Form from "./UIKit/Form";
 
 const PresentationFillDialog = ({
   open,
@@ -14,6 +15,8 @@ const PresentationFillDialog = ({
   onClose: () => void;
   event: Event & { slot_id: number };
 }) => {
+  const [searchString, setSearchString] = useState("");
+
   const [
     trigger,
     {
@@ -64,27 +67,36 @@ const PresentationFillDialog = ({
           </Dialog.Title>
           <Dialog.Description>Lorem ipsum</Dialog.Description>
 
+          <Form.Group>
+            <Form.Label>Keresés</Form.Label>
+            <Form.Control
+              onChange={(e) => setSearchString(e.currentTarget.value)}
+            />
+          </Form.Group>
+
           <div className=" max-h-[500px] overflow-auto">
             <ul>
               {!availableStudents ? (
                 <Loader />
               ) : (
-                availableStudents.map((student, index) => (
-                  <li
-                    key={index}
-                    className="mb-3 flex flex-row justify-between"
-                  >
-                    <span>
-                      {student.name} - {student.class}
-                    </span>
-                    <Button
-                      disabled={signupInProgress}
-                      onClick={() => signUp(student)}
+                availableStudents
+                  .filter((student) => student.name.includes(searchString))
+                  .map((student, index) => (
+                    <li
+                      key={index}
+                      className="mb-3 flex flex-row justify-between"
                     >
-                      Beosztás
-                    </Button>
-                  </li>
-                ))
+                      <span>
+                        {student.name} - {student.ejg_class}
+                      </span>
+                      <Button
+                        disabled={signupInProgress}
+                        onClick={() => signUp(student)}
+                      >
+                        Beosztás
+                      </Button>
+                    </li>
+                  ))
               )}
             </ul>
           </div>

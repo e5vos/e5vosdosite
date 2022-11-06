@@ -5,22 +5,25 @@ import {
   Attendance,
   Presentation,
   Event,
-  TeamActivity,
   Team,
   TeamMembership,
   User,
   isUserAttendance,
-  isUserAttendancePivot,
   Slot,
 } from "types/models";
-import { isArray } from "util";
-import refreshCSRF from "./csrf";
 import routeSwitcher from "./route";
 import { RootState } from "./store";
 
 export const api = createApi({
   reducerPath: "e5nApi",
   baseQuery: fetchBaseQuery({
+    fetchFn(input, init?) {
+      if (input instanceof Request && input.url.includes("-1")) {
+        throw new Error("-1 in URL");
+      } else {
+        return fetch(input, init);
+      }
+    },
     baseUrl: import.meta.env.VITE_BACKEND,
     prepareHeaders: async (headers, { getState }) => {
       headers.set("Accept", "application/json");
@@ -203,7 +206,7 @@ export const api = createApi({
       }),
     }),
     getFreeUsers: builder.query<User[], number>({
-      query: (slot) => routeSwitcher("users.free", { slot_id: slot }),
+      query: (slot) => routeSwitcher("slot.free_students", { slot_id: slot }),
     }),
   }),
 });

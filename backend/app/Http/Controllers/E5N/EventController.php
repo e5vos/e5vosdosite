@@ -156,7 +156,7 @@ class EventController extends Controller
         $attendance->delete();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forget('e5n.events.mypresentations'.$attender[1]);
+        Cache::forget('e5n.events.mypresentations'.$attender);
         Cache::forget('e5n.events.'.$eventId.'.signups');
         return response("", 204);
     }

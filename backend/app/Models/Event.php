@@ -182,7 +182,7 @@ class Event extends Model
         if (!$this->slot()->where('slot_type', '!=', SlotType::presentation->value)->get()) {
             throw new NotPresentationException();
         }
-        $availalbeStudents = User::whereDoesntHave('events',function($query){
+        $availalbeStudents = User::whereDoesntHave('events', function($query){
             $query->where('slot',$this->slot);
         })->limit($this->capacity - $this->occupancy)->get();
         foreach ($availalbeStudents as $student) {

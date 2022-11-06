@@ -20,7 +20,7 @@ import { MouseEventHandler } from "react";
 const AttendancePage = () => {
   const { eventid } = useParams<{ eventid: string }>();
   const { data: event, isLoading: isEventLoading } = api.useGetEventQuery(
-    eventid ?? ""
+    eventid ?? "-1"
   );
   const {
     data: participantsData,
@@ -36,38 +36,41 @@ const AttendancePage = () => {
 
   const [toggleAPI, { isLoading }] = api.useToggleAttendanceMutation();
 
-  if (!eventid) return <>Error</>;
-  if (isEventLoading || isParticipantsLoading) return <Loader />;
+  if (isEventLoading || isParticipantsLoading || !event) return <Loader />;
 
   const toggle =
-    (attending: Attendance): MouseEventHandler =>
+    (attending: Attendance): MouseEventHandler<HTMLInputElement> =>
     async (e) => {
+      const target = e.currentTarget;
       e.preventDefault();
+
       const res = await toggleAPI(attending);
       if ("error" in res) {
         alert("Error");
-        refetch();
       } else {
-        alert("Siker");
+        target.checked = !target.checked;
       }
     };
 
   return (
-    <div className="container mx-auto ">
-      <h1>Jelenléti Ív - {event?.name}</h1>
-      <div>
-        <ul className="border">
-          {participants?.map((attending, index) => (
-            <li key={index}>
-              {attending.name} -{" "}
-              <Form.Check
-                defaultChecked={attending.pivot.is_present}
-                onClick={toggle(attending)}
-                disabled={isLoading || isParticipantsFetching}
-              />
-            </li>
-          ))}
-        </ul>
+    <div className="container ">
+      <div className="mx-auto text-center">
+        <h1>Jelenléti Ív - {event?.name}</h1>
+        <div>
+          <ul className="border">
+            {participants?.map((attending, index) => (
+              <li key={index}>
+                {attending.name} -{" "}
+                <Form.Check
+                  defaultChecked={attending.pivot.is_present}
+                  onClick={toggle(attending)}
+                  disabled={isLoading || isParticipantsFetching}
+                />
+              </li>
+            ))}
+          </ul>
+          <Button onClick={() => refetch()}>Frissítés</Button>
+        </div>
       </div>
     </div>
   );

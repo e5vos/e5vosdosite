@@ -5,9 +5,10 @@ import ButtonGroup from "components/UIKit/ButtonGroup";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
 import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
+import useUser from "hooks/useUser";
 import { api } from "lib/api";
-import { isTeacher } from "lib/gates";
-import { useState } from "react";
+import { isOperator, isTeacher } from "lib/gates";
+import { useState, useMemo } from "react";
 import { Presentation } from "types/models";
 const PresentationManagePage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
@@ -18,11 +19,15 @@ const PresentationManagePage = () => {
     isFetching: isEventsFetching,
   } = api.useGetEventsQuery((slots && slots[currentSlot]?.id) ?? -1);
 
+  const { user } = useUser();
+
   const [searchterm, setSearchterm] = useState("");
 
   const filteredpresentations = presentations?.filter((presentation) =>
     presentation.name.toLowerCase().includes(searchterm)
   );
+
+  const fillAllowed = useMemo(() => isOperator(user), [user]);
 
   return (
     <div className="mx-10">
@@ -57,6 +62,7 @@ const PresentationManagePage = () => {
               key={presentation.id}
               presentation={presentation as Presentation}
               className="mb-3 md:mb-0"
+              fillAllowed={fillAllowed}
             />
           ))
         )}

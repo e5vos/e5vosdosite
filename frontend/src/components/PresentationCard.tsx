@@ -8,9 +8,11 @@ import { useState } from "react";
 const PresentationCard = ({
   presentation,
   className,
+  fillAllowed = false,
 }: {
   presentation: Presentation;
   className?: string;
+  fillAllowed: boolean;
 }) => {
   const [isDialogOpen, setisDialogOpen] = useState(false);
 
@@ -20,13 +22,15 @@ const PresentationCard = ({
         className ?? ""
       }`}
     >
-      <PresentationFillDialog
-        event={presentation}
-        open={isDialogOpen}
-        onClose={() => {
-          setisDialogOpen(false);
-        }}
-      />
+      {fillAllowed && (
+        <PresentationFillDialog
+          event={presentation}
+          open={isDialogOpen}
+          onClose={() => {
+            setisDialogOpen(false);
+          }}
+        />
+      )}
       <div>
         <h3 className="px-2 tex-lg font-bold">{presentation.name}</h3>
         <hr />
@@ -45,13 +49,15 @@ const PresentationCard = ({
           <Button className="w-6/12" variant="success">
             <Link to={`${presentation.id}`}>Jelenléti Ív</Link>
           </Button>
-          <Button
-            className="w-6/12"
-            variant="danger"
-            onClick={() => setisDialogOpen(true)}
-          >
-            Feltöltés
-          </Button>
+          {fillAllowed && (
+            <Button
+              className="w-6/12"
+              variant="danger"
+              onClick={() => setisDialogOpen(true)}
+            >
+              Feltöltés
+            </Button>
+          )}
         </ButtonGroup>
       </div>
     </div>

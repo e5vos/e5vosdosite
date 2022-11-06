@@ -76,54 +76,55 @@ const PresentationsPage = () => {
   if (!slots || !selectedPresentations || !presentations) return <Loader />;
 
   return (
-    <div className="container mx-auto">
-      <h1 className="text-center font-bold text-5xl pb-4">
-        E5N - Előadásjelentkezés
-      </h1>
-
-      <div className="flex flex-row items-center mx-auto max-w-6xl justify-center">
-        <ButtonGroup className="mx-2">
-          {slots.map((slot, index) => (
-            <Button
-              variant="secondary"
-              key={index}
-              disabled={index === currentSlot}
-              onClick={() => setcurrentSlot(index)}
-            >
-              {slot.name}
-            </Button>
-          ))}
-        </ButtonGroup>
-        <div className="flex flex-row items-center">
-          <div>Általad választott előadás:</div>
-          <div className="mx-2 px-6 bg-emerald-700 py-2 rounded-2xl">
-            {isMyPresentationsFetching ? (
-              <Loader />
-            ) : selectedPresentation ? (
-              <>
-                {selectedPresentation.name} -{" "}
-                <Button
-                  variant="danger"
-                  onClick={() => cancelSignupAction(selectedPresentation)}
-                  disabled={cancelSignupInProgress}
-                >
-                  Törlés
-                </Button>
-              </>
-            ) : (
-              "Nincs előadás kiválasztva"
-            )}
+    <div className="mx-5">
+      <div className="container mx-auto">
+        <h1 className="text-center font-bold text-4xl max-w-f pb-4">
+          E5N - Előadásjelentkezés
+        </h1>
+        <div className="md:flex flex-row items-center mb-4 mx-auto max-w-6xl justify-center">
+          <ButtonGroup className="mx-2">
+            {slots.map((slot, index) => (
+              <Button
+                variant="secondary"
+                key={index}
+                disabled={index === currentSlot}
+                onClick={() => setcurrentSlot(index)}
+              >
+                {slot.name}
+              </Button>
+            ))}
+          </ButtonGroup>
+          <div className="md:flex flex-row items-center text-center">
+            <div>Általad választott előadás:</div>
+            <div className="mx-2 px-6 bg-emerald-700 py-2 rounded-2xl">
+              {isMyPresentationsFetching ? (
+                <Loader />
+              ) : selectedPresentation ? (
+                <>
+                  {selectedPresentation.name} -{" "}
+                  <Button
+                    variant="danger"
+                    onClick={() => cancelSignupAction(selectedPresentation)}
+                    disabled={cancelSignupInProgress}
+                  >
+                    Törlés
+                  </Button>
+                </>
+              ) : (
+                "Nincs előadás kiválasztva"
+              )}
+            </div>
           </div>
         </div>
+        <PresentationsTable
+          presentations={(presentations as Presentation[]) ?? []}
+          callback={selectedPresentation ? undefined : signUpAction}
+          disabled={
+            signupInProgress || isMyPresentationsFetching || isEventsFetching
+          }
+          isLoading={isEventsLoading}
+        />
       </div>
-      <PresentationsTable
-        presentations={(presentations as Presentation[]) ?? []}
-        callback={selectedPresentation ? undefined : signUpAction}
-        disabled={
-          signupInProgress || isMyPresentationsFetching || isEventsFetching
-        }
-        isLoading={isEventsLoading}
-      />
     </div>
   );
 };

@@ -33,7 +33,7 @@ class TeamSeeder extends Seeder
                         )->first()->id,
                     ]
                 ),
-            'members'
+            'memberships'
         )
         ->count(10)
         ->create();

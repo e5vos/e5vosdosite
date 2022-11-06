@@ -56,7 +56,7 @@ class AttendanceSeeder extends Seeder
                         ->count(count($members_attending))
                         ->sequence(
                             fn ($sequence) => [
-                                'user_id' => $members_attending[$sequence->index]->user_id,
+                                'user_id' => $members_attending[$sequence->index]->id,
                                 'attendance_id' => $teamAttendance->id,
                             ]
                         )->create();

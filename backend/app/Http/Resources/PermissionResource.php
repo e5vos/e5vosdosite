@@ -21,6 +21,8 @@ class PermissionResource extends JsonResource
             'event_id' => $this->event_id,
             'event' => new EventResource($this->whenLoaded('event')),
             'code' => $this->code,
+
+            "pivot" => $this->whenPivotLoaded($this->pivot->getTable(), fn () => $this->pivot),
         ];
     }
 }

@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\{
     Cache,
     DB,
 };
+use App\Http\Resources\EventResource;
 
 
 class EventController extends Controller
@@ -36,8 +37,8 @@ class EventController extends Controller
     public function index(int $slotId = null)
     {
         return !isset($slotId) ?
-            Cache::rememberForever('e5n.events.all', fn () => Event::all()) :
-            Cache::rememberForever('e5n.events.slot.'.$slotId, fn () => Event::where('slot_id', $slotId)->get());
+            Cache::rememberForever('e5n.events.all', fn () => EventResource::collection(Event::all())->jsonSerialize()) :
+            Cache::rememberForever('e5n.events.slot.'.$slotId, fn () => EventResource::collection(Event::where('slot_id', $slotId)->get())->jsonSerialize());
     }
 
     /**
@@ -46,6 +47,14 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
+        $slot = Slot::find($request->slot_id);
+        if (!isset($request->signup_type)) {
+            $request->signup_deadline = null;
+            $request->capacity = null;
+        } else {
+            $request->signup_deadline = $request->signup_deadline ?? $slot->starts_at;
+        }
+        if ($request->stats_at )
         $event = Event::create($request->all());
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
@@ -58,7 +67,7 @@ class EventController extends Controller
      */
     public function show(int $id)
     {
-        return Cache::rememberForever('e5n.events.'.$id, fn () => Event::findOrFail($id));
+        return Cache::rememberForever('e5n.events.'.$id, function () use ($id) {$data = new EventResource(Event::findOrFail($id)); return $data->jsonSerialize();});
     }
 
     /**
@@ -137,7 +146,11 @@ class EventController extends Controller
     public function signup(Request $request, $eventId)
     {
         $event = Cache::rememberForever('e5n.events.'.$eventId, fn() => Event::findOrFail($eventId));
-        $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail();
+        if (!is_numeric($request->attender)) {
+            $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail();
+        } else {
+            $attender = User::findOrFail($request->attender);
+        }
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.mypresentations.'.($attender->e5code ?? $attender->code));
@@ -150,8 +163,8 @@ class EventController extends Controller
      */
     public function unsignup(Request $request, $eventId)
     {
-        $attender = strlen($request->attender) == 13 ? 'user_id' : 'team_id';
-        $attenderId = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail()->id : $request->attender;
+        $attender = strlen($request->attender) == 13 || is_numeric($request->attender) ? 'user_id' : 'team_code';
+        $attenderId = $attender === 'user_id' && !is_numeric($request->attender) ? User::where('e5code', $request->attender)->firstOrFail()->id : $request->attender;
         $attendance = Attendance::where('event_id', $eventId)->where($attender, $attenderId)->firstOrFail();
         $attendance->delete();
         Cache::forget('e5n.events.all');
@@ -167,7 +180,7 @@ class EventController extends Controller
     public function attend(Request $request, $eventId)
     {
         $event = Cache::rememberForever('e5n.events'.$eventId, fn()=> Event::findOrFail($eventId));
-        $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail();
+        $attender = is_numeric($request->attender) ? User::findOrFail($request->attender) : (strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail());
         Cache::put('e5n.events.'.$event->id.'.signups', $event->signuppers());
         return response($attender->attend($event), 200);
     }

@@ -26,6 +26,8 @@ use Illuminate\Support\Facades\{
 };
 use App\Http\Resources\EventResource;
 use App\Http\Resources\SlotResource;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\TeamResource;
 
 class EventController extends Controller
 {
@@ -174,7 +176,8 @@ class EventController extends Controller
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.mypresentations.'.($attender->e5code ?? $attender->code));
-        Cache::put('e5n.events.'.$event->id.'.signups', AttendanceResource::collection($event->attendances()->get())->jsonSerialize());
+        Cache::put('e5n.events.'.$event->id.'.signups', UserResource::collection($event->users()->get())->merge(TeamResource::collection($event->teams()->get()))->jsonSerialize());
+        Cache::forget('e5n.events.'.$event->id);
         return response($attender->signUp($event), 201);
     }
 
@@ -191,6 +194,7 @@ class EventController extends Controller
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.mypresentations.'.$request->attender);
         Cache::forget('e5n.events.'.$eventId.'.signups');
+        Cache::forget('e5n.events.'.$eventId);
         return response("", 204);
     }
 
@@ -201,7 +205,7 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($eventId);
         $attender = is_numeric($request->attender) ? User::findOrFail($request->attender) : (strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail());
-        Cache::put('e5n.events.'.$event->id.'.signups', $event->signuppers());
+        Cache::put('e5n.events.'.$event->id.'.signups', UserResource::collection($event->users())->merge(TeamResource::collection($event->teams()))->jsonSerialize());
         return response($attender->attend($event), 200);
     }
 
@@ -212,7 +216,10 @@ class EventController extends Controller
     {
         return Cache::rememberForever(
             'e5n.events.'.$eventId.'.signups',
-            fn () => Event::findOrFail($eventId)->signuppers()
+            function () use ($eventId) {
+                $event = Event::findOrFail($eventId)->load('users', 'teams');
+                return UserResource::collection($event->users)->merge(TeamResource::collection($event->teams))->jsonSerialize();
+            }
         );
     }
 

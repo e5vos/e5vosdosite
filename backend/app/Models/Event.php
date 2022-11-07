@@ -147,7 +147,7 @@ class Event extends Model
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'attendances', 'event_id', 'user_id', 'id', 'id');
+        return $this->belongsToMany(User::class, 'attendances', 'event_id', 'user_id', 'id', 'id')->withPivot('is_present', 'rank');
     }
 
     /**
@@ -155,7 +155,7 @@ class Event extends Model
      */
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Team::class, 'attendances', 'event_id', 'team_code', 'id', 'code');
+        return $this->belongsToMany(Team::class, 'attendances', 'event_id', 'team_code', 'id', 'code')->withPivot('is_present', 'rank');
     }
 
     /**

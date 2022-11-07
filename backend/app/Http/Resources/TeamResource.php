@@ -18,8 +18,8 @@ class TeamResource extends JsonResource
             "code" => $this->code,
             "name" => $this->name,
 
-            "members" => new UserResourceCollection($this->whenLoaded('members')),
-            "events" => new EventResourceCollection($this->whenLoaded('events')),
+            "members" => UserResource::collection($this->whenLoaded('members')),
+            "events" => EventResource::collection($this->whenLoaded('events')),
         ];
     }
 }

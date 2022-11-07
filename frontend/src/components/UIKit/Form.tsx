@@ -1,8 +1,30 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, FormEventHandler } from "react";
 import { HTMLInputProps } from "./helpers";
 
-const Control = ({ className, ...rest }: HTMLInputProps<HTMLInputElement>) => {
-  return <input {...rest} className={`text-black ${className ?? ""}`} />;
+const Control = ({
+  invalid,
+  className,
+  onInvalid: onInvalidCallback,
+  ...rest
+}: {
+  invalid?: boolean;
+  onInvalid?: FormEventHandler<HTMLInputElement>;
+} & HTMLInputProps<HTMLInputElement>) => {
+  const onInvalid: FormEventHandler<HTMLInputElement> = (e) => {
+    e.preventDefault();
+    onInvalidCallback?.(e);
+  };
+
+  return (
+    <input
+      pattern={invalid ? "" : undefined}
+      onInvalid={onInvalid}
+      {...rest}
+      className={`text-white bg-transparent border-b-2 border-white  invalid:border-red invalid:text-red-500 focus:border-gray-400 invalid:focus:text-white ${
+        className ?? ""
+      }`}
+    />
+  );
 };
 
 const Text = ({
@@ -10,7 +32,11 @@ const Text = ({
   children,
   ...rest
 }: HTMLInputProps<HTMLDivElement>) => {
-  return <div {...rest}>{children}</div>;
+  return (
+    <div {...rest} className={className}>
+      {children}
+    </div>
+  );
 };
 
 const Label = ({
@@ -19,7 +45,7 @@ const Label = ({
   ...rest
 }: HTMLInputProps<HTMLSpanElement>) => {
   return (
-    <span className="font-bold mb-1 mr-1 underline underline-offset-4">
+    <span className="font-bold mb-3 mr-1 underline underline-offset-4">
       {children}
     </span>
   );

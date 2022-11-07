@@ -67,6 +67,7 @@ const PresentationsPage = () => {
         event: presentation,
       }).unwrap();
       refetchSelected();
+      refetchEvents();
     } catch (err) {
       alert("Jelentkezés törlése sikertelen");
     }

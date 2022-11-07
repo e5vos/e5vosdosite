@@ -85,6 +85,7 @@ export interface Event {
   description: string;
   organiser: string;
   capacity: number;
+  occupancy: number;
   attendees?: Attendance[];
   slot?: Slot;
   slot_id?: number;

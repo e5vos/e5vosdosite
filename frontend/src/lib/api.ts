@@ -144,8 +144,9 @@ export const api = createApi({
         method: "POST",
         params: { attender: body.attender },
       }),
-      onQueryStarted: async (arg) => {
-        /** TODO: OPTIMISTIC UPDATE */
+      invalidatesTags: (result) => {
+        return [];
+        //return [{ type: "Event", id: result?.pivot.event_id } as const];
       },
     }),
     cancelSignUp: builder.mutation<

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef, Fragment } from "react";
 import PresentationsTable from "components/PresentationsTable";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
@@ -7,9 +7,12 @@ import Loader from "components/UIKit/Loader";
 import { api } from "lib/api";
 import useUser from "hooks/useUser";
 import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
+import { Transition } from "@headlessui/react";
 
 const PresentationsPage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
+  const [errorShown, setErrorShown] = useState(false);
+  const errorShownTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { data: slots } = useGetPresentationSlotsQuery();
   const {
     data: selectedPresentations,
@@ -20,12 +23,16 @@ const PresentationsPage = () => {
     data: presentations,
     isLoading: isEventsLoading,
     isFetching: isEventsFetching,
+    refetch: refetchEvents,
   } = api.useGetEventsQuery((slots && slots[currentSlot]?.id) ?? -1, {
     pollingInterval: 10000,
   });
-  const [signUp, { isLoading: signupInProgress }] = api.useSignUpMutation();
-  const [cancelSignup, { isLoading: cancelSignupInProgress }] =
-    api.useCancelSignUpMutation();
+  const [signUp, { isLoading: signupInProgress, error: signupError }] =
+    api.useSignUpMutation();
+  const [
+    cancelSignup,
+    { isLoading: cancelSignupInProgress, error: cancelSignupError },
+  ] = api.useCancelSignUpMutation();
 
   const { user } = useUser();
   const signUpAction = async (presentation: Presentation) => {
@@ -42,6 +49,7 @@ const PresentationsPage = () => {
         event: presentation,
       }).unwrap();
       refetchSelected();
+      refetchEvents();
     } catch (err) {}
   };
 
@@ -73,7 +81,61 @@ const PresentationsPage = () => {
     [currentSlot, selectedPresentations, slots]
   );
 
+  const errormsg = useMemo(() => {
+    if (signupError && "status" in signupError) {
+      const message = (signupError.data as any).message;
+      if (!message && message === "") return "Ismeretlen hiba";
+      else return message;
+    }
+  }, [signupError]);
+
+  useEffect(() => {
+    if (errormsg !== undefined) {
+      setErrorShown(true);
+      if (errorShownTimeout.current) clearTimeout(errorShownTimeout.current);
+      errorShownTimeout.current = setTimeout(() => {
+        setErrorShown(false);
+      }, 3000);
+    }
+  }, [errormsg]);
+
   if (!slots || !selectedPresentations || !presentations) return <Loader />;
+
+  const SelectField = () => {
+    return (
+      <div className="flex-1 text-center flex flex-row justify-center items-stretch gap-8">
+        <div className="flex-1">
+          <h3>Általad Választott előadás</h3>
+          <div className="rounded-lg bg-green-600 p-3 ">
+            {selectedPresentation?.name ?? "Még nem választottál előadást"}
+          </div>
+        </div>
+        <Button
+          variant="danger"
+          onClick={() => {
+            if (selectedPresentation) cancelSignupAction(selectedPresentation);
+          }}
+          disabled={!selectedPresentation || cancelSignupInProgress}
+        >
+          Törlés
+        </Button>
+      </div>
+    );
+  };
+
+  const ErrorMsgBox = () => {
+    return (
+      <div
+        className={`rounded-lg bg-red max-w-6xl mx-auto my-4 py-3 text-center transition ease-in-out delay-100 duration-500 ${
+          !errorShown && "hidden"
+        }`}
+      >
+        <h4 className="text-xl font-semibold">Hiba</h4>
+        <hr className="bg-white mx-3 shadow-md shadow-white" />
+        <p>{errormsg}</p>
+      </div>
+    );
+  };
 
   return (
     <div className="mx-5">
@@ -81,7 +143,8 @@ const PresentationsPage = () => {
         <h1 className="text-center font-bold text-4xl max-w-f pb-4">
           E5N - Előadásjelentkezés
         </h1>
-        <div className="md:flex flex-row items-center mb-4 mx-auto max-w-6xl justify-center">
+        <ErrorMsgBox />
+        <div className="md:flex flex-row items-stretch mb-4 mx-auto max-w-6xl justify-between ">
           <ButtonGroup className="mx-2">
             {slots.map((slot, index) => (
               <Button
@@ -94,27 +157,7 @@ const PresentationsPage = () => {
               </Button>
             ))}
           </ButtonGroup>
-          <div className="md:flex flex-row items-center text-center">
-            <div>Általad választott előadás:</div>
-            <div className="mx-2 px-6 bg-emerald-700 py-2 rounded-2xl">
-              {isMyPresentationsFetching ? (
-                <Loader />
-              ) : selectedPresentation ? (
-                <>
-                  {selectedPresentation.name} -{" "}
-                  <Button
-                    variant="danger"
-                    onClick={() => cancelSignupAction(selectedPresentation)}
-                    disabled={cancelSignupInProgress}
-                  >
-                    Törlés
-                  </Button>
-                </>
-              ) : (
-                "Nincs előadás kiválasztva"
-              )}
-            </div>
-          </div>
+          <SelectField />
         </div>
         <PresentationsTable
           presentations={(presentations as Presentation[]) ?? []}

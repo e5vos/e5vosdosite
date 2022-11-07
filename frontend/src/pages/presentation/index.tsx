@@ -104,7 +104,7 @@ const PresentationsPage = () => {
 
   const SelectField = () => {
     return (
-      <div className="flex-1 text-center flex flex-row justify-center items-stretch gap-8">
+      <div className="md:mx-3 flex-1 text-center flex flex-col md:flex-row justify-center items-stretch gap-4 md:gap-8">
         <div className="flex-1">
           <h3>Általad Választott előadás</h3>
           <div className="rounded-lg bg-green-600 p-3 ">
@@ -145,8 +145,8 @@ const PresentationsPage = () => {
           E5N - Előadásjelentkezés
         </h1>
         <ErrorMsgBox />
-        <div className="md:flex flex-row items-stretch mb-4 mx-auto max-w-6xl justify-between ">
-          <ButtonGroup className="mx-2">
+        <div className="md:flex flex-row items-stretch mb-4  justify-between ">
+          <ButtonGroup>
             {slots.map((slot, index) => (
               <Button
                 variant="secondary"

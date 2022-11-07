@@ -49,7 +49,7 @@ use App\Http\Resources\{
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    $user = new UserResource($request->user());
+    $user = new UserResource($request->user()->load('permissons'));
     return $user->jsonSerialize();
 })->name('user');
 

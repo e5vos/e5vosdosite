@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ReactComponent as Donci } from "assets/donci.svg";
 const Home = () => {
   return (
-    <div className="mx-4 max-h-screen">
+    <div className="w-full">
       <div className="container mx-auto">
         <div className="mx-auto max-w-fit text-center my-5">
           <h1 className="mb-3 font-bold text-6xl">Eötvös DÖ</h1>

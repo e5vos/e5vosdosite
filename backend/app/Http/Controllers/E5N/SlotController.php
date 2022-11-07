@@ -11,6 +11,7 @@ use App\Models\{
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\SlotResource;
+use App\Http\Resources\UserResource;
 
 class SlotController extends Controller
 {
@@ -63,8 +64,8 @@ class SlotController extends Controller
      */
     public function freeStudents($slotId)
     {
-        return User::whereRelation('permissions', 'code', PermissionType::Student->value)->whereDoesntHave('events', function ($query) use ($slotId) {
+        return UserResource::collection(User::whereRelation('permissions', 'code', PermissionType::Student->value)->whereDoesntHave('events', function ($query) use ($slotId) {
             $query->where('slot_id', $slotId);
-        })->get();
+        })->get())->jsonSerialise();
     }
 }

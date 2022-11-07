@@ -1,21 +1,11 @@
-import { fetchBaseQuery } from "@reduxjs/toolkit/dist/query";
-import Error from "components/Error";
-import Gate, { gated } from "components/Gate";
+import { gated } from "components/Gate";
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
-import useGate from "hooks/useGate";
-import useUser from "hooks/useUser";
 import { api } from "lib/api";
 import { isTeacher } from "lib/gates";
 import { useParams } from "react-router-dom";
-import {
-  Attendance,
-  isUser,
-  isUserAttendance,
-  isUserAttendancePivot,
-  User,
-} from "types/models";
+import { Attendance } from "types/models";
 import { MouseEventHandler } from "react";
 const AttendancePage = () => {
   const { eventid } = useParams<{ eventid: string }>();
@@ -53,10 +43,10 @@ const AttendancePage = () => {
     };
 
   return (
-    <div className="container ">
+    <div className="container mx-auto mt-2 ">
       <div className="mx-auto text-center w-fit">
-        <h1 className="text-lg font-bold">Jelenléti Ív - {event?.name}</h1>
-        <div>
+        <h1 className="text-4xl font-bold">Jelenléti Ív - {event?.name}</h1>
+        <div className="mt-4">
           <ul className="border mb-3">
             {participants?.map((attending, index) => (
               <li

@@ -18,3 +18,10 @@ export const isTeacher = gate((user) => {
     undefined
   );
 }, "Csak tanárok számára elérhető");
+
+export const isOperator = gate((user) => {
+  return (
+    user.permissions?.find((permission) => permission.code === "OPT") !==
+    undefined
+  );
+}, "Csak operátorok számára elérhető");

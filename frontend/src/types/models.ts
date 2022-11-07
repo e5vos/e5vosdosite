@@ -8,8 +8,7 @@ export interface User {
   e5code: string;
   name: string;
   id: number;
-  ejg_class: string;
-  activity?: IndivitualActivity[];
+  ejg_class?: string;
   teams?: Team[];
   permissions?: Permission[];
   presentations?: Event[];
@@ -70,8 +69,6 @@ export interface BaseActivity {
   event: Event;
   attendance: Attendance;
 }
-
-export type Activity = IndivitualActivity | TeamActivity;
 
 export interface Slot {
   id: number;

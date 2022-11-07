@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\E5N;
 
+use App\Exceptions\ResourceDidNoExistException;
 use App\Http\Controllers\{
     Controller
 };
@@ -178,7 +179,7 @@ class EventController extends Controller
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.mypresentations.'.($attender->e5code ?? $attender->code));
         Cache::put('e5n.events.'.$event->id.'.signups', UserResource::collection($event->users()->get())->merge(TeamResource::collection($event->teams()->get()))->jsonSerialize());
-        Cache::forget('e5n.events.slot.'.$event->id);
+        Cache::forget('e5n.events.slot.'.$event->slot_id);
         return response($attender->signUp($event), 201);
     }
 
@@ -189,13 +190,16 @@ class EventController extends Controller
     {
         $attender = strlen($request->attender) == 13 || is_numeric($request->attender) ? 'user_id' : 'team_code';
         $attenderId = $attender === 'user_id' && !is_numeric($request->attender) ? User::where('e5code', $request->attender)->firstOrFail()->id : $request->attender;
-        $attendance = Attendance::where('event_id', $eventId)->where($attender, $attenderId)->firstOrFail();
+        $attendance = Attendance::where('event_id', $eventId)->where($attender, $attenderId)->first();
+        if ($attendance === null) {
+            throw new ResourceDidNoExistException();
+        }
         $attendance->delete();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.mypresentations.'.$request->attender);
         Cache::forget('e5n.events.'.$eventId.'.signups');
-        Cache::forget('e5n.events.slot.'.$eventId);
+        Cache::forget('e5n.events.slot.'.Event::findOrFail($eventId)->slot_id);
         return response("", 204);
     }
 

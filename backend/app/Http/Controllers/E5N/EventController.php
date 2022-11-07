@@ -199,7 +199,7 @@ class EventController extends Controller
      */
     public function attend(Request $request, $eventId)
     {
-        $event = Cache::rememberForever('e5n.events.'.$eventId, function () use ($eventId) {$data = new EventResource(Event::findOrFail($eventId)->load('slot', 'location', 'organisers')); return $data->jsonSerialize();});
+        $event = Event::findOrFail($eventId);
         $attender = is_numeric($request->attender) ? User::findOrFail($request->attender) : (strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail());
         Cache::put('e5n.events.'.$event->id.'.signups', $event->signuppers());
         return response($attender->attend($event), 200);

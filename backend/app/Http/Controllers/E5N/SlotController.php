@@ -19,7 +19,7 @@ class SlotController extends Controller
      */
     public function index()
     {
-        return Cache::rememberForever('e5n.slot.all', fn () => SlotResource::collection(Slot::all())->jsonSerialise());
+        return Cache::rememberForever('e5n.slot.all', fn () => SlotResource::collection(Slot::all())->jsonSerialize());
     }
 
     /**

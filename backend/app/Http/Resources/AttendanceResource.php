@@ -24,7 +24,7 @@ class AttendanceResource extends JsonResource
             "event" => new EventResource($this->whenLoaded('event')),
             "rank" => $this->rank,
             "is_present" => $this->is_present,
-            "pivot" => $this->whenPivotLoaded($this->pivot->getTable(), fn () => $this->pivot),
+            "pivot" => $this->whenPivotLoaded($this->pivot?->getTable(), fn () => $this->pivot),
         ];
     }
 }

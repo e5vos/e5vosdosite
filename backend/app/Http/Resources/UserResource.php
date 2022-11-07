@@ -28,7 +28,7 @@ class UserResource extends JsonResource
             "events" => EventResource::collection($this->whenLoaded('events')),
             "presentations" => EventResource::collection($this->whenLoaded('presentations')),
 
-            "pivot" => $this->whenPivotLoaded($this->pivot->getTable(), fn () => $this->pivot),
+            "pivot" => $this->whenPivotLoaded($this->pivot?->getTable(), fn () => $this->pivot),
         ];
     }
 }

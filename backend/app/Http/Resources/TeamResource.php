@@ -15,9 +15,11 @@ class TeamResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "id" => $this->id,
+            "code" => $this->code,
             "name" => $this->name,
-            "members" => new UserResourceCollection($this->members),
+
+            "members" => new UserResourceCollection($this->whenLoaded('members')),
+            "events" => new EventResourceCollection($this->whenLoaded('events')),
         ];
     }
 }

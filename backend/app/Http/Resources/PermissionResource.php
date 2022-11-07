@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LocationResource extends JsonResource
+class PermissionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,9 +16,11 @@ class LocationResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'floor' => $this->floor,
-            'events' => EventResource::collection($this->whenLoaded('events')),
+            'user_id' => $this->user_id,
+            'user' => new UserResource($this->whenLoaded('user')),
+            'event_id' => $this->event_id,
+            'event' => new EventResource($this->whenLoaded('event')),
+            'code' => $this->code,
         ];
     }
 }

@@ -147,10 +147,6 @@ class User extends Authenticable
         return $this->events()->join('slots', 'events.slot_id', '=', 'slots.id')->where('slots.slot_type', SlotType::presentation);
     }
 
-    public function managedEvents()
-    {
-        return $this->permissions()->events();
-    }
     /**
      * Get all ratings done by the user
      */

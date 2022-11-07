@@ -20,7 +20,12 @@ class UserResource extends JsonResource
             "email" => $this->email,
             "e5code" => $this->e5code,
             "img_url" => $this->img_url,
-            "permissions" => $this->permissions,
+
+            "teams" => TeamResource::collection($this->whenLoaded('teams')),
+            "permissions" => PermissionResource::collection($this->whenLoaded('permissions')),
+            "organisedEvents" => EventResource::collection($this->whenLoaded('organisedEvents')),
+            "events" => EventResource::collection($this->whenLoaded('events')),
+            "presentations" => EventResource::collection($this->whenLoaded('presentations')),
         ];
     }
 }

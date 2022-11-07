@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LocationResource extends JsonResource
+class SlotResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +17,9 @@ class LocationResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'floor' => $this->floor,
-            'events' => EventResource::collection($this->whenLoaded('events')),
+            'starts_at' => $this->starts_at,
+            'ends_at' => $this->ends_at,
+            'events' => new EventResource($this->whenLoaded('event')),
         ];
     }
 }

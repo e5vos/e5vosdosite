@@ -79,6 +79,10 @@ class AuthController extends Controller{
         ]);
         if ($validated->body() === "true") {
             $request->user()->e5code = $request->e5code;
+            $ejgLetter = $request->e5code[4];
+            if ($ejgLetter === 'N') {$ejgLetter = 'Ny';}
+            $ejgYear = now()->year - intval($request->e5code) + ($ejgLetter === 'A' || $ejgLetter === 'B' ? 7 : ($ejgLetter === 'E' ? 8 : 9));
+            $request->user()->ejg_class = strval($ejgYear). '.' . $ejgLetter;
             $request->user()->save();
             return response()->json([
                 'message' => 'E5 code set'

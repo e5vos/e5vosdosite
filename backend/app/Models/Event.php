@@ -69,12 +69,13 @@ class Event extends Model
 
     protected $with = [
         'slot',
+        'location',
     ];
 
     public function occupancy(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->visitorcount(),
+            get: fn () => $this->attendanceCount(),
         )->shouldCache();
     }
 
@@ -100,7 +101,7 @@ class Event extends Model
      *
      * @return int visitor count of an event
      */
-    public function visitorcount()
+    public function attendanceCount()
     {
         return $this->attendances()->count();
     }

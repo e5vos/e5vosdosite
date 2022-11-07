@@ -16,9 +16,14 @@ class AttendanceResource extends JsonResource
     {
         return [
             "id" => $this->id,
-            "user" => new UserResource($this->user),
-            "team" => new TeamResource($this->team),
-            "present" => $this->present,
+            "user_id" => $this->user_id,
+            "user" => new UserResource($this->whenLoaded('user')),
+            "team_id" => $this->team_id,
+            "team" => new TeamResource($this->whenLoaded('team')),
+            "event_id" => $this->event_id,
+            "event" => new EventResource($this->whenLoaded('event')),
+            "rank" => $this->rank,
+            "is_present" => $this->is_present,
         ];
     }
 }

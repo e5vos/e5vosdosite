@@ -68,6 +68,14 @@ class Team extends Model
         return $this->signups()->where('is_present', true);
     }
 
+    /**
+     * get all evetns the team has signed up for
+     */
+    public function events(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'attendances', 'team_code', 'event_id');
+    }
+
 
     /*
     * get all users that attend a specific event for the team

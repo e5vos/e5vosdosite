@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Presentation } from "types/models";
 import PresentationFillDialog from "./PresentationFillDialog";
 import Button from "./UIKit/Button";
@@ -15,7 +15,7 @@ const PresentationCard = ({
   fillAllowed: boolean;
 }) => {
   const [isDialogOpen, setisDialogOpen] = useState(false);
-
+  const navigate = useNavigate();
   return (
     <div
       className={`bg-gray-100 p-2 rounded-lg flex flex-col justify-between ${
@@ -38,9 +38,9 @@ const PresentationCard = ({
       </div>
       <p className="px-2">{presentation.description}</p>
       <div>
-        <div className="flex flew-row justify-between w-full px-2 mb-1">
+        <div className="flex flew-row justify-between w-full px-2 mb-1 mt-3">
           <div>{presentation.location?.name ?? "Ismeretlen"}</div>
-          <div>
+          <div className="mx-2">
             {presentation.slot_id ?? "-"}/{presentation.id}
           </div>
           <div>
@@ -52,8 +52,11 @@ const PresentationCard = ({
           </div>
         </div>
         <ButtonGroup className="w-full">
-          <Button className="w-6/12" variant="success">
-            <Link to={`${presentation.id}`}>Jelenléti Ív</Link>
+          <Button
+            variant="success"
+            onClick={() => navigate(presentation.id.toString())}
+          >
+            Jelenléti Ív
           </Button>
           {fillAllowed && (
             <Button

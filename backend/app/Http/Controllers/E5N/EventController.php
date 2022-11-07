@@ -114,6 +114,7 @@ class EventController extends Controller
     public function delete($eventId)
     {
         $event = Event::findOrFail($eventId);
+        Cache::forget('e5n.events.slot.'.$event->slot_id);
         $event->delete();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
@@ -177,7 +178,7 @@ class EventController extends Controller
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.mypresentations.'.($attender->e5code ?? $attender->code));
         Cache::put('e5n.events.'.$event->id.'.signups', UserResource::collection($event->users()->get())->merge(TeamResource::collection($event->teams()->get()))->jsonSerialize());
-        Cache::forget('e5n.events.'.$event->id);
+        Cache::forget('e5n.events.slot.'.$event->id);
         return response($attender->signUp($event), 201);
     }
 
@@ -194,7 +195,7 @@ class EventController extends Controller
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.mypresentations.'.$request->attender);
         Cache::forget('e5n.events.'.$eventId.'.signups');
-        Cache::forget('e5n.events.'.$eventId);
+        Cache::forget('e5n.events.slot.'.$eventId);
         return response("", 204);
     }
 

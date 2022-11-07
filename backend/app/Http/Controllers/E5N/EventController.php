@@ -213,7 +213,7 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($eventId);
         $attender = is_numeric($request->attender) ? User::findOrFail($request->attender) : (strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail());
-        Cache::put('e5n.events.' . $event->id . '.signups', UserResource::collection($event->users())->merge(TeamResource::collection($event->teams()))->jsonSerialize());
+        Cache::put('e5n.events.' . $event->id . '.signups', UserResource::collection($event->users()->get())->merge(TeamResource::collection($event->teams()->get()))->jsonSerialize());
         return response($attender->attend($event), 200);
     }
 

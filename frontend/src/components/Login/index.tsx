@@ -69,7 +69,7 @@ const LoginForm = () => {
       console.log("onMessage", e);
       // e.data.token contains token
       dispatch(authSlice.actions.setToken(e.data.token));
-      navigate(params.next ?? "/dashboard");
+      navigate(params.next ?? "/eloadas");
     },
     [dispatch, navigate, params.next]
   );
@@ -81,7 +81,11 @@ const LoginForm = () => {
     };
   }, [onMessage]);
 
-  return <Button onClick={logIn}>Log In With Google</Button>;
+  return (
+    <div className="mx-auto text-center m-1">
+      <Button onClick={logIn}>Bejelentkezés E5vös fiókkal</Button>;
+    </div>
+  );
 };
 
 export default LoginForm;

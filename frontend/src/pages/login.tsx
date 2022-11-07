@@ -10,11 +10,16 @@ const LoginPage = () => {
   const params = useParams();
   useEffect(() => {
     if (token !== "") {
-      navigate(params.next ?? "/dashboard", { replace: true });
+      navigate(params.next ?? "/eloadas", { replace: true });
     }
   }, [navigate, token, params.next]);
 
-  return token !== "" ? <>Már bejelentkezve</> : <LoginForm />;
+  return (
+    <div className="mx-auto text-center">
+      <h1 className="font-bold text-4xl mb-10 ">Bejelentkezés</h1>
+      {token !== "" ? <>Már bejelentkezve</> : <LoginForm />}
+    </div>
+  );
 };
 
 export default LoginPage;

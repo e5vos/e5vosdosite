@@ -40,7 +40,7 @@ class EventTest extends TestCase
      */
     public function test_events_can_be_requested_for_a_slot()
     {
-        $response = $this->get('/api/events/'. Slot::first()->id);
+        $response = $this->get('/api/events/' . Slot::first()->id);
         $response->assertStatus(200);
     }
 
@@ -142,5 +142,4 @@ class EventTest extends TestCase
 
         //assert that the event is closed
     }
-
 }

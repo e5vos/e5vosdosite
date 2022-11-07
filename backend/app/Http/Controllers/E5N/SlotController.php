@@ -30,7 +30,7 @@ class SlotController extends Controller
         $slot = Slot::create($request->all());
         $slot = new SlotResource($slot);
         Cache::forget('e5n.slot.all');
-        return response(Cache::rememberForever('e5n.slot.'.$slot->id, fn () => $slot->jsonSerialize()), 201);
+        return response(Cache::rememberForever('e5n.slot.' . $slot->id, fn () => $slot->jsonSerialize()), 201);
     }
 
     /**
@@ -42,8 +42,8 @@ class SlotController extends Controller
         $slot->update($request->all());
         $slot = new SlotResource($slot);
         Cache::forget('e5n.slot.all');
-        Cache::forever('e5n.slot.'.$slot->id, $slot->jsonSerialize());
-        return Cache::get('e5n.slot.'.$slot->id);
+        Cache::forever('e5n.slot.' . $slot->id, $slot->jsonSerialize());
+        return Cache::get('e5n.slot.' . $slot->id);
     }
 
     /**
@@ -54,7 +54,7 @@ class SlotController extends Controller
         $slot = Slot::findOrFail($slotId);
         $slot->delete();
         Cache::forget('e5n.slot.all');
-        Cache::forget('e5n.slot.'.$slot->id);
+        Cache::forget('e5n.slot.' . $slot->id);
         return response("", 204);
     }
 

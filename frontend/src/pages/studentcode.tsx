@@ -31,11 +31,12 @@ const StudentCodePage = () => {
     validationSchema: Yup.object({
       studentCode: Yup.string()
         .matches(
-          /20([1-2]\d)([A-F]{1})(\d{2})EJG(\d{3})/,
+          /^20([1-2]\d)([A-F]{1})(\d{2})EJG(\d{3})$/,
           "Diákkódnak kell lennie"
         )
-        .required("Student code is required"),
+        .required("Diákkód megadása kötelező"),
     }),
+    validateOnChange: false,
     onSubmit: async (values) => {
       try {
         await updateStudentCode(values.studentCode).unwrap();
@@ -49,23 +50,31 @@ const StudentCodePage = () => {
   });
   if (isLoading) return <Loader />;
   return (
-    <>
-      <Form onSubmit={formik.handleSubmit}>
-        <Form.Group>
-          <Form.Label>Diákkód:</Form.Label>
-          <Form.Control
-            name="studentCode"
-            type="text"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          <Form.Text>{formik.errors.studentCode}</Form.Text>
-        </Form.Group>
-        <Form.Group>
-          <Button type="submit">Diákkód jóváhagyása</Button>
-        </Form.Group>
-      </Form>
-    </>
+    <div className="container mx-auto">
+      <div className="text-center max-w-xl mx-auto">
+        <h1 className="font-bold text-4xl mb-2">Diákkód megadása</h1>
+        <hr className="bg-gray-50 mb-3" />
+        <Form onSubmit={formik.handleSubmit}>
+          <Form.Group>
+            <Form.Label className="text-4xl">Diákkód:</Form.Label>
+            <Form.Control
+              name="studentCode"
+              type="text"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="text-center"
+              invalid={!!formik.errors.studentCode}
+            />
+            <Form.Text className="text-red-300">
+              {formik.errors.studentCode}
+            </Form.Text>
+          </Form.Group>
+          <Form.Group>
+            <Button type="submit">Diákkód jóváhagyása</Button>
+          </Form.Group>
+        </Form>
+      </div>
+    </div>
   );
 };
 

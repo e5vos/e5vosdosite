@@ -88,10 +88,11 @@ const PresentationFillDialog = ({
                 </Dialog.Description>
 
                 <div className="text-4xl mb-3">
+                  {event.occupancy}/
                   {event.capacity
                     ? event.capacity - event.occupancy
                     : event.occupancy}
-                  /{event.occupancy}/{event.capacity ?? <>&infin;</>}
+                  /{event.capacity ?? <>&infin;</>}
                 </div>
 
                 <Form.Group>

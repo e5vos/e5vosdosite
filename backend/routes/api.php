@@ -23,6 +23,16 @@ use Tightenco\Ziggy\Ziggy;
 use App\Events\{
     Ping
 };
+use App\Http\Resources\{
+    EventResource,
+    UserResource,
+    TeamResource,
+    SlotResource,
+    SettingResource,
+    TeamMembershipResource,
+    AttendanceResource,
+    TeamMemberAttendanceResource,
+};
 
 
 /*
@@ -39,7 +49,7 @@ use App\Events\{
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user()->load('permissions');
+    return new UserResource($request->user());
 })->name('user');
 
 Route::get('/ziggy', fn () => response()->json(new Ziggy));

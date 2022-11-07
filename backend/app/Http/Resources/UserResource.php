@@ -16,7 +16,11 @@ class UserResource extends JsonResource
     {
         return [
             "name" => $this->name,
-            "class" => "ASD"
+            "ejg_class" => $this->ejg_class,
+            "email" => $this->email,
+            "e5code" => $this->e5code,
+            "img_url" => $this->img_url,
+            "permissions" => $this->permissions,
         ];
     }
 }

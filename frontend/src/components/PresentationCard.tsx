@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Presentation } from "types/models";
 import PresentationFillDialog from "./PresentationFillDialog";
 import Button from "./UIKit/Button";

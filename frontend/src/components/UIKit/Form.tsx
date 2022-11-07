@@ -45,7 +45,7 @@ const Label = ({
   ...rest
 }: HTMLInputProps<HTMLSpanElement>) => {
   return (
-    <span className="font-bold mb-3 mr-1 underline underline-offset-4">
+    <span className="font-bold mr-1 underline underline-offset-4">
       {children}
     </span>
   );
@@ -59,7 +59,7 @@ const Group = ({
   return (
     <label
       {...rest}
-      className={`flex flex-row justify-center align-middle form-group ${
+      className={`flex flex-row justify-center items-center form-group mb-3 ${
         className ?? ""
       }`}
     >

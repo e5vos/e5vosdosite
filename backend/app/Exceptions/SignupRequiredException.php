@@ -12,7 +12,7 @@ class SignupRequiredException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'Signup required',
+            'message' => 'Erre az eseményre jeletkezni kell.',
         ], 403);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exceptions\InvalidCodeException;
 use App\Http\Controllers\{
     Controller
 };
@@ -23,14 +24,14 @@ use Illuminate\Support\Facades\{
 };
 
 
-class AuthController extends Controller{
+class AuthController extends Controller
+{
 
     public function redirect($provider='google')
     {
         if (auth()->check()) {
             return response('Already logged in', 400);
         }
-        //return Socialite::driver($provider)->stateless()->redirect();
         return ['url' => Socialite::driver($provider)->stateless()->redirect()->getTargetUrl()];
     }
 
@@ -62,7 +63,8 @@ class AuthController extends Controller{
         return view('oauth.callback', ['token' => $token]);
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         Auth::logout();
 
         return response();
@@ -71,7 +73,8 @@ class AuthController extends Controller{
     /**
      * validate with pál ádám
      */
-    public function setE5code(Request $request){
+    public function setE5code(Request $request)
+    {
         $validated = Http::post('https://e5vos.dev/api/student/verify', [
             'email' => $request->user()->email,
             'studentId' => $request->user()->e5code,
@@ -86,11 +89,9 @@ class AuthController extends Controller{
             $request->user()->save();
             return response()->json([
                 'message' => 'E5 code set'
-            ]);
+            ], 200);
         } else {
-            return response()->json([
-                'message' => 'invalid e5code'
-            ], 400);
+            throw new InvalidCodeException();
         }
     }
 }

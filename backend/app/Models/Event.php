@@ -67,11 +67,6 @@ class Event extends Model
         'occupancy',
     ];
 
-    protected $with = [
-        'slot',
-        'location',
-    ];
-
     public function occupancy(): Attribute
     {
         return Attribute::make(
@@ -135,7 +130,8 @@ class Event extends Model
      */
     public function organisers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, Permission::class, 'event_id', 'id', 'id', 'user_id');
+        return $this->belongsToMany(User::class, 'permissions', 'event_id', 'user_id')
+            ->where('permissions.code', PermissionType::Organiser->value);
     }
 
     /**

@@ -12,7 +12,7 @@ class StudentBusyException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'Student is busy',
+            'message' => 'A diák ebben az időpontban elfoglalt.',
         ], 409);
     }
 }

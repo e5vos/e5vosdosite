@@ -16,7 +16,7 @@ class SettingController extends Controller
      */
     public function index()
     {
-        return new SettingResource(Setting::all());
+        return SettingResource::collection(Setting::all())->jsonSerialize();
     }
 
     /**
@@ -28,7 +28,8 @@ class SettingController extends Controller
     public function create(Request $request)
     {
         $setting = Setting::create(['key' => $request->key, 'value' => $request->value]);
-        return new SettingResource($setting);
+        $setting = new SettingResource($setting);
+        return $setting->jsonSerialize();
     }
 
     /**
@@ -42,7 +43,8 @@ class SettingController extends Controller
         $setting = Setting::where('key', $key)->firstOrFail();
         $setting->value = $value;
         $setting->save();
-        return new SettingResource($setting);
+        $setting = new SettingResource($setting);
+        return $setting->jsonSerialize();
     }
 
     /**
@@ -55,6 +57,6 @@ class SettingController extends Controller
     {
         $setting = Setting::where('key', $key)->firstOrFail();
         $setting->delete();
-        return new SettingResource($setting);
+        return response()->json(['message' => 'Setting deleted'], 204);
     }
 }

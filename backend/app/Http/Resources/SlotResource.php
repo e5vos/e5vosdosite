@@ -19,7 +19,7 @@ class SlotResource extends JsonResource
             'name' => $this->name,
             'starts_at' => $this->starts_at,
             'ends_at' => $this->ends_at,
-            'events' => new EventResource($this->whenLoaded('event')),
+            'events' => EventResource::collection($this->whenLoaded('events')),
         ];
     }
 }

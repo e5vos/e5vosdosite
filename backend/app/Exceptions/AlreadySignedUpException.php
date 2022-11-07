@@ -12,7 +12,7 @@ class AlreadySignedUpException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'Team or User already signed up for this event',
+            'message' => 'Ez a felhasználó vagy csapat már jelentkezett erre az eseményre.',
         ], 409);
     }
 }

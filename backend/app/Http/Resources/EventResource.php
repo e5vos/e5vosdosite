@@ -32,7 +32,8 @@ class EventResource extends JsonResource
             'starts_at' => $this->starts_at,
             'ends_at' => $this->ends_at,
             //'rating' => $this->rating,
-            'occupancy' => $this->attendances->count(),
+            'occupancy' => $this->occupancy,
+
 
             'attendances' => AttendanceResource::collection($this->whenLoaded('attendances')),
             'organisers' => UserResource::collection($this->whenLoaded('organisers')),

@@ -4,12 +4,12 @@ namespace App\Exceptions;
 
 use Exception;
 
-class AlreadyInTeamException extends Exception
+class ResourceDidNoExistException extends Exception
 {
     public function render()
     {
         return response()->json([
-            'message' => 'Ez a felhasználó már benne van ebben a csapatban.',
+            'message' => 'A törölni kíívánt erőforrás nem létezik.',
         ], 409);
     }
 }

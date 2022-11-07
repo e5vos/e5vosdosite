@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exceptions\ResourceDidNoExistException;
 use App\Helpers\PermissionType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\{
@@ -12,6 +13,7 @@ use App\Models\{
     Event,
     User,
 };
+use App\Http\Resources\PermissionResource;
 
 class PermissionController extends Controller
 {
@@ -29,7 +31,8 @@ class PermissionController extends Controller
             'event_id' => $event->id,
             'code' => $event ? PermissionType::Organiser->value : (in_array($code, array_column(PermissionType::cases(), 'value')) ? $code : abort(400, 'Invalid permission code.')),
         ]);
-        return response()->json($permission, 201);
+        $permission = new PermissionResource($permission);
+        return response($permission->jsonSerialize(), 201);
     }
 
     /**
@@ -40,8 +43,8 @@ class PermissionController extends Controller
     public function removePermission(int $userId, int $eventId = null, string $code = null)
     {
         $permission = Permission::find([$userId, $eventId, $code]);
-        if ($permission->first() === null) abort(400, 'User did not have permission.');
+        if ($permission->first() === null) throw new ResourceDidNoExistException();
         $permission->delete();
-        return response()->json($permission);
+        return response('', 204);
     }
 }

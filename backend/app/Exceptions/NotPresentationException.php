@@ -11,6 +11,8 @@ class NotPresentationException extends Exception
      */
     public function render()
     {
-        abort(418);
+        return response()->json([
+            'message' => 'A kért esemény nem előadás.',
+        ], 409);
     }
 }

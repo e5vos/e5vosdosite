@@ -12,7 +12,7 @@ class NotAllowedException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'Not allowed',
+            'message' => 'Ejnyebejnye, nem te vagy a főnök.',
         ], 403);
     }
 }

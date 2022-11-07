@@ -12,7 +12,7 @@ class SignupNotRequiredException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'Signup not required',
+            'message' => 'Erre az eseményre nem lehet jeletkezni, mert a szervező nem kívánt jelentkezést.',
         ], 422);
     }
 }

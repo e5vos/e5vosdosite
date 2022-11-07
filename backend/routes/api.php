@@ -49,7 +49,8 @@ use App\Http\Resources\{
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return new UserResource($request->user());
+    $user = new UserResource($request->user());
+    return $user->jsonSerialize();
 })->name('user');
 
 Route::get('/ziggy', fn () => response()->json(new Ziggy));

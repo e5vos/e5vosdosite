@@ -43,7 +43,12 @@ const PresentationCard = ({
           <div>
             {presentation.slot_id ?? "-"}/{presentation.id}
           </div>
-          <div>?/?/{presentation.capacity ?? <>&infin;</>}</div>
+          <div>
+            {presentation.capacity
+              ? presentation.capacity - presentation.occupancy
+              : presentation.occupancy}
+            /{presentation.occupancy}/{presentation.capacity ?? <>&infin;</>}
+          </div>
         </div>
         <ButtonGroup className="w-full">
           <Button className="w-6/12" variant="success">

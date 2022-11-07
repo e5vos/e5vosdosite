@@ -73,6 +73,14 @@ const PresentationFillDialog = ({
             <Dialog.Description className="text-justify mb-3">
               {event.description}
             </Dialog.Description>
+
+            <div className="text-4xl mb-3">
+              {event.capacity
+                ? event.capacity - event.occupancy
+                : event.occupancy}
+              /{event.occupancy}/{event.capacity ?? <>&infin;</>}
+            </div>
+
             <Form.Group>
               <Form.Label>Keresés</Form.Label>
               <Form.Control

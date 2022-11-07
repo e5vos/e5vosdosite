@@ -77,10 +77,10 @@ class AuthController extends Controller
     {
         $validated = Http::post('https://e5vos.dev/api/student/verify', [
             'email' => $request->user()->email,
-            'studentId' => $request->user()->e5code,
+            'studentId' => $request->e5code,
             'api_token' => env('E5VOS_API_TOKEN')
-        ]);
-        if ($validated->body() === "true") {
+        ])->body();
+        if ($validated === "true") {
             $request->user()->e5code = $request->e5code;
             $ejgLetter = $request->e5code[4];
             if ($ejgLetter === 'N') {$ejgLetter = 'Ny';}

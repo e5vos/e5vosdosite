@@ -36,10 +36,10 @@ class AuthenticationTest extends TestCase
         $this->assertStringContainsString('https://accounts.google.com/o/oauth2/auth', $response->json('url'));
     }
 
-   public function test_users_can_login_with_oauth()
-   {
-    $this->markTestSkipped('This test is bad, function works though');
-    $user = User::first();
-    Socialite::shouldReceive('driver->google')->andReturn($user);
-   }
+    public function test_users_can_login_with_oauth()
+    {
+        $this->markTestSkipped('This test is bad, function works though');
+        $user = User::first();
+        Socialite::shouldReceive('driver->google')->andReturn($user);
+    }
 }

@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\{
 class AuthController extends Controller
 {
 
-    public function redirect($provider='google')
+    public function redirect($provider = 'google')
     {
         if (auth()->check()) {
             return response('Already logged in', 400);
@@ -35,7 +35,7 @@ class AuthController extends Controller
         return ['url' => Socialite::driver($provider)->stateless()->redirect()->getTargetUrl()];
     }
 
-    public function callback(Request $request, $provider='google')
+    public function callback(Request $request, $provider = 'google')
     {
         $userData = Socialite::driver($provider)->stateless()->user();
         $user = User::firstWhere('email', $userData->email);
@@ -83,9 +83,11 @@ class AuthController extends Controller
         if ($validated === "true") {
             $request->user()->e5code = $request->e5code;
             $ejgLetter = $request->e5code[4];
-            if ($ejgLetter === 'N') {$ejgLetter = 'Ny';}
+            if ($ejgLetter === 'N') {
+                $ejgLetter = 'Ny';
+            }
             $ejgYear = now()->year - intval($request->e5code) + ($ejgLetter === 'A' || $ejgLetter === 'B' ? 7 : ($ejgLetter === 'E' ? 8 : 9));
-            $request->user()->ejg_class = strval($ejgYear). '.' . $ejgLetter;
+            $request->user()->ejg_class = strval($ejgYear) . '.' . $ejgLetter;
             $request->user()->save();
             return response()->json([
                 'message' => 'E5 code set'

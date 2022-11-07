@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Exceptions\EventFullException;
 use App\Exceptions\AlreadySignedUpException;
 use App\Exceptions\SignupRequiredException;
+use App\Helpers\PermissionType;
 
 /**
  * App\Models\Team
@@ -135,7 +136,7 @@ class Team extends Model
      */
     public function attend(Event $event)
     {
-        if (isset($event->capacity) && $event->occupancy >= $event->capacity) {
+        if (isset($event->capacity) && $event->occupancy >= $event->capacity && !request()->user()->hasPermission(PermissionType::Operator)) {
             throw new EventFullException();
         }
         $signup = $this->signups()->where('event_id', $event->id)->first();

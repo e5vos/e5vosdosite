@@ -19,6 +19,8 @@ class LocationResource extends JsonResource
             'name' => $this->name,
             'floor' => $this->floor,
             'events' => EventResource::collection($this->whenLoaded('events')),
+
+            "pivot" => $this->whenPivotLoaded($this->pivot->getTable(), fn () => $this->pivot),
         ];
     }
 }

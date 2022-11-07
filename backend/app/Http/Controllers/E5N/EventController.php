@@ -75,7 +75,7 @@ class EventController extends Controller
      */
     public function show(int $id)
     {
-        return Cache::rememberForever('e5n.events.'.$id, function () use ($id) {$data = new EventResource(Event::findOrFail($id)->load('slot', 'location', 'organisers')); return $data->jsonSerialize();});
+        return Cache::rememberForever('e5n.events.'.$id, function () use ($id) {$data = new EventResource(Event::findOrFail($id)->load('slot', 'location')); return $data->jsonSerialize();});
     }
 
     /**
@@ -231,7 +231,7 @@ class EventController extends Controller
         $user = User::findOrFail($request->user()->id)->load('presentations');
         return Cache::rememberForever(
             'e5n.events.mypresentations.'.$user->e5code,
-            fn () => $user->presentations
+            fn () => EventResource::collection($user->presentations)->jsonSerialize()
         );
     }
 }

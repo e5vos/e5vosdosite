@@ -10,6 +10,7 @@ use App\Models\{
 };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Resources\SlotResource;
 
 class SlotController extends Controller
 {
@@ -18,7 +19,7 @@ class SlotController extends Controller
      */
     public function index()
     {
-        return Cache::rememberForever('e5n.slot.all', fn () => Slot::all());
+        return Cache::rememberForever('e5n.slot.all', fn () => SlotResource::collection(Slot::all())->jsonSerialise());
     }
 
     /**
@@ -27,8 +28,9 @@ class SlotController extends Controller
     public function store(Request $request)
     {
         $slot = Slot::create($request->all());
+        $slot = new SlotResource($slot);
         Cache::forget('e5n.slot.all');
-        return response(Cache::rememberForever('e5n.slot.'.$slot->id, fn () => $slot), 201);
+        return response(Cache::rememberForever('e5n.slot.'.$slot->id, fn () => $slot->jsonSerialize()), 201);
     }
 
     /**
@@ -38,8 +40,9 @@ class SlotController extends Controller
     {
         $slot = (Slot::find($slotId) ?? abort(404));
         $slot->update($request->all());
+        $slot = new SlotResource($slot);
         Cache::forget('e5n.slot.all');
-        Cache::put('e5n.slot.'.$slot->id, $slot);
+        Cache::forever('e5n.slot.'.$slot->id, $slot->jsonSerialize());
         return Cache::get('e5n.slot.'.$slot->id);
     }
 
@@ -51,7 +54,8 @@ class SlotController extends Controller
         $slot = Slot::findOrFail($slotId);
         $slot->delete();
         Cache::forget('e5n.slot.all');
-        return Cache::pull('e5n.slot.'.$slot->id);
+        Cache::forget('e5n.slot.'.$slot->id);
+        return response("", 204);
     }
 
     /**

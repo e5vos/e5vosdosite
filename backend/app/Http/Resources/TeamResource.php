@@ -20,6 +20,8 @@ class TeamResource extends JsonResource
 
             "members" => UserResource::collection($this->whenLoaded('members')),
             "events" => EventResource::collection($this->whenLoaded('events')),
+
+            "pivot" => $this->whenPivotLoaded($this->pivot->getTable(), fn () => $this->pivot),
         ];
     }
 }

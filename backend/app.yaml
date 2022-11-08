@@ -11,6 +11,7 @@ env_variables:
   APP_ENV: production
   APP_KEY: base64:PTbZDh4IlTyJXDwJd2HXoclyVAUfKemBdfE72mV3WbU=
   APP_DEBUG: false
+  DEBUGBAR_ENABLED: false
   APP_DOMAIN: e5vosdo.hu
   APP_URL: https://e5vosdo.hu
   FRONTEND_URL: https://e5vosdo.hu
@@ -18,20 +19,23 @@ env_variables:
   LOG_DEPRECATIONS_CHANNEL: null
   LOG_LEVEL: debug
 
+  APP_STORAGE: /tmp
+  VIEW_COMPILED_PATH: /tmp
+
   MYSQL_ATTR_PERSISTENT: true
   DB_CONNECTION: mysql
   DB_HOST: 127.0.0.1
   DB_PORT: 3306
-  DB_DATABASE: data
-  DB_USERNAME: root
-  DB_PASSWORD: 1234do67
-  DB_SOCKET: /cloudsql/e5vsdosite:europe-central2:e5vosdo-db
+  DB_DATABASE: "data"
+  DB_USERNAME: "root"
+  DB_PASSWORD: "1234do67"
+  DB_SOCKET: "/cloudsql/e5vsdosite:europe-central2:e5vosdo-db"
 
   BROADCAST_DRIVER: pusher
   CACHE_DRIVER: database
-  FILESYSTEM_DISK: local
+  FILESYSTEM_DISK: tmp
   QUEUE_CONNECTION: sync
-  SESSION_DRIVER: file
+  SESSION_DRIVER: cookie
   SESSION_LIFETIME: 120
   SESSION_DOMAIN: "e5vosdo.hu"
   SESSION_COOKIE: "e5vosdo.hu_session"

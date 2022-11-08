@@ -41,6 +41,10 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+// Use storage path from env file
+$app->useStoragePath(env('APP_STORAGE', base_path() . '/storage'));
+
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application
@@ -51,5 +55,6 @@ $app->singleton(
 | from the actual running of the application and sending responses.
 |
 */
+
 
 return $app;

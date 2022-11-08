@@ -131,7 +131,6 @@ Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingContr
 );
 
 //test websocket broadcast
-
 Route::post('/ping', function () {
     Ping::dispatch();
 });

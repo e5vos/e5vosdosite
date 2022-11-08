@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/whitedonci.svg" />
@@ -12,11 +13,15 @@
 
     <title>Eötvös DÖ</title>
     <meta name="description" content="Vite + React + TS" />
-    <script type="module" crossorigin src="/assets/index.0471cafb.js"></script>
+    <script type="module" crossorigin src="/assets/index.dfb9aa07.js"></script>
     <link rel="stylesheet" href="/assets/index.35fb000d.css">
-  <link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
-  <body>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script>
+</head>
+
+<body>
     <div id="root"></div>
 
-  </body>
+</body>
+
 </html>

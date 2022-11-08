@@ -28,8 +28,7 @@ class SettingController extends Controller
     public function create(Request $request)
     {
         $setting = Setting::create(['key' => $request->key, 'value' => $request->value]);
-        $setting = new SettingResource($setting);
-        return $setting->jsonSerialize();
+        return (new SettingResource($setting))->jsonSerialize();
     }
 
     /**
@@ -41,10 +40,21 @@ class SettingController extends Controller
     public function set($key, $value)
     {
         $setting = Setting::where('key', $key)->firstOrFail();
-        $setting->value = $value;
-        $setting->save();
-        $setting = new SettingResource($setting);
-        return $setting->jsonSerialize();
+        $setting->update(['value' => $value]);
+        return (new SettingResource($setting))->jsonSerialize();
+    }
+
+    /**
+     * Toggle a setting.
+     *
+     * @param  string  $key
+     * @return \Illuminate\Http\Response
+     */
+    public function toggle($key)
+    {
+        $setting = Setting::where('key', $key)->firstOrFail();
+        $setting->update(['value' => !$setting->value]);
+        return (new SettingResource($setting))->jsonSerialize();
     }
 
     /**

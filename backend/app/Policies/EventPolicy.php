@@ -6,6 +6,7 @@ use App\Exceptions\SignupRequiredException;
 use App\Helpers\SlotType;
 use App\Models\Attendance;
 use App\Models\Event;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -99,7 +100,9 @@ class EventPolicy
      */
     public function signup(User $user, Event $event = null)
     {
-
+        if (!Setting::find('e5n.events.signup')?->value) {
+            return false;
+        }
         $event = $event ?? Event::findOrFail(request()->eventId);
         $attenderCode = request()->attender ?? $user->e5code ?? null;
         $attenderType = strlen($attenderCode) === 13 ? 'user' : 'team';
@@ -119,6 +122,9 @@ class EventPolicy
      */
     public function unsignup(User $user, Event $event = null)
     {
+        if (!Setting::find('e5n.events.signup')?->value) {
+            return false;
+        }
         if (!request()->has('attender')) {
             abort(400, 'No attender specified');
         }
@@ -134,6 +140,9 @@ class EventPolicy
      */
     public function attend(User $user, Event $event = null)
     {
+        if (!Setting::find('e5n')?->value) {
+            return false;
+        }
         $event = $event ?? Event::findOrFail(request()->eventId);
         $attender = request()->attender ?? request()->user()->e5code;
         if (isset($event->signup_type) && !$event->signuppers()->find(strlen($attender) === 13 ? 'e5code' : 'code', $attender)) {

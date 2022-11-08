@@ -18,12 +18,9 @@ use function PHPUnit\Framework\callback;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 require __DIR__ . '/auth.php';
-
-
-
-
 Route::get('/auth/callback', [AuthController::class, 'callback']);
+
+Route::get('/{any}', function ($any) {
+    return view('frontend');
+});

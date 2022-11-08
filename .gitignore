@@ -4,3 +4,4 @@ vendor
 .env
 
 backend/resources/js/ziggy.js
+backend/public

@@ -89,6 +89,10 @@ class AuthController extends Controller
             $ejgYear = now()->year - intval($request->e5code) + ($ejgLetter === 'A' || $ejgLetter === 'B' ? 7 : ($ejgLetter === 'E' ? 8 : 9));
             $request->user()->ejg_class = strval($ejgYear) . '.' . $ejgLetter;
             $request->user()->save();
+            Permission::create([
+                'user_id' => $request->user()->id,
+                'code' => 'STD',
+            ]);
             return response()->json([
                 'message' => 'E5 code set'
             ], 200);

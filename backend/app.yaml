@@ -19,6 +19,9 @@ env_variables:
   LOG_DEPRECATIONS_CHANNEL: null
   LOG_LEVEL: debug
 
+  APP_STORAGE: /tmp
+  VIEW_COMPILED_PATH: /tmp
+
   MYSQL_ATTR_PERSISTENT: true
   DB_CONNECTION: mysql
   DB_HOST: 127.0.0.1
@@ -32,7 +35,7 @@ env_variables:
   CACHE_DRIVER: database
   FILESYSTEM_DISK: tmp
   QUEUE_CONNECTION: sync
-  SESSION_DRIVER: file
+  SESSION_DRIVER: cookie
   SESSION_LIFETIME: 120
   SESSION_DOMAIN: "e5vosdo.hu"
   SESSION_COOKIE: "e5vosdo.hu_session"

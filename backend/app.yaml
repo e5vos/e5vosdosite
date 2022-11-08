@@ -71,3 +71,5 @@ env_variables:
   APP_PACKAGES_CACHE: /tmp/packages.php
   APP_CONFIG_CACHE: /tmp/config.php
   APP_ROUTES_CACHE: /tmp/routes.php
+
+  E5VOS_API_TOKEN: iiakmnn4huvaprvh3prrb2uukn26mjdc83i6yf3db686r282adijqeat5k5ide3cvgekvkrtmdq9hki754vp2xe7ikqyvmutb8d66yf64qjwq6qpy7bayi4kmcar455r

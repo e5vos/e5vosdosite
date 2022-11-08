@@ -1,3 +1,4 @@
 /vendor/
 /storage/logs/laravel.log
 /node_modules/
+.env

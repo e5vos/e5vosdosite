@@ -45,7 +45,7 @@ const PresentationsPage = () => {
         return;
       }
       const attendance = await signUp({
-        attender: user.e5code,
+        attender: user.id,
         event: presentation,
       }).unwrap();
       refetchSelected();

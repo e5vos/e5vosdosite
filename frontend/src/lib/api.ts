@@ -34,7 +34,8 @@ export const api = createApi({
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
-      const xsrfToken = Cookies.get("XSRF-TOKEN");
+      let xsrfToken = Cookies.get("XSRF-TOKEN");
+      if (xsrfToken?.at(-1) === "=") xsrfToken = xsrfToken.slice(0, -1);
       if (xsrfToken) {
         headers.set("X-XSRF-TOKEN", xsrfToken);
       }

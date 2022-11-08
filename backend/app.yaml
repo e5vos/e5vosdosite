@@ -10,7 +10,7 @@ env_variables:
   APP_NAME: e5vosdo.hu
   APP_ENV: production
   APP_KEY: base64:PTbZDh4IlTyJXDwJd2HXoclyVAUfKemBdfE72mV3WbU=
-  APP_DEBUG: false
+  APP_DEBUG: true
   DEBUGBAR_ENABLED: false
   APP_DOMAIN: e5vosdo.hu
   APP_URL: https://e5vosdo.hu

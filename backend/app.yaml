@@ -42,7 +42,7 @@ env_variables:
   CACHE_DRIVER: database
   FILESYSTEM_DISK: tmp
   QUEUE_CONNECTION: sync
-  SESSION_DRIVER: cookie
+  SESSION_DRIVER: database
   SESSION_LIFETIME: 120
   SESSION_DOMAIN: "e5vosdo.hu"
   SESSION_COOKIE: "e5vosdo.hu_session"

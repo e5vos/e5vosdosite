@@ -19,6 +19,12 @@ use Illuminate\Support\Facades\Route;
 require __DIR__ . '/auth.php';
 Route::get('/auth/callback', [AuthController::class, 'callback']);
 
-Route::get('/{any}', function ($any) {
+
+Route::any('/', function () {
     return view('frontend');
-})->where('any', '.*');
+});
+
+
+Route::any('/eloadas', function () {
+    return view('frontend');
+});

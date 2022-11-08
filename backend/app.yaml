@@ -1,7 +1,14 @@
 runtime: php81
 env: standard
-runtime_config:
-  document_root: public
+
+handlers:
+  - url: /(.*\.(gif|png|jpg|css|js))$
+    static_files: public/\1
+    upload: public/.*\.(gif|png|jpg|css|js|svg)$
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto
 
 beta_settings:
   cloud_sql_instances: /cloudsql/e5vsdosite:europe-central2:e5vosdo-db
@@ -58,6 +65,7 @@ env_variables:
 
   GOOGLE_CLIENT_ID: 352962433416-obdmdsbt2205mains21suujpvrfmhks4.apps.googleusercontent.com
   GOOGLE_CLIENT_SECRET: m3mp0-N9JlmRO-rluGVQy2BY
+  GOOGLE_REDIRECT_URI: "https://e5vosdo.hu/auth/callback"
 
   APP_SERVICES_CACHE: /tmp/services.php
   APP_PACKAGES_CACHE: /tmp/packages.php

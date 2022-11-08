@@ -86,7 +86,11 @@ class AuthController extends Controller
             if ($ejgLetter === 'N') {
                 $ejgLetter = 'Ny';
             }
-            $ejgYear = now()->year - intval($request->e5code) + ($ejgLetter === 'A' || $ejgLetter === 'B' ? 7 : ($ejgLetter === 'E' ? 8 : 9));
+            $ejgYear = now()->year - intval($request->e5code) + ($ejgLetter === 'A' || $ejgLetter === 'B' ? 7 : 9);
+            if ($ejgLetter === 'Ny' && $ejgYear >= 9) {
+                $ejgLetter = 'E';
+                $ejgYear--;
+            }
             $request->user()->ejg_class = strval($ejgYear) . '.' . $ejgLetter;
             $request->user()->save();
             Permission::create([

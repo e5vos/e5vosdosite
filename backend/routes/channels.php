@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Broadcast;
 
-/*
+    /*
 |--------------------------------------------------------------------------
 | Broadcast Channels
 |--------------------------------------------------------------------------
@@ -12,5 +12,3 @@ use Illuminate\Support\Facades\Broadcast;
 | used to check if an authenticated user can listen to the channel.
 |
 */
-
-Broadcast::channel('ping-pong', fn () => true);

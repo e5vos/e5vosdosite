@@ -58,10 +58,6 @@ const PresentationsPage = () => {
       return;
     }
     try {
-      if (!user || !user.e5code) {
-        alert("Please enter your code first");
-        return;
-      }
       await cancelSignup({
         attender: user.e5code,
         event: presentation,

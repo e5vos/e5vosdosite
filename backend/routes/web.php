@@ -23,4 +23,4 @@ Route::get('/auth/callback', [AuthController::class, 'callback']);
 
 Route::get('/{any}', function ($any) {
     return view('frontend');
-});
+})->where('any', '.*');

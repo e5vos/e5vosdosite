@@ -53,20 +53,20 @@ const PresentationManagePage = () => {
           ))}
         </ButtonGroup>
       </div>
-      <div className="md:grid grid-cols-4 gap-2">
-        {isEventsFetching ? (
-          <Loader />
-        ) : (
-          filteredpresentations?.map((presentation) => (
+      {isEventsFetching ? (
+        <Loader />
+      ) : (
+        <div className="md:grid grid-cols-4 gap-2">
+          {filteredpresentations?.map((presentation) => (
             <PresentationCard
               key={presentation.id}
               presentation={presentation as Presentation}
               className="mb-3 md:mb-0"
               fillAllowed={fillAllowed ?? false}
             />
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

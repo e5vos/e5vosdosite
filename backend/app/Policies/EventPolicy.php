@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Exceptions\NoE5NException;
 use App\Exceptions\SignupRequiredException;
 use App\Helpers\SlotType;
 use App\Models\Attendance;
@@ -101,7 +102,7 @@ class EventPolicy
     public function signup(User $user, Event $event = null)
     {
         if (!Setting::find('e5n.events.signup')?->value) {
-            return false;
+            throw new NoE5NException();
         }
         $event = $event ?? Event::findOrFail(request()->eventId);
         $attenderCode = request()->attender ?? $user->e5code ?? null;
@@ -123,7 +124,7 @@ class EventPolicy
     public function unsignup(User $user, Event $event = null)
     {
         if (!Setting::find('e5n.events.signup')?->value) {
-            return false;
+            throw new NoE5NException();
         }
         if (!request()->has('attender')) {
             abort(400, 'No attender specified');
@@ -141,7 +142,7 @@ class EventPolicy
     public function attend(User $user, Event $event = null)
     {
         if (!Setting::find('e5n')?->value) {
-            return false;
+            throw new NoE5NException();
         }
         $event = $event ?? Event::findOrFail(request()->eventId);
         $attender = request()->attender ?? request()->user()->e5code;

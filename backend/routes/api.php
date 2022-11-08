@@ -24,14 +24,7 @@ use App\Events\{
     Ping
 };
 use App\Http\Resources\{
-    EventResource,
     UserResource,
-    TeamResource,
-    SlotResource,
-    SettingResource,
-    TeamMembershipResource,
-    AttendanceResource,
-    TeamMemberAttendanceResource,
 };
 
 

@@ -2,3 +2,4 @@
 /storage/logs/laravel.log
 /node_modules/
 .env
+/storage/debugbar

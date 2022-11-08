@@ -40,10 +40,6 @@ const PresentationsPage = () => {
       return;
     }
     try {
-      if (!user || !user.e5code) {
-        alert("Please enter your code first");
-        return;
-      }
       const attendance = await signUp({
         attender: user.id,
         event: presentation,

@@ -12,13 +12,11 @@
 
     <title>Eötvös DÖ</title>
     <meta name="description" content="Vite + React + TS" />
-    <script type="module" crossorigin src="/assets/index.0471cafb.js"></script>
+    <script type="module" crossorigin src="/assets/index.77329f72.js"></script>
     <link rel="stylesheet" href="/assets/index.35fb000d.css">
   <link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
   <body>
     <div id="root"></div>
 
   </body>
-</html>
-
 </html>

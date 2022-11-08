@@ -40,12 +40,14 @@ const PresentationsPage = () => {
       return;
     }
     try {
-      const attendance = await signUp({
-        attender: user.id,
-        event: presentation,
-      }).unwrap();
-      refetchSelected();
-      refetchEvents();
+        if (user){
+            const attendance = await signUp({
+                attender: user.id,
+                event: presentation,
+            }).unwrap();
+            refetchSelected();
+            refetchEvents();
+        }
     } catch (err) {}
   };
 
@@ -54,12 +56,14 @@ const PresentationsPage = () => {
       return;
     }
     try {
-      await cancelSignup({
-        attender: user.e5code,
-        event: presentation,
-      }).unwrap();
-      refetchSelected();
-      refetchEvents();
+        if (user){
+            await cancelSignup({
+                attender: user.e5code,
+                event: presentation,
+              }).unwrap();
+              refetchSelected();
+              refetchEvents();
+        }
     } catch (err) {
       alert("Jelentkezés törlése sikertelen");
     }

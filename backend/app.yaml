@@ -2,15 +2,10 @@ runtime: php81
 env: standard
 runtime_config:
   document_root: public
-# for detecting static files in the public folder
-handlers:
-  - url: /(.*\.(gif|png|jpg|css|js))$
-    static_files: public/\1
-    upload: public/.*\.(gif|png|jpg|css|js)$
-  - url: /.*
-    secure: always
-    redirect_http_response_code: 301
-    script: auto
+
+beta_settings:
+  cloud_sql_instances: /cloudsql/e5vsdosite:europe-central2:e5vosdo-db
+
 env_variables:
   APP_NAME: e5vosdo.hu
   APP_ENV: production
@@ -25,7 +20,7 @@ env_variables:
 
   MYSQL_ATTR_PERSISTENT: true
   DB_CONNECTION: mysql
-  DB_HOST: localhost
+  DB_HOST: 127.0.0.1
   DB_PORT: 3306
   DB_DATABASE: data
   DB_USERNAME: root

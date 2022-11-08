@@ -8,10 +8,9 @@ use App\Helpers\MembershipType;
 use App\Http\Controllers\{
     Controller
 };
-
+use App\Http\Resources\TeamResource;
 use App\Models\{
     Team,
-    TeamMember,
     TeamMembership,
     User
 };
@@ -19,14 +18,9 @@ use App\Models\{
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\{
-    Gate,
     Auth,
     Cache
 };
-use Illuminate\Support\Str;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-
-use function React\Promise\reduce;
 
 class TeamController extends Controller
 {
@@ -37,7 +31,7 @@ class TeamController extends Controller
      */
     public function index()
     {
-        return Cache::rememberForever('e5n.teams.all', fn () => Team::all()->load('members'));
+        return Cache::rememberForever('e5n.teams.all', fn () => TeamResource::collection(Team::all()->load('members'))->jsonSerialize());
     }
 
     /**
@@ -50,10 +44,10 @@ class TeamController extends Controller
     {
         $team = Team::create($request->all());
         $team->members()->attach(Auth::user()->id, ['role' => MembershipType::Leader]);
+        $team = new TeamResource($team->load('members'));
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.presentations');
-        Cache::forever('e5n.teams' . $team->code, $team);
-        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => $team->load('members'));
+        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => $team->jsonSerialize());
     }
 
 
@@ -65,9 +59,10 @@ class TeamController extends Controller
     {
         $team = Cache::pull('e5n.teams.' . $teamCode) ?? Team::findOrFail($teamCode);
         $team->update($request->all());
+        $team = new TeamResource($team->load('members'));
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.presentations');
-        return Cache::rememberForever('e5n.teams.' . $team->code, $team->load('members'));
+        return Cache::rememberForever('e5n.teams.' . $team->code, $team->jsonSerialize());
     }
 
     /**
@@ -75,31 +70,31 @@ class TeamController extends Controller
      */
     public function show($teamCode)
     {
-        return Cache::rememberForever('e5n.teams.' . $teamCode, fn () => Team::findOrFail($teamCode)->load('members'));
+        return Cache::rememberForever('e5n.teams.' . $teamCode, fn () => (new TeamResource(Team::findOrFail($teamCode)->load('members')))->jsonSerialize());
     }
 
     /**
      * Delete a team from the database
      */
-    public function delete(Request $request, $teamCode)
+    public function delete($teamCode)
     {
         $team = Team::where('code', $teamCode)->firstOrFail();
         $team->delete();
         Cache::forget('e5n.teams.all');
-        Cache::forget('e5n.teams.' . $team->code);
+        Cache::forget('e5n.teams.' . $teamCode);
         return response()->json(null, 204);
     }
 
     /**
      * restore a team from the database
      */
-    public function restore(Request $request, $teamCode)
+    public function restore($teamCode)
     {
         $team = Team::withTrashed()->where('code', $teamCode)->firstOrFail();
         $team->restore();
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.' . $team->code);
-        return Cache::rememberForever('e5n.teams' . $team->code, fn () => $team->load('members'));
+        return Cache::rememberForever('e5n.teams' . $team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
     }
 
 
@@ -108,13 +103,14 @@ class TeamController extends Controller
      */
     public function invite(Request $request, $teamCode)
     {
-        $team = Cache::pull('e5n.teams.' . $teamCode, Team::findOrFail($teamCode)->load('members'));
+        $team = Team::findOrFail($teamCode)->load('members');
         if ($team->members->pluck('e5code')->contains($request->userCode)) {
             throw new AlreadyInTeamException();
         }
         $team->members()->attach(User::where('e5code', $request->userCode)->firstOrFail(), ['role' => MembershipType::Invited]);
         Cache::forget('e5n.teams.all');
-        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => $team->load('members'));
+        Cache::forget('e5n.teams.' . $team->code);
+        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
     }
 
     /**
@@ -122,10 +118,11 @@ class TeamController extends Controller
      */
     public function kick(Request $request, $teamCode)
     {
-        $team = Cache::pull('e5n.teams.' . $teamCode, Team::findOrFail($teamCode)->load('members'));
+        $team = Team::findOrFail($teamCode)->load('members');
         $team->members()->detach(User::where('e5code', $request->userCode)->firstOrFail());
         Cache::forget('e5n.teams.all');
-        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => $team->load('members'));
+        Cache::forget('e5n.teams.' . $team->code);
+        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
     }
 
     /**
@@ -133,7 +130,7 @@ class TeamController extends Controller
      */
     public function promote(Request $request, $teamCode)
     {
-        $team = Cache::pull('e5n.teams.' . $teamCode, Team::findOrFail($teamCode)->load('members'));
+        $team = Team::findOrFail($teamCode)->load('members');
         $user = User::where("e5code", $request->userCode)->firstOrFail();
         $role = TeamMembership::where('team_code', $team->code)->where('user_id', $user->id)->first()->role;
         if ($request->promote === 'promote') {
@@ -143,6 +140,7 @@ class TeamController extends Controller
         }
         $team->members()->updateExistingPivot($user, ['role' => $role]);
         Cache::forget('e5n.teams.all');
-        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => $team->load('members'));
+        Cache::forget('e5n.teams.' . $team->code);
+        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
     }
 }

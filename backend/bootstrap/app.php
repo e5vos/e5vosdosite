@@ -42,7 +42,7 @@ $app->singleton(
 );
 
 // Use storage path from env file
-$app->useStoragePath(env('STORAGE_PATH', base_path() . '/storage'));
+$app->useStoragePath(env('APP_STORAGE', base_path() . '/storage'));
 
 
 /*

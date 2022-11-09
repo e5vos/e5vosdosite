@@ -1,6 +1,6 @@
 import Button from "components/UIKit/Button";
 import routeSwitcher from "lib/route";
-import { useDispatch } from "lib/store";
+import { useDispatch, useSelector } from "lib/store";
 import { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { authSlice } from "reducers/authReducer";
@@ -60,6 +60,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const params = useParams();
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
 
   const onMessage = useCallback<(this: Window, e: MessageEvent<any>) => any>(
     (e) => {
@@ -69,10 +70,13 @@ const LoginForm = () => {
       console.log("onMessage", e);
       // e.data.token contains token
       dispatch(authSlice.actions.setToken(e.data.token));
-      navigate(params.next ?? "/eloadas");
     },
-    [dispatch, navigate, params.next]
+    [dispatch]
   );
+
+  useEffect(() => {
+    if (token) navigate(params.next ?? "/eloadas");
+  }, [navigate, params.next, token]);
 
   useEffect(() => {
     window.addEventListener("message", onMessage);

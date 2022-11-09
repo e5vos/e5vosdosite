@@ -27,8 +27,9 @@ const useUser = (redirect: boolean = true, destination?: string) => {
   }
 
   useEffect(() => {
-    if (!user && error && redirectToLogin) {
-      navigate(redirectToLogin);
+    if (token && error) {
+      dispatch(authSlice.actions.setToken(""));
+      if (redirectToLogin) navigate(redirectToLogin);
     }
 
     if (user && !user.e5code) {
@@ -42,7 +43,6 @@ const useUser = (redirect: boolean = true, destination?: string) => {
     redirectToStudentCode,
     token,
     dispatch,
-    isLoading,
   ]);
 
   return { user, error, isLoading, ...rest };

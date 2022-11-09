@@ -67,7 +67,6 @@ const LoginForm = () => {
       if (!e.data.token) {
         return;
       }
-      console.log("onMessage", e);
       // e.data.token contains token
       dispatch(authSlice.actions.setToken(e.data.token));
     },

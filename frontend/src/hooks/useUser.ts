@@ -32,11 +32,9 @@ const useUser = (redirect: boolean = true, destination?: string) => {
       redirectToLogin = "/login?next=" + location.pathname;
       redirectToStudentCode = "/studentcode?next=" + location.pathname;
     }
-    if (token && error) {
-      dispatch(authSlice.actions.setToken(""));
-    }
 
     if (error && "status" in error && error.status === 401 && redirectToLogin) {
+      if (token) dispatch(authSlice.actions.setToken(""));
       navigate(redirectToLogin);
     }
 

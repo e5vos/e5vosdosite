@@ -6,7 +6,8 @@ const CustomNavbar = () => {
   return (
     <Navbar brand={<Navbar.Brand>{user ? user.name : "Főoldal"}</Navbar.Brand>}>
       <Navbar.Link href="/eloadas">Előadásjelentkezés</Navbar.Link>
-      <Navbar.Link href="/logout">Kijelentkezés</Navbar.Link>
+      {!user && <Navbar.Link href="/login">Bejelentkezés</Navbar.Link>}
+      {user && <Navbar.Link href="/logout">Kijelentkezés</Navbar.Link>}
     </Navbar>
   );
 };

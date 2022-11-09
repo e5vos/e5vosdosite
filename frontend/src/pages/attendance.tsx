@@ -20,9 +20,9 @@ const AttendancePage = () => {
     refetch,
   } = api.useGetEventParticipantsQuery(eventid ?? "");
 
-  const participants = participantsData
-    ?.slice()
-    .sort((a, b) => (a.name > b.name ? 1 : -1));
+  const participants =
+    participantsData?.slice().sort((a, b) => a.name.localeCompare(b.name)) ??
+    [];
 
   const [toggleAPI, { isLoading }] = api.useToggleAttendanceMutation();
 

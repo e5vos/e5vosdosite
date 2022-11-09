@@ -4,7 +4,7 @@ env: standard
 handlers:
   - url: /(.*\.(gif|png|jpg|css|js))$
     static_files: public/\1
-    upload: public/.*\.(gif|png|jpg|css|js|svg)$
+    upload: public/.*\.(gif|png|jpg|css|js|svg|map)$
   - url: /.*
     secure: always
     redirect_http_response_code: 301

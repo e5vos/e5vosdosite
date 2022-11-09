@@ -8,7 +8,7 @@ import { authSlice } from "reducers/authReducer";
 
 const useUser = (redirect: boolean = true, destination?: string) => {
   const navigate = useNavigate();
-  const { data: user, error, ...rest } = api.useGetUserDataQuery();
+  const { data: user, error, isLoading, ...rest } = api.useGetUserDataQuery();
   const location = useLocation();
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
@@ -27,10 +27,6 @@ const useUser = (redirect: boolean = true, destination?: string) => {
   }
 
   useEffect(() => {
-    if (token && error) {
-      dispatch(authSlice.actions.setToken(""));
-      if (redirectToLogin) navigate(redirectToLogin);
-    }
     if (!user && error && redirectToLogin) {
       navigate(redirectToLogin);
     }
@@ -46,9 +42,10 @@ const useUser = (redirect: boolean = true, destination?: string) => {
     redirectToStudentCode,
     token,
     dispatch,
+    isLoading,
   ]);
 
-  return { user, error, ...rest };
+  return { user, error, isLoading, ...rest };
 };
 
 export default useUser;

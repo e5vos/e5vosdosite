@@ -176,7 +176,7 @@ class User extends Authenticable
         if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusy($event->slot)) {
             throw new StudentBusyException();
         }
-        if (isset($event->capacity) && $event->occupancy >= $event->capacity + (request()->user()->ejg_class == "9.NY" ? 2 : 0) && !request()->user()->hasPermission(PermissionType::Operator->value)) {
+        if (isset($event->capacity) && $event->occupancy >= $event->capacity + (request()->user()->ejg_class == "9.NY" ? intval(Setting::find('9ny.extracount')) : 0) && !request()->user()->hasPermission(PermissionType::Operator->value)) {
             throw new EventFullException();
         }
         if (Attendance::where('user_id', $this->id)->where('event_id', $event->id)->exists()) {

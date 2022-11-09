@@ -76,7 +76,9 @@ const PresentationsTable = ({
                 <div className="py-0.5">
                   <div>
                     {presentation.capacity
-                      ? presentation.capacity - presentation.occupancy
+                      ? presentation.capacity - presentation.occupancy < 0
+                        ? "Túltöltve"
+                        : presentation.capacity - presentation.occupancy
                       : "Korlátlan"}
                   </div>
                   {presentation.capacity - presentation.occupancy > 0 &&

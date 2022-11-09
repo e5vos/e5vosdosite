@@ -11,7 +11,11 @@ const gate = <T = any>(
 ): GateFunction => {
   return Object.assign(
     (user: User, ...rest: T[]) => {
-      if (isOperator(user)) return true;
+      if (
+        user.permissions?.find((permission) => permission.code === "OPT") !==
+        undefined
+      )
+        return true;
       return fun(user, ...rest);
     },
     { message }

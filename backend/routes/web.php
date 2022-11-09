@@ -28,3 +28,11 @@ Route::any('/', function () {
 Route::any('/eloadas', function () {
     return view('frontend');
 });
+
+Route::any('/eloadas/kezel', function () {
+    return view('frontend');
+});
+
+Route::any('/eloadas/kezel/{id}', function () {
+    return view('frontend');
+});

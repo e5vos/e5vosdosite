@@ -31,7 +31,7 @@ const StudentCodePage = () => {
     validationSchema: Yup.object({
       studentCode: Yup.string()
         .matches(
-          /^20([1-2]\d)([A-FN]{1})(\d{2})EJG(\d{3})$/,
+          /^20(\d{2})([A-FN]{1})(\d{2})EJG(\d{3})$/,
           "Diákkódnak kell lennie"
         )
         .required("Diákkód megadása kötelező"),

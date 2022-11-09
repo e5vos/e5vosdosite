@@ -8,31 +8,33 @@ import { authSlice } from "reducers/authReducer";
 
 const useUser = (redirect: boolean = true, destination?: string) => {
   const navigate = useNavigate();
-  const { data: user, error, isLoading, ...rest } = api.useGetUserDataQuery();
+  const {
+    data: user,
+    error,
+    isLoading,
+    isFetching,
+    ...rest
+  } = api.useGetUserDataQuery();
   const location = useLocation();
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
-  let redirectToLogin: string | undefined;
-  let redirectToStudentCode: string | undefined;
-  if (!redirect) {
-    redirectToLogin = undefined;
-    redirectToStudentCode = undefined;
-  } else if (destination) {
-    redirectToLogin = destination;
-    redirectToStudentCode = destination;
-  } else {
-    redirectToLogin = "/login?next=" + location.pathname;
-    redirectToStudentCode = "/studentcode?next=" + location.pathname;
-  }
-
   useEffect(() => {
-    if (token && error) {
-      dispatch(authSlice.actions.setToken(""));
-      if (redirectToLogin) navigate(redirectToLogin);
+    let redirectToLogin: string | undefined;
+    let redirectToStudentCode: string | undefined;
+    if (!redirect) {
+      redirectToLogin = undefined;
+      redirectToStudentCode = undefined;
+    } else if (destination) {
+      redirectToLogin = destination;
+      redirectToStudentCode = destination;
+    } else {
+      redirectToLogin = "/login?next=" + location.pathname;
+      redirectToStudentCode = "/studentcode?next=" + location.pathname;
     }
 
-    if (!user && error && redirectToLogin) {
+    if (error && "status" in error && error.status === 401 && redirectToLogin) {
+      if (token) dispatch(authSlice.actions.setToken(""));
       navigate(redirectToLogin);
     }
 
@@ -43,13 +45,14 @@ const useUser = (redirect: boolean = true, destination?: string) => {
     user,
     error,
     navigate,
-    redirectToLogin,
-    redirectToStudentCode,
     token,
     dispatch,
+    redirect,
+    destination,
+    location.pathname,
   ]);
 
-  return { user, error, isLoading, ...rest };
+  return { user, error, isLoading, isFetching, ...rest };
 };
 
 export default useUser;

@@ -8,6 +8,7 @@ import { api } from "lib/api";
 import useUser from "hooks/useUser";
 import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
 import { Transition } from "@headlessui/react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const PresentationsPage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
@@ -33,6 +34,7 @@ const PresentationsPage = () => {
     cancelSignup,
     { isLoading: cancelSignupInProgress, error: cancelSignupError },
   ] = api.useCancelSignUpMutation();
+  const navigate = useNavigate();
 
   const { user } = useUser();
   const signUpAction = async (presentation: Presentation) => {
@@ -40,27 +42,20 @@ const PresentationsPage = () => {
       return;
     }
     try {
-<<<<<<< HEAD
-        if (user){
-            const attendance = await signUp({
-                attender: user.id,
-                event: presentation,
-            }).unwrap();
-            refetchSelected();
-            refetchEvents();
-        }
-=======
-      if (user === undefined) {
+      if (!user) {
         alert("Nem vagy bejelentkezve!");
-      } else {
-        const attendance = await signUp({
-          attender: user.id,
-          event: presentation,
-        }).unwrap();
-        refetchSelected();
-        refetchEvents();
+        return;
       }
->>>>>>> 62020f6b8abbf4ce9ea152659133284a8343991b
+      if (!user.e5code) {
+        alert("Nem adtad meg az E5 kódot!");
+        navigate("/studentcode?next=/eloadas");
+      }
+      const attendance = await signUp({
+        attender: user.e5code,
+        event: presentation,
+      }).unwrap();
+      refetchSelected();
+      refetchEvents();
     } catch (err) {}
   };
 
@@ -68,15 +63,24 @@ const PresentationsPage = () => {
     if (cancelSignupInProgress || !user) {
       return;
     }
+
+    if (!user) {
+      alert("Nem vagy bejelentkezve!");
+      return;
+    }
+    if (!user.e5code) {
+      alert("Nem adtad meg az E5 kódot!");
+      navigate("/studentcode?next=/eloadas");
+    }
     try {
-        if (user){
-            await cancelSignup({
-                attender: user.e5code,
-                event: presentation,
-              }).unwrap();
-              refetchSelected();
-              refetchEvents();
-        }
+      if (user) {
+        await cancelSignup({
+          attender: user.e5code,
+          event: presentation,
+        }).unwrap();
+        refetchSelected();
+        refetchEvents();
+      }
     } catch (err) {
       alert("Jelentkezés törlése sikertelen");
     }

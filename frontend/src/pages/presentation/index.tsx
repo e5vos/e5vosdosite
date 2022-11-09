@@ -40,6 +40,7 @@ const PresentationsPage = () => {
       return;
     }
     try {
+<<<<<<< HEAD
         if (user){
             const attendance = await signUp({
                 attender: user.id,
@@ -48,11 +49,23 @@ const PresentationsPage = () => {
             refetchSelected();
             refetchEvents();
         }
+=======
+      if (user === undefined) {
+        alert("Nem vagy bejelentkezve!");
+      } else {
+        const attendance = await signUp({
+          attender: user.id,
+          event: presentation,
+        }).unwrap();
+        refetchSelected();
+        refetchEvents();
+      }
+>>>>>>> 62020f6b8abbf4ce9ea152659133284a8343991b
     } catch (err) {}
   };
 
   const cancelSignupAction = async (presentation: Presentation) => {
-    if (cancelSignupInProgress) {
+    if (cancelSignupInProgress || !user) {
       return;
     }
     try {

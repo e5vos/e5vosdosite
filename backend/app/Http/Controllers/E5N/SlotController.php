@@ -66,6 +66,6 @@ class SlotController extends Controller
     {
         return UserResource::collection(User::whereRelation('permissions', 'code', PermissionType::Student->value)->whereDoesntHave('events', function ($query) use ($slotId) {
             $query->where('slot_id', $slotId);
-        })->get())->jsonSerialise();
+        })->get())->jsonSerialize();
     }
 }

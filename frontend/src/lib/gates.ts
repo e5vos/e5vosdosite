@@ -9,7 +9,13 @@ const gate = <T = any>(
   fun: (user: User, ...rest: T[]) => boolean,
   message?: string
 ): GateFunction => {
-  return Object.assign(fun, { message });
+  return Object.assign(
+    (user: User, ...rest: T[]) => {
+      if (isOperator(user)) return true;
+      return fun(user, ...rest);
+    },
+    { message }
+  );
 };
 
 export const isTeacher = gate((user) => {

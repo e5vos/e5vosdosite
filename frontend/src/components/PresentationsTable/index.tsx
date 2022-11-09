@@ -79,7 +79,7 @@ const PresentationsTable = ({
                       ? presentation.capacity - presentation.occupancy
                       : "Korlátlan"}
                   </div>
-                  {presentation.capacity - presentation.occupancy !== 0 &&
+                  {presentation.capacity - presentation.occupancy > 0 &&
                   callback ? (
                     <div>
                       <Button

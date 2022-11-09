@@ -59,6 +59,8 @@ class AuthController extends Controller
         }
         $user->save();
         Auth::login($user);
+        $tokenName = $request->header('User-Agent');
+        $tokenName = strlen($tokenName) > 100 ? substr($tokenName, 0, 100) : $tokenName;
         $token = $user->createToken($request->header('User-Agent'), ['JOIN THE USSR'])->plainTextToken;
         return view('oauth.callback', ['token' => $token]);
     }

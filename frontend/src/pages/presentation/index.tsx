@@ -40,17 +40,21 @@ const PresentationsPage = () => {
       return;
     }
     try {
-      const attendance = await signUp({
-        attender: user.id,
-        event: presentation,
-      }).unwrap();
-      refetchSelected();
-      refetchEvents();
+      if (user === undefined) {
+        alert("Nem vagy bejelentkezve!");
+      } else {
+        const attendance = await signUp({
+          attender: user.id,
+          event: presentation,
+        }).unwrap();
+        refetchSelected();
+        refetchEvents();
+      }
     } catch (err) {}
   };
 
   const cancelSignupAction = async (presentation: Presentation) => {
-    if (cancelSignupInProgress) {
+    if (cancelSignupInProgress || !user) {
       return;
     }
     try {

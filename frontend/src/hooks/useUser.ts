@@ -19,28 +19,24 @@ const useUser = (redirect: boolean = true, destination?: string) => {
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
-  let redirectToLogin: string | undefined;
-  let redirectToStudentCode: string | undefined;
-  if (!redirect) {
-    redirectToLogin = undefined;
-    redirectToStudentCode = undefined;
-  } else if (destination) {
-    redirectToLogin = destination;
-    redirectToStudentCode = destination;
-  } else {
-    redirectToLogin = "/login?next=" + location.pathname;
-    redirectToStudentCode = "/studentcode?next=" + location.pathname;
-  }
-
   useEffect(() => {
+    let redirectToLogin: string | undefined;
+    let redirectToStudentCode: string | undefined;
+    if (!redirect) {
+      redirectToLogin = undefined;
+      redirectToStudentCode = undefined;
+    } else if (destination) {
+      redirectToLogin = destination;
+      redirectToStudentCode = destination;
+    } else {
+      redirectToLogin = "/login?next=" + location.pathname;
+      redirectToStudentCode = "/studentcode?next=" + location.pathname;
+    }
     if (token && error) {
       dispatch(authSlice.actions.setToken(""));
     }
-    if (error && "status" in error && error.status === 401 && redirectToLogin) {
-      navigate(redirectToLogin);
-    }
 
-    if (!user && error && redirectToLogin) {
+    if (error && "status" in error && error.status === 401 && redirectToLogin) {
       navigate(redirectToLogin);
     }
 
@@ -51,10 +47,11 @@ const useUser = (redirect: boolean = true, destination?: string) => {
     user,
     error,
     navigate,
-    redirectToLogin,
-    redirectToStudentCode,
     token,
     dispatch,
+    redirect,
+    destination,
+    location.pathname,
   ]);
 
   return { user, error, isLoading, isFetching, ...rest };

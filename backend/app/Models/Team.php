@@ -136,7 +136,7 @@ class Team extends Model
      */
     public function attend(Event $event)
     {
-        if (isset($event->capacity) && $event->occupancy >= $event->capacity && !request()->user()->hasPermission(PermissionType::Operator)) {
+        if (isset($event->capacity) && $event->occupancy >= $event->capacity && !request()->user()->hasPermission(PermissionType::Operator->value)) {
             throw new EventFullException();
         }
         $signup = $this->signups()->where('event_id', $event->id)->first();

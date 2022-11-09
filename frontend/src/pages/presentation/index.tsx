@@ -40,6 +40,16 @@ const PresentationsPage = () => {
       return;
     }
     try {
+<<<<<<< HEAD
+        if (user){
+            const attendance = await signUp({
+                attender: user.id,
+                event: presentation,
+            }).unwrap();
+            refetchSelected();
+            refetchEvents();
+        }
+=======
       if (user === undefined) {
         alert("Nem vagy bejelentkezve!");
       } else {
@@ -50,6 +60,7 @@ const PresentationsPage = () => {
         refetchSelected();
         refetchEvents();
       }
+>>>>>>> 62020f6b8abbf4ce9ea152659133284a8343991b
     } catch (err) {}
   };
 
@@ -58,12 +69,14 @@ const PresentationsPage = () => {
       return;
     }
     try {
-      await cancelSignup({
-        attender: user.e5code,
-        event: presentation,
-      }).unwrap();
-      refetchSelected();
-      refetchEvents();
+        if (user){
+            await cancelSignup({
+                attender: user.e5code,
+                event: presentation,
+              }).unwrap();
+              refetchSelected();
+              refetchEvents();
+        }
     } catch (err) {
       alert("Jelentkezés törlése sikertelen");
     }

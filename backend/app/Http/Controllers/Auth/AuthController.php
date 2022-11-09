@@ -86,7 +86,7 @@ class AuthController extends Controller
             $request->user()->e5code = $request->e5code;
             $ejgLetter = $request->e5code[4];
             if ($ejgLetter === 'N') {
-                $ejgLetter = 'Ny';
+                $ejgLetter = 'NY';
             }
             $ejgYear = now()->year - intval($request->e5code) + ($ejgLetter === 'A' || $ejgLetter === 'B' ? 7 : 9);
             if ($ejgLetter === 'NY' && $ejgYear >= 9) {

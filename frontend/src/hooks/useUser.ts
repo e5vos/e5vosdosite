@@ -32,6 +32,10 @@ const useUser = (redirect: boolean = true, destination?: string) => {
       if (redirectToLogin) navigate(redirectToLogin);
     }
 
+    if (!user && error && redirectToLogin) {
+      navigate(redirectToLogin);
+    }
+
     if (user && !user.e5code) {
       if (redirectToStudentCode) navigate(redirectToStudentCode);
     }

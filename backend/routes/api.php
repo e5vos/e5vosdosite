@@ -11,6 +11,7 @@ use App\Http\Controllers\{
 };
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\PermissionController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Models\{
     Attendance,
     Event,
@@ -122,6 +123,9 @@ Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingContr
         Route::delete('/{key}', 'destroy')->can('delete', Setting::class)->name('setting.destroy');
     }
 );
+
+
+Route::get('cacheclear', [AdminController::class, "cacheClear"])->name('cacheclear');
 
 //test websocket broadcast
 Route::post('/ping', function () {

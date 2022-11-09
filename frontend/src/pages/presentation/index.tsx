@@ -8,6 +8,7 @@ import { api } from "lib/api";
 import useUser from "hooks/useUser";
 import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
 import { Transition } from "@headlessui/react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const PresentationsPage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
@@ -33,6 +34,7 @@ const PresentationsPage = () => {
     cancelSignup,
     { isLoading: cancelSignupInProgress, error: cancelSignupError },
   ] = api.useCancelSignUpMutation();
+  const navigate = useNavigate();
 
   const { user } = useUser();
   const signUpAction = async (presentation: Presentation) => {
@@ -40,12 +42,16 @@ const PresentationsPage = () => {
       return;
     }
     try {
-      if (!user || !user.e5code) {
-        alert("Please enter your code first");
+      if (!user) {
+        alert("Nem vagy bejelentkezve!");
         return;
       }
+      if (!user.e5code) {
+        alert("Nem adtad meg az E5 kódot!");
+        navigate("/studentcode?next=/eloadas");
+      }
       const attendance = await signUp({
-        attender: user.id,
+        attender: user.e5code,
         event: presentation,
       }).unwrap();
       refetchSelected();
@@ -56,6 +62,15 @@ const PresentationsPage = () => {
   const cancelSignupAction = async (presentation: Presentation) => {
     if (cancelSignupInProgress) {
       return;
+    }
+
+    if (!user) {
+      alert("Nem vagy bejelentkezve!");
+      return;
+    }
+    if (!user.e5code) {
+      alert("Nem adtad meg az E5 kódot!");
+      navigate("/studentcode?next=/eloadas");
     }
     try {
       await cancelSignup({

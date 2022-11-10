@@ -18,7 +18,7 @@ const PresentationCard = ({
   const navigate = useNavigate();
   return (
     <div
-      className={`flex flex-col justify-between rounded-lg bg-gray-100 p-2 ${
+      className={`mb-3 flex flex-col justify-between rounded-lg bg-gray-100 p-2 ${
         className ?? ""
       }`}
     >

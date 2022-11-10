@@ -92,6 +92,7 @@ export interface Event {
   location_id: number | null;
   location?: Location;
   is_competition: boolean;
+  img_url?: string;
   //TODO
 }
 

@@ -24,11 +24,9 @@ const AttendancePage = () => {
   const participants =
     participantsData
       ?.slice()
-      .map((e) => {
-        e.name = reverseNameOrder(e.name);
-        return e;
-      })
-      .sort((a, b) => a.name.localeCompare(b.name)) ?? [];
+      .sort((a, b) =>
+        reverseNameOrder(a.name).localeCompare(reverseNameOrder(b.name))
+      ) ?? [];
 
   const [toggleAPI, { isLoading }] = api.useToggleAttendanceMutation();
 

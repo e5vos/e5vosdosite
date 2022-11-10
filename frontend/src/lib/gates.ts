@@ -37,6 +37,6 @@ export const isOperator = gate((user) => {
 }, "Csak operátorok számára elérhető");
 
 export const is9NY = gate(
-  (user) => user?.ejg_class === "9NY",
+  (user) => user?.ejg_class === "9.NY",
   "Csak 9NY osztály számára elérhető"
 );

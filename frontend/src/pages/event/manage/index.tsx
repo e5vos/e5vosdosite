@@ -1,4 +1,4 @@
 const EventsManager = () => {
-  return <></>;
+  return <>Eseménykezelő</>;
 };
 export default EventsManager;

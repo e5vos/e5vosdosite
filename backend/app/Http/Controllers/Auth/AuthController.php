@@ -87,9 +87,14 @@ class AuthController extends Controller
             $ejgLetter = $request->e5code[4];
             $codeYear = intval($request->code());
             $ejgYear = date('Y') - $codeYear;
+            $currmonth =  date('m');
+
+            if ($currmonth < 9) {
+                $ejgYear--;
+            }
+
             if ($ejgLetter === 'N') {
 
-                $currmonth =  date('m');
                 $ejgYear += 8;
                 if (($currmonth < 9 && $codeYear == date('Y') - 1) || ($currmonth > 8 && $codeYear == date('Y'))) {
                     $ejgYear++;

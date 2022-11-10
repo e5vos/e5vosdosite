@@ -49,6 +49,7 @@ class SettingController extends Controller
      *
      * @param  string  $key
      * @return \Illuminate\Http\Response
+     * @deprecated
      */
     public function toggle($key)
     {

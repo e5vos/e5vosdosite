@@ -18,6 +18,11 @@ declare global {
   }
 }
 
+if (import.meta.env.DEV) {
+  includedZiggy.url = import.meta.env.VITE_BACKEND;
+  console.log("Ziggy url overridden for development");
+}
+
 if (typeof window !== "undefined" && typeof window.Ziggy !== "undefined") {
   Object.assign(includedZiggy.routes, window.Ziggy.routes);
 }

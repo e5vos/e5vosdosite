@@ -81,7 +81,7 @@ export interface Slot {
 
 export interface Event {
   name: string;
-  id: string;
+  id: number;
   description: string;
   organiser: string;
   capacity: number;
@@ -91,6 +91,7 @@ export interface Event {
   slot_id?: number;
   location_id: number | null;
   location?: Location;
+  is_competition: boolean;
   //TODO
 }
 

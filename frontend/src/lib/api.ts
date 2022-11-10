@@ -78,11 +78,11 @@ export const api = createApi({
         }
       },
     }),
-    getEvent: builder.query<Event, string>({
+    getEvent: builder.query<Event, number>({
       query: (id) => routeSwitcher("event.show", id),
       providesTags: (result, error, id) => [{ type: "Event", id }],
     }),
-    getEventParticipants: builder.query<Array<Attendance>, string>({
+    getEventParticipants: builder.query<Array<Attendance>, number>({
       query: (id) => routeSwitcher("event.participants", id),
       providesTags: (result, error, id) => [{ type: "EventParticipants", id }],
     }),

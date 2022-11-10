@@ -9,6 +9,7 @@ import useUser from "hooks/useUser";
 import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
 import { Transition } from "@headlessui/react";
 import { Navigate, useNavigate } from "react-router-dom";
+import ErrorMsgBox from "components/UIKit/ErrorMsgBox";
 
 const PresentationsPage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
@@ -137,27 +138,13 @@ const PresentationsPage = () => {
     );
   };
 
-  const ErrorMsgBox = () => {
-    return (
-      <div
-        className={`mx-auto my-4 max-w-6xl rounded-lg bg-red py-3 text-center transition delay-100 duration-500 ease-in-out ${
-          !errorShown && "hidden"
-        }`}
-      >
-        <h4 className="text-xl font-semibold">Hiba</h4>
-        <hr className="mx-3 bg-white shadow-md shadow-white" />
-        <p>{errormsg}</p>
-      </div>
-    );
-  };
-
   return (
     <div className="mx-5">
       <div className="container mx-auto">
         <h1 className="max-w-f pb-4 text-center text-4xl font-bold">
           E5N - Előadásjelentkezés
         </h1>
-        <ErrorMsgBox />
+        <ErrorMsgBox errorShown={errorShown} errormsg={errormsg} />
         <div className="mb-4 flex-row items-stretch justify-between  md:flex ">
           <ButtonGroup>
             {slots.map((slot, index) => (

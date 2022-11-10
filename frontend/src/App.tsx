@@ -36,8 +36,16 @@ const teamRoutes = (
 // Events
 
 const ManageEventsPage = React.lazy(() => import("pages/event/manage"));
+const ManageEventPage = React.lazy(
+  () => import("pages/event/[eventid]/manage/index")
+);
 const EventsPage = React.lazy(() => import("pages/event"));
-const EventPage = React.lazy(() => import("pages/event/[eventid]"));
+const EventPage = React.lazy(
+  () => import("pages/event/[eventid]/manage/index")
+);
+const ScannerPage = React.lazy(
+  () => import("pages/event/[eventid]/manage/scanner")
+);
 
 const eventRoutes = (
   <Route path="esemeny">
@@ -45,15 +53,14 @@ const eventRoutes = (
     <Route path=":eventid">
       <Route index element={<EventPage />} />
       <Route path="kezel">
-        <Route index element={<ManageEventsPage />} />
+        <Route index element={<ManageEventPage />} />
         <Route path="szerkeszt" element={<>EditEventPage</>} />
-        <Route path="scanner" element={<>ScannerPage</>} />
+        <Route path="scanner" element={<ScannerPage />} />
         <Route path="admin" element={<>ManageEventAdminPage</>} />
       </Route>
     </Route>
     <Route path="kezel">
-      <Route index element={<>ManageEventsPage</>} />
-      <Route path="admin" element={<>EventAdminsPage</>} />
+      <Route index element={<ManageEventsPage />} />
     </Route>
   </Route>
 );
@@ -61,7 +68,7 @@ const eventRoutes = (
 // Presentations
 
 const PresentationPage = React.lazy(() => import("pages/presentation"));
-const PresentationManagePage = React.lazy(
+const PresentationsManagePage = React.lazy(
   () => import("pages/presentation/manage")
 );
 const AttendanceSheet = React.lazy(() => import("pages/attendance"));
@@ -70,9 +77,11 @@ const presentationRoutes = (
   <Route path="eloadas">
     <Route index element={<PresentationPage />} />
     <Route path="kezel">
-      <Route index element={<PresentationManagePage />} />
-      <Route path="admin" element={<>TeamAdminPage</>} />
-      <Route path=":eventid" element={<AttendanceSheet />} />
+      <Route index element={<PresentationsManagePage />} />
+      <Route path=":eventid">
+        <Route index element={<AttendanceSheet />} />
+        <Route path="scanner" element={<ScannerPage />} />
+      </Route>
     </Route>
   </Route>
 );

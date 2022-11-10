@@ -23,8 +23,10 @@ const PresentationManagePage = () => {
 
   const [searchterm, setSearchterm] = useState("");
 
-  const filteredpresentations = presentations?.filter((presentation) =>
-    presentation.name.toLowerCase().includes(searchterm)
+  const filteredpresentations = presentations?.filter(
+    (presentation) =>
+      presentation.name.toLowerCase().includes(searchterm) ||
+      presentation.organiser.toLowerCase().includes(searchterm)
   );
 
   const fillAllowed = useMemo(() => user && isOperator(user), [user]);
@@ -32,7 +34,7 @@ const PresentationManagePage = () => {
   return (
     <div className="mx-10">
       <div className="mx-auto mt-3 h-full text-center">
-        <h1 className="mb-3 text-4xl font-bold">Előadások kezélese</h1>
+        <h1 className="mb-3 text-4xl font-bold">Előadások kezelése</h1>
         <Form.Group>
           <Form.Label>Keresés</Form.Label>
           <Form.Control

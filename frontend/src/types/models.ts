@@ -93,6 +93,7 @@ export interface Event {
   location?: Location;
   is_competition: boolean;
   img_url?: string;
+  signup_deadline?: string;
   //TODO
 }
 

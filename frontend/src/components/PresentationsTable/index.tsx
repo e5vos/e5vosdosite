@@ -39,7 +39,7 @@ const PresentationsTable = ({
           <th className="rounded-l-lg py-1">Előadás címe</th>
           <th className="py-1">Előadó</th>
           <th className="py-1">Előadás leírása</th>
-          <th className="rounded-r-lg py-1 md:min-w-fit">Szabad helyek</th>
+          <th className="rounded-r-lg py-1 md:min-w-fit"></th>
         </tr>
       </thead>
       <tbody>
@@ -78,13 +78,18 @@ const PresentationsTable = ({
               >
                 <div className="py-0.5">
                   <div>
-                    {presentation.capacity
+                    {!presentation.signup_deadline ||
+                    Date.parse(presentation.signup_deadline) < Date.now()
+                      ? presentation.location?.name ?? "Ismeretlen hely"
+                      : presentation.capacity
                       ? presentation.capacity - presentation.occupancy < 0
                         ? "Túltöltve"
                         : presentation.capacity - presentation.occupancy
                       : "Korlátlan"}
                   </div>
                   {callback &&
+                  (!presentation.signup_deadline ||
+                    Date.parse(presentation.signup_deadline) >= Date.now()) &&
                   (presentation.capacity > presentation.occupancy ||
                     (user && is9NY(user))) ? (
                     <div>

@@ -59,18 +59,9 @@ const AttendancePage = () => {
             {participants?.map((attending, index) => (
               <li
                 key={index}
-                className="mx-2 my-2 flex flex-row justify-end gap-4  align-middle"
+                className="mx-2 my-2 flex flex-row justify-center gap-4  align-middle"
               >
                 <span className="mx-4">{attending.name}</span>
-                {event.is_competition && (
-                  <Form.Control
-                    type="number"
-                    className="w-4"
-                    onChange={(e) =>
-                      score(attending, Number(e.currentTarget.value))
-                    }
-                  />
-                )}
                 <Form.Check
                   defaultChecked={attending.pivot.is_present}
                   onClick={toggle(attending)}

@@ -85,13 +85,22 @@ class AuthController extends Controller
         if ($validated === "true") {
             $request->user()->e5code = $request->e5code;
             $ejgLetter = $request->e5code[4];
+            $codeYear = intval($request->code());
+            $ejgYear = date('y') - intval($request->e5code);
             if ($ejgLetter === 'N') {
-                $ejgLetter = 'NY';
-            }
-            $ejgYear = now()->year - intval($request->e5code) + ($ejgLetter === 'A' || $ejgLetter === 'B' ? 7 : 9);
-            if ($ejgLetter === 'NY' && $ejgYear >= 9) {
-                $ejgLetter = 'E';
-                $ejgYear--;
+
+                $currmonth =  date('m');
+                $ejgYear += 8;
+                if (($currmonth < 9 && $codeYear === date('y') - 1) || ($currmonth > 8 && $codeYear === date('y'))) {
+                    $ejgYear--;
+                    $ejgLetter = 'E';
+                } else {
+                    $ejgLetter = 'NY';
+                }
+            } elseif ($ejgLetter === 'A' || $ejgLetter === 'B') {
+                $ejgYear += 7;
+            } else {
+                $ejgYear += 9;
             }
             $request->user()->ejg_class = strval($ejgYear) . '.' . $ejgLetter;
             $request->user()->save();

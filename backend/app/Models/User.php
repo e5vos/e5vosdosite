@@ -194,7 +194,6 @@ class User extends Authenticable
      *
      * @param  Event $event
      * @throws StudentBusyException if user is busy at the event timeslot
-     * @throws EventFullException if the event is full
      * @return EventSignup the newly created EventSignup object
      */
     public function attend(Event $event)

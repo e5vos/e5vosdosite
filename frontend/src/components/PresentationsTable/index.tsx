@@ -1,5 +1,7 @@
 import Button from "components/UIKit/Button";
 import Loader from "components/UIKit/Loader";
+import useUser from "hooks/useUser";
+import { is9NY } from "lib/gates";
 import { Presentation } from "types/models";
 
 const getColor = (capacity: number | null) => {
@@ -29,6 +31,7 @@ const PresentationsTable = ({
   disabled?: boolean;
   isLoading?: boolean;
 }) => {
+    const {user} = useUser(false);
   return (
     <table className="flex flex-col md:table table-auto w-full text-sm md:text-lg border-separate border-spacing-y-1 md:border-spacing-y-2 border-spacing-x-0.5">
       <thead className="hidden md:table-header-group bg-gray-300 text-white border-separate ">
@@ -81,8 +84,7 @@ const PresentationsTable = ({
                         : presentation.capacity - presentation.occupancy
                       : "Korlátlan"}
                   </div>
-                  {presentation.capacity - presentation.occupancy > 0 &&
-                  callback ? (
+                  {callback && (presentation.capacity > presentation.occupancy || is9NY(user)) ? (
                     <div>
                       <Button
                         variant="secondary"

@@ -33,9 +33,9 @@ const useUser = (redirect: boolean = true, destination?: string) => {
       redirectToStudentCode = "/studentcode?next=" + location.pathname;
     }
 
-    if (error && "status" in error && error.status === 401 && redirectToLogin) {
+    if (error && "status" in error && error.status === 401) {
       if (token) dispatch(authSlice.actions.setToken(""));
-      navigate(redirectToLogin);
+      if (redirectToLogin) navigate(redirectToLogin);
     }
 
     if (user && !user.e5code) {

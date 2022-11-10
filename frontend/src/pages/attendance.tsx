@@ -11,7 +11,7 @@ import { reverseNameOrder } from "lib/util";
 const AttendancePage = () => {
   const { eventid } = useParams<{ eventid: string }>();
   const { data: event, isLoading: isEventLoading } = api.useGetEventQuery(
-    eventid ?? "-1"
+    Number(eventid ?? -1)
   );
   const {
     data: participantsData,
@@ -19,7 +19,7 @@ const AttendancePage = () => {
     isFetching: isParticipantsFetching,
     error: participantsError,
     refetch,
-  } = api.useGetEventParticipantsQuery(eventid ?? "");
+  } = api.useGetEventParticipantsQuery(Number(eventid ?? -1));
 
   const participants =
     participantsData
@@ -46,18 +46,31 @@ const AttendancePage = () => {
       }
     };
 
+  const score = (attending: Attendance, score: number) => {
+    console.log(attending.name + " is now " + score);
+  };
+
   return (
     <div className="container mx-auto mt-2 ">
-      <div className="mx-auto text-center w-fit">
+      <div className="mx-auto w-fit text-center">
         <h1 className="text-4xl font-bold">Jelenléti Ív - {event?.name}</h1>
         <div className="mt-4">
-          <ul className="border mb-3">
+          <ul className="mb-3 border">
             {participants?.map((attending, index) => (
               <li
                 key={index}
-                className="flex flex-row justify-between mx-2 my-2  align-middle"
+                className="mx-2 my-2 flex flex-row justify-end gap-4  align-middle"
               >
                 <span className="mx-4">{attending.name}</span>
+                {event.is_competition && (
+                  <Form.Control
+                    type="number"
+                    className="w-4"
+                    onChange={(e) =>
+                      score(attending, Number(e.currentTarget.value))
+                    }
+                  />
+                )}
                 <Form.Check
                   defaultChecked={attending.pivot.is_present}
                   onClick={toggle(attending)}

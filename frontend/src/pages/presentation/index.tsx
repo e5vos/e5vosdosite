@@ -9,6 +9,7 @@ import useUser from "hooks/useUser";
 import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
 import { Transition } from "@headlessui/react";
 import { Navigate, useNavigate } from "react-router-dom";
+import ErrorMsgBox from "components/UIKit/ErrorMsgBox";
 
 const PresentationsPage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
@@ -63,11 +64,6 @@ const PresentationsPage = () => {
     if (cancelSignupInProgress || !user) {
       return;
     }
-
-    if (!user) {
-      alert("Nem vagy bejelentkezve!");
-      return;
-    }
     if (!user.e5code) {
       alert("Nem adtad meg az E5 kódot!");
       navigate("/studentcode?next=/eloadas");
@@ -82,7 +78,7 @@ const PresentationsPage = () => {
         refetchEvents();
       }
     } catch (err) {
-      alert("Jelentkezés törlése sikertelen");
+      console.log(err);
     }
   };
 
@@ -101,7 +97,12 @@ const PresentationsPage = () => {
       if (!message && message === "") return "Ismeretlen hiba";
       else return message;
     }
-  }, [signupError]);
+    if (cancelSignupError && "status" in cancelSignupError) {
+      const message = (cancelSignupError.data as any).message;
+      if (!message && message === "") return "Ismeretlen hiba";
+      else return message;
+    }
+  }, [signupError, cancelSignupError]);
 
   useEffect(() => {
     if (errormsg !== undefined) {
@@ -117,7 +118,7 @@ const PresentationsPage = () => {
 
   const SelectField = () => {
     return (
-      <div className="md:mx-3 flex-1 text-center flex flex-col md:flex-row justify-center items-stretch gap-4 md:gap-8">
+      <div className="flex flex-1 flex-col items-stretch justify-center gap-4 text-center md:mx-3 md:flex-row md:gap-8">
         <div className="flex-1">
           <h3>Általad Választott előadás</h3>
           <div className="rounded-lg bg-green-600 p-3 ">
@@ -137,28 +138,14 @@ const PresentationsPage = () => {
     );
   };
 
-  const ErrorMsgBox = () => {
-    return (
-      <div
-        className={`rounded-lg bg-red max-w-6xl mx-auto my-4 py-3 text-center transition ease-in-out delay-100 duration-500 ${
-          !errorShown && "hidden"
-        }`}
-      >
-        <h4 className="text-xl font-semibold">Hiba</h4>
-        <hr className="bg-white mx-3 shadow-md shadow-white" />
-        <p>{errormsg}</p>
-      </div>
-    );
-  };
-
   return (
     <div className="mx-5">
       <div className="container mx-auto">
-        <h1 className="text-center font-bold text-4xl max-w-f pb-4">
+        <h1 className="max-w-f pb-4 text-center text-4xl font-bold">
           E5N - Előadásjelentkezés
         </h1>
-        <ErrorMsgBox />
-        <div className="md:flex flex-row items-stretch mb-4  justify-between ">
+        <ErrorMsgBox errorShown={errorShown} errormsg={errormsg} />
+        <div className="mb-4 flex-row items-stretch justify-between  md:flex ">
           <ButtonGroup>
             {slots.map((slot, index) => (
               <Button

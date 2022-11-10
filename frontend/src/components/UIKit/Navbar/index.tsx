@@ -8,8 +8,8 @@ const Brand = ({ href, children }: { href?: string; children: ReactNode }) => {
   const Tag = href ? "a" : "span";
   return (
     <Tag href={href} className="flex items-center">
-      <Donci fill="white" className="h-full w-12 mr-5" />
-      <span className="self-center text-xl font-semibold whitespace-nowrap">
+      <Donci fill="white" className="mr-5 h-full w-12" />
+      <span className="self-center whitespace-nowrap text-xl font-semibold">
         {children}
       </span>
     </Tag>
@@ -46,7 +46,7 @@ const DropDownComponent = ({
     <Menu as="li">
       {({ open }) => (
         <>
-          <Menu.Button className="flex justify-between items-center py-2 pr-4 pl-3 w-full font-medium text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto">
+          <Menu.Button className="flex w-full items-center justify-between rounded py-2 pr-4 pl-3 font-medium text-gray-700 hover:bg-gray-100 md:w-auto md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-700">
             {toggle}
             <Caret />
           </Menu.Button>
@@ -62,7 +62,7 @@ const DropDownComponent = ({
           >
             <Menu.Items
               static
-              className="z-10 w-44 font-normal bg-white rounded divide-y divide-gray-100 shadow"
+              className="z-10 w-44 divide-y divide-gray-100 rounded bg-white font-normal shadow"
               style={{
                 visibility: open ? "visible" : "hidden",
               }}
@@ -86,7 +86,7 @@ const Link = ({ href, children }: { href: string; children: ReactNode }) => {
     <li>
       <a
         href={href}
-        className="block py-2 pr-4 pl-3 text-white rounded hover:bg-gray-100 md:hover:bg-inherit md:hover:text-gray-50 md:p-0"
+        className="block rounded py-2 pr-4 pl-3 text-white hover:bg-gray-100 md:p-0 md:hover:bg-inherit md:hover:text-gray-50"
       >
         {children}
       </a>
@@ -103,24 +103,24 @@ const Navbar = ({
 }) => {
   const isMobile = useIsMobile();
   return (
-    <nav className="px-2 py-2 mb-2 bg-gray-400 border-gray-200 rounded text-white">
+    <nav className="mb-2 rounded border-gray-200 bg-gray-400 px-2 py-2 text-white">
       <Menu as="div" className="">
         {({ open }) => (
           <div>
-            <div className="container flex flex-wrap justify-between items-center mx-auto">
+            <div className="container mx-auto flex flex-wrap items-center justify-between">
               <>{brand}</>
               {import.meta.env.DEV && (
-                <div className="text-red-300 text-4xl font-bold">DEV MODE</div>
+                <div className="text-4xl font-bold text-red-300">DEV MODE</div>
               )}
               <Menu.Button
-                className="inline-flex justify-center items-center ml-3 md:hidden  rounded-lg hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className="ml-3 inline-flex items-center justify-center rounded-lg  hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300 md:hidden"
                 aria-controls="mobile-menu-2"
                 aria-expanded="false"
               >
                 <span className="sr-only">Főmenü megnyitása</span>
                 <MobileMenu fill="white" className="h-10" />
               </Menu.Button>
-              <ul className="hidden md:flex p-4 flex-row space-x-8 mt-0 text-sm font-medium rounded-lg">
+              <ul className="mt-0 hidden flex-row space-x-8 rounded-lg p-4 text-sm font-medium md:flex">
                 {children}
               </ul>
             </div>
@@ -140,7 +140,7 @@ const Navbar = ({
                 static
                 as="div"
               >
-                <ul className="flex flex-col p-4 mt-4 rounded-lg border font-medium">
+                <ul className="mt-4 flex flex-col rounded-lg border p-4 font-medium">
                   {children}
                 </ul>
               </Menu.Items>

@@ -85,7 +85,9 @@ class AuthController extends Controller
             'studentId' => $request->e5code,
             'api_token' => env('E5VOS_API_TOKEN')
         ])->body();
-        if ($validated === "true") {
+        if (
+            $validated === "true"
+        ) {
             $request->user()->e5code = $request->e5code;
             $ejgLetter = $request->e5code[4];
             $codeYear = intval($request->e5code);

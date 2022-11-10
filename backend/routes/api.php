@@ -125,7 +125,7 @@ Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingContr
 );
 
 
-Route::get('cacheclear', [AdminController::class, "cacheClear"])->name('cacheclear');
+Route::any('cacheclear', [AdminController::class, "cacheClear"])->name('cacheclear');
 
 //test websocket broadcast
 Route::post('/ping', function () {

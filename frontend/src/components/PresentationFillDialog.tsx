@@ -74,20 +74,20 @@ const PresentationFillDialog = ({
       <div className="fixed inset-0 bg-gray-500/50" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="mx-auto max-w-lg rounded-3xl bg-gray-100 p-3 shadow-2xl shadow-gray-800 border-gray-800/50  border-8">
+        <Dialog.Panel className="mx-auto max-w-lg rounded-3xl border-8 border-gray-800/50 bg-gray-100 p-3 shadow-2xl  shadow-gray-800">
           {!event ? (
             <Loader />
           ) : (
             <div>
-              <div className="text-center mb-4 mx-4">
+              <div className="mx-4 mb-4 text-center">
                 <Dialog.Title className="text-lg font-bold">
                   Esemény feltöltése - {event.name}
                 </Dialog.Title>
-                <Dialog.Description className="text-justify mb-3">
+                <Dialog.Description className="mb-3 text-justify">
                   {event.description}
                 </Dialog.Description>
 
-                <div className="text-4xl mb-3">
+                <div className="mb-3 text-4xl">
                   {event.occupancy}/
                   {event.capacity
                     ? event.capacity - event.occupancy
@@ -103,7 +103,7 @@ const PresentationFillDialog = ({
                 </Form.Group>
               </div>
 
-              <div className="h-[500px] overflow-auto  scroller">
+              <div className="scroller h-[500px]  overflow-auto">
                 <ul className="mx-3">
                   {!availableStudents ? (
                     <Loader />

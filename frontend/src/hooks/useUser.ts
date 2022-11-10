@@ -35,13 +35,11 @@ const useUser = (redirect: boolean = true, destination?: string) => {
       redirectToLogin = "/login?next=" + location.pathname;
       redirectToStudentCode = "/studentcode?next=" + location.pathname;
     }
-    console.log(user, token, error);
     if (error && "status" in error && error.status === 401) {
       //if (token) dispatch(authSlice.actions.setToken("")); // BUG: DELETES TOKEN TOO EARLY
       if (redirectToLogin) navigate(redirectToLogin);
     }
     if (user && !user.e5code) {
-      console.log("No e5code");
       if (redirectToStudentCode) navigate(redirectToStudentCode);
     }
   }, [

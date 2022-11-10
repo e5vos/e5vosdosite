@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Exceptions\NoE5NException;
+use App\Exceptions\SignupClosedException;
 use App\Exceptions\SignupRequiredException;
 use App\Helpers\SlotType;
 use App\Models\Attendance;
@@ -107,7 +108,10 @@ class EventPolicy
         $event = $event ?? Event::findOrFail(request()->eventId);
         $attenderCode = request()->attender ?? $user->e5code ?? null;
         $attenderType = strlen($attenderCode) === 13 ? 'user' : 'team';
-        if (!$event->isSignupOpen() || ($event->signup_type !== 'team_user' && $event->signup_type !== $attenderType)) {
+        if (!$event->isSignupOpen()) {
+            throw new SignupClosedException();
+        }
+        if ($event->signup_type !== 'team_user' && $event->signup_type !== $attenderType) {
             return false;
         }
         $attender = $attenderType == 'user' ? (is_numeric($attenderCode) ? $user->id == $attenderCode : $user->e5code === $attenderCode) : $user->isLeaderOfTeam($attenderCode);

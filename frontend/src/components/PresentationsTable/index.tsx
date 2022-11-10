@@ -33,13 +33,13 @@ const PresentationsTable = ({
 }) => {
   const { user } = useUser(false);
   return (
-    <table className="flex flex-col md:table table-auto w-full text-sm md:text-lg border-separate border-spacing-y-1 md:border-spacing-y-2 border-spacing-x-0.5">
-      <thead className="hidden md:table-header-group bg-gray-300 text-white border-separate ">
+    <table className="flex w-full table-auto border-separate border-spacing-y-1 border-spacing-x-0.5 flex-col text-sm md:table md:border-spacing-y-2 md:text-lg">
+      <thead className="hidden border-separate bg-gray-300 text-white md:table-header-group ">
         <tr className="shadow-md">
-          <th className="py-1 rounded-l-lg">Előadás címe</th>
+          <th className="rounded-l-lg py-1">Előadás címe</th>
           <th className="py-1">Előadó</th>
           <th className="py-1">Előadás leírása</th>
-          <th className="py-1 md:min-w-fit rounded-r-lg">Szabad helyek</th>
+          <th className="rounded-r-lg py-1 md:min-w-fit">Szabad helyek</th>
         </tr>
       </thead>
       <tbody>
@@ -54,12 +54,12 @@ const PresentationsTable = ({
           presentations.map((presentation, index) => (
             <tr
               key={index}
-              className="flex flex-col mb-5 rounded md:rounded-none md:table-row shadow-md bg-gray-400"
+              className="mb-5 flex flex-col rounded bg-gray-400 shadow-md md:table-row md:rounded-none"
             >
-              <td className="px-2 py-0.5 text-center font-bold  border-hidden rounded-l-lg">
+              <td className="rounded-l-lg border-hidden px-2 py-0.5  text-center font-bold">
                 {presentation.name}
               </td>
-              <td className="px-2 py-0.5 underline text-center ">
+              <td className="px-2 py-0.5 text-center underline ">
                 {presentation.organiser}
               </td>
               <td className="px-2 py-0.5 text-center ">
@@ -68,7 +68,7 @@ const PresentationsTable = ({
               {/*TODO: dynamically set cell color and button placement*/}
               <td
                 className={
-                  "px-2 m-4 py-2 md:py-0 md:h-24  rounded-l-lg md:rounded-l-none text-center whitespace-normal border-hidden rounded-r-lg text-black " +
+                  "m-4 whitespace-normal rounded-l-lg rounded-r-lg border-hidden  px-2 py-2 text-center text-black md:h-24 md:rounded-l-none md:py-0 " +
                   getColor(
                     presentation.capacity
                       ? presentation.capacity - presentation.occupancy

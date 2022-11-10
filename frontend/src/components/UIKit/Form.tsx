@@ -20,7 +20,7 @@ const Control = ({
       pattern={invalid ? "" : undefined}
       onInvalid={onInvalid}
       {...rest}
-      className={`text-white bg-transparent border-b-2 border-white  invalid:border-red invalid:text-red-500 focus:border-gray-400 invalid:focus:text-white ${
+      className={`border-b-2 border-white bg-transparent text-white  invalid:border-red invalid:text-red-500 focus:border-gray-400 invalid:focus:text-white ${
         className ?? ""
       }`}
     />
@@ -45,7 +45,7 @@ const Label = ({
   ...rest
 }: HTMLInputProps<HTMLSpanElement>) => {
   return (
-    <span className="font-bold mr-1 underline underline-offset-4">
+    <span className="mr-1 font-bold underline underline-offset-4">
       {children}
     </span>
   );
@@ -59,7 +59,7 @@ const Group = ({
   return (
     <label
       {...rest}
-      className={`flex flex-row justify-center items-center form-group mb-3 ${
+      className={`form-group mb-3 flex flex-row items-center justify-center ${
         className ?? ""
       }`}
     >

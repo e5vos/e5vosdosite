@@ -63,11 +63,6 @@ const PresentationsPage = () => {
     if (cancelSignupInProgress || !user) {
       return;
     }
-
-    if (!user) {
-      alert("Nem vagy bejelentkezve!");
-      return;
-    }
     if (!user.e5code) {
       alert("Nem adtad meg az E5 kódot!");
       navigate("/studentcode?next=/eloadas");
@@ -82,7 +77,7 @@ const PresentationsPage = () => {
         refetchEvents();
       }
     } catch (err) {
-      alert("Jelentkezés törlése sikertelen");
+      console.log(err);
     }
   };
 
@@ -101,7 +96,12 @@ const PresentationsPage = () => {
       if (!message && message === "") return "Ismeretlen hiba";
       else return message;
     }
-  }, [signupError]);
+    if (cancelSignupError && "status" in cancelSignupError) {
+      const message = (cancelSignupError.data as any).message;
+      if (!message && message === "") return "Ismeretlen hiba";
+      else return message;
+    }
+  }, [signupError, cancelSignupError]);
 
   useEffect(() => {
     if (errormsg !== undefined) {

@@ -2,7 +2,7 @@ import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { api } from "lib/api";
 import { useDispatch, useSelector } from "lib/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { authSlice } from "reducers/authReducer";
 
@@ -13,8 +13,11 @@ const useUser = (redirect: boolean = true, destination?: string) => {
     error,
     isLoading,
     isFetching,
+    refetch,
     ...rest
   } = api.useGetUserDataQuery();
+
+  const [bToken, setBToken] = useState<boolean>(false);
   const location = useLocation();
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
@@ -32,13 +35,13 @@ const useUser = (redirect: boolean = true, destination?: string) => {
       redirectToLogin = "/login?next=" + location.pathname;
       redirectToStudentCode = "/studentcode?next=" + location.pathname;
     }
-
+    console.log(user, token, error);
     if (error && "status" in error && error.status === 401) {
-      if (token) dispatch(authSlice.actions.setToken(""));
+      //if (token) dispatch(authSlice.actions.setToken("")); // BUG: DELETES TOKEN TOO EARLY
       if (redirectToLogin) navigate(redirectToLogin);
     }
-
     if (user && !user.e5code) {
+      console.log("No e5code");
       if (redirectToStudentCode) navigate(redirectToStudentCode);
     }
   }, [
@@ -52,7 +55,21 @@ const useUser = (redirect: boolean = true, destination?: string) => {
     location.pathname,
   ]);
 
-  return { user, error, isLoading, isFetching, ...rest };
+  /*
+  // EXPERMINENTAL: SHOULD FIX EARLY TOKEN DELETION
+  useEffect(() => {
+
+    if (bToken) {
+      if (isFetching || isLoading) {
+        setBToken(false);
+      } else {
+        if (token) dispatch(authSlice.actions.setToken(""));
+        setBToken(false);
+      }
+    }
+  }, [bToken, dispatch, isFetching, isLoading, token]);
+*/
+  return { user, error, isLoading, isFetching, refetch, ...rest };
 };
 
 export default useUser;

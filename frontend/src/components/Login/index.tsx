@@ -74,6 +74,7 @@ const LoginForm = () => {
   );
 
   useEffect(() => {
+    if (token) console.log("tc redir");
     if (token) navigate(params.next ?? "/eloadas");
   }, [navigate, params.next, token]);
 
@@ -86,7 +87,7 @@ const LoginForm = () => {
 
   return (
     <div className="mx-auto text-center m-1">
-      <Button onClick={logIn}>Bejelentkezés E5vös fiókkal</Button>;
+      <Button onClick={logIn}>Bejelentkezés E5vös fiókkal</Button>
     </div>
   );
 };

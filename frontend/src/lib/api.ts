@@ -196,5 +196,12 @@ export const api = createApi({
     getFreeUsers: builder.query<User[], number>({
       query: (slot) => routeSwitcher("slot.free_students", { slotId: slot }),
     }),
+    clearCache: builder.mutation<void, void>({
+      query: () => ({
+        url: routeSwitcher("cache.clear"),
+        method: "POST",
+      }),
+    })
   }),
+  
 });

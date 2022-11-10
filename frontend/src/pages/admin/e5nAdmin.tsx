@@ -1,8 +1,11 @@
 import { gated } from "components/Gate";
 import Button from "components/UIKit/Button";
+import { api } from "lib/api";
 import { isOperator } from "lib/gates";
 
 const AdminPage = () => {
+  const [clearCache]  = api.useClearCacheMutation()
+
   return (
     <div className="mx-auto max-w-4xl">
       <h1 className="text-center font-bold text-4xl">
@@ -12,7 +15,7 @@ const AdminPage = () => {
       <div className="flex gap-64 mt-4">
         <div className="">
           <h3 className="mb-3 text-center font-bold text-2xl">Rendszer</h3>
-          <Button>Cache clear</Button>
+          <Button onClick={() => clearCache()}>Cache clear</Button>
         </div>
         <div className="">
           <h3 className="mb-3 text-center font-bold text-2xl">Rendszer</h3>

@@ -10,6 +10,7 @@ import {
   User,
   isUserAttendance,
   Slot,
+  Location,
 } from "types/models";
 import routeSwitcher from "./route";
 import { RootState } from "./store";
@@ -52,6 +53,7 @@ export const api = createApi({
     "User",
     "EventParticipants",
     "Slot",
+    "Location",
   ],
   endpoints: (builder) => ({
     getEvents: builder.query<Event[] | undefined, number | void>({
@@ -201,6 +203,39 @@ export const api = createApi({
         url: routeSwitcher("cache.clear"),
         method: "POST",
       }),
+    }),
+    updateEvent: builder.mutation<Event, Omit<Event, "occupancy">>({
+      query: (event) => ({
+        url: routeSwitcher("event.update", { id: event.id }),
+        method: "PATCH",
+        params: event,
+      }),
+      invalidatesTags: (result) => [
+        { type: "Event", id: result?.id },
+        { type: "Event", id: `LIST${result?.slot_id}` },
+        { type: "Event", id: "LIST" },
+      ],
+    }),
+    getLocations: builder.query<Location[], void>({
+      query: () => routeSwitcher("locations"),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Location", id } as const)),
+              { type: "Location", id: "LIST" },
+            ]
+          : [{ type: "Location", id: "LIST" }],
+    }),
+    updateLocation: builder.mutation<Location, Location>({
+      query: (location) => ({
+        url: routeSwitcher("location.update", { id: location.id }),
+        method: "PATCH",
+        params: location,
+      }),
+      invalidatesTags: (result) => [
+        { type: "Location", id: result?.id },
+        { type: "Location", id: "LIST" },
+      ],
     }),
   }),
 });

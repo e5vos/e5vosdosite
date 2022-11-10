@@ -84,16 +84,18 @@ export interface Event {
   id: number;
   description: string;
   organiser: string;
-  capacity: number;
+  capacity?: number | null;
   occupancy: number;
-  attendees?: Attendance[];
+  attendees?: Attendance[] | null;
   slot?: Slot;
-  slot_id?: number;
+  slot_id?: number | null;
   location_id: number | null;
   location?: Location;
   is_competition: boolean;
-  img_url?: string;
-  signup_deadline?: string;
+  img_url?: string | null;
+  signup_deadline?: string | null;
+  starts_at: string;
+  ends_at: string;
   //TODO
 }
 

@@ -90,7 +90,8 @@ const PresentationsTable = ({
                   {callback &&
                   (!presentation.signup_deadline ||
                     Date.parse(presentation.signup_deadline) >= Date.now()) &&
-                  (presentation.capacity > presentation.occupancy ||
+                  (!presentation.capacity ||
+                    presentation.capacity > presentation.occupancy ||
                     (user && is9NY(user))) ? (
                     <div>
                       <Button

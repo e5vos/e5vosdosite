@@ -1,4 +1,5 @@
-import React, { ReactNode, FormEventHandler } from "react";
+import { Combobox } from "@headlessui/react";
+import React, { ChangeEvent, ReactNode, FormEventHandler } from "react";
 import { HTMLInputProps } from "./helpers";
 
 const Control = ({
@@ -97,7 +98,66 @@ const Check = ({
 };
 
 const Select = ({ children, ...rest }: HTMLInputProps<HTMLSelectElement>) => {
-  return <select {...rest}>{children}</select>;
+  return (
+    <select className="bg-gray" {...rest}>
+      {children}
+    </select>
+  );
+};
+
+const ComboBoxOption = ({
+  children,
+  key,
+  value,
+}: {
+  children: ReactNode;
+  key: any;
+  value: any;
+}) => {
+  return (
+    <Combobox.Option key={key} value={value}>
+      {children}
+    </Combobox.Option>
+  );
+};
+
+const ComboBox = <T = any,>({
+  options,
+  filter,
+  onChange,
+  renderElement,
+}: {
+  options: T[];
+  filter: (s: string) => (e: T) => boolean;
+  onChange?: (e: T | null) => void;
+  renderElement: (e: T) => ReactNode;
+}) => {
+  const [query, setQuery] = React.useState("");
+  const [selected, setSelected] = React.useState<T | null>(null);
+  const filteredOptions = options.filter(filter(query));
+
+  return (
+    <Combobox
+      value={selected}
+      onChange={(e) => {
+        setSelected(e);
+        if (onChange) onChange(e);
+      }}
+    >
+      <Combobox.Input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        className="border-b-2 border-white bg-transparent text-white focus:border-gray-400"
+      />
+      <Combobox.Options>
+        {filteredOptions.map((option, index) => (
+          <ComboBoxOption key={index} value={option}>
+            {renderElement(option)}
+          </ComboBoxOption>
+        ))}
+      </Combobox.Options>
+    </Combobox>
+  );
 };
 
 export default Object.assign(Form, {
@@ -107,4 +167,5 @@ export default Object.assign(Form, {
   Group,
   Check,
   Select,
+  ComboBox,
 });

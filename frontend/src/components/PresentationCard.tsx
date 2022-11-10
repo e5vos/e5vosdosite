@@ -67,6 +67,15 @@ const PresentationCard = ({
               Feltöltés
             </Button>
           )}
+          {fillAllowed && (
+            <Button
+              onClick={() =>
+                navigate(`/esemeny/${presentation.id}/kezel/szerkeszt`)
+              }
+            >
+              Szerkesztés
+            </Button>
+          )}
         </ButtonGroup>
       </div>
     </div>

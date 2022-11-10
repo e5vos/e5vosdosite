@@ -109,6 +109,9 @@ const Navbar = ({
           <div>
             <div className="container flex flex-wrap justify-between items-center mx-auto">
               <>{brand}</>
+              {import.meta.env.DEV && (
+                <div className="text-red-300 text-4xl font-bold">DEV MODE</div>
+              )}
               <Menu.Button
                 className="inline-flex justify-center items-center ml-3 md:hidden  rounded-lg hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300"
                 aria-controls="mobile-menu-2"

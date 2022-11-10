@@ -36,3 +36,12 @@ Route::any('/eloadas/kezel', function () {
 Route::any('/eloadas/kezel/{id}', function () {
     return view('frontend');
 });
+
+
+Route::any('/login', function () {
+    return view('frontend');
+});
+
+Route::any('/logout', function () {
+    return view('frontend');
+});

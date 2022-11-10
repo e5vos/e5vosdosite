@@ -51,9 +51,9 @@ const StudentCodePage = () => {
   if (isLoading) return <Loader />;
   return (
     <div className="container mx-auto">
-      <div className="text-center max-w-xl mx-auto">
-        <h1 className="font-bold text-4xl mb-2">Diákkód megadása</h1>
-        <hr className="bg-gray-50 mb-3" />
+      <div className="mx-auto max-w-xl text-center">
+        <h1 className="mb-2 text-4xl font-bold">Diákkód megadása</h1>
+        <hr className="mb-3 bg-gray-50" />
         <Form onSubmit={formik.handleSubmit}>
           <Form.Group>
             <Form.Label className="text-4xl">Diákkód:</Form.Label>

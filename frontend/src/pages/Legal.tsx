@@ -2,7 +2,7 @@ const LegalPage = () => {
   return (
     <div className="container mx-auto">
       <div>
-        <h2 className="text-center text-bold text-4xl my-2">Impresszum</h2>
+        <h2 className="text-bold my-2 text-center text-4xl">Impresszum</h2>
         <p className="mt-2">
           Mollit ullamco irure dolor eiusmod irure ex. Non excepteur Lorem id et
           magna reprehenderit et dolore commodo eu. Ut cupidatat labore occaecat
@@ -22,7 +22,7 @@ const LegalPage = () => {
           sunt minim incididunt laboris amet.
         </p>
         <div></div>
-        <h2 className="text-center text-bold text-4xl my-2">
+        <h2 className="text-bold my-2 text-center text-4xl">
           Adatvédelmi nyilatkozat
         </h2>
         <p className="mt-2">
@@ -44,8 +44,8 @@ const LegalPage = () => {
           aliquip cillum sunt. Enim fugiat irure ea nostrud est ullamco.
         </p>
 
-        <div className="flex flex-row mt-2">
-          <table className="text-center p-6 whitespace-nowrap border-collapse border border-slate-500">
+        <div className="mt-2 flex flex-row">
+          <table className="border-collapse whitespace-nowrap border border-slate-500 p-6 text-center">
             <thead>
               <tr>
                 <th className="border border-slate-600 px-3">Süti neve</th>

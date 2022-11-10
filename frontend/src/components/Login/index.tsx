@@ -86,7 +86,7 @@ const LoginForm = () => {
   }, [onMessage]);
 
   return (
-    <div className="mx-auto text-center m-1">
+    <div className="m-1 mx-auto text-center">
       <Button onClick={logIn}>Bejelentkezés E5vös fiókkal</Button>
     </div>
   );

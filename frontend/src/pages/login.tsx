@@ -16,7 +16,7 @@ const LoginPage = () => {
 
   return (
     <div className="mx-auto text-center">
-      <h1 className="font-bold text-4xl mb-10 ">Bejelentkezés</h1>
+      <h1 className="mb-10 text-4xl font-bold ">Bejelentkezés</h1>
       {token !== "" ? <>Már bejelentkezve</> : <LoginForm />}
     </div>
   );

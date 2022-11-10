@@ -4,9 +4,9 @@ const Footer = () => {
   return (
     <div className="flex-shrink-0">
       <div className="container mx-auto">
-        <div className="mx-auto w-fit text-center my-5">
-          <div className="flex flex-col align-middle mx-auto text-center">
-            <Donci fill="white" className="w-10 mx-auto hover:animate-wiggle" />
+        <div className="mx-auto my-5 w-fit text-center">
+          <div className="mx-auto flex flex-col text-center align-middle">
+            <Donci fill="white" className="mx-auto w-10 hover:animate-wiggle" />
             <div>Eötvös DÖ</div>
           </div>
         </div>

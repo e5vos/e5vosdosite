@@ -11,7 +11,7 @@ const Error = ({
   children?: ReactNode;
 }) => {
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div className="flex h-full flex-col items-center justify-center">
       <div className="text-9xl font-bold">{code}</div>
       {children ?? (
         <div className="text-2xl">{message ?? <>Hiba történt</>}</div>

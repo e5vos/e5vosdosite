@@ -83,7 +83,7 @@ const Button = ({
     <button
       {...rest}
       type={type}
-      className={`py-2 px-4 font-semibold rounded ${buttonclass} ${
+      className={`rounded py-2 px-4 font-semibold ${buttonclass} ${
         className ?? ""
       }`}
     >

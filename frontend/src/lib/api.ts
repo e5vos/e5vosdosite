@@ -201,7 +201,6 @@ export const api = createApi({
         url: routeSwitcher("cache.clear"),
         method: "POST",
       }),
-    })
+    }),
   }),
-  
 });

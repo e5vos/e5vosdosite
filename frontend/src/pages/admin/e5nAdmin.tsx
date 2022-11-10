@@ -4,21 +4,23 @@ import { api } from "lib/api";
 import { isOperator } from "lib/gates";
 
 const AdminPage = () => {
-  const [clearCache]  = api.useClearCacheMutation()
+  const [clearCache] = api.useClearCacheMutation();
 
   return (
     <div className="mx-auto max-w-4xl">
-      <h1 className="text-center font-bold text-4xl">
+      <h1 className="text-center text-4xl font-bold">
         Eötvös Napok Adminisztrátor
       </h1>
 
-      <div className="flex gap-64 mt-4">
+      <div className="mt-4 flex gap-64">
         <div className="">
-          <h3 className="mb-3 text-center font-bold text-2xl">Rendszer</h3>
-          <Button onClick={() => clearCache()}>Cache clear</Button>
+          <h3 className="mb-3 text-center text-2xl font-bold">Rendszer</h3>
+          <Button onClick={() => clearCache()} variant="danger">
+            Cache clear
+          </Button>
         </div>
         <div className="">
-          <h3 className="mb-3 text-center font-bold text-2xl">Rendszer</h3>
+          <h3 className="mb-3 text-center text-2xl font-bold">Rendszer</h3>
           <Button></Button>
         </div>
       </div>

@@ -4,5 +4,8 @@
     "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": "latest"
-    }
+    },
+    "rules": {
+        "prettier/prettier": "error"
+      }
 }

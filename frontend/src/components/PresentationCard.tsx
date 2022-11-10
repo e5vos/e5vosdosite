@@ -18,7 +18,7 @@ const PresentationCard = ({
   const navigate = useNavigate();
   return (
     <div
-      className={`bg-gray-100 p-2 rounded-lg flex flex-col justify-between ${
+      className={`flex flex-col justify-between rounded-lg bg-gray-100 p-2 ${
         className ?? ""
       }`}
     >
@@ -32,13 +32,13 @@ const PresentationCard = ({
         />
       )}
       <div>
-        <h3 className="px-2 tex-lg font-bold">{presentation.name}</h3>
+        <h3 className="tex-lg px-2 font-bold">{presentation.name}</h3>
         <hr />
         <h4 className="px-2">{presentation.organiser}</h4>
       </div>
       <p className="px-2">{presentation.description}</p>
       <div>
-        <div className="flex flew-row justify-between w-full px-2 mb-1 mt-3">
+        <div className="flew-row mb-1 mt-3 flex w-full justify-between px-2">
           <div>{presentation.location?.name ?? "Ismeretlen"}</div>
           <div className="mx-2">
             {presentation.slot_id ?? "-"}/{presentation.id}

@@ -31,8 +31,8 @@ const PresentationManagePage = () => {
 
   return (
     <div className="mx-10">
-      <div className="mx-auto text-center mt-3 h-full">
-        <h1 className="text-4xl mb-3 font-bold">Előadások kezélese</h1>
+      <div className="mx-auto mt-3 h-full text-center">
+        <h1 className="mb-3 text-4xl font-bold">Előadások kezélese</h1>
         <Form.Group>
           <Form.Label>Keresés</Form.Label>
           <Form.Control
@@ -56,7 +56,7 @@ const PresentationManagePage = () => {
       {isEventsFetching ? (
         <Loader />
       ) : (
-        <div className="md:grid grid-cols-4 gap-2">
+        <div className="grid-cols-4 gap-2 md:grid">
           {filteredpresentations?.map((presentation) => (
             <PresentationCard
               key={presentation.id}

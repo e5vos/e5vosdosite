@@ -31,3 +31,8 @@ export const sortByEJGClass = (a: User, b: User) => {
   if (a.ejg_class || b.ejg_class) return 1;
   return a.name.localeCompare(b.name);
 };
+
+export const reverseNameOrder = (s: string) => {
+  const names = s.split(" ");
+  return [names.at(-1), ...names.slice(0, -1)].join(" ");
+};

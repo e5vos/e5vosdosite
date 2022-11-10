@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\{
     Hash,
     Auth,
     Http,
+    Log,
 };
 
 
@@ -39,6 +40,8 @@ class AuthController extends Controller
     {
         $userData = Socialite::driver($provider)->stateless()->user();
         $user = User::firstWhere('email', $userData->email);
+
+
         if (!isset($user)) {
             $user = User::create([
                 'name' => $userData->name,
@@ -61,7 +64,7 @@ class AuthController extends Controller
         Auth::login($user);
         $tokenName = $request->header('User-Agent');
         $tokenName = strlen($tokenName) > 100 ? substr($tokenName, 0, 100) : $tokenName;
-        $token = $user->createToken($request->header('User-Agent'), ['JOIN THE USSR'])->plainTextToken;
+        $token = $user->createToken($tokenName, ['JOIN THE USSR'])->plainTextToken;
         return view('oauth.callback', ['token' => $token]);
     }
 
@@ -85,7 +88,7 @@ class AuthController extends Controller
         if ($validated === "true") {
             $request->user()->e5code = $request->e5code;
             $ejgLetter = $request->e5code[4];
-            $codeYear = intval($request->code());
+            $codeYear = intval($request->e5code);
             $ejgYear = date('Y') - $codeYear;
             $currmonth =  date('m');
 

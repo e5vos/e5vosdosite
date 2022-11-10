@@ -7,6 +7,7 @@ import { isTeacher } from "lib/gates";
 import { useParams } from "react-router-dom";
 import { Attendance } from "types/models";
 import { MouseEventHandler } from "react";
+import { reverseNameOrder } from "lib/util";
 const AttendancePage = () => {
   const { eventid } = useParams<{ eventid: string }>();
   const { data: event, isLoading: isEventLoading } = api.useGetEventQuery(
@@ -21,8 +22,13 @@ const AttendancePage = () => {
   } = api.useGetEventParticipantsQuery(eventid ?? "");
 
   const participants =
-    participantsData?.slice().sort((a, b) => a.name.localeCompare(b.name)) ??
-    [];
+    participantsData
+      ?.slice()
+      .map((e) => {
+        e.name = reverseNameOrder(e.name);
+        return e;
+      })
+      .sort((a, b) => a.name.localeCompare(b.name)) ?? [];
 
   const [toggleAPI, { isLoading }] = api.useToggleAttendanceMutation();
 

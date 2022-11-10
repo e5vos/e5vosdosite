@@ -23,6 +23,9 @@ const PresentationManagePage = React.lazy(
   () => import("pages/presentation/manage")
 );
 const AttendanceSheet = React.lazy(() => import("pages/attendance"));
+
+const AdminPage = React.lazy(() => import("pages/admin/e5nAdmin"));
+
 function App() {
   useEffect(() => {
     refreshCSRF();
@@ -77,6 +80,7 @@ function App() {
                   <Route path="/studentcode" element={<StudentCodePage />} />
                   <Route path="/logout" element={<LogoutPage />} />
                   <Route path="/legal" element={<LegalPage />} />
+                  <Route path="/admin" element={<AdminPage />} />
                   <Route path="*" element={<Error code={404} />} />
                 </Route>
               </Routes>

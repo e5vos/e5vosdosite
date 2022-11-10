@@ -181,7 +181,7 @@ class EventController extends Controller
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.mypresentations.'.($attender->e5code ?? $attender->code));
-        Cache::put('e5n.events.'.$event->id.'.signups', UserResource::collection($event->users()->get())->merge(TeamResource::collection($event->teams()->get()))->jsonSerialize());
+        Cache::forget('e5n.events.'.$event->id.'.signups');
         Cache::forget('e5n.events.slot.'.$event->slot_id);
         Cache::forget('e5n.events.'.$event->id);
         return response($attender->signUp($event), 201);

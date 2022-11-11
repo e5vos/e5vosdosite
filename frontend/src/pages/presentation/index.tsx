@@ -125,12 +125,14 @@ const PresentationsPage = () => {
           <div className="rounded-lg bg-green-600 p-3 ">
             {selectedPresentation?.name ?? "Még nem választottál előadást"}
           </div>
-          <div className="mt-2 rounded-lg bg-goldenrod p-3 ">
-            <div className="text-lg">
-              <IoLocationSharp className="inline-block text-xl" />
-              {selectedPresentation?.location?.name ?? "Ismeretlen hely"}
+          {selectedPresentation && (
+            <div className="mt-2 rounded-lg bg-goldenrod p-3 ">
+              <div className="text-lg">
+                <IoLocationSharp className="inline-block text-xl" />
+                {selectedPresentation.location?.id ?? "Ismeretlen hely"}
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <Button
           variant="danger"

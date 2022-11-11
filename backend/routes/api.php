@@ -59,7 +59,8 @@ Route::controller(SlotController::class)->prefix('/slot')->group(function () {
         Route::delete('/{slotId}', 'destroy')->can('delete', Slot::class)->name('slot.destroy');
         Route::put('/{slotId}', 'update')->can('update', Slot::class)->name('slot.update');
         Route::get('/{slotId}/free_students', 'freeStudents')->can('freeStudents', Slot::class)->name('slot.free_students');
-        Route::get('/{slotId}/missing_students', 'nonAttendingStudents')->can('freeStudents', Slot::class)->name('slot.free_students');
+        Route::get('/{slotId}/missing_students', 'nonAttendingStudents')->can('freeStudents', Slot::class)->name('slot.not_attending_students');
+        Route::get('/{slotId}/attending_students', 'AttendingStudents')->can('freeStudents', Slot::class)->name('slot.attending_students');
     });
 });
 

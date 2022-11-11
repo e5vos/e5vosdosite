@@ -10,6 +10,30 @@ import { api } from "lib/api";
 import { isOperator, isTeacher } from "lib/gates";
 import { useState, useMemo } from "react";
 import { Presentation } from "types/models";
+
+const AdminCounter = ({ slotId }: { slotId: number }) => {
+  const { data: notSignedUpStudents } = api.useGetFreeUsersQuery(slotId, {
+    pollingInterval: 5000,
+  });
+
+  const { data: missingStudents } = api.useGetNotPresentUsersQuery(slotId, {
+    pollingInterval: 5000,
+  });
+
+  const { data: presentStudents } = api.useGetPresentUsersQuery(slotId, {
+    pollingInterval: 5000,
+  });
+
+  return (
+    <div className="mx-auto mb-3 w-fit rounded-lg bg-red-500 px-4 py-4 text-center text-xl">
+      <div>Operátor Információk</div>
+      <div>{presentStudents?.length ?? "Ismeretlen"} jelen van</div>
+      <div>{missingStudents?.length ?? "Ismeretlen"} hiányzik</div>
+      <div>{notSignedUpStudents?.length ?? "Ismeretlen"} nem jelentkezett</div>
+    </div>
+  );
+};
+
 const PresentationManagePage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
   const { data: slots } = useGetPresentationSlotsQuery();
@@ -55,6 +79,9 @@ const PresentationManagePage = () => {
           ))}
         </ButtonGroup>
       </div>
+      {user && isOperator(user) && (
+        <AdminCounter slotId={(slots && slots[currentSlot]?.id) ?? -1} />
+      )}
       {isEventsFetching ? (
         <Loader />
       ) : (

@@ -3,11 +3,12 @@ import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
 import { api } from "lib/api";
-import { isTeacher } from "lib/gates";
+import { isOperator, isTeacher } from "lib/gates";
 import { useParams } from "react-router-dom";
-import { Attendance } from "types/models";
+import { Attendance, isUserAttendance } from "types/models";
 import { MouseEventHandler } from "react";
 import { reverseNameOrder } from "lib/util";
+import useUser from "hooks/useUser";
 const AttendancePage = () => {
   const { eventid } = useParams<{ eventid: string }>();
   const { data: event, isLoading: isEventLoading } = api.useGetEventQuery(
@@ -21,6 +22,9 @@ const AttendancePage = () => {
     refetch,
   } = api.useGetEventParticipantsQuery(Number(eventid ?? -1));
 
+  const [deleteAttendance, { isLoading: isDeleteLoading }] =
+    api.useCancelSignUpMutation();
+  const { user } = useUser();
   const participants =
     participantsData
       ?.slice()
@@ -50,6 +54,16 @@ const AttendancePage = () => {
     console.log(attending.name + " is now " + score);
   };
 
+  const deleteAttendanceAction = async (attending: Attendance) => {
+    await deleteAttendance({
+      attender: String(
+        isUserAttendance(attending) ? attending.id : attending.code
+      ),
+      event: event,
+    }).unwrap();
+    refetch();
+  };
+
   return (
     <div className="container mx-auto mt-2 ">
       <div className="mx-auto w-fit text-center">
@@ -68,6 +82,14 @@ const AttendancePage = () => {
                   disabled={isLoading || isParticipantsFetching}
                   className="h-5 w-5"
                 />
+                {user && isOperator(user) && isUserAttendance(attending) && (
+                  <Button
+                    variant="danger"
+                    onClick={() => deleteAttendanceAction(attending)}
+                  >
+                    Törlés
+                  </Button>
+                )}
               </li>
             ))}
           </ul>

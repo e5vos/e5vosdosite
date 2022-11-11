@@ -180,10 +180,10 @@ class EventController extends Controller
         }
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forget('e5n.events.mypresentations.'.($attender->e5code ?? $attender->code));
-        Cache::forget('e5n.events.'.$event->id.'.signups');
-        Cache::forget('e5n.events.slot.'.$event->slot_id);
-        Cache::forget('e5n.events.'.$event->id);
+        Cache::forget('e5n.events.mypresentations.' . ($attender->e5code ?? $attender->code));
+        Cache::forget('e5n.events.' . $event->id . '.signups');
+        Cache::forget('e5n.events.slot.' . $event->slot_id);
+        Cache::forget('e5n.events.' . $event->id);
         return response($attender->signUp($event), 201);
     }
 
@@ -201,10 +201,10 @@ class EventController extends Controller
         $attendance->delete();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forget('e5n.events.mypresentations.'.$request->attender);
-        Cache::forget('e5n.events.'.$eventId.'.signups');
-        Cache::forget('e5n.events.slot.'.Event::findOrFail($eventId)->slot_id);
-        Cache::forget('e5n.events.'.$eventId);
+        Cache::forget('e5n.events.mypresentations.' . $request->attender);
+        Cache::forget('e5n.events.' . $eventId . '.signups');
+        Cache::forget('e5n.events.slot.' . Event::findOrFail($eventId)->slot_id);
+        Cache::forget('e5n.events.' . $eventId);
         return response("", 204);
     }
 
@@ -241,7 +241,7 @@ class EventController extends Controller
         $user = User::findOrFail($request->user()->id)->load('presentations');
         return Cache::rememberForever(
             'e5n.events.mypresentations.' . $user->e5code,
-            fn () => EventResource::collection($user->presentations)->jsonSerialize()
+            fn () => EventResource::collection($user->presentations->load("location"))->jsonSerialize()
         );
     }
 }

@@ -75,14 +75,17 @@ const AttendancePage = () => {
                 key={index}
                 className="mx-2 my-2 flex flex-row justify-center gap-4  align-middle"
               >
-                <span className="mx-4">{attending.name}</span>
+                <span className="mx-4">
+                  {attending.name}{" "}
+                  {isUserAttendance(attending) && attending.ejg_class}
+                </span>
                 <Form.Check
                   defaultChecked={attending.pivot.is_present}
                   onClick={toggle(attending)}
                   disabled={isLoading || isParticipantsFetching}
                   className="h-5 w-5"
                 />
-                {user && isOperator(user) && isUserAttendance(attending) && (
+                {user && isOperator(user) && (
                   <Button
                     variant="danger"
                     onClick={() => deleteAttendanceAction(attending)}

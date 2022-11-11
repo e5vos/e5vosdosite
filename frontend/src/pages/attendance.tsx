@@ -76,7 +76,9 @@ const AttendancePage = () => {
                 className="mx-2 my-2 flex flex-row justify-center gap-4  align-middle"
               >
                 <span className="mx-4">
-                  {attending.name}{" "}
+                  {isUserAttendance(attending)
+                    ? reverseNameOrder(attending.name)
+                    : attending.name}{" "}
                   {isUserAttendance(attending) && attending.ejg_class}
                 </span>
                 <Form.Check

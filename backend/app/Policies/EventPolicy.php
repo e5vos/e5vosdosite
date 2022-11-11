@@ -130,6 +130,10 @@ class EventPolicy
         if (!Setting::find('e5n.events.signup')?->value) {
             throw new NoE5NException();
         }
+        $event = $event ?? Event::findOrFail(request()->eventId);
+        if (!$event->isSignupOpen()) {
+            throw new SignupClosedException();
+        }
         if (!request()->has('attender')) {
             abort(400, 'No attender specified');
         }

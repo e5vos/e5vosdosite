@@ -39,7 +39,8 @@ const PresentationsTable = ({
           <th className="rounded-l-lg py-1">Előadás címe</th>
           <th className="py-1">Előadó</th>
           <th className="py-1">Előadás leírása</th>
-          <th className="rounded-r-lg py-1 md:min-w-fit"></th>
+          <th>Előadás helye</th>
+          <th className="rounded-r-lg py-1 md:min-w-fit">Szabad Helyek</th>
         </tr>
       </thead>
       <tbody>
@@ -56,7 +57,7 @@ const PresentationsTable = ({
               key={index}
               className="mb-5 flex flex-col rounded bg-gray-400 shadow-md md:table-row md:rounded-none"
             >
-              <td className="rounded-l-lg border-hidden px-2 py-0.5  text-center font-bold">
+              <td className="rounded-l-lg border-hidden px-2 py-0.5  text-center text-4xl font-bold md:text-lg">
                 {presentation.name}
               </td>
               <td className="px-2 py-0.5 text-center underline ">
@@ -65,7 +66,10 @@ const PresentationsTable = ({
               <td className="px-2 py-0.5 text-center ">
                 {presentation.description}
               </td>
-              {/*TODO: dynamically set cell color and button placement*/}
+              <td className="text-bold text-center text-2xl font-semibold md:text-lg">
+                <span className="font-bold md:hidden">Előadás helye: </span>
+                {presentation.location?.name ?? "Ismeretlen hely"}
+              </td>
               <td
                 className={
                   "m-4 whitespace-normal rounded-l-lg rounded-r-lg border-hidden  px-2 py-2 text-center text-black md:h-24 md:rounded-l-none md:py-0 " +
@@ -78,10 +82,7 @@ const PresentationsTable = ({
               >
                 <div className="py-0.5">
                   <div>
-                    {!presentation.signup_deadline ||
-                    Date.parse(presentation.signup_deadline) < Date.now()
-                      ? presentation.location?.name ?? "Ismeretlen hely"
-                      : presentation.capacity
+                    {presentation.capacity
                       ? presentation.capacity - presentation.occupancy < 0
                         ? "Túltöltve"
                         : presentation.capacity - presentation.occupancy

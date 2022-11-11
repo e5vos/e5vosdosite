@@ -68,4 +68,11 @@ class SlotController extends Controller
             $query->where('slot_id', $slotId);
         })->get())->jsonSerialize();
     }
+
+    public function nonAttendingStudents($slotId)
+    {
+        return UserResource::collection(User::whereRelation('permissions', 'code', PermissionType::Student->value)->whereDoesntHave('attendances', function ($query) use ($slotId) {
+            $query->where('slot_id', $slotId)->where('is_present', true);
+        })->get())->jsonSerialize();
+    }
 }

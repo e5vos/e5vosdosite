@@ -129,7 +129,7 @@ const PresentationsPage = () => {
             <div className="mt-2 rounded-lg bg-goldenrod p-3 ">
               <div className="text-lg">
                 <IoLocationSharp className="inline-block text-xl" />
-                {selectedPresentation.location?.id ?? "Ismeretlen hely"}
+                {selectedPresentation.location?.name ?? "Ismeretlen hely"}
               </div>
             </div>
           )}

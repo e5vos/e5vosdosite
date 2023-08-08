@@ -40,7 +40,7 @@ declare global {
 }
 
 const routeSwitcher = (
-  name: string,
+  name: keyof typeof includedZiggy.routes,
   params?: RouteParamsWithQueryOverload | RouteParam | undefined,
   absolute?: boolean | undefined
 ): string => {

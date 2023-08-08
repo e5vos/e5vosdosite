@@ -4,7 +4,25 @@
 
 Include a short summary of the proposal here. Describe where the endpoint will be used, what it will do, and why it is needed.
 
+This is to allow development before endpoint details are finalized. Frontend developers are expected to submit a proposal for requested endpoints, whilst backend developers are expected to submit a proposal for endpoints they are working on: so that frontend can start working immediately.
+
 ## Endpoint Details
+
+Always include the full endpoint, and any diffs.
+
+```diff
+[...]
+responses:
+    "200":
+        [...]
++    "201":
++       description: Event created
++       content:
++           application/json:
++               schema:
++                   $ref: "#/components/schemas/Event"
+[...]
+```
 
 ```yaml
 /events/:

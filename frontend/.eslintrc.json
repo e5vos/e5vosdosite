@@ -1,8 +1,12 @@
 {
-    "extends" : ["react-app","prettier"],
-    "ignorePatterns" : ["node_modules/"],
-    "parserOptions": {
-        "sourceType": "module",
-        "ecmaVersion": "latest"
-    }
+  "extends": ["react-app", "prettier"],
+  "ignorePatterns": ["node_modules/"],
+  "plugins": ["unused-imports"],
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": "latest"
+  },
+  "rules": {
+    "unused-imports/no-unused-imports": "error"
+  }
 }

@@ -1,6 +1,8 @@
-import Button from "components/UIKit/Button";
-import { Link } from "react-router-dom";
 import { ReactComponent as Donci } from "assets/donci.svg";
+import { Link } from "react-router-dom";
+
+import Button from "components/UIKit/Button";
+
 const Home = () => {
   return (
     <div className="w-full">

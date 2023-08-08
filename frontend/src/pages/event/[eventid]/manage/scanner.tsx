@@ -1,11 +1,11 @@
-import Error, { HTTPErrorCode } from "components/Error";
-import ErrorMsgBox from "components/UIKit/ErrorMsgBox";
-import Loader from "components/UIKit/Loader";
 import useUser from "hooks/useUser";
-import { api } from "lib/api";
-import { useState } from "react";
 import { QrReader } from "react-qr-reader";
 import { useParams } from "react-router-dom";
+
+import { api } from "lib/api";
+
+import Error, { HTTPErrorCode } from "components/Error";
+import Loader from "components/UIKit/Loader";
 
 const Scanner = () => {
   const { eventid } = useParams();
@@ -30,7 +30,7 @@ const Scanner = () => {
       </div>
       <QrReader
         onResult={(result, error) => {
-          if (!!result) {
+          if (result) {
             handleCode(result?.getText());
           }
         }}

@@ -1,5 +1,6 @@
-import { GateFunction } from "lib/gates";
 import { User } from "types/models";
+
+import { GateFunction } from "lib/gates";
 
 const useGate = <T = any>(
   user: User | undefined,

@@ -1,5 +1,6 @@
-import { User } from "types/models";
 import { number } from "yup";
+
+import { User } from "types/models";
 
 export const BASE_URL = () =>
   typeof window !== "undefined"

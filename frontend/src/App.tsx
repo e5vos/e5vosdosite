@@ -1,12 +1,14 @@
-import "style/App.pcss";
-import { Provider } from "react-redux";
-import store, { persistor } from "lib/store";
-import { PersistGate } from "redux-persist/integration/react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { BaseLayout } from "templates";
 import React, { useEffect } from "react";
-import Loader from "components/UIKit/Loader";
+import { Provider } from "react-redux";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { PersistGate } from "redux-persist/integration/react";
+import "style/App.pcss";
+import { BaseLayout } from "templates";
+
 import refreshCSRF from "lib/csrf";
+import store, { persistor } from "lib/store";
+
+import Loader from "components/UIKit/Loader";
 
 // Generic Routes
 const Home = React.lazy(() => import("pages/Home"));

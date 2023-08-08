@@ -1,5 +1,6 @@
-import { gated } from "components/Gate";
 import { User } from "types/models";
+
+import { gated } from "components/Gate";
 
 export type GateFunction<T = any> = ((user: User, ...rest: T[]) => boolean) & {
   message?: string;

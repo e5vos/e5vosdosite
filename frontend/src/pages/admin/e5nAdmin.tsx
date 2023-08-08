@@ -1,7 +1,8 @@
-import { gated } from "components/Gate";
-import Button from "components/UIKit/Button";
 import { api } from "lib/api";
 import { isOperator } from "lib/gates";
+
+import { gated } from "components/Gate";
+import Button from "components/UIKit/Button";
 
 const AdminPage = () => {
   const [clearCache] = api.useClearCacheMutation();

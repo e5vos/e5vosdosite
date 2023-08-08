@@ -1,5 +1,6 @@
-import { gated } from "components/Gate";
 import { isOperator } from "lib/gates";
+
+import { gated } from "components/Gate";
 
 const CreateEventPage = () => {
   return <></>;

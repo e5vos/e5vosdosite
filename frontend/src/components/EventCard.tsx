@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
+
 import { Event } from "types/models";
+
 import Button from "./UIKit/Button";
 import ButtonGroup from "./UIKit/ButtonGroup";
 

@@ -1,11 +1,14 @@
 import { Dialog } from "@headlessui/react";
+import { useEffect, useState } from "react";
+
 import { Event, User } from "types/models";
-import { useState, useEffect } from "react";
-import Button from "./UIKit/Button";
+
 import { api } from "lib/api";
-import Loader from "./UIKit/Loader";
-import Form from "./UIKit/Form";
 import { sortByEJGClass } from "lib/util";
+
+import Button from "./UIKit/Button";
+import Form from "./UIKit/Form";
+import Loader from "./UIKit/Loader";
 
 const PresentationFillDialog = ({
   open,
@@ -27,10 +30,8 @@ const PresentationFillDialog = ({
     },
   ] = api.useLazyGetFreeUsersQuery();
 
-  const [
-    triggerEvent,
-    { data: event, isFetching: isEventFetching, isError: isEventError },
-  ] = api.useLazyGetEventQuery();
+  const [triggerEvent, { data: event, isFetching: isEventFetching }] =
+    api.useLazyGetEventQuery();
 
   const [APIsignUp, { isLoading: signupInProgress }] = api.useSignUpMutation();
 

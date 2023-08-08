@@ -1,9 +1,11 @@
+import { Menu, Transition } from "@headlessui/react";
+import { ReactComponent as Donci } from "assets/donci.svg";
+import useIsMobile from "hooks/useIsMobile";
 import { ReactNode } from "react";
+
 import { ReactComponent as Caret } from "./assets/caret.svg";
 import { ReactComponent as MobileMenu } from "./assets/mobileMenu.svg";
-import { Menu, Transition } from "@headlessui/react";
-import useIsMobile from "hooks/useIsMobile";
-import { ReactComponent as Donci } from "assets/donci.svg";
+
 const Brand = ({ href, children }: { href?: string; children: ReactNode }) => {
   const Tag = href ? "a" : "span";
   return (

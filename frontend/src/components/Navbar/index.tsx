@@ -1,5 +1,6 @@
-import Navbar from "components/UIKit/Navbar";
 import useUser from "hooks/useUser";
+
+import Navbar from "components/UIKit/Navbar";
 
 const CustomNavbar = () => {
   const { user } = useUser(false);

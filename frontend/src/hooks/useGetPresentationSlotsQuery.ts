@@ -1,5 +1,7 @@
-import { api } from "lib/api";
 import { useMemo } from "react";
+
+import { api } from "lib/api";
+
 const useGetPresentationSlotsQuery = () => {
   const { data, ...rest } = api.useGetSlotsQuery();
 

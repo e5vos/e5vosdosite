@@ -1,17 +1,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 import { Result } from "postcss";
+
 import {
   Attendance,
-  Presentation,
   Event,
+  Location,
+  Presentation,
+  Slot,
   Team,
   TeamMembership,
   User,
   isUserAttendance,
-  Slot,
-  Location,
 } from "types/models";
+
 import routeSwitcher from "./route";
 import { RootState } from "./store";
 

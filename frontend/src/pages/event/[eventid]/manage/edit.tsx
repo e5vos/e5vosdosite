@@ -1,14 +1,16 @@
-import { gated } from "components/Gate";
-import Form from "components/UIKit/Form";
-import Loader from "components/UIKit/Loader";
 import { useFormik } from "formik";
-import { api } from "lib/api";
-import { isOperator } from "lib/gates";
 import { useParams } from "react-router-dom";
 import * as Yup from "yup";
-import { useEffect } from "react";
-import Button from "components/UIKit/Button";
+
 import { Location } from "types/models";
+
+import { api } from "lib/api";
+import { isOperator } from "lib/gates";
+
+import { gated } from "components/Gate";
+import Button from "components/UIKit/Button";
+import Form from "components/UIKit/Form";
+import Loader from "components/UIKit/Loader";
 
 const initialValues: {
   name: string;

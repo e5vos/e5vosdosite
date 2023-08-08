@@ -1,29 +1,30 @@
 import {
-  TypedUseSelectorHook,
-  useDispatch as originalDispatchHook,
-  useSelector as originalSelectorHook,
-} from "react-redux/es/exports";
-import { createBrowserHistory } from "history";
-import {
   $CombinedState,
   combineReducers,
   configureStore,
 } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
 import { routerMiddleware } from "connected-react-router";
+import { createBrowserHistory } from "history";
 import {
-  persistReducer,
-  persistStore,
+  TypedUseSelectorHook,
+  useDispatch as originalDispatchHook,
+  useSelector as originalSelectorHook,
+} from "react-redux/es/exports";
+import AuthReducer from "reducers/authReducer";
+import {
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
   PURGE,
   REGISTER,
+  REHYDRATE,
+  persistReducer,
+  persistStore,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import AuthReducer from "reducers/authReducer";
+
 import { api } from "./api";
-import { setupListeners } from "@reduxjs/toolkit/dist/query";
 
 export const history = createBrowserHistory();
 

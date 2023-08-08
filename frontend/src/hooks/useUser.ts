@@ -1,10 +1,8 @@
-import { SerializedError } from "@reduxjs/toolkit";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { api } from "lib/api";
-import { useDispatch, useSelector } from "lib/store";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { authSlice } from "reducers/authReducer";
+
+import { api } from "lib/api";
+import { useDispatch, useSelector } from "lib/store";
 
 const useUser = (redirect: boolean = true, destination?: string) => {
   const navigate = useNavigate();

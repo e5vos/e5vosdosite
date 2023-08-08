@@ -1,8 +1,11 @@
+import useUser from "hooks/useUser";
+
+import { Presentation } from "types/models";
+
+import { is9NY } from "lib/gates";
+
 import Button from "components/UIKit/Button";
 import Loader from "components/UIKit/Loader";
-import useUser from "hooks/useUser";
-import { is9NY } from "lib/gates";
-import { Presentation } from "types/models";
 
 const getColor = (capacity: number | null) => {
   if (capacity === null) return "bg-green-400";

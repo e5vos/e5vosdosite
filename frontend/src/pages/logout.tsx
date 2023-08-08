@@ -1,8 +1,10 @@
-import Loader from "components/UIKit/Loader";
-import { useDispatch } from "lib/store";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { authSlice } from "reducers/authReducer";
+
+import { useDispatch } from "lib/store";
+
+import Loader from "components/UIKit/Loader";
 
 const LogoutPage = () => {
   const navigate = useNavigate();

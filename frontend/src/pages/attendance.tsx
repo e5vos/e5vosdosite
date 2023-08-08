@@ -1,14 +1,18 @@
+import useUser from "hooks/useUser";
+import { MouseEventHandler } from "react";
+import { useParams } from "react-router-dom";
+
+import { Attendance, isUserAttendance } from "types/models";
+
+import { api } from "lib/api";
+import { isOperator, isTeacher } from "lib/gates";
+import { reverseNameOrder } from "lib/util";
+
 import { gated } from "components/Gate";
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
-import { api } from "lib/api";
-import { isOperator, isTeacher } from "lib/gates";
-import { useParams } from "react-router-dom";
-import { Attendance, isUserAttendance } from "types/models";
-import { MouseEventHandler } from "react";
-import { reverseNameOrder } from "lib/util";
-import useUser from "hooks/useUser";
+
 const AttendancePage = () => {
   const { eventid } = useParams<{ eventid: string }>();
   const { data: event, isLoading: isEventLoading } = api.useGetEventQuery(
@@ -18,12 +22,10 @@ const AttendancePage = () => {
     data: participantsData,
     isLoading: isParticipantsLoading,
     isFetching: isParticipantsFetching,
-    error: participantsError,
     refetch,
   } = api.useGetEventParticipantsQuery(Number(eventid ?? -1));
 
-  const [deleteAttendance, { isLoading: isDeleteLoading }] =
-    api.useCancelSignUpMutation();
+  const [deleteAttendance] = api.useCancelSignUpMutation();
   const { user } = useUser();
   const participants =
     participantsData
@@ -72,7 +74,7 @@ const AttendancePage = () => {
           <ul className="mb-3 border">
             {participants?.map((attending, index) => (
               <li
-                key={index}
+                key={attending.name}
                 className="mx-2 my-2 flex flex-row justify-center gap-4  align-middle"
               >
                 <span className="mx-4">

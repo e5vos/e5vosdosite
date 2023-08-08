@@ -1,8 +1,11 @@
-import Loader from "components/UIKit/Loader";
-import { api } from "lib/api";
-import { useParams } from "react-router-dom";
 import { IoLocationSharp } from "react-icons/io5";
+import { useParams } from "react-router-dom";
+
+import { api } from "lib/api";
+
 import Error from "components/Error";
+import Loader from "components/UIKit/Loader";
+
 const EventManager = () => {
   const { eventid } = useParams<{ eventid: string }>();
   const { data: event, error } = api.useGetEventQuery(Number(eventid));

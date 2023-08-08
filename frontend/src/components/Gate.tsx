@@ -1,9 +1,12 @@
 import useUser from "hooks/useUser";
-import { User } from "types/models";
-import Error from "./Error";
 import { ReactNode } from "react";
-import Loader from "./UIKit/Loader";
+
+import { User } from "types/models";
+
 import { GateFunction } from "lib/gates";
+
+import Error from "./Error";
+import Loader from "./UIKit/Loader";
 
 const Gate = ({
   children,

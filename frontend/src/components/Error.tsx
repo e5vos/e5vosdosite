@@ -1,5 +1,6 @@
-import { ReactNode } from "react";
 import { ReactComponent as Donci } from "assets/donci.svg";
+import { ReactNode } from "react";
+
 export type HTTPErrorCode = 400 | 401 | 403 | 404 | 500 | 502 | 503 | 504;
 
 const getDefaultMessage = (code: HTTPErrorCode): string => {

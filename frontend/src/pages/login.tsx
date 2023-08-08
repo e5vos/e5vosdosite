@@ -1,12 +1,11 @@
+import useUser from "hooks/useUser";
+import { useNavigate } from "react-router-dom";
+
+import { isTeacher } from "lib/gates";
+
 import LoginForm from "components/Login";
 import Button from "components/UIKit/Button";
 import Loader from "components/UIKit/Loader";
-import useUser from "hooks/useUser";
-import refreshCSRF from "lib/csrf";
-import { isTeacher } from "lib/gates";
-import { useSelector } from "lib/store";
-import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 const LoginRecoveryPanel = () => {
   const { user } = useUser();

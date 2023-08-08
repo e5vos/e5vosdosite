@@ -1,16 +1,56 @@
-import { useState, useMemo, useEffect, useRef, Fragment } from "react";
+import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
+import useUser from "hooks/useUser";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { IoLocationSharp } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+
+import { Presentation } from "types/models";
+
+import { api } from "lib/api";
+
 import PresentationsTable from "components/PresentationsTable";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
-import { Presentation } from "types/models";
-import Loader from "components/UIKit/Loader";
-import { api } from "lib/api";
-import useUser from "hooks/useUser";
-import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
-import { Transition } from "@headlessui/react";
-import { Navigate, useNavigate } from "react-router-dom";
 import ErrorMsgBox from "components/UIKit/ErrorMsgBox";
-import { IoLocationSharp } from "react-icons/io5";
+import Loader from "components/UIKit/Loader";
+
+const SelectField = ({
+  selectedPresentation,
+  cancelSignupAction,
+  cancelSignupInProgress,
+}: {
+  selectedPresentation: Presentation | undefined;
+  cancelSignupAction: (presentation: Presentation) => void;
+  cancelSignupInProgress: boolean;
+}) => {
+  return (
+    <div className="flex flex-1 flex-col items-stretch justify-center gap-4 text-center md:mx-3 md:flex-row md:gap-8">
+      <div className="flex-1">
+        <h3>Általad Választott előadás</h3>
+        <div className="rounded-lg bg-green-600 p-3 ">
+          {selectedPresentation?.name ?? "Még nem választottál előadást"}
+        </div>
+        {selectedPresentation && (
+          <div className="mt-2 rounded-lg bg-goldenrod p-3 ">
+            <div className="text-lg">
+              <IoLocationSharp className="inline-block text-xl" />
+              {selectedPresentation.location?.name ?? "Ismeretlen hely"}
+            </div>
+          </div>
+        )}
+      </div>
+      <Button
+        variant="danger"
+        onClick={() => {
+          if (selectedPresentation) cancelSignupAction(selectedPresentation);
+        }}
+        disabled={!selectedPresentation || cancelSignupInProgress}
+      >
+        Törlés
+      </Button>
+    </div>
+  );
+};
 
 const PresentationsPage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
@@ -27,7 +67,7 @@ const PresentationsPage = () => {
     isLoading: isEventsLoading,
     isFetching: isEventsFetching,
     refetch: refetchEvents,
-  } = api.useGetEventsQuery((slots && slots[currentSlot]?.id) ?? -1, {
+  } = api.useGetEventsQuery(slots?.[currentSlot]?.id ?? -1, {
     pollingInterval: 10000,
   });
   const [signUp, { isLoading: signupInProgress, error: signupError }] =
@@ -52,7 +92,7 @@ const PresentationsPage = () => {
         alert("Nem adtad meg az E5 kódot!");
         navigate("/studentcode?next=/eloadas");
       }
-      const attendance = await signUp({
+      await signUp({
         attender: user.e5code,
         event: presentation,
       }).unwrap();
@@ -117,36 +157,6 @@ const PresentationsPage = () => {
 
   if (!slots || !selectedPresentations || !presentations) return <Loader />;
 
-  const SelectField = () => {
-    return (
-      <div className="flex flex-1 flex-col items-stretch justify-center gap-4 text-center md:mx-3 md:flex-row md:gap-8">
-        <div className="flex-1">
-          <h3>Általad Választott előadás</h3>
-          <div className="rounded-lg bg-green-600 p-3 ">
-            {selectedPresentation?.name ?? "Még nem választottál előadást"}
-          </div>
-          {selectedPresentation && (
-            <div className="mt-2 rounded-lg bg-goldenrod p-3 ">
-              <div className="text-lg">
-                <IoLocationSharp className="inline-block text-xl" />
-                {selectedPresentation.location?.name ?? "Ismeretlen hely"}
-              </div>
-            </div>
-          )}
-        </div>
-        <Button
-          variant="danger"
-          onClick={() => {
-            if (selectedPresentation) cancelSignupAction(selectedPresentation);
-          }}
-          disabled={!selectedPresentation || cancelSignupInProgress}
-        >
-          Törlés
-        </Button>
-      </div>
-    );
-  };
-
   return (
     <div className="mx-5">
       <div className="container mx-auto">
@@ -159,7 +169,7 @@ const PresentationsPage = () => {
             {slots.map((slot, index) => (
               <Button
                 variant="secondary"
-                key={index}
+                key={slot.name}
                 disabled={index === currentSlot}
                 onClick={() => setcurrentSlot(index)}
               >
@@ -167,7 +177,11 @@ const PresentationsPage = () => {
               </Button>
             ))}
           </ButtonGroup>
-          <SelectField />
+          <SelectField
+            cancelSignupAction={cancelSignupAction}
+            cancelSignupInProgress={cancelSignupInProgress}
+            selectedPresentation={selectedPresentation}
+          />
         </div>
         <PresentationsTable
           presentations={(presentations as Presentation[]) ?? []}

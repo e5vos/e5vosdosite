@@ -1,16 +1,17 @@
-import Button from "components/UIKit/Button";
-import Form from "components/UIKit/Form";
-import Loader from "components/UIKit/Loader";
 import { useFormik } from "formik";
 import useUser from "hooks/useUser";
-import { api } from "lib/api";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 
+import { api } from "lib/api";
+
+import Button from "components/UIKit/Button";
+import Form from "components/UIKit/Form";
+import Loader from "components/UIKit/Loader";
+
 const StudentCodePage = () => {
-  const [updateStudentCode, { error: apiError }] =
-    api.useSetStudentCodeMutation();
+  const [updateStudentCode] = api.useSetStudentCodeMutation();
   const navigate = useNavigate();
   const { next } = useParams();
   const { user, error, isLoading } = useUser(false);

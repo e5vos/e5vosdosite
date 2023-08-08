@@ -1,9 +1,11 @@
-import Button from "components/UIKit/Button";
-import routeSwitcher from "lib/route";
-import { useDispatch, useSelector } from "lib/store";
 import { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { authSlice } from "reducers/authReducer";
+
+import routeSwitcher from "lib/route";
+import { useDispatch, useSelector } from "lib/store";
+
+import Button from "components/UIKit/Button";
 
 /**
  * @param  {Object} options

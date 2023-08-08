@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { Presentation } from "types/models";
+
 import PresentationFillDialog from "./PresentationFillDialog";
 import Button from "./UIKit/Button";
 import ButtonGroup from "./UIKit/ButtonGroup";
-import { useState } from "react";
 
 const PresentationCard = ({
   presentation,

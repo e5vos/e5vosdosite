@@ -1,15 +1,18 @@
-import Gate, { gated } from "components/Gate";
+import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
+import useUser from "hooks/useUser";
+import { useMemo, useState } from "react";
+
+import { Presentation } from "types/models";
+
+import { api } from "lib/api";
+import { isOperator, isTeacher } from "lib/gates";
+
+import { gated } from "components/Gate";
 import PresentationCard from "components/PresentationCard";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
-import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
-import useUser from "hooks/useUser";
-import { api } from "lib/api";
-import { isOperator, isTeacher } from "lib/gates";
-import { useState, useMemo } from "react";
-import { Presentation } from "types/models";
 
 const AdminCounter = ({ slotId }: { slotId: number }) => {
   const { data: notSignedUpStudents } = api.useGetFreeUsersQuery(slotId, {
@@ -37,11 +40,8 @@ const AdminCounter = ({ slotId }: { slotId: number }) => {
 const PresentationManagePage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
   const { data: slots } = useGetPresentationSlotsQuery();
-  const {
-    data: presentations,
-    isLoading: isEventsLoading,
-    isFetching: isEventsFetching,
-  } = api.useGetEventsQuery((slots && slots[currentSlot]?.id) ?? -1);
+  const { data: presentations, isFetching: isEventsFetching } =
+    api.useGetEventsQuery(slots?.[currentSlot]?.id ?? -1);
 
   const { user } = useUser();
 
@@ -70,7 +70,7 @@ const PresentationManagePage = () => {
           {slots?.map((slot, index) => (
             <Button
               variant="primary"
-              key={index}
+              key={slot.name}
               disabled={index === currentSlot}
               onClick={() => setcurrentSlot(index)}
             >
@@ -80,7 +80,7 @@ const PresentationManagePage = () => {
         </ButtonGroup>
       </div>
       {user && isOperator(user) && (
-        <AdminCounter slotId={(slots && slots[currentSlot]?.id) ?? -1} />
+        <AdminCounter slotId={slots?.[currentSlot]?.id ?? -1} />
       )}
       {isEventsFetching ? (
         <Loader />

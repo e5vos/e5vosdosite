@@ -1,5 +1,6 @@
 import { Combobox } from "@headlessui/react";
-import React, { ChangeEvent, ReactNode, FormEventHandler } from "react";
+import React, { ChangeEvent, FormEventHandler, ReactNode } from "react";
+
 import { HTMLInputProps } from "./helpers";
 
 const Control = ({

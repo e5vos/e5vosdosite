@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { api } from "lib/api";
+import eventAPI from "lib/api/eventAPI";
 
 import Error from "components/Error";
 import EventCard from "components/EventCard";
@@ -9,13 +9,12 @@ import ButtonGroup from "components/UIKit/ButtonGroup";
 import Loader from "components/UIKit/Loader";
 
 const EventsPage = () => {
-  const { data: slots, isFetching, error: slotsError } = api.useGetSlotsQuery();
+  const { data: slots, error: slotsError } = eventAPI.useGetSlotsQuery();
 
   const [currentSlot, setCurrentSlot] = useState(0);
 
-  const { data: events, isFetching: isEventsFetching } = api.useGetEventsQuery(
-    slots ? slots[currentSlot]?.id ?? -1 : -1
-  );
+  const { data: events, isFetching: isEventsFetching } =
+    eventAPI.useGetEventsQuery(slots ? slots[currentSlot]?.id ?? -1 : -1);
 
   if (slotsError) return <Error code={500} />;
   if (!slots) return <Loader />;

@@ -4,14 +4,14 @@ import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 
-import { api } from "lib/api";
+import baseAPI from "lib/api";
 
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
 
 const StudentCodePage = () => {
-  const [updateStudentCode] = api.useSetStudentCodeMutation();
+  const [updateStudentCode] = baseAPI.useSetStudentCodeMutation();
   const navigate = useNavigate();
   const { next } = useParams();
   const { user, error, isLoading } = useUser(false);
@@ -20,8 +20,8 @@ const StudentCodePage = () => {
     if (!user && error) {
       navigate("/login?next=/studentcode");
     }
-    if (user && user.e5code) {
-      navigate(next || "/");
+    if (user?.e5code) {
+      navigate(next ?? "/");
     }
   }, [user, error, navigate, next]);
 
@@ -32,7 +32,7 @@ const StudentCodePage = () => {
     validationSchema: Yup.object({
       studentCode: Yup.string()
         .matches(
-          /^20(\d{2})([A-FN]{1})(\d{2})EJG(\d{3})$/,
+          /^20(\d{2})([A-FN])(\d{2})EJG(\d{3})$/,
           "Diákkódnak kell lennie"
         )
         .required("Diákkód megadása kötelező"),

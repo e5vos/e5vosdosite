@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Presentation } from "types/models";
 
-import { api } from "lib/api";
+import eventAPI from "lib/api/eventAPI";
 
 import PresentationsTable from "components/PresentationsTable";
 import Button from "components/UIKit/Button";
@@ -61,21 +61,21 @@ const PresentationsPage = () => {
     data: selectedPresentations,
     isFetching: isMyPresentationsFetching,
     refetch: refetchSelected,
-  } = api.useGetUsersPresentationsQuery();
+  } = eventAPI.useGetUsersPresentationsQuery();
   const {
     data: presentations,
     isLoading: isEventsLoading,
     isFetching: isEventsFetching,
     refetch: refetchEvents,
-  } = api.useGetEventsQuery(slots?.[currentSlot]?.id ?? -1, {
+  } = eventAPI.useGetEventsQuery(slots?.[currentSlot]?.id ?? -1, {
     pollingInterval: 10000,
   });
   const [signUp, { isLoading: signupInProgress, error: signupError }] =
-    api.useSignUpMutation();
+    eventAPI.useSignUpMutation();
   const [
     cancelSignup,
     { isLoading: cancelSignupInProgress, error: cancelSignupError },
-  ] = api.useCancelSignUpMutation();
+  ] = eventAPI.useCancelSignUpMutation();
   const navigate = useNavigate();
 
   const { user } = useUser();

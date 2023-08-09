@@ -2,15 +2,15 @@ import useUser from "hooks/useUser";
 import { QrReader } from "react-qr-reader";
 import { useParams } from "react-router-dom";
 
-import { api } from "lib/api";
+import eventAPI from "lib/api/eventAPI";
 
 import Error, { HTTPErrorCode } from "components/Error";
 import Loader from "components/UIKit/Loader";
 
 const Scanner = () => {
   const { eventid } = useParams();
-  const { data: event, error } = api.useGetEventQuery(Number(eventid));
-  const [attend] = api.useSignUpMutation();
+  const { data: event, error } = eventAPI.useGetEventQuery(Number(eventid));
+  const [attend] = eventAPI.useSignUpMutation();
   const { user } = useUser();
 
   const handleCode = (s: string) => {

@@ -1,11 +1,11 @@
-import { api } from "lib/api";
+import adminAPI from "lib/api/adminAPI";
 import { isOperator } from "lib/gates";
 
 import { gated } from "components/Gate";
 import Button from "components/UIKit/Button";
 
 const AdminPage = () => {
-  const [clearCache] = api.useClearCacheMutation();
+  const [clearCache] = adminAPI.useClearCacheMutation();
 
   return (
     <div className="mx-auto max-w-4xl">

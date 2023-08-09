@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 
 import { Presentation } from "types/models";
 
-import { api } from "lib/api";
+import adminAPI from "lib/api/adminAPI";
+import eventAPI from "lib/api/eventAPI";
 import { isOperator, isTeacher } from "lib/gates";
 
 import { gated } from "components/Gate";
@@ -15,15 +16,18 @@ import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
 
 const AdminCounter = ({ slotId }: { slotId: number }) => {
-  const { data: notSignedUpStudents } = api.useGetFreeUsersQuery(slotId, {
+  const { data: notSignedUpStudents } = adminAPI.useGetFreeUsersQuery(slotId, {
     pollingInterval: 5000,
   });
 
-  const { data: missingStudents } = api.useGetNotPresentUsersQuery(slotId, {
-    pollingInterval: 5000,
-  });
+  const { data: missingStudents } = adminAPI.useGetNotPresentUsersQuery(
+    slotId,
+    {
+      pollingInterval: 5000,
+    }
+  );
 
-  const { data: presentStudents } = api.useGetPresentUsersQuery(slotId, {
+  const { data: presentStudents } = adminAPI.useGetPresentUsersQuery(slotId, {
     pollingInterval: 5000,
   });
 
@@ -41,7 +45,7 @@ const PresentationManagePage = () => {
   const [currentSlot, setcurrentSlot] = useState(0);
   const { data: slots } = useGetPresentationSlotsQuery();
   const { data: presentations, isFetching: isEventsFetching } =
-    api.useGetEventsQuery(slots?.[currentSlot]?.id ?? -1);
+    eventAPI.useGetEventsQuery(slots?.[currentSlot]?.id ?? -1);
 
   const { user } = useUser();
 

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 import { Attendance, isUserAttendance } from "types/models";
 
-import { api } from "lib/api";
+import eventAPI from "lib/api/eventAPI";
 import { isOperator, isTeacher } from "lib/gates";
 import { reverseNameOrder } from "lib/util";
 
@@ -15,7 +15,7 @@ import Loader from "components/UIKit/Loader";
 
 const AttendancePage = () => {
   const { eventid } = useParams<{ eventid: string }>();
-  const { data: event, isLoading: isEventLoading } = api.useGetEventQuery(
+  const { data: event, isLoading: isEventLoading } = eventAPI.useGetEventQuery(
     Number(eventid ?? -1)
   );
   const {
@@ -23,9 +23,9 @@ const AttendancePage = () => {
     isLoading: isParticipantsLoading,
     isFetching: isParticipantsFetching,
     refetch,
-  } = api.useGetEventParticipantsQuery(Number(eventid ?? -1));
+  } = eventAPI.useGetEventParticipantsQuery(Number(eventid ?? -1));
 
-  const [deleteAttendance] = api.useCancelSignUpMutation();
+  const [deleteAttendance] = eventAPI.useCancelSignUpMutation();
   const { user } = useUser();
   const participants =
     participantsData
@@ -34,7 +34,7 @@ const AttendancePage = () => {
         reverseNameOrder(a.name).localeCompare(reverseNameOrder(b.name))
       ) ?? [];
 
-  const [toggleAPI, { isLoading }] = api.useToggleAttendanceMutation();
+  const [toggleAPI, { isLoading }] = eventAPI.useToggleAttendanceMutation();
 
   if (isEventLoading || isParticipantsLoading || !event) return <Loader />;
 

@@ -1,14 +1,14 @@
 import { IoLocationSharp } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 
-import { api } from "lib/api";
+import eventAPI from "lib/api/eventAPI";
 
 import Error from "components/Error";
 import Loader from "components/UIKit/Loader";
 
 const EventManager = () => {
   const { eventid } = useParams<{ eventid: string }>();
-  const { data: event, error } = api.useGetEventQuery(Number(eventid));
+  const { data: event, error } = eventAPI.useGetEventQuery(Number(eventid));
 
   if (error) return <Error code={404} />;
   if (!event) return <Loader />;

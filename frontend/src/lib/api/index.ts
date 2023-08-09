@@ -6,7 +6,7 @@ import { User } from "types/models";
 import routeSwitcher from "../route";
 import { RootState } from "../store";
 
-const baseAPI = createApi({
+export const baseAPI = createApi({
   reducerPath: "e5nApi",
   baseQuery: fetchBaseQuery({
     fetchFn(input, init?) {

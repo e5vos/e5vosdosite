@@ -4,7 +4,7 @@ import * as Yup from "yup";
 
 import { Location } from "types/models";
 
-import { api } from "lib/api";
+import eventAPI from "lib/api/eventAPI";
 import { isOperator } from "lib/gates";
 
 import { gated } from "components/Gate";
@@ -47,11 +47,9 @@ const testLocs: { data: Location[] } = {
 
 const EditEventPage = () => {
   const { eventid } = useParams();
-  const { data: event, isLoading: isEventLoading } = api.useGetEventQuery(
-    Number(eventid)
-  );
+  const { data: event } = eventAPI.useGetEventQuery(Number(eventid));
   const { data: locations } = testLocs; //api.useGetLocationsQuery();
-  const [updateEvent] = api.useUpdateEventMutation();
+  const [updateEvent] = eventAPI.useUpdateEventMutation();
 
   const formik = useFormik({
     initialValues: initialValues,

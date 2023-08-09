@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { api } from "lib/api";
+import baseAPI from "lib/api";
 import { useDispatch, useSelector } from "lib/store";
 
 const useUser = (redirect: boolean = true, destination?: string) => {
@@ -13,7 +13,7 @@ const useUser = (redirect: boolean = true, destination?: string) => {
     isFetching,
     refetch,
     ...rest
-  } = api.useGetUserDataQuery();
+  } = baseAPI.useGetUserDataQuery();
 
   const [bToken, setBToken] = useState<boolean>(false);
   const location = useLocation();

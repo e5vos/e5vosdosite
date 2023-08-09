@@ -70,12 +70,17 @@ export interface BaseActivity {
   attendance: Attendance;
 }
 
+export const SlotType = {
+  Presentation: "Előadássáv",
+  Program: "Programsáv",
+} as const;
+
 export interface Slot {
   id: number;
   start: string;
   end: string;
   events?: Event[];
-  slot_type: "Előadássáv" | "Programsáv";
+  slot_type: (typeof SlotType)[keyof typeof SlotType];
   name: string;
 }
 

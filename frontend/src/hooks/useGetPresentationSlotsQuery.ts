@@ -1,12 +1,14 @@
-import { useMemo } from "react";
+import { SlotType } from "types/models";
 
-import { api } from "lib/api";
+import eventAPI from "lib/api/eventAPI";
 
 const useGetPresentationSlotsQuery = () => {
-  const { data, ...rest } = api.useGetSlotsQuery();
+  const { data, ...rest } = eventAPI.useGetSlotsQuery();
 
   return {
-    data: data?.slice().filter((slot) => slot.slot_type === "Előadássáv"),
+    data: data
+      ?.slice()
+      .filter((slot) => slot.slot_type === SlotType.Presentation),
     ...rest,
   };
 };

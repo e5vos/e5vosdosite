@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 
 import { Event, User } from "types/models";
 
-import { api } from "lib/api";
+import adminAPI from "lib/api/adminAPI";
+import eventAPI from "lib/api/eventAPI";
 import { sortByEJGClass } from "lib/util";
 
 import Button from "./UIKit/Button";
@@ -28,12 +29,13 @@ const PresentationFillDialog = ({
       isFetching: isStudentListFetching,
       isError: isStudentListError,
     },
-  ] = api.useLazyGetFreeUsersQuery();
+  ] = adminAPI.useLazyGetFreeUsersQuery();
 
   const [triggerEvent, { data: event, isFetching: isEventFetching }] =
-    api.useLazyGetEventQuery();
+    eventAPI.useLazyGetEventQuery();
 
-  const [APIsignUp, { isLoading: signupInProgress }] = api.useSignUpMutation();
+  const [APIsignUp, { isLoading: signupInProgress }] =
+    eventAPI.useSignUpMutation();
 
   const signUp = async (student: User) => {
     try {
@@ -116,9 +118,9 @@ const PresentationFillDialog = ({
                           .includes(searchString.toLowerCase())
                       )
                       .sort(sortByEJGClass)
-                      .map((student, index) => (
+                      .map((student) => (
                         <li
-                          key={index}
+                          key={student.id}
                           className="mb-3 flex flex-row justify-between"
                         >
                           <span>

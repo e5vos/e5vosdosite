@@ -1,8 +1,4 @@
-import {
-  $CombinedState,
-  combineReducers,
-  configureStore,
-} from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
 import { routerMiddleware } from "connected-react-router";
 import { createBrowserHistory } from "history";
@@ -24,15 +20,15 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import { api } from "./api";
+import baseAPI from "./api";
 
 export const history = createBrowserHistory();
 
 const rootReducer = persistReducer(
-  { key: "root", storage: storage, blacklist: [api.reducerPath] },
+  { key: "root", storage: storage, blacklist: [baseAPI.reducerPath] },
   combineReducers({
     auth: AuthReducer,
-    [api.reducerPath]: api.reducer,
+    [baseAPI.reducerPath]: baseAPI.reducer,
   })
 );
 
@@ -46,7 +42,7 @@ const store = configureStore({
       },
     })
       .concat(routerMiddleware(history))
-      .concat(api.middleware),
+      .concat(baseAPI.middleware),
 });
 setupListeners(store.dispatch);
 export type RootState = ReturnType<typeof rootReducer>;

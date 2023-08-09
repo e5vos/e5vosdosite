@@ -2,8 +2,15 @@ import { useNavigate } from "react-router-dom";
 
 import { Event } from "types/models";
 
+import Locale from "lib/locale";
+
 import Button from "./UIKit/Button";
 import ButtonGroup from "./UIKit/ButtonGroup";
+
+const locale = Locale({
+  hu: "Esemény megtekintése",
+  en: "View event",
+});
 
 const EventCard = ({
   event,
@@ -35,7 +42,7 @@ const EventCard = ({
       </div>
       <ButtonGroup className="w-full">
         <Button variant="info" onClick={() => navigate(`${event.id}`)}>
-          Esemény megtekintése
+          {locale}
         </Button>
       </ButtonGroup>
     </div>

@@ -1,5 +1,3 @@
-import { number } from "yup";
-
 import { User } from "types/models";
 
 export const BASE_URL = () =>

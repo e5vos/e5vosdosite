@@ -2,10 +2,20 @@ import { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { authSlice } from "reducers/authReducer";
 
+import Locale from "lib/locale";
 import routeSwitcher from "lib/route";
 import { useDispatch, useSelector } from "lib/store";
 
 import Button from "components/UIKit/Button";
+
+const locale = Locale({
+  hu: {
+    login_with_e5account: "Bejelentkezés E5vös fiókkal",
+  },
+  en: {
+    login_with_e5account: "Login with E5 account",
+  },
+});
 
 /**
  * @param  {Object} options
@@ -63,7 +73,6 @@ const LoginForm = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
-
   const onMessage = useCallback<(this: Window, e: MessageEvent<any>) => any>(
     (e) => {
       if (!e.data.token) {
@@ -89,7 +98,7 @@ const LoginForm = () => {
 
   return (
     <div className="m-1 mx-auto text-center">
-      <Button onClick={logIn}>Bejelentkezés E5vös fiókkal</Button>
+      <Button onClick={logIn}>{locale.login_with_e5account}</Button>
     </div>
   );
 };

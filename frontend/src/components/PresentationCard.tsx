@@ -3,9 +3,24 @@ import { useNavigate } from "react-router-dom";
 
 import { Presentation } from "types/models";
 
+import Locale from "lib/locale";
+
 import PresentationFillDialog from "./PresentationFillDialog";
 import Button from "./UIKit/Button";
 import ButtonGroup from "./UIKit/ButtonGroup";
+
+const locale = Locale({
+  hu: {
+    attendance_sheet: "Jelenléti Ív",
+    fill: "Kitöltés",
+    edit: "Szerkesztés",
+  },
+  en: {
+    attendance_sheet: "Attendance Sheet",
+    fill: "Fill",
+    edit: "Edit",
+  },
+});
 
 const PresentationCard = ({
   presentation,
@@ -58,7 +73,7 @@ const PresentationCard = ({
             variant="success"
             onClick={() => navigate(presentation.id.toString())}
           >
-            Jelenléti Ív
+            {locale.attendance_sheet}
           </Button>
           {fillAllowed && (
             <Button
@@ -66,7 +81,7 @@ const PresentationCard = ({
               variant="danger"
               onClick={() => setisDialogOpen(true)}
             >
-              Feltöltés
+              {locale.fill}
             </Button>
           )}
           {fillAllowed && (
@@ -75,7 +90,7 @@ const PresentationCard = ({
                 navigate(`/esemeny/${presentation.id}/kezel/szerkeszt`)
               }
             >
-              Szerkesztés
+              {locale.edit}
             </Button>
           )}
         </ButtonGroup>

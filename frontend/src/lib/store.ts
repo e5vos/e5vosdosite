@@ -7,7 +7,8 @@ import {
   useDispatch as originalDispatchHook,
   useSelector as originalSelectorHook,
 } from "react-redux/es/exports";
-import AuthReducer from "reducers/authReducer";
+import AuthReducer, { authSlice } from "reducers/authReducer";
+import settingsReducer, { settingsSlice } from "reducers/settingsReducer";
 import {
   FLUSH,
   PAUSE,
@@ -28,13 +29,22 @@ const rootReducer = persistReducer(
   { key: "root", storage: storage, blacklist: [baseAPI.reducerPath] },
   combineReducers({
     auth: AuthReducer,
+    settings: settingsReducer,
     [baseAPI.reducerPath]: baseAPI.reducer,
   })
 );
 
 const store = configureStore({
   reducer: rootReducer,
-  devTools: process.env.NODE_ENV === "development",
+  devTools:
+    process.env.NODE_ENV === "development"
+      ? {
+          actionCreators: {
+            ...settingsSlice.actions,
+            ...authSlice.actions,
+          },
+        }
+      : false,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import baseAPI from "lib/api";
@@ -15,7 +15,6 @@ const useUser = (redirect: boolean = true, destination?: string) => {
     ...rest
   } = baseAPI.useGetUserDataQuery();
 
-  const [bToken, setBToken] = useState<boolean>(false);
   const location = useLocation();
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
@@ -40,32 +39,20 @@ const useUser = (redirect: boolean = true, destination?: string) => {
     if (user && !user.e5code) {
       if (redirectToStudentCode) navigate(redirectToStudentCode);
     }
-  }, [
-    user,
-    error,
-    navigate,
-    token,
-    dispatch,
-    redirect,
-    destination,
-    location.pathname,
-  ]);
+  }, [user, error, navigate, dispatch, redirect, destination, location.pathname, refetch]);
 
-  /*
-  // EXPERMINENTAL: SHOULD FIX EARLY TOKEN DELETION
   useEffect(() => {
-
-    if (bToken) {
-      if (isFetching || isLoading) {
-        setBToken(false);
-      } else {
-        if (token) dispatch(authSlice.actions.setToken(""));
-        setBToken(false);
-      }
-    }
-  }, [bToken, dispatch, isFetching, isLoading, token]);
-*/
-  return { user, error, isLoading, isFetching, refetch, ...rest };
+    refetch();
+  }, [token, refetch]);
+  
+  return {
+    user: user && !error && token ? user : undefined,
+    error,
+    isLoading,
+    isFetching,
+    refetch,
+    ...rest
+  };
 };
 
 export default useUser;

@@ -10,7 +10,7 @@ const LogoutPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(authSlice.actions.setToken(""));
+    dispatch(authSlice.actions.clearToken());
     navigate("/", { replace: true });
   }, [navigate, dispatch]);
   return <Loader />;

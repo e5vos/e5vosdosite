@@ -72,7 +72,6 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const params = useParams();
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
   const onMessage = useCallback<(this: Window, e: MessageEvent<any>) => any>(
     (e) => {
       if (!e.data.token) {
@@ -80,14 +79,10 @@ const LoginForm = () => {
       }
       // e.data.token contains token
       dispatch(authSlice.actions.setToken(e.data.token));
+      navigate(params.next ?? "/eloadas");
     },
-    [dispatch]
+    [dispatch, navigate, params.next]
   );
-
-  useEffect(() => {
-    if (token) console.log("tc redir");
-    if (token) navigate(params.next ?? "/eloadas");
-  }, [navigate, params.next, token]);
 
   useEffect(() => {
     window.addEventListener("message", onMessage);

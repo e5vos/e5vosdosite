@@ -5,16 +5,34 @@ import { Event, User } from "types/models";
 
 import adminAPI from "lib/api/adminAPI";
 import eventAPI from "lib/api/eventAPI";
+import Locale from "lib/locale";
 import { sortByEJGClass } from "lib/util";
 
 import Button from "./UIKit/Button";
 import Form from "./UIKit/Form";
 import Loader from "./UIKit/Loader";
 
+const locale = Locale({
+  hu: {
+    errorDuringSignup: "Hiba történt a jelentkezés során!",
+    fillEvent: "Esemény feltöltése",
+    search: "Keresés",
+    close: "Bezárás",
+    assign: "Beosztás"
+  },
+  en: {
+    errorDuringSignup: "An error occured during signup!",
+    fillEvent: "Fill event",
+    search: "Search",
+    close: "Close",
+    assign: "Assign"
+  }
+});
+
 const PresentationFillDialog = ({
   open,
   onClose,
-  event: external_event,
+  event: external_event
 }: {
   open: boolean;
   onClose: () => void;
@@ -27,8 +45,8 @@ const PresentationFillDialog = ({
     {
       data: availableStudents,
       isFetching: isStudentListFetching,
-      isError: isStudentListError,
-    },
+      isError: isStudentListError
+    }
   ] = adminAPI.useLazyGetFreeUsersQuery();
 
   const [triggerEvent, { data: event, isFetching: isEventFetching }] =
@@ -42,13 +60,13 @@ const PresentationFillDialog = ({
       console.log(student);
       await APIsignUp({
         attender: student.id,
-        event: external_event,
+        event: external_event
       }).unwrap();
       trigger(external_event.slot_id);
       triggerEvent(external_event.id);
     } catch (err) {
       console.error(err);
-      alert("Hiba történt a jelentkezés során!");
+      alert(locale.errorDuringSignup);
     }
   };
 
@@ -70,7 +88,7 @@ const PresentationFillDialog = ({
     external_event.slot_id,
     event,
     triggerEvent,
-    external_event.id,
+    external_event.id
   ]);
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
@@ -84,7 +102,7 @@ const PresentationFillDialog = ({
             <div>
               <div className="mx-4 mb-4 text-center">
                 <Dialog.Title className="text-lg font-bold">
-                  Esemény feltöltése - {event.name}
+                  {locale.fillEvent} - {event.name}
                 </Dialog.Title>
                 <Dialog.Description className="mb-3 text-justify">
                   {event.description}
@@ -99,7 +117,7 @@ const PresentationFillDialog = ({
                 </div>
 
                 <Form.Group>
-                  <Form.Label>Keresés</Form.Label>
+                  <Form.Label>{locale.search}</Form.Label>
                   <Form.Control
                     onChange={(e) => setSearchString(e.currentTarget.value)}
                   />
@@ -134,7 +152,7 @@ const PresentationFillDialog = ({
                             }
                             onClick={() => signUp(student)}
                           >
-                            Beosztás
+                            {locale.assign}
                           </Button>
                         </li>
                       ))
@@ -145,7 +163,7 @@ const PresentationFillDialog = ({
           )}
           <div className="mx-auto text-center">
             <Button onClick={onClose} variant="danger">
-              Bezárás
+              {locale.close}
             </Button>
           </div>
         </Dialog.Panel>

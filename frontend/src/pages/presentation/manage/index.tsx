@@ -7,6 +7,7 @@ import { Presentation } from "types/models";
 import adminAPI from "lib/api/adminAPI";
 import eventAPI from "lib/api/eventAPI";
 import { isOperator, isTeacher } from "lib/gates";
+import Locale from "lib/locale";
 
 import { gated } from "components/Gate";
 import PresentationCard from "components/PresentationCard";
@@ -15,28 +16,55 @@ import ButtonGroup from "components/UIKit/ButtonGroup";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
 
+const locale = Locale({
+  hu: {
+    operatorInfo: "Operátor Információk",
+    isPresent: "jelen van",
+    isMissing: "hiányzik",
+    didNotSignUp: "nem jelentkezett",
+    title: "Előadások kezelése",
+    search: "Keresés",
+    unknown: "Ismeretlen"
+  },
+  en: {
+    operatorInfo: "Operator info",
+    isPresent: "is present",
+    isMissing: "is missing",
+    didNotSignUp: "did not sign up",
+    title: "Manage presentations",
+    search: "Search",
+    unknown: "Unknown"
+  }
+});
+
 const AdminCounter = ({ slotId }: { slotId: number }) => {
   const { data: notSignedUpStudents } = adminAPI.useGetFreeUsersQuery(slotId, {
-    pollingInterval: 5000,
+    pollingInterval: 5000
   });
 
   const { data: missingStudents } = adminAPI.useGetNotPresentUsersQuery(
     slotId,
     {
-      pollingInterval: 5000,
+      pollingInterval: 5000
     }
   );
 
   const { data: presentStudents } = adminAPI.useGetPresentUsersQuery(slotId, {
-    pollingInterval: 5000,
+    pollingInterval: 5000
   });
 
   return (
     <div className="mx-auto mb-3 w-fit rounded-lg bg-red-500 px-4 py-4 text-center text-xl">
-      <div>Operátor Információk</div>
-      <div>{presentStudents?.length ?? "Ismeretlen"} jelen van</div>
-      <div>{missingStudents?.length ?? "Ismeretlen"} hiányzik</div>
-      <div>{notSignedUpStudents?.length ?? "Ismeretlen"} nem jelentkezett</div>
+      <div>{locale.operatorInfo}</div>
+      <div>
+        {presentStudents?.length ?? locale.unknown} {locale.isPresent}
+      </div>
+      <div>
+        {missingStudents?.length ?? locale.unknown} {locale.isMissing}
+      </div>
+      <div>
+        {notSignedUpStudents?.length ?? locale.unknown} {locale.didNotSignUp}
+      </div>
     </div>
   );
 };
@@ -62,9 +90,9 @@ const PresentationManagePage = () => {
   return (
     <div className="mx-10">
       <div className="mx-auto mt-3 h-full text-center">
-        <h1 className="mb-3 text-4xl font-bold">Előadások kezelése</h1>
+        <h1 className="mb-3 text-4xl font-bold">{locale.title}</h1>
         <Form.Group>
-          <Form.Label>Keresés</Form.Label>
+          <Form.Label>{locale.search}</Form.Label>
           <Form.Control
             className="border border-black"
             onChange={(e) => setSearchterm(e.target.value.toLowerCase())}

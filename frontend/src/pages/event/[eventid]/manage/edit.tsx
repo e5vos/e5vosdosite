@@ -11,6 +11,38 @@ import { gated } from "components/Gate";
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
+import Locale from "lib/locale";
+
+const locale = Locale({
+  hu: {
+    title: "Esemény szerkesztése",
+    event: {
+      name: "Esemény neve",
+      description: "Esemény leírása",
+      starts_at: "Esemény kezdete",
+      ends_at: "Esemény vége",
+      organiser: "Szervező",
+      location: "Helyszín",
+      capacity: "Kapacitás",
+      is_competition: "Verseny",
+    },
+    submit: "Szerkesztés",
+  },
+  en:{
+    title: "Edit event",
+    event: {
+      name: "Event name",
+      description: "Event description",
+      starts_at: "Event start",
+      ends_at: "Event end",
+      organiser: "Organiser",
+      location: "Location",
+      capacity: "Capacity",
+      is_competition: "Competition",
+    },
+    submit: "Edit",
+  }
+})
 
 const initialValues: {
   name: string;
@@ -30,19 +62,6 @@ const initialValues: {
   location_id: null,
   is_competition: false,
   capacity: "Korlátlan",
-};
-
-const testLocs: { data: Location[] } = {
-  data: [
-    {
-      id: 1,
-      name: "Budapest",
-    },
-    {
-      id: 2,
-      name: "Debrecen",
-    },
-  ],
 };
 
 const EditEventPage = () => {
@@ -68,10 +87,10 @@ const EditEventPage = () => {
   if (!event || !locations) return <Loader />;
   return (
     <div className="container mx-auto">
-      <h1>EditEventPage</h1>
+      <h1>{locale.title}</h1>
       <Form onSubmit={formik.handleSubmit}>
         <Form.Group>
-          <Form.Label>Event Name</Form.Label>
+          <Form.Label>{locale.event.name}</Form.Label>
           <Form.Control
             name="name"
             value={formik.values.name}
@@ -79,7 +98,7 @@ const EditEventPage = () => {
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event Description</Form.Label>
+          <Form.Label>{locale.event.description}</Form.Label>
           <Form.Control
             name="description"
             value={formik.values.description}
@@ -87,7 +106,7 @@ const EditEventPage = () => {
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event Starts At</Form.Label>
+          <Form.Label>{locale.event.starts_at}</Form.Label>
           <Form.Control
             name="starts_at"
             value={formik.values.starts_at}
@@ -95,7 +114,7 @@ const EditEventPage = () => {
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event Ends At</Form.Label>
+          <Form.Label>{locale.event.ends_at}</Form.Label>
           <Form.Control
             name="ends_at"
             value={formik.values.ends_at}
@@ -103,7 +122,7 @@ const EditEventPage = () => {
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event Organiser</Form.Label>
+          <Form.Label>{locale.event.organiser}</Form.Label>
           <Form.Control
             name="organiser"
             value={formik.values.organiser}
@@ -111,7 +130,7 @@ const EditEventPage = () => {
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event Location</Form.Label>
+          <Form.Label>{locale.event.location}</Form.Label>
           <Form.ComboBox<Location>
             options={locations}
             filter={(s) => (e) =>
@@ -120,7 +139,7 @@ const EditEventPage = () => {
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event Capacity</Form.Label>
+          <Form.Label>{locale.event.capacity}</Form.Label>
           <Form.Control
             name="capacity"
             value={formik.values.capacity}
@@ -129,7 +148,7 @@ const EditEventPage = () => {
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event is Competition</Form.Label>
+          <Form.Label>{locale.event.is_competition}</Form.Label>
           <Form.Check
             name="is_competition"
             checked={formik.values.is_competition}
@@ -138,7 +157,7 @@ const EditEventPage = () => {
         </Form.Group>
 
         <Form.Group>
-          <Button type="submit">Submit</Button>
+          <Button type="submit">{locale.submit}</Button>
         </Form.Group>
       </Form>
     </div>

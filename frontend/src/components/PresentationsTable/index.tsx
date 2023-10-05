@@ -3,6 +3,7 @@ import useUser from "hooks/useUser";
 import { Presentation } from "types/models";
 
 import { is9NY } from "lib/gates";
+import Locale from "lib/locale";
 
 import Button from "components/UIKit/Button";
 import Loader from "components/UIKit/Loader";
@@ -23,11 +24,38 @@ const getColor = (capacity: number | null) => {
   }
 };
 
+const locale = Locale({
+  hu: {
+    presentation: {
+      title: "Előadás címe",
+      organiser: "Előadó",
+      description: "Előadás leírása",
+      location: "Előadás helye",
+      freeCapacity: "Szabad helyek"
+    },
+    overfilled: "Túltöltve",
+    unrestricted: "Korlátlan",
+    select: "Kiválaszt"
+  },
+  en: {
+    presentation: {
+      title: "Presentation title",
+      organiser: "Organiser",
+      description: "Presentation description",
+      location: "Presentation location",
+      freeCapacity: "Free capacity"
+    },
+    overfilled: "Overfilled",
+    unrestricted: "Unrestricted",
+    select: "Select"
+  }
+}); 
+
 const PresentationsTable = ({
   presentations,
   callback,
   disabled,
-  isLoading,
+  isLoading
 }: {
   presentations: Presentation[];
   callback?: (presentation: Presentation) => void;
@@ -39,11 +67,13 @@ const PresentationsTable = ({
     <table className="flex w-full table-auto border-separate border-spacing-y-1 border-spacing-x-0.5 flex-col text-sm md:table md:border-spacing-y-2 md:text-lg">
       <thead className="hidden border-separate bg-gray-300 text-white md:table-header-group ">
         <tr className="shadow-md">
-          <th className="rounded-l-lg py-1">Előadás címe</th>
-          <th className="py-1">Előadó</th>
-          <th className="py-1">Előadás leírása</th>
-          <th>Előadás helye</th>
-          <th className="rounded-r-lg py-1 md:min-w-fit">Szabad Helyek</th>
+          <th className="rounded-l-lg py-1">{locale.presentation.title}</th>
+          <th className="py-1">{locale.presentation.organiser}</th>
+          <th className="py-1">{locale.presentation.description}</th>
+          <th>{locale.presentation.location}</th>
+          <th className="rounded-r-lg py-1 md:min-w-fit">
+            {locale.presentation.freeCapacity}
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -70,7 +100,9 @@ const PresentationsTable = ({
                 {presentation.description}
               </td>
               <td className="text-bold text-center text-2xl font-semibold md:text-lg">
-                <span className="font-bold md:hidden">Előadás helye: </span>
+                <span className="font-bold md:hidden">
+                  {locale.presentation.location}:{" "}
+                </span>
                 {presentation.location?.name ?? "Ismeretlen hely"}
               </td>
               <td
@@ -87,9 +119,9 @@ const PresentationsTable = ({
                   <div>
                     {presentation.capacity
                       ? presentation.capacity - presentation.occupancy < 0
-                        ? "Túltöltve"
+                        ? locale.overfilled
                         : presentation.capacity - presentation.occupancy
-                      : "Korlátlan"}
+                      : locale.unrestricted}
                   </div>
                   {callback &&
                   (!presentation.signup_deadline ||
@@ -104,7 +136,7 @@ const PresentationsTable = ({
                         onClick={() => callback(presentation)}
                         disabled={disabled}
                       >
-                        Kiválaszt
+                        {locale.select}
                       </Button>
                     </div>
                   ) : (

@@ -6,6 +6,17 @@ import eventAPI from "lib/api/eventAPI";
 
 import Error, { HTTPErrorCode } from "components/Error";
 import Loader from "components/UIKit/Loader";
+import Locale from "lib/locale";
+
+
+const locale = Locale({
+  hu: {
+    scanner: "QR Olvasó",
+  },
+  en: {
+    scanner: "QR Scanner",
+  }
+})
 
 const Scanner = () => {
   const { eventid } = useParams();
@@ -23,7 +34,7 @@ const Scanner = () => {
   return (
     <div className="container mx-auto">
       <div className="text-center">
-        <h1 className=" text-4xl font-bold">{event.name} - QR Olvasó</h1>
+        <h1 className=" text-4xl font-bold">{event.name} - {locale.scanner}</h1>
         <h3>
           {user.name} - {user?.ejg_class}
         </h3>

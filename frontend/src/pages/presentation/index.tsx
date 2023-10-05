@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Presentation } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
+import Locale from "lib/locale";
 
 import PresentationsTable from "components/PresentationsTable";
 import Button from "components/UIKit/Button";
@@ -14,10 +15,35 @@ import ButtonGroup from "components/UIKit/ButtonGroup";
 import ErrorMsgBox from "components/UIKit/ErrorMsgBox";
 import Loader from "components/UIKit/Loader";
 
+const locale = Locale({
+  hu: {
+    title: "E5N - Előadásjelentkezés",
+    selectedPresentation: "Általad választott előadás",
+    presentationNotYetSelected: "Még nem választottál előadást",
+    select: "Választás",
+    delete: "Törlés",
+    unknownLocation: "Ismeretlen hely",
+    unknownError: "Ismeretlen hiba",
+    noe5code: "Nem adtad meg az E5 kódot!",
+    nologin: "Nem vagy bejelentkezve!"
+  },
+  en: {
+    title: "E5N - Presentation signup",
+    selectedPresentation: "Your selected presentation",
+    presentationNotYetSelected: "You have not selected a presentation yet",
+    select: "Select",
+    delete: "Delete",
+    unknownLocation: "Unknown location",
+    unknownError: "Unknown error",
+    noe5code: "You have not entered your E5 code!",
+    nologin: "You are not logged in!"
+  }
+});
+
 const SelectField = ({
   selectedPresentation,
   cancelSignupAction,
-  cancelSignupInProgress,
+  cancelSignupInProgress
 }: {
   selectedPresentation: Presentation | undefined;
   cancelSignupAction: (presentation: Presentation) => void;
@@ -26,15 +52,15 @@ const SelectField = ({
   return (
     <div className="flex flex-1 flex-col items-stretch justify-center gap-4 text-center md:mx-3 md:flex-row md:gap-8">
       <div className="flex-1">
-        <h3>Általad Választott előadás</h3>
+        <h3>{locale.selectedPresentation}</h3>
         <div className="rounded-lg bg-green-600 p-3 ">
-          {selectedPresentation?.name ?? "Még nem választottál előadást"}
+          {selectedPresentation?.name ?? locale.presentationNotYetSelected}
         </div>
         {selectedPresentation && (
           <div className="mt-2 rounded-lg bg-goldenrod p-3 ">
             <div className="text-lg">
               <IoLocationSharp className="inline-block text-xl" />
-              {selectedPresentation.location?.name ?? "Ismeretlen hely"}
+              {selectedPresentation.location?.name ?? locale.unknownLocation}
             </div>
           </div>
         )}
@@ -46,7 +72,7 @@ const SelectField = ({
         }}
         disabled={!selectedPresentation || cancelSignupInProgress}
       >
-        Törlés
+        {locale.delete}
       </Button>
     </div>
   );
@@ -60,21 +86,21 @@ const PresentationsPage = () => {
   const {
     data: selectedPresentations,
     isFetching: isMyPresentationsFetching,
-    refetch: refetchSelected,
+    refetch: refetchSelected
   } = eventAPI.useGetUsersPresentationsQuery();
   const {
     data: presentations,
     isLoading: isEventsLoading,
     isFetching: isEventsFetching,
-    refetch: refetchEvents,
+    refetch: refetchEvents
   } = eventAPI.useGetEventsQuery(slots?.[currentSlot]?.id ?? -1, {
-    pollingInterval: 10000,
+    pollingInterval: 10000
   });
   const [signUp, { isLoading: signupInProgress, error: signupError }] =
     eventAPI.useSignUpMutation();
   const [
     cancelSignup,
-    { isLoading: cancelSignupInProgress, error: cancelSignupError },
+    { isLoading: cancelSignupInProgress, error: cancelSignupError }
   ] = eventAPI.useCancelSignUpMutation();
   const navigate = useNavigate();
 
@@ -85,16 +111,16 @@ const PresentationsPage = () => {
     }
     try {
       if (!user) {
-        alert("Nem vagy bejelentkezve!");
+        alert(locale.nologin);
         return;
       }
       if (!user.e5code) {
-        alert("Nem adtad meg az E5 kódot!");
+        alert(locale.noe5code);
         navigate("/studentcode?next=/eloadas");
       }
       await signUp({
         attender: user.e5code,
-        event: presentation,
+        event: presentation
       }).unwrap();
       refetchSelected();
       refetchEvents();
@@ -106,14 +132,14 @@ const PresentationsPage = () => {
       return;
     }
     if (!user.e5code) {
-      alert("Nem adtad meg az E5 kódot!");
+      alert(locale.noe5code);
       navigate("/studentcode?next=/eloadas");
     }
     try {
       if (user) {
         await cancelSignup({
           attender: user.e5code,
-          event: presentation,
+          event: presentation
         }).unwrap();
         refetchSelected();
         refetchEvents();
@@ -135,12 +161,12 @@ const PresentationsPage = () => {
   const errormsg = useMemo(() => {
     if (signupError && "status" in signupError) {
       const message = (signupError.data as any).message;
-      if (!message && message === "") return "Ismeretlen hiba";
+      if (!message && message === "") return locale.unknownError;
       else return message;
     }
     if (cancelSignupError && "status" in cancelSignupError) {
       const message = (cancelSignupError.data as any).message;
-      if (!message && message === "") return "Ismeretlen hiba";
+      if (!message && message === "") return locale.unknownError;
       else return message;
     }
   }, [signupError, cancelSignupError]);
@@ -161,7 +187,7 @@ const PresentationsPage = () => {
     <div className="mx-5">
       <div className="container mx-auto">
         <h1 className="max-w-f pb-4 text-center text-4xl font-bold">
-          E5N - Előadásjelentkezés
+          {locale.title}
         </h1>
         <ErrorMsgBox errorShown={errorShown} errormsg={errormsg} />
         <div className="mb-4 flex-row items-stretch justify-between  md:flex ">

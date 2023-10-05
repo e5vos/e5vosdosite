@@ -7,6 +7,16 @@ import EventCard from "components/EventCard";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
 import Loader from "components/UIKit/Loader";
+import Locale from "lib/locale";
+
+const locale = Locale({
+  hu: {
+    title: "E5N - Programok",
+  },
+  en: {
+    title: "E5N - Events",
+  }
+})
 
 const EventsPage = () => {
   const { data: slots, error: slotsError } = eventAPI.useGetSlotsQuery();
@@ -23,7 +33,7 @@ const EventsPage = () => {
     <div className="mx-5">
       <div className="container mx-auto">
         <h1 className="max-w-f pb-4 text-center text-4xl font-bold">
-          E5N - Programok
+          {locale.title}
         </h1>
         <div className="mb-4 md:flex ">
           <ButtonGroup>

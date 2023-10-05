@@ -6,12 +6,12 @@ import { Location } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import { isOperator } from "lib/gates";
+import Locale from "lib/locale";
 
 import { gated } from "components/Gate";
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
-import Locale from "lib/locale";
 
 const locale = Locale({
   hu: {
@@ -28,7 +28,7 @@ const locale = Locale({
     },
     submit: "Szerkesztés",
   },
-  en:{
+  en: {
     title: "Edit event",
     event: {
       name: "Event name",
@@ -41,8 +41,8 @@ const locale = Locale({
       is_competition: "Competition",
     },
     submit: "Edit",
-  }
-})
+  },
+});
 
 const initialValues: {
   name: string;

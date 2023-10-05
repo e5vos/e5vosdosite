@@ -3,11 +3,10 @@ import { QrReader } from "react-qr-reader";
 import { useParams } from "react-router-dom";
 
 import eventAPI from "lib/api/eventAPI";
+import Locale from "lib/locale";
 
 import Error, { HTTPErrorCode } from "components/Error";
 import Loader from "components/UIKit/Loader";
-import Locale from "lib/locale";
-
 
 const locale = Locale({
   hu: {
@@ -15,8 +14,8 @@ const locale = Locale({
   },
   en: {
     scanner: "QR Scanner",
-  }
-})
+  },
+});
 
 const Scanner = () => {
   const { eventid } = useParams();
@@ -34,7 +33,9 @@ const Scanner = () => {
   return (
     <div className="container mx-auto">
       <div className="text-center">
-        <h1 className=" text-4xl font-bold">{event.name} - {locale.scanner}</h1>
+        <h1 className=" text-4xl font-bold">
+          {event.name} - {locale.scanner}
+        </h1>
         <h3>
           {user.name} - {user?.ejg_class}
         </h3>

@@ -25,7 +25,7 @@ const locale = Locale({
     unknownLocation: "Ismeretlen hely",
     unknownError: "Ismeretlen hiba",
     noe5code: "Nem adtad meg az E5 kódot!",
-    nologin: "Nem vagy bejelentkezve!"
+    nologin: "Nem vagy bejelentkezve!",
   },
   en: {
     title: "E5N - Presentation signup",
@@ -36,14 +36,14 @@ const locale = Locale({
     unknownLocation: "Unknown location",
     unknownError: "Unknown error",
     noe5code: "You have not entered your E5 code!",
-    nologin: "You are not logged in!"
-  }
+    nologin: "You are not logged in!",
+  },
 });
 
 const SelectField = ({
   selectedPresentation,
   cancelSignupAction,
-  cancelSignupInProgress
+  cancelSignupInProgress,
 }: {
   selectedPresentation: Presentation | undefined;
   cancelSignupAction: (presentation: Presentation) => void;
@@ -86,21 +86,21 @@ const PresentationsPage = () => {
   const {
     data: selectedPresentations,
     isFetching: isMyPresentationsFetching,
-    refetch: refetchSelected
+    refetch: refetchSelected,
   } = eventAPI.useGetUsersPresentationsQuery();
   const {
     data: presentations,
     isLoading: isEventsLoading,
     isFetching: isEventsFetching,
-    refetch: refetchEvents
+    refetch: refetchEvents,
   } = eventAPI.useGetEventsQuery(slots?.[currentSlot]?.id ?? -1, {
-    pollingInterval: 10000
+    pollingInterval: 10000,
   });
   const [signUp, { isLoading: signupInProgress, error: signupError }] =
     eventAPI.useSignUpMutation();
   const [
     cancelSignup,
-    { isLoading: cancelSignupInProgress, error: cancelSignupError }
+    { isLoading: cancelSignupInProgress, error: cancelSignupError },
   ] = eventAPI.useCancelSignUpMutation();
   const navigate = useNavigate();
 
@@ -120,7 +120,7 @@ const PresentationsPage = () => {
       }
       await signUp({
         attender: user.e5code,
-        event: presentation
+        event: presentation,
       }).unwrap();
       refetchSelected();
       refetchEvents();
@@ -139,7 +139,7 @@ const PresentationsPage = () => {
       if (user) {
         await cancelSignup({
           attender: user.e5code,
-          event: presentation
+          event: presentation,
         }).unwrap();
         refetchSelected();
         refetchEvents();

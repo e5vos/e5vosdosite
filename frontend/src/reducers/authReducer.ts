@@ -19,7 +19,7 @@ export const authSlice = createSlice({
     },
     clearToken: (state) => {
       state.token = "";
-    }
+    },
   },
 });
 

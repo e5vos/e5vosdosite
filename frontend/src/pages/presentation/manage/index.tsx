@@ -24,7 +24,7 @@ const locale = Locale({
     didNotSignUp: "nem jelentkezett",
     title: "Előadások kezelése",
     search: "Keresés",
-    unknown: "Ismeretlen"
+    unknown: "Ismeretlen",
   },
   en: {
     operatorInfo: "Operator info",
@@ -33,24 +33,24 @@ const locale = Locale({
     didNotSignUp: "did not sign up",
     title: "Manage presentations",
     search: "Search",
-    unknown: "Unknown"
-  }
+    unknown: "Unknown",
+  },
 });
 
 const AdminCounter = ({ slotId }: { slotId: number }) => {
   const { data: notSignedUpStudents } = adminAPI.useGetFreeUsersQuery(slotId, {
-    pollingInterval: 5000
+    pollingInterval: 5000,
   });
 
   const { data: missingStudents } = adminAPI.useGetNotPresentUsersQuery(
     slotId,
     {
-      pollingInterval: 5000
+      pollingInterval: 5000,
     }
   );
 
   const { data: presentStudents } = adminAPI.useGetPresentUsersQuery(slotId, {
-    pollingInterval: 5000
+    pollingInterval: 5000,
   });
 
   return (

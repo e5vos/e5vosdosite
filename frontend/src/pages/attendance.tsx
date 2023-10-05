@@ -6,13 +6,13 @@ import { Attendance, isUserAttendance } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import { isOperator, isTeacher } from "lib/gates";
+import Locale from "lib/locale";
 import { reverseNameOrder } from "lib/util";
 
 import { gated } from "components/Gate";
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
-import Locale from "lib/locale";
 
 const locale = Locale({
   hu: {
@@ -24,9 +24,8 @@ const locale = Locale({
     attendanceSheet: "Attendance sheet",
     delete: "Delete",
     refresh: "Refresh",
-  }
-})
-
+  },
+});
 
 const AttendancePage = () => {
   const { eventid } = useParams<{ eventid: string }>();
@@ -84,7 +83,9 @@ const AttendancePage = () => {
   return (
     <div className="container mx-auto mt-2 ">
       <div className="mx-auto w-fit text-center">
-        <h1 className="text-4xl font-bold">{locale.attendanceSheet} - {event?.name}</h1>
+        <h1 className="text-4xl font-bold">
+          {locale.attendanceSheet} - {event?.name}
+        </h1>
         <div className="mt-4">
           <ul className="mb-3 border">
             {participants?.map((attending, index) => (

@@ -5,11 +5,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 
 import baseAPI from "lib/api";
+import Locale from "lib/locale";
 
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
-import Locale from "lib/locale";
 
 const locale = Locale({
   hu: {
@@ -31,8 +31,8 @@ const locale = Locale({
     mustBeStudentCode: "Must be a student code",
     submit: "Submit student code",
     unknownError: "Unknown error",
-  }
-})
+  },
+});
 const StudentCodePage = () => {
   const [updateStudentCode] = baseAPI.useSetStudentCodeMutation();
   const navigate = useNavigate();
@@ -69,10 +69,10 @@ const StudentCodePage = () => {
         switch (error.status) {
           case 400:
             formik.setFieldError("studentCode", locale.invalidCode);
-            break
+            break;
           case 500:
             formik.setFieldError("studentCode", locale.serverError);
-            break
+            break;
           default:
             formik.setFieldError("studentCode", locale.unknownError);
             break;

@@ -2,22 +2,21 @@ import { IoLocationSharp } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 
 import eventAPI from "lib/api/eventAPI";
+import Locale from "lib/locale";
 
 import Error from "components/Error";
 import Loader from "components/UIKit/Loader";
-import Locale from "lib/locale";
 
 const locale = Locale({
   hu: {
     description: "Leírás",
-    organised: "Szervezte:"
+    organised: "Szervezte:",
   },
   en: {
     description: "Description",
-    organised: "Organised by:"
-  }
-})
-
+    organised: "Organised by:",
+  },
+});
 
 const EventManager = () => {
   const { eventid } = useParams<{ eventid: string }>();

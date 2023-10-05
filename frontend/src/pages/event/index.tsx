@@ -1,13 +1,13 @@
 import { useState } from "react";
 
 import eventAPI from "lib/api/eventAPI";
+import Locale from "lib/locale";
 
 import Error from "components/Error";
 import EventCard from "components/EventCard";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
 import Loader from "components/UIKit/Loader";
-import Locale from "lib/locale";
 
 const locale = Locale({
   hu: {
@@ -15,8 +15,8 @@ const locale = Locale({
   },
   en: {
     title: "E5N - Events",
-  }
-})
+  },
+});
 
 const EventsPage = () => {
   const { data: slots, error: slotsError } = eventAPI.useGetSlotsQuery();

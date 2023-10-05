@@ -31,11 +31,11 @@ const locale = Locale({
       organiser: "Előadó",
       description: "Előadás leírása",
       location: "Előadás helye",
-      freeCapacity: "Szabad helyek"
+      freeCapacity: "Szabad helyek",
     },
     overfilled: "Túltöltve",
     unrestricted: "Korlátlan",
-    select: "Kiválaszt"
+    select: "Kiválaszt",
   },
   en: {
     presentation: {
@@ -43,19 +43,19 @@ const locale = Locale({
       organiser: "Organiser",
       description: "Presentation description",
       location: "Presentation location",
-      freeCapacity: "Free capacity"
+      freeCapacity: "Free capacity",
     },
     overfilled: "Overfilled",
     unrestricted: "Unrestricted",
-    select: "Select"
-  }
-}); 
+    select: "Select",
+  },
+});
 
 const PresentationsTable = ({
   presentations,
   callback,
   disabled,
-  isLoading
+  isLoading,
 }: {
   presentations: Presentation[];
   callback?: (presentation: Presentation) => void;

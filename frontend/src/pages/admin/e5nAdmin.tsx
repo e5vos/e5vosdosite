@@ -15,7 +15,7 @@ const locale = Locale({
     title: "Eötvös Napok Admin",
     system: "System",
     cacheClear: "Clear cache",
-  }
+  },
 });
 
 const AdminPage = () => {
@@ -27,13 +27,17 @@ const AdminPage = () => {
 
       <div className="mt-4 flex gap-64">
         <div className="">
-          <h3 className="mb-3 text-center text-2xl font-bold">{locale.system}</h3>
+          <h3 className="mb-3 text-center text-2xl font-bold">
+            {locale.system}
+          </h3>
           <Button onClick={() => clearCache()} variant="danger">
             {locale.cacheClear}
           </Button>
         </div>
         <div className="">
-          <h3 className="mb-3 text-center text-2xl font-bold">{locale.system}</h3>
+          <h3 className="mb-3 text-center text-2xl font-bold">
+            {locale.system}
+          </h3>
           <Button></Button>
         </div>
       </div>

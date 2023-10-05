@@ -22,7 +22,7 @@ const useUser = (redirect: boolean = true, destination?: string) => {
   useEffect(() => {
     let redirectToLogin: string | undefined;
     let redirectToStudentCode: string | undefined;
-    
+
     if (!redirect) {
       redirectToLogin = undefined;
       redirectToStudentCode = undefined;
@@ -40,7 +40,15 @@ const useUser = (redirect: boolean = true, destination?: string) => {
     if (user && !user.e5code && redirectToStudentCode) {
       navigate(redirectToStudentCode);
     }
-  }, [user, error, navigate, dispatch, redirect, destination, location.pathname]);
+  }, [
+    user,
+    error,
+    navigate,
+    dispatch,
+    redirect,
+    destination,
+    location.pathname,
+  ]);
 
   useEffect(() => {
     refetch();
@@ -52,7 +60,7 @@ const useUser = (redirect: boolean = true, destination?: string) => {
     isLoading,
     isFetching,
     refetch,
-    ...rest
+    ...rest,
   };
 };
 

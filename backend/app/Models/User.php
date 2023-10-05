@@ -144,7 +144,8 @@ class User extends Authenticable
     */
     public function presentations()
     {
-        return $this->events()->join('slots', 'events.slot_id', '=', 'slots.id')->where('slots.slot_type', SlotType::presentation);
+        return $this->events()->join('slots', 'events.slot_id', '=', 'slots.id')
+            ->where('slots.slot_type', SlotType::presentation);
     }
 
     /**
@@ -169,6 +170,7 @@ class User extends Authenticable
      * @param  Event $event
      * @throws StudentBusyException if user is busy at the event timeslot
      * @throws EventFullException if the event is full
+     * @throws AlreadySignedUpException Student is signed up for this event
      * @return EventSignup the newly created EventSignup object
      */
     public function signUp(Event $event)
@@ -176,7 +178,10 @@ class User extends Authenticable
         if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusy($event->slot)) {
             throw new StudentBusyException();
         }
-        if (isset($event->capacity) && $event->occupancy >= $event->capacity + (request()->user()->ejg_class == "9.NY" ? intval(Setting::find('9ny.extracount')->value) : 0) && !request()->user()->hasPermission(PermissionType::Operator->value)) {
+        if (
+            isset($event->capacity) && $event->occupancy >= $event->capacity  &&
+            !request()->user()->hasPermission(PermissionType::Operator->value)
+        ) {
             throw new EventFullException();
         }
         if (Attendance::where('user_id', $this->id)->where('event_id', $event->id)->exists()) {

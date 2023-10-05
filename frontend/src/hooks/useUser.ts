@@ -22,6 +22,7 @@ const useUser = (redirect: boolean = true, destination?: string) => {
   useEffect(() => {
     let redirectToLogin: string | undefined;
     let redirectToStudentCode: string | undefined;
+    
     if (!redirect) {
       redirectToLogin = undefined;
       redirectToStudentCode = undefined;
@@ -32,19 +33,19 @@ const useUser = (redirect: boolean = true, destination?: string) => {
       redirectToLogin = "/login?next=" + location.pathname;
       redirectToStudentCode = "/studentcode?next=" + location.pathname;
     }
-    if (error && "status" in error && error.status === 401) {
-      //if (token) dispatch(authSlice.actions.setToken("")); // BUG: DELETES TOKEN TOO EARLY
-      if (redirectToLogin) navigate(redirectToLogin);
+
+    if (error && "status" in error && error.status === 401 && redirectToLogin) {
+      navigate(redirectToLogin);
     }
-    if (user && !user.e5code) {
-      if (redirectToStudentCode) navigate(redirectToStudentCode);
+    if (user && !user.e5code && redirectToStudentCode) {
+      navigate(redirectToStudentCode);
     }
-  }, [user, error, navigate, dispatch, redirect, destination, location.pathname, refetch]);
+  }, [user, error, navigate, dispatch, redirect, destination, location.pathname]);
 
   useEffect(() => {
     refetch();
   }, [token, refetch]);
-  
+
   return {
     user: user && !error && token ? user : undefined,
     error,

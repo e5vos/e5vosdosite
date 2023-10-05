@@ -9,7 +9,30 @@ import baseAPI from "lib/api";
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
+import Locale from "lib/locale";
 
+const locale = Locale({
+  hu: {
+    studentCode: "Diákkód",
+    inputStudentCode: "Diákkód megadása",
+    invalidCode: "Hibás diákkód",
+    serverError: "Szerverhiba. Létezik az osztályod?",
+    studentCodeRequired: "Diákkód megadása kötelező",
+    mustBeStudentCode: "Diákkódnak kell lennie",
+    submit: "Diákkód jóváhagyása",
+    unknownError: "Ismeretlen hiba",
+  },
+  en: {
+    studentCode: "Student code",
+    inputStudentCode: "Input student code",
+    invalidCode: "Invalid student code",
+    serverError: "Server error. Does your class exist?",
+    studentCodeRequired: "Student code is required",
+    mustBeStudentCode: "Must be a student code",
+    submit: "Submit student code",
+    unknownError: "Unknown error",
+  }
+})
 const StudentCodePage = () => {
   const [updateStudentCode] = baseAPI.useSetStudentCodeMutation();
   const navigate = useNavigate();
@@ -33,9 +56,9 @@ const StudentCodePage = () => {
       studentCode: Yup.string()
         .matches(
           /^20(\d{2})([A-FN])(\d{2})EJG(\d{3})$/,
-          "Diákkódnak kell lennie"
+          locale.mustBeStudentCode
         )
-        .required("Diákkód megadása kötelező"),
+        .required(locale.studentCodeRequired),
     }),
     validateOnChange: false,
     onSubmit: async (values) => {
@@ -43,8 +66,16 @@ const StudentCodePage = () => {
         await updateStudentCode(values.studentCode).unwrap();
         navigate(next ?? "/dashboard");
       } catch (error: any) {
-        if (error.status === 400) {
-          formik.setFieldError("studentCode", "Hibás diákkód");
+        switch (error.status) {
+          case 400:
+            formik.setFieldError("studentCode", locale.invalidCode);
+            break
+          case 500:
+            formik.setFieldError("studentCode", locale.serverError);
+            break
+          default:
+            formik.setFieldError("studentCode", locale.unknownError);
+            break;
         }
       }
     },
@@ -53,11 +84,11 @@ const StudentCodePage = () => {
   return (
     <div className="container mx-auto">
       <div className="mx-auto max-w-xl text-center">
-        <h1 className="mb-2 text-4xl font-bold">Diákkód megadása</h1>
+        <h1 className="mb-2 text-4xl font-bold">{locale.inputStudentCode}</h1>
         <hr className="mb-3 bg-gray-50" />
         <Form onSubmit={formik.handleSubmit}>
           <Form.Group>
-            <Form.Label className="text-4xl">Diákkód:</Form.Label>
+            <Form.Label className="text-4xl">{locale.studentCode}:</Form.Label>
             <Form.Control
               name="studentCode"
               type="text"
@@ -71,7 +102,7 @@ const StudentCodePage = () => {
             </Form.Text>
           </Form.Group>
           <Form.Group>
-            <Button type="submit">Diákkód jóváhagyása</Button>
+            <Button type="submit">{locale.submit}</Button>
           </Form.Group>
         </Form>
       </div>

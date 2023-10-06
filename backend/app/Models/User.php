@@ -173,8 +173,15 @@ class User extends Authenticable
      * @throws AlreadySignedUpException Student is signed up for this event
      * @return EventSignup the newly created EventSignup object
      */
-    public function signUp(Event $event)
+    public function signUp(Event $event, bool $force = false)
     {
+        if (!$force && $event->root_parent !== null) {
+            $this->signUp(Event::findOrFail($event->root_parent));
+            return;
+        }
+        if ($event->direct_child !== null) {
+            $this->signUp(Event::findOrFail($event->direct_child), true);
+        }
         if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusy($event->slot)) {
             throw new StudentBusyException();
         }

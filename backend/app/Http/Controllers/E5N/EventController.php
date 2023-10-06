@@ -190,8 +190,17 @@ class EventController extends Controller
     /**
      * unsignup user or team from event
      */
-    public function unsignup(Request $request, $eventId)
+    public function unsignup(Request $request, $eventId, $force = false)
     {
+        $event = Event::findOrFail($eventId);
+        if (!$force && $event->root_parent !== null) {
+            EventController::unsignup($request, $event->root_parent);
+            return;
+        }
+        if ($event->direct_child !== null) {
+            EventController::unsignup($request, $event->direct_child, true);
+        }
+
         $attender = strlen($request->attender) == 13 || is_numeric($request->attender) ? 'user_id' : 'team_code';
         $attenderId = $attender === 'user_id' && !is_numeric($request->attender) ? User::where('e5code', $request->attender)->firstOrFail()->id : $request->attender;
         $attendance = Attendance::where('event_id', $eventId)->where($attender, $attenderId)->first();

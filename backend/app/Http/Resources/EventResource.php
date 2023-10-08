@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Ramsey\Uuid\Type\Integer;
 
+use App\Models\Event;
+
 class EventResource extends JsonResource
 {
     /**
@@ -34,6 +36,10 @@ class EventResource extends JsonResource
             //'rating' => $this->rating,
             'occupancy' => $this->occupancy,
 
+            'root_parent' => $this->root_parent,
+            'root_parent_slot_id' => Event::find($this->root_parent)?->slot_id,
+            'direct_child' => $this->direct_child,
+            'direct_child_slot_id' => Event::find($this->direct_child)?->slot_id,
 
             'attendances' => AttendanceResource::collection($this->whenLoaded('attendances')),
             'organisers' => UserResource::collection($this->whenLoaded('organisers')),

@@ -72,7 +72,7 @@ export interface BaseActivity {
 
 export const SlotType = {
   Presentation: "Előadássáv",
-  Program: "Programsáv",
+  Program: "Programsáv"
 } as const;
 
 export interface Slot {
@@ -101,6 +101,11 @@ export interface Event {
   signup_deadline?: string | null;
   starts_at: string;
   ends_at: string;
+  direct_child?: boolean | null;
+  direct_child_slot_id?: number | null;
+  root_parent?: boolean | null;
+  root_parent_slot_id?: number | null;
+
   //TODO
 }
 

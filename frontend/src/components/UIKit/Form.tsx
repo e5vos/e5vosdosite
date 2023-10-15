@@ -1,5 +1,5 @@
 import { Combobox } from "@headlessui/react";
-import React, { ChangeEvent, FormEventHandler, ReactNode } from "react";
+import React, { FormEventHandler, ReactNode } from "react";
 
 import { HTMLInputProps } from "./helpers";
 
@@ -109,7 +109,7 @@ const Select = ({ children, ...rest }: HTMLInputProps<HTMLSelectElement>) => {
 const ComboBoxOption = ({
   children,
   key,
-  value,
+  value
 }: {
   children: ReactNode;
   key: any;
@@ -126,7 +126,7 @@ const ComboBox = <T = any,>({
   options,
   filter,
   onChange,
-  renderElement,
+  renderElement
 }: {
   options: T[];
   filter: (s: string) => (e: T) => boolean;
@@ -168,5 +168,5 @@ export default Object.assign(Form, {
   Group,
   Check,
   Select,
-  ComboBox,
+  ComboBox
 });

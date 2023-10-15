@@ -1,6 +1,6 @@
 import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
 import useUser from "hooks/useUser";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
@@ -26,6 +26,11 @@ const locale = Locale({
     unknownError: "Ismeretlen hiba",
     noe5code: "Nem adtad meg az E5 kódot!",
     nologin: "Nem vagy bejelentkezve!",
+    sloterror: (
+      <span className="text-red-300">
+        Nem betöltött eseménysáv! Valószínűleg programsáv!
+      </span>
+    )
   },
   en: {
     title: "E5N - Presentation signup",
@@ -37,13 +42,18 @@ const locale = Locale({
     unknownError: "Unknown error",
     noe5code: "You have not entered your E5 code!",
     nologin: "You are not logged in!",
-  },
+    sloterror: (
+      <span className="text-red-300">
+        Event slot not loaded! Probably an event slot!
+      </span>
+    )
+  }
 });
 
 const SelectField = ({
   selectedPresentation,
   cancelSignupAction,
-  cancelSignupInProgress,
+  cancelSignupInProgress
 }: {
   selectedPresentation: Presentation | undefined;
   cancelSignupAction: (presentation: Presentation) => void;
@@ -86,21 +96,21 @@ const PresentationsPage = () => {
   const {
     data: selectedPresentations,
     isFetching: isMyPresentationsFetching,
-    refetch: refetchSelected,
+    refetch: refetchSelected
   } = eventAPI.useGetUsersPresentationsQuery();
   const {
     data: presentations,
     isLoading: isEventsLoading,
     isFetching: isEventsFetching,
-    refetch: refetchEvents,
+    refetch: refetchEvents
   } = eventAPI.useGetEventsQuery(slots?.[currentSlot]?.id ?? -1, {
-    pollingInterval: 10000,
+    pollingInterval: 10000
   });
   const [signUp, { isLoading: signupInProgress, error: signupError }] =
     eventAPI.useSignUpMutation();
   const [
     cancelSignup,
-    { isLoading: cancelSignupInProgress, error: cancelSignupError },
+    { isLoading: cancelSignupInProgress, error: cancelSignupError }
   ] = eventAPI.useCancelSignUpMutation();
   const navigate = useNavigate();
 
@@ -118,9 +128,10 @@ const PresentationsPage = () => {
         alert(locale.noe5code);
         navigate("/studentcode?next=/eloadas");
       }
+      console.log("Signup");
       await signUp({
         attender: user.e5code,
-        event: presentation,
+        event: presentation
       }).unwrap();
       refetchSelected();
       refetchEvents();
@@ -139,7 +150,7 @@ const PresentationsPage = () => {
       if (user) {
         await cancelSignup({
           attender: user.e5code,
-          event: presentation,
+          event: presentation
         }).unwrap();
         refetchSelected();
         refetchEvents();
@@ -148,6 +159,20 @@ const PresentationsPage = () => {
       console.log(err);
     }
   };
+
+  const slotName = useCallback(
+    (id: number) =>
+      slots?.find((slot) => slot.id === id)?.name ?? locale.sloterror,
+    [slots]
+  );
+
+  const selectSlotById = useCallback(
+    (id: number) => {
+      let newSlot = slots?.findIndex((slot) => slot.id === id);
+      if (newSlot) setcurrentSlot(newSlot);
+    },
+    [slots]
+  );
 
   const selectedPresentation = useMemo(
     () =>
@@ -216,6 +241,8 @@ const PresentationsPage = () => {
             signupInProgress || isMyPresentationsFetching || isEventsFetching
           }
           isLoading={isEventsLoading}
+          selectSlot={selectSlotById}
+          slotName={slotName}
         />
       </div>
     </div>

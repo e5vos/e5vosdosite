@@ -1,4 +1,5 @@
 import useUser from "hooks/useUser";
+import { FC } from "react";
 
 import { Presentation } from "types/models";
 
@@ -32,10 +33,24 @@ const locale = Locale({
       description: "Előadás leírása",
       location: "Előadás helye",
       freeCapacity: "Szabad helyek",
+      multislot: {
+        starts: (SlotHref: FC) => (
+          <>
+            Ez az előadás a<SlotHref />
+            -ban kezdődik.
+          </>
+        ),
+        continues: (SlotHref: FC) => (
+          <>
+            Ez az előadás a<SlotHref />
+            -ban végződik.
+          </>
+        )
+      }
     },
     overfilled: "Túltöltve",
     unrestricted: "Korlátlan",
-    select: "Kiválaszt",
+    select: "Kiválaszt"
   },
   en: {
     presentation: {
@@ -44,21 +59,37 @@ const locale = Locale({
       description: "Presentation description",
       location: "Presentation location",
       freeCapacity: "Free capacity",
+      multislot: {
+        starts: (SlotHref: FC) => (
+          <>
+            This presentation starts in <SlotHref />.
+          </>
+        ),
+        continues: (SlotHref: FC) => (
+          <>
+            This presentation ends in <SlotHref />.
+          </>
+        )
+      }
     },
     overfilled: "Overfilled",
     unrestricted: "Unrestricted",
-    select: "Select",
-  },
+    select: "Select"
+  }
 });
 
 const PresentationsTable = ({
   presentations,
   callback,
+  selectSlot,
+  slotName,
   disabled,
-  isLoading,
+  isLoading
 }: {
   presentations: Presentation[];
   callback?: (presentation: Presentation) => void;
+  selectSlot: (id: number) => void;
+  slotName: (id: number) => string | JSX.Element;
   disabled?: boolean;
   isLoading?: boolean;
 }) => {
@@ -96,8 +127,47 @@ const PresentationsTable = ({
               <td className="px-2 py-0.5 text-center underline ">
                 {presentation.organiser}
               </td>
-              <td className="px-2 py-0.5 text-center ">
-                {presentation.description}
+              <td className=" text-center ">
+                <div className="flex h-full flex-col justify-around">
+                  <p className="px-2 py-0.5 flex-1">
+                    {presentation.description}
+                  </p>
+                  {presentation.direct_child ||
+                    (presentation.root_parent && (
+                      <div className="bg-blue-500">
+                        {presentation.root_parent_slot_id &&
+                          locale.presentation.multislot.starts(() => (
+                            <span
+                              className="text-green-400"
+                              onClick={() => {
+                                console.log(
+                                  "Selecting slot",
+                                  presentation.root_parent_slot_id
+                                );
+                                selectSlot(presentation.root_parent_slot_id!);
+                              }}
+                            >
+                              {slotName(presentation.root_parent_slot_id!)}
+                            </span>
+                          ))}
+                        {presentation.direct_child_slot_id &&
+                          locale.presentation.multislot.continues(() => (
+                            <span
+                              className="text-green-400"
+                              onClick={() => {
+                                console.log(
+                                  "Selecting slot",
+                                  presentation.direct_child_slot_id
+                                );
+                                selectSlot(presentation.direct_child_slot_id!);
+                              }}
+                            >
+                              {slotName(presentation.direct_child_slot_id!)}
+                            </span>
+                          ))}
+                      </div>
+                    ))}
+                </div>
               </td>
               <td className="text-bold text-center text-2xl font-semibold md:text-lg">
                 <span className="font-bold md:hidden">

@@ -14,7 +14,6 @@ export const Locale = <
 >(
   l: T
 ) => {
-  console.log();
   return l[SelectedLocale];
 };
 

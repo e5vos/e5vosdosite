@@ -4,7 +4,7 @@ import { authSlice } from "reducers/authReducer";
 
 import Locale from "lib/locale";
 import routeSwitcher from "lib/route";
-import { useDispatch, useSelector } from "lib/store";
+import { useDispatch } from "lib/store";
 
 import Button from "components/UIKit/Button";
 

@@ -1,8 +1,7 @@
 import { Capacitor } from "@capacitor/core";
 import ziggyroute, {
   Config,
-  RouteParam,
-  RouteParamsWithQueryOverload,
+  RouteParams,
 } from "ziggy-js";
 
 import includedZiggy from "./ziggy.json";
@@ -13,7 +12,7 @@ declare global {
     route:
       | ((
           name: string,
-          params?: RouteParamsWithQueryOverload | RouteParam,
+          params?: RouteParams<string>,
         ) => string)
       | undefined;
   }
@@ -42,7 +41,7 @@ declare global {
 
 const routeSwitcher = (
   name: keyof typeof includedZiggy.routes | string,
-  params?: RouteParamsWithQueryOverload | RouteParam | undefined,
+  params?: RouteParams<string> | undefined,
   absolute?: boolean | undefined,
 ): string => {
   try {

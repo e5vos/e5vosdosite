@@ -1,9 +1,7 @@
-import useUser from "hooks/useUser";
 import { FC } from "react";
 
 import { Presentation } from "types/models";
 
-import { is9NY } from "lib/gates";
 import Locale from "lib/locale";
 
 import Button from "components/UIKit/Button";
@@ -93,7 +91,6 @@ const PresentationsTable = ({
   disabled?: boolean;
   isLoading?: boolean;
 }) => {
-  const { user } = useUser(false);
   return (
     <table className="flex w-full table-auto border-separate border-spacing-x-0.5 border-spacing-y-1 flex-col text-sm md:table md:border-spacing-y-2 md:text-lg">
       <thead className="hidden border-separate bg-gray-300 text-white md:table-header-group ">

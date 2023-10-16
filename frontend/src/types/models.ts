@@ -34,31 +34,35 @@ export type UserAttendance = User & { pivot: UserAttendancePivot };
 
 export type Attendance = UserAttendance | TeamAttendance;
 export const isTeamAttendancePivot = (
-  attendance: any
+  attendance: any,
 ): attendance is TeamAttendancePivot => {
   return attendance.team_code !== undefined;
 };
 export const isUserAttendancePivot = (
-  attendance: any
+  attendance: any,
 ): attendance is UserAttendancePivot => {
   return attendance.user_id !== undefined;
 };
 
 export const isUserAttendance = (
-  attendance: any
+  attendance: any,
 ): attendance is UserAttendance => {
   return attendance.e5code !== undefined;
 };
 
 export const isTeamAttendance = (
-  attendance: any
+  attendance: any,
 ): attendance is TeamAttendance => {
   return isTeamAttendancePivot(attendance.pivot);
 };
 
 export type UserRole = "operator" | "admin" | "user";
 export type TeamMemberRole = "captain" | "member" | "invited";
-export type TeamMembership = { user: User; role: TeamMemberRole };
+export type TeamMembership = {
+  user: User;
+  role: TeamMemberRole;
+  team: Team;
+};
 export interface Team {
   name: string;
   code: string;
@@ -72,7 +76,7 @@ export interface BaseActivity {
 
 export const SlotType = {
   Presentation: "Előadássáv",
-  Program: "Programsáv"
+  Program: "Programsáv",
 } as const;
 
 export interface Slot {

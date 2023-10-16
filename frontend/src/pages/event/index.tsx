@@ -55,9 +55,7 @@ const EventsPage = () => {
         <Loader />
       ) : (
         <div className="grid-cols-4 gap-2 md:grid">
-          {events?.map((event) => (
-            <EventCard event={event} key={event.id} />
-          ))}
+          {events?.map((event) => <EventCard event={event} key={event.id} />)}
         </div>
       )}
     </div>

@@ -45,12 +45,12 @@ const locale = Locale({
             Ez az előadás a<SlotHref />
             -ban végződik.
           </>
-        )
-      }
+        ),
+      },
     },
     overfilled: "Túltöltve",
     unrestricted: "Korlátlan",
-    select: "Kiválaszt"
+    select: "Kiválaszt",
   },
   en: {
     presentation: {
@@ -69,13 +69,13 @@ const locale = Locale({
           <>
             This presentation ends in <SlotHref />.
           </>
-        )
-      }
+        ),
+      },
     },
     overfilled: "Overfilled",
     unrestricted: "Unrestricted",
-    select: "Select"
-  }
+    select: "Select",
+  },
 });
 
 const PresentationsTable = ({
@@ -84,7 +84,7 @@ const PresentationsTable = ({
   selectSlot,
   slotName,
   disabled,
-  isLoading
+  isLoading,
 }: {
   presentations: Presentation[];
   callback?: (presentation: Presentation) => void;
@@ -95,7 +95,7 @@ const PresentationsTable = ({
 }) => {
   const { user } = useUser(false);
   return (
-    <table className="flex w-full table-auto border-separate border-spacing-y-1 border-spacing-x-0.5 flex-col text-sm md:table md:border-spacing-y-2 md:text-lg">
+    <table className="flex w-full table-auto border-separate border-spacing-x-0.5 border-spacing-y-1 flex-col text-sm md:table md:border-spacing-y-2 md:text-lg">
       <thead className="hidden border-separate bg-gray-300 text-white md:table-header-group ">
         <tr className="shadow-md">
           <th className="rounded-l-lg py-1">{locale.presentation.title}</th>
@@ -129,7 +129,7 @@ const PresentationsTable = ({
               </td>
               <td className=" text-center ">
                 <div className="flex h-full flex-col justify-around">
-                  <p className="px-2 py-0.5 flex-1">
+                  <p className="flex-1 px-2 py-0.5">
                     {presentation.description}
                   </p>
                   {presentation.direct_child ||
@@ -142,7 +142,7 @@ const PresentationsTable = ({
                               onClick={() => {
                                 console.log(
                                   "Selecting slot",
-                                  presentation.root_parent_slot_id
+                                  presentation.root_parent_slot_id,
                                 );
                                 selectSlot(presentation.root_parent_slot_id!);
                               }}
@@ -157,7 +157,7 @@ const PresentationsTable = ({
                               onClick={() => {
                                 console.log(
                                   "Selecting slot",
-                                  presentation.direct_child_slot_id
+                                  presentation.direct_child_slot_id,
                                 );
                                 selectSlot(presentation.direct_child_slot_id!);
                               }}
@@ -181,7 +181,7 @@ const PresentationsTable = ({
                   getColor(
                     presentation.capacity
                       ? presentation.capacity - presentation.occupancy
-                      : null
+                      : null,
                   )
                 }
               >
@@ -197,8 +197,7 @@ const PresentationsTable = ({
                   (!presentation.signup_deadline ||
                     Date.parse(presentation.signup_deadline) >= Date.now()) &&
                   (!presentation.capacity ||
-                    presentation.capacity > presentation.occupancy ||
-                    (user && is9NY(user))) ? (
+                    presentation.capacity > presentation.occupancy) ? (
                     <div>
                       <Button
                         variant="secondary"

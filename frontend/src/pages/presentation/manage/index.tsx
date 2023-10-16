@@ -46,7 +46,7 @@ const AdminCounter = ({ slotId }: { slotId: number }) => {
     slotId,
     {
       pollingInterval: 5000,
-    }
+    },
   );
 
   const { data: presentStudents } = adminAPI.useGetPresentUsersQuery(slotId, {
@@ -82,7 +82,7 @@ const PresentationManagePage = () => {
   const filteredpresentations = presentations?.filter(
     (presentation) =>
       presentation.name.toLowerCase().includes(searchterm) ||
-      presentation.organiser.toLowerCase().includes(searchterm)
+      presentation.organiser.toLowerCase().includes(searchterm),
   );
 
   const fillAllowed = useMemo(() => user && isOperator(user), [user]);
@@ -117,7 +117,7 @@ const PresentationManagePage = () => {
       {isEventsFetching ? (
         <Loader />
       ) : (
-        <div className="grid-cols-4 gap-2 md:grid">
+        <div className="gap-2 md:grid md:grid-cols-3 xl:grid-cols-4">
           {filteredpresentations?.map((presentation) => (
             <PresentationCard
               key={presentation.id}

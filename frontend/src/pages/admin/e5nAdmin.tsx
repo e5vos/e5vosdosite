@@ -15,11 +15,11 @@ const locale = Locale({
     cacheClear: "Cache törlése",
     UsersDialog: {
       title: "Felhasználók",
-      description: "Az összes felhasználó listája"
+      description: "Az összes felhasználó listája",
     },
     eventsDialog: {
-      title: "Események"
-    }
+      title: "Események",
+    },
   },
   en: {
     title: "Eötvös Napok Admin",
@@ -27,17 +27,17 @@ const locale = Locale({
     cacheClear: "Clear cache",
     UsersDialog: {
       title: "Users",
-      description: "List of all users"
+      description: "List of all users",
     },
     eventsDialog: {
-      title: "Events"
-    }
-  }
+      title: "Events",
+    },
+  },
 });
 
 const UsersDialog = ({
   open,
-  onClose
+  onClose,
 }: {
   open: boolean;
   onClose: () => void;
@@ -68,7 +68,7 @@ const UsersDialog = ({
               <tr>
                 <td>{user.name}</td>
               </tr>
-            )
+            ),
         )}
       </table>
     </Dialog>
@@ -77,7 +77,7 @@ const UsersDialog = ({
 
 const EventsDialog = ({
   open,
-  onClose
+  onClose,
 }: {
   open: boolean;
   onClose: () => void;

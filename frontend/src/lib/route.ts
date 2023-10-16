@@ -13,7 +13,7 @@ declare global {
     route:
       | ((
           name: string,
-          params?: RouteParamsWithQueryOverload | RouteParam
+          params?: RouteParamsWithQueryOverload | RouteParam,
         ) => string)
       | undefined;
   }
@@ -43,7 +43,7 @@ declare global {
 const routeSwitcher = (
   name: keyof typeof includedZiggy.routes | string,
   params?: RouteParamsWithQueryOverload | RouteParam | undefined,
-  absolute?: boolean | undefined
+  absolute?: boolean | undefined,
 ): string => {
   try {
     if (Capacitor.getPlatform() === "web" && window.route)
@@ -53,7 +53,7 @@ const routeSwitcher = (
         name,
         params,
         absolute,
-        remoteZiggyConfig ?? (includedZiggy as Config)
+        remoteZiggyConfig ?? (includedZiggy as Config),
       );
   } catch (error) {
     if (process.env.NODE_ENV === "development") {

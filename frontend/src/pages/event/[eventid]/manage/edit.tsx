@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { Location } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
+import locationAPI from "lib/api/locationAPI";
 import { isOperator } from "lib/gates";
 import Locale from "lib/locale";
 
@@ -67,7 +68,7 @@ const initialValues: {
 const EditEventPage = () => {
   const { eventid } = useParams();
   const { data: event } = eventAPI.useGetEventQuery(Number(eventid));
-  const { data: locations } = testLocs; //api.useGetLocationsQuery();
+  const { data: locations } = locationAPI.useGetLocationsQuery();
   const [updateEvent] = eventAPI.useUpdateEventMutation();
 
   const formik = useFormik({
@@ -95,6 +96,8 @@ const EditEventPage = () => {
             name="name"
             value={formik.values.name}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.name)}
           />
         </Form.Group>
         <Form.Group>
@@ -103,6 +106,8 @@ const EditEventPage = () => {
             name="description"
             value={formik.values.description}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.description)}
           />
         </Form.Group>
         <Form.Group>
@@ -111,6 +116,8 @@ const EditEventPage = () => {
             name="starts_at"
             value={formik.values.starts_at}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.starts_at)}
           />
         </Form.Group>
         <Form.Group>
@@ -119,6 +126,8 @@ const EditEventPage = () => {
             name="ends_at"
             value={formik.values.ends_at}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.ends_at)}
           />
         </Form.Group>
         <Form.Group>
@@ -127,6 +136,8 @@ const EditEventPage = () => {
             name="organiser"
             value={formik.values.organiser}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.organiser)}
           />
         </Form.Group>
         <Form.Group>
@@ -134,17 +145,20 @@ const EditEventPage = () => {
           <Form.ComboBox<Location>
             options={locations}
             filter={(s) => (e) =>
-              e.name.toLowerCase().includes(s.toLowerCase())}
+              e.name.toLowerCase().includes(s.toLowerCase())
+            }
             renderElement={(loc) => loc.name}
           />
         </Form.Group>
         <Form.Group>
           <Form.Label>{locale.event.capacity}</Form.Label>
           <Form.Control
+            type="number"
             name="capacity"
             value={formik.values.capacity}
             onChange={formik.handleChange}
-            type="number"
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.capacity)}
           />
         </Form.Group>
         <Form.Group>
@@ -153,6 +167,8 @@ const EditEventPage = () => {
             name="is_competition"
             checked={formik.values.is_competition}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.is_competition)}
           />
         </Form.Group>
 

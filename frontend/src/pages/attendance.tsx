@@ -30,7 +30,7 @@ const locale = Locale({
 const AttendancePage = () => {
   const { eventid } = useParams<{ eventid: string }>();
   const { data: event, isLoading: isEventLoading } = eventAPI.useGetEventQuery(
-    Number(eventid ?? -1)
+    Number(eventid ?? -1),
   );
   const {
     data: participantsData,
@@ -45,7 +45,7 @@ const AttendancePage = () => {
     participantsData
       ?.slice()
       .sort((a, b) =>
-        reverseNameOrder(a.name).localeCompare(reverseNameOrder(b.name))
+        reverseNameOrder(a.name).localeCompare(reverseNameOrder(b.name)),
       ) ?? [];
 
   const [toggleAPI, { isLoading }] = eventAPI.useToggleAttendanceMutation();
@@ -73,7 +73,7 @@ const AttendancePage = () => {
   const deleteAttendanceAction = async (attending: Attendance) => {
     await deleteAttendance({
       attender: String(
-        isUserAttendance(attending) ? attending.id : attending.code
+        isUserAttendance(attending) ? attending.id : attending.code,
       ),
       event: event,
     }).unwrap();

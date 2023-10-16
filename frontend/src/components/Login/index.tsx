@@ -24,7 +24,7 @@ const locale = Locale({
 const openWindow = (
   url: string,
   title: string,
-  options: { [key: string]: any } = {}
+  options: { [key: string]: any } = {},
 ) => {
   if (typeof url === "object") {
     options = url;
@@ -81,7 +81,7 @@ const LoginForm = () => {
       dispatch(authSlice.actions.setToken(e.data.token));
       navigate(params.next ?? "/eloadas");
     },
-    [dispatch, navigate, params.next]
+    [dispatch, navigate, params.next],
   );
 
   useEffect(() => {

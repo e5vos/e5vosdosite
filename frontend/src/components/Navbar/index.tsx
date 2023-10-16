@@ -22,7 +22,9 @@ const locale = Locale({
 const CustomNavbar = () => {
   const { user } = useUser(false);
   return (
-    <Navbar brand={<Navbar.Brand>{user ? user.name : locale.homepage}</Navbar.Brand>}>
+    <Navbar
+      brand={<Navbar.Brand>{user ? user.name : locale.homepage}</Navbar.Brand>}
+    >
       <Navbar.Link href="/eloadas">{locale.presentationSignup}</Navbar.Link>
       {!user && <Navbar.Link href="/login">{locale.login}</Navbar.Link>}
       {user && <Navbar.Link href="/logout">{locale.logout}</Navbar.Link>}

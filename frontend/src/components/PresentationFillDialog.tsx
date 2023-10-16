@@ -18,21 +18,21 @@ const locale = Locale({
     fillEvent: "Esemény feltöltése",
     search: "Keresés",
     close: "Bezárás",
-    assign: "Beosztás"
+    assign: "Beosztás",
   },
   en: {
     errorDuringSignup: "An error occured during signup!",
     fillEvent: "Fill event",
     search: "Search",
     close: "Close",
-    assign: "Assign"
-  }
+    assign: "Assign",
+  },
 });
 
 const PresentationFillDialog = ({
   open,
   onClose,
-  event: external_event
+  event: external_event,
 }: {
   open: boolean;
   onClose: () => void;
@@ -45,8 +45,8 @@ const PresentationFillDialog = ({
     {
       data: availableStudents,
       isFetching: isStudentListFetching,
-      isError: isStudentListError
-    }
+      isError: isStudentListError,
+    },
   ] = adminAPI.useLazyGetFreeUsersQuery();
 
   const [triggerEvent, { data: event, isFetching: isEventFetching }] =
@@ -60,7 +60,7 @@ const PresentationFillDialog = ({
       console.log(student);
       await APIsignUp({
         attender: student.id,
-        event: external_event
+        event: external_event,
       }).unwrap();
       trigger(external_event.slot_id);
       triggerEvent(external_event.id);
@@ -88,7 +88,7 @@ const PresentationFillDialog = ({
     external_event.slot_id,
     event,
     triggerEvent,
-    external_event.id
+    external_event.id,
   ]);
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
@@ -133,7 +133,7 @@ const PresentationFillDialog = ({
                       .filter((student) =>
                         (student.name + student.ejg_class)
                           .toLowerCase()
-                          .includes(searchString.toLowerCase())
+                          .includes(searchString.toLowerCase()),
                       )
                       .sort(sortByEJGClass)
                       .map((student) => (

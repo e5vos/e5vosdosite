@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+
 import { User } from "types/models";
 
 const initialState: {
@@ -15,6 +16,9 @@ export const authSlice = createSlice({
   reducers: {
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
+    },
+    clearToken: (state) => {
+      state.token = "";
     },
   },
 });

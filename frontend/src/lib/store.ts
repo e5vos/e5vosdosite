@@ -1,43 +1,50 @@
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
+import { routerMiddleware } from "connected-react-router";
+import { createBrowserHistory } from "history";
 import {
   TypedUseSelectorHook,
   useDispatch as originalDispatchHook,
   useSelector as originalSelectorHook,
 } from "react-redux/es/exports";
-import { createBrowserHistory } from "history";
+import AuthReducer, { authSlice } from "reducers/authReducer";
+import settingsReducer, { settingsSlice } from "reducers/settingsReducer";
 import {
-  $CombinedState,
-  combineReducers,
-  configureStore,
-} from "@reduxjs/toolkit";
-import { routerMiddleware } from "connected-react-router";
-import {
-  persistReducer,
-  persistStore,
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
   PURGE,
   REGISTER,
+  REHYDRATE,
+  persistReducer,
+  persistStore,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import AuthReducer from "reducers/authReducer";
-import { api } from "./api";
-import { setupListeners } from "@reduxjs/toolkit/dist/query";
+
+import baseAPI from "./api";
 
 export const history = createBrowserHistory();
 
 const rootReducer = persistReducer(
-  { key: "root", storage: storage, blacklist: [api.reducerPath] },
+  { key: "root", storage: storage, blacklist: [baseAPI.reducerPath] },
   combineReducers({
     auth: AuthReducer,
-    [api.reducerPath]: api.reducer,
-  })
+    settings: settingsReducer,
+    [baseAPI.reducerPath]: baseAPI.reducer,
+  }),
 );
 
 const store = configureStore({
   reducer: rootReducer,
-  devTools: process.env.NODE_ENV === "development",
+  devTools:
+    process.env.NODE_ENV === "development"
+      ? {
+          actionCreators: {
+            ...settingsSlice.actions,
+            ...authSlice.actions,
+          },
+        }
+      : false,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -45,7 +52,7 @@ const store = configureStore({
       },
     })
       .concat(routerMiddleware(history))
-      .concat(api.middleware),
+      .concat(baseAPI.middleware),
 });
 setupListeners(store.dispatch);
 export type RootState = ReturnType<typeof rootReducer>;

@@ -40,5 +40,8 @@
       "password": ""
     }
   ],
-  "cSpell.enabled": false
+  "cSpell.enabled": false,
+  "files.watcherExclude": {
+    "**/target": true
+  }
 }

@@ -1,5 +1,4 @@
 // From AG Grid (https://blog.ag-grid.com/avoiding-react-18-double-mount/)
-
 import { useEffect, useRef, useState } from "react";
 
 /**

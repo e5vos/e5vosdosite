@@ -1,5 +1,6 @@
 import { Combobox } from "@headlessui/react";
-import React, { ChangeEvent, ReactNode, FormEventHandler } from "react";
+import React, { FormEventHandler, ReactNode } from "react";
+
 import { HTMLInputProps } from "./helpers";
 
 const Control = ({
@@ -86,11 +87,19 @@ const Form = ({
 
 const Check = ({
   className,
+  invalid,
+  onInvalid: onInvalidCallback,
   ...rest
-}: HTMLInputProps<HTMLInputElement> & { type?: never }) => {
+}: HTMLInputProps<HTMLInputElement> & {
+  type?: never;
+  invalid?: boolean;
+  onInvalid?: FormEventHandler<HTMLInputElement>;
+}) => {
   return (
     <input
       {...rest}
+      pattern={invalid ? "" : undefined}
+      onInvalid={onInvalidCallback}
       type="checkbox"
       className={`disabled:bg-gray-300 ${className}`}
     />

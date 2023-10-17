@@ -1,9 +1,11 @@
+import { Menu, Transition } from "@headlessui/react";
+import { ReactComponent as Donci } from "assets/donci.svg";
+import useIsMobile from "hooks/useIsMobile";
 import { ReactNode } from "react";
+
 import { ReactComponent as Caret } from "./assets/caret.svg";
 import { ReactComponent as MobileMenu } from "./assets/mobileMenu.svg";
-import { Menu, Transition } from "@headlessui/react";
-import useIsMobile from "hooks/useIsMobile";
-import { ReactComponent as Donci } from "assets/donci.svg";
+
 const Brand = ({ href, children }: { href?: string; children: ReactNode }) => {
   const Tag = href ? "a" : "span";
   return (
@@ -27,7 +29,7 @@ const DropDownItem = ({
   return (
     <Menu.Item>
       {({ active }) => (
-        <Tag href={href} className="block py-2 px-4 hover:bg-gray-100">
+        <Tag href={href} className="block px-4 py-2 hover:bg-gray-100">
           {children}
         </Tag>
       )}
@@ -46,7 +48,7 @@ const DropDownComponent = ({
     <Menu as="li">
       {({ open }) => (
         <>
-          <Menu.Button className="flex w-full items-center justify-between rounded py-2 pr-4 pl-3 font-medium text-gray-700 hover:bg-gray-100 md:w-auto md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-700">
+          <Menu.Button className="flex w-full items-center justify-between rounded py-2 pl-3 pr-4 font-medium text-gray-700 hover:bg-gray-100 md:w-auto md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-700">
             {toggle}
             <Caret />
           </Menu.Button>
@@ -86,7 +88,7 @@ const Link = ({ href, children }: { href: string; children: ReactNode }) => {
     <li>
       <a
         href={href}
-        className="block rounded py-2 pr-4 pl-3 text-white hover:bg-gray-100 md:p-0 md:hover:bg-inherit md:hover:text-gray-50"
+        className="block rounded py-2 pl-3 pr-4 text-white hover:bg-gray-100 md:p-0 md:hover:bg-inherit md:hover:text-gray-50"
       >
         {children}
       </a>

@@ -1,11 +1,33 @@
 import { Dialog } from "@headlessui/react";
+import { useEffect, useState } from "react";
+
 import { Event, User } from "types/models";
-import { useState, useEffect } from "react";
-import Button from "./UIKit/Button";
-import { api } from "lib/api";
-import Loader from "./UIKit/Loader";
-import Form from "./UIKit/Form";
+
+import adminAPI from "lib/api/adminAPI";
+import eventAPI from "lib/api/eventAPI";
+import Locale from "lib/locale";
 import { sortByEJGClass } from "lib/util";
+
+import Button from "./UIKit/Button";
+import Form from "./UIKit/Form";
+import Loader from "./UIKit/Loader";
+
+const locale = Locale({
+  hu: {
+    errorDuringSignup: "Hiba történt a jelentkezés során!",
+    fillEvent: "Esemény feltöltése",
+    search: "Keresés",
+    close: "Bezárás",
+    assign: "Beosztás",
+  },
+  en: {
+    errorDuringSignup: "An error occured during signup!",
+    fillEvent: "Fill event",
+    search: "Search",
+    close: "Close",
+    assign: "Assign",
+  },
+});
 
 const PresentationFillDialog = ({
   open,
@@ -25,14 +47,13 @@ const PresentationFillDialog = ({
       isFetching: isStudentListFetching,
       isError: isStudentListError,
     },
-  ] = api.useLazyGetFreeUsersQuery();
+  ] = adminAPI.useLazyGetFreeUsersQuery();
 
-  const [
-    triggerEvent,
-    { data: event, isFetching: isEventFetching, isError: isEventError },
-  ] = api.useLazyGetEventQuery();
+  const [triggerEvent, { data: event, isFetching: isEventFetching }] =
+    eventAPI.useLazyGetEventQuery();
 
-  const [APIsignUp, { isLoading: signupInProgress }] = api.useSignUpMutation();
+  const [APIsignUp, { isLoading: signupInProgress }] =
+    eventAPI.useSignUpMutation();
 
   const signUp = async (student: User) => {
     try {
@@ -45,7 +66,7 @@ const PresentationFillDialog = ({
       triggerEvent(external_event.id);
     } catch (err) {
       console.error(err);
-      alert("Hiba történt a jelentkezés során!");
+      alert(locale.errorDuringSignup);
     }
   };
 
@@ -81,7 +102,7 @@ const PresentationFillDialog = ({
             <div>
               <div className="mx-4 mb-4 text-center">
                 <Dialog.Title className="text-lg font-bold">
-                  Esemény feltöltése - {event.name}
+                  {locale.fillEvent} - {event.name}
                 </Dialog.Title>
                 <Dialog.Description className="mb-3 text-justify">
                   {event.description}
@@ -96,7 +117,7 @@ const PresentationFillDialog = ({
                 </div>
 
                 <Form.Group>
-                  <Form.Label>Keresés</Form.Label>
+                  <Form.Label>{locale.search}</Form.Label>
                   <Form.Control
                     onChange={(e) => setSearchString(e.currentTarget.value)}
                   />
@@ -112,12 +133,12 @@ const PresentationFillDialog = ({
                       .filter((student) =>
                         (student.name + student.ejg_class)
                           .toLowerCase()
-                          .includes(searchString.toLowerCase())
+                          .includes(searchString.toLowerCase()),
                       )
                       .sort(sortByEJGClass)
-                      .map((student, index) => (
+                      .map((student) => (
                         <li
-                          key={index}
+                          key={student.id}
                           className="mb-3 flex flex-row justify-between"
                         >
                           <span>
@@ -131,7 +152,7 @@ const PresentationFillDialog = ({
                             }
                             onClick={() => signUp(student)}
                           >
-                            Beosztás
+                            {locale.assign}
                           </Button>
                         </li>
                       ))
@@ -142,7 +163,7 @@ const PresentationFillDialog = ({
           )}
           <div className="mx-auto text-center">
             <Button onClick={onClose} variant="danger">
-              Bezárás
+              {locale.close}
             </Button>
           </div>
         </Dialog.Panel>

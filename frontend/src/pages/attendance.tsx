@@ -1,38 +1,54 @@
+import useUser from "hooks/useUser";
+import { MouseEventHandler } from "react";
+import { useParams } from "react-router-dom";
+
+import { Attendance, isUserAttendance } from "types/models";
+
+import eventAPI from "lib/api/eventAPI";
+import { isOperator, isTeacher } from "lib/gates";
+import Locale from "lib/locale";
+import { reverseNameOrder } from "lib/util";
+
 import { gated } from "components/Gate";
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
-import { api } from "lib/api";
-import { isOperator, isTeacher } from "lib/gates";
-import { useParams } from "react-router-dom";
-import { Attendance, isUserAttendance } from "types/models";
-import { MouseEventHandler } from "react";
-import { reverseNameOrder } from "lib/util";
-import useUser from "hooks/useUser";
+
+const locale = Locale({
+  hu: {
+    attendanceSheet: "Jelenléti ív",
+    delete: "Törlés",
+    refresh: "Frissítés",
+  },
+  en: {
+    attendanceSheet: "Attendance sheet",
+    delete: "Delete",
+    refresh: "Refresh",
+  },
+});
+
 const AttendancePage = () => {
   const { eventid } = useParams<{ eventid: string }>();
-  const { data: event, isLoading: isEventLoading } = api.useGetEventQuery(
-    Number(eventid ?? -1)
+  const { data: event, isLoading: isEventLoading } = eventAPI.useGetEventQuery(
+    Number(eventid ?? -1),
   );
   const {
     data: participantsData,
     isLoading: isParticipantsLoading,
     isFetching: isParticipantsFetching,
-    error: participantsError,
     refetch,
-  } = api.useGetEventParticipantsQuery(Number(eventid ?? -1));
+  } = eventAPI.useGetEventParticipantsQuery(Number(eventid ?? -1));
 
-  const [deleteAttendance, { isLoading: isDeleteLoading }] =
-    api.useCancelSignUpMutation();
+  const [deleteAttendance] = eventAPI.useCancelSignUpMutation();
   const { user } = useUser();
   const participants =
     participantsData
       ?.slice()
       .sort((a, b) =>
-        reverseNameOrder(a.name).localeCompare(reverseNameOrder(b.name))
+        reverseNameOrder(a.name).localeCompare(reverseNameOrder(b.name)),
       ) ?? [];
 
-  const [toggleAPI, { isLoading }] = api.useToggleAttendanceMutation();
+  const [toggleAPI, { isLoading }] = eventAPI.useToggleAttendanceMutation();
 
   if (isEventLoading || isParticipantsLoading || !event) return <Loader />;
 
@@ -57,7 +73,7 @@ const AttendancePage = () => {
   const deleteAttendanceAction = async (attending: Attendance) => {
     await deleteAttendance({
       attender: String(
-        isUserAttendance(attending) ? attending.id : attending.code
+        isUserAttendance(attending) ? attending.id : attending.code,
       ),
       event: event,
     }).unwrap();
@@ -67,12 +83,14 @@ const AttendancePage = () => {
   return (
     <div className="container mx-auto mt-2 ">
       <div className="mx-auto w-fit text-center">
-        <h1 className="text-4xl font-bold">Jelenléti Ív - {event?.name}</h1>
+        <h1 className="text-4xl font-bold">
+          {locale.attendanceSheet} - {event?.name}
+        </h1>
         <div className="mt-4">
           <ul className="mb-3 border">
             {participants?.map((attending, index) => (
               <li
-                key={index}
+                key={attending.name}
                 className="mx-2 my-2 flex flex-row justify-center gap-4  align-middle"
               >
                 <span className="mx-4">
@@ -92,13 +110,13 @@ const AttendancePage = () => {
                     variant="danger"
                     onClick={() => deleteAttendanceAction(attending)}
                   >
-                    Törlés
+                    {locale.delete}
                   </Button>
                 )}
               </li>
             ))}
           </ul>
-          <Button onClick={() => refetch()}>Frissítés</Button>
+          <Button onClick={() => refetch()}>{locale.refresh}</Button>
         </div>
       </div>
     </div>

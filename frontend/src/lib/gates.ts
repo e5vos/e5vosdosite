@@ -1,4 +1,3 @@
-import { gated } from "components/Gate";
 import { User } from "types/models";
 
 export type GateFunction<T = any> = ((user: User, ...rest: T[]) => boolean) & {
@@ -7,7 +6,7 @@ export type GateFunction<T = any> = ((user: User, ...rest: T[]) => boolean) & {
 
 const gate = <T = any>(
   fun: (user: User, ...rest: T[]) => boolean,
-  message?: string
+  message?: string,
 ): GateFunction => {
   return Object.assign(
     (user: User, ...rest: T[]) => {
@@ -18,7 +17,7 @@ const gate = <T = any>(
         return true;
       return fun(user, ...rest);
     },
-    { message }
+    { message },
   );
 };
 
@@ -36,7 +35,9 @@ export const isOperator = gate((user) => {
   );
 }, "Csak operátorok számára elérhető");
 
-export const is9NY = gate(
-  (user) => user?.ejg_class === "9.NY",
-  "Csak 9NY osztály számára elérhető"
-);
+export const isTeacherAdmin = gate((user) => {
+  return (
+    user.permissions?.find((permission) => permission.code === "TAD") !==
+    undefined
+  );
+}, "Csak tanár adminok számára elérhető");

@@ -1,16 +1,26 @@
-import Error, { HTTPErrorCode } from "components/Error";
-import ErrorMsgBox from "components/UIKit/ErrorMsgBox";
-import Loader from "components/UIKit/Loader";
 import useUser from "hooks/useUser";
-import { api } from "lib/api";
-import { useState } from "react";
 import { QrReader } from "react-qr-reader";
 import { useParams } from "react-router-dom";
 
+import eventAPI from "lib/api/eventAPI";
+import Locale from "lib/locale";
+
+import Error, { HTTPErrorCode } from "components/Error";
+import Loader from "components/UIKit/Loader";
+
+const locale = Locale({
+  hu: {
+    scanner: "QR Olvasó",
+  },
+  en: {
+    scanner: "QR Scanner",
+  },
+});
+
 const Scanner = () => {
   const { eventid } = useParams();
-  const { data: event, error } = api.useGetEventQuery(Number(eventid));
-  const [attend] = api.useSignUpMutation();
+  const { data: event, error } = eventAPI.useGetEventQuery(Number(eventid));
+  const [attend] = eventAPI.useSignUpMutation();
   const { user } = useUser();
 
   const handleCode = (s: string) => {
@@ -23,14 +33,16 @@ const Scanner = () => {
   return (
     <div className="container mx-auto">
       <div className="text-center">
-        <h1 className=" text-4xl font-bold">{event.name} - QR Olvasó</h1>
+        <h1 className=" text-4xl font-bold">
+          {event.name} - {locale.scanner}
+        </h1>
         <h3>
           {user.name} - {user?.ejg_class}
         </h3>
       </div>
       <QrReader
         onResult={(result, error) => {
-          if (!!result) {
+          if (result) {
             handleCode(result?.getText());
           }
         }}

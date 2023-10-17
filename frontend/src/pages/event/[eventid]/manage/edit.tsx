@@ -1,14 +1,49 @@
-import { gated } from "components/Gate";
-import Form from "components/UIKit/Form";
-import Loader from "components/UIKit/Loader";
 import { useFormik } from "formik";
-import { api } from "lib/api";
-import { isOperator } from "lib/gates";
 import { useParams } from "react-router-dom";
 import * as Yup from "yup";
-import { useEffect } from "react";
-import Button from "components/UIKit/Button";
+
 import { Location } from "types/models";
+
+import eventAPI from "lib/api/eventAPI";
+import locationAPI from "lib/api/locationAPI";
+import { isOperator } from "lib/gates";
+import Locale from "lib/locale";
+
+import { gated } from "components/Gate";
+import Button from "components/UIKit/Button";
+import Form from "components/UIKit/Form";
+import Loader from "components/UIKit/Loader";
+
+const locale = Locale({
+  hu: {
+    title: "Esemény szerkesztése",
+    event: {
+      name: "Esemény neve",
+      description: "Esemény leírása",
+      starts_at: "Esemény kezdete",
+      ends_at: "Esemény vége",
+      organiser: "Szervező",
+      location: "Helyszín",
+      capacity: "Kapacitás",
+      is_competition: "Verseny",
+    },
+    submit: "Szerkesztés",
+  },
+  en: {
+    title: "Edit event",
+    event: {
+      name: "Event name",
+      description: "Event description",
+      starts_at: "Event start",
+      ends_at: "Event end",
+      organiser: "Organiser",
+      location: "Location",
+      capacity: "Capacity",
+      is_competition: "Competition",
+    },
+    submit: "Edit",
+  },
+});
 
 const initialValues: {
   name: string;
@@ -30,26 +65,11 @@ const initialValues: {
   capacity: "Korlátlan",
 };
 
-const testLocs: { data: Location[] } = {
-  data: [
-    {
-      id: 1,
-      name: "Budapest",
-    },
-    {
-      id: 2,
-      name: "Debrecen",
-    },
-  ],
-};
-
 const EditEventPage = () => {
   const { eventid } = useParams();
-  const { data: event, isLoading: isEventLoading } = api.useGetEventQuery(
-    Number(eventid)
-  );
-  const { data: locations } = testLocs; //api.useGetLocationsQuery();
-  const [updateEvent] = api.useUpdateEventMutation();
+  const { data: event } = eventAPI.useGetEventQuery(Number(eventid));
+  const { data: locations } = locationAPI.useGetLocationsQuery();
+  const [updateEvent] = eventAPI.useUpdateEventMutation();
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -68,77 +88,92 @@ const EditEventPage = () => {
   if (!event || !locations) return <Loader />;
   return (
     <div className="container mx-auto">
-      <h1>EditEventPage</h1>
+      <h1>{locale.title}</h1>
       <Form onSubmit={formik.handleSubmit}>
         <Form.Group>
-          <Form.Label>Event Name</Form.Label>
+          <Form.Label>{locale.event.name}</Form.Label>
           <Form.Control
             name="name"
             value={formik.values.name}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.name)}
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event Description</Form.Label>
+          <Form.Label>{locale.event.description}</Form.Label>
           <Form.Control
             name="description"
             value={formik.values.description}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.description)}
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event Starts At</Form.Label>
+          <Form.Label>{locale.event.starts_at}</Form.Label>
           <Form.Control
             name="starts_at"
             value={formik.values.starts_at}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.starts_at)}
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event Ends At</Form.Label>
+          <Form.Label>{locale.event.ends_at}</Form.Label>
           <Form.Control
             name="ends_at"
             value={formik.values.ends_at}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.ends_at)}
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event Organiser</Form.Label>
+          <Form.Label>{locale.event.organiser}</Form.Label>
           <Form.Control
             name="organiser"
             value={formik.values.organiser}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.organiser)}
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event Location</Form.Label>
+          <Form.Label>{locale.event.location}</Form.Label>
           <Form.ComboBox<Location>
             options={locations}
             filter={(s) => (e) =>
-              e.name.toLowerCase().includes(s.toLowerCase())}
+              e.name.toLowerCase().includes(s.toLowerCase())
+            }
             renderElement={(loc) => loc.name}
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event Capacity</Form.Label>
+          <Form.Label>{locale.event.capacity}</Form.Label>
           <Form.Control
+            type="number"
             name="capacity"
             value={formik.values.capacity}
             onChange={formik.handleChange}
-            type="number"
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.capacity)}
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Event is Competition</Form.Label>
+          <Form.Label>{locale.event.is_competition}</Form.Label>
           <Form.Check
             name="is_competition"
             checked={formik.values.is_competition}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            invalid={Boolean(formik.errors.is_competition)}
           />
         </Form.Group>
 
         <Form.Group>
-          <Button type="submit">Submit</Button>
+          <Button type="submit">{locale.submit}</Button>
         </Form.Group>
       </Form>
     </div>

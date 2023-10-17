@@ -86,7 +86,7 @@ class AuthController extends Controller
             'api_token' => env('E5VOS_API_TOKEN')
         ])->body();
         if (
-            $validated === "true"
+            $validated === "true" || env("E5VOS_FAKE_API")
         ) {
             $request->user()->e5code = $request->e5code;
             $ejgLetter = $request->e5code[4];

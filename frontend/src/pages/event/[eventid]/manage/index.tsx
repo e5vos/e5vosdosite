@@ -1,11 +1,26 @@
-import Loader from "components/UIKit/Loader";
-import { api } from "lib/api";
-import { useParams } from "react-router-dom";
 import { IoLocationSharp } from "react-icons/io5";
+import { useParams } from "react-router-dom";
+
+import eventAPI from "lib/api/eventAPI";
+import Locale from "lib/locale";
+
 import Error from "components/Error";
+import Loader from "components/UIKit/Loader";
+
+const locale = Locale({
+  hu: {
+    description: "Leírás",
+    organised: "Szervezte:",
+  },
+  en: {
+    description: "Description",
+    organised: "Organised by:",
+  },
+});
+
 const EventManager = () => {
   const { eventid } = useParams<{ eventid: string }>();
-  const { data: event, error } = api.useGetEventQuery(Number(eventid));
+  const { data: event, error } = eventAPI.useGetEventQuery(Number(eventid));
 
   if (error) return <Error code={404} />;
   if (!event) return <Loader />;
@@ -14,7 +29,7 @@ const EventManager = () => {
       <div className="mx-auto text-center">
         <h1 className="text-4xl font-bold">{event.name}</h1>
         <h5 className="italic underline underline-offset-4">
-          {event.organiser} szervezésében
+          {locale.organised} {event.organiser}
         </h5>
       </div>
       <div className="flex-row gap-4 md:flex">
@@ -31,9 +46,8 @@ const EventManager = () => {
         </div>
         <div>
           <h2 className="text-center text-2xl font-bold md:text-left">
-            Leírás
+            {locale.description}
           </h2>
-
           <p>{event.description}</p>
         </div>
       </div>

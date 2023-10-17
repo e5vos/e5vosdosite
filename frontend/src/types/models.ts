@@ -34,31 +34,35 @@ export type UserAttendance = User & { pivot: UserAttendancePivot };
 
 export type Attendance = UserAttendance | TeamAttendance;
 export const isTeamAttendancePivot = (
-  attendance: any
+  attendance: any,
 ): attendance is TeamAttendancePivot => {
   return attendance.team_code !== undefined;
 };
 export const isUserAttendancePivot = (
-  attendance: any
+  attendance: any,
 ): attendance is UserAttendancePivot => {
   return attendance.user_id !== undefined;
 };
 
 export const isUserAttendance = (
-  attendance: any
+  attendance: any,
 ): attendance is UserAttendance => {
   return attendance.e5code !== undefined;
 };
 
 export const isTeamAttendance = (
-  attendance: any
+  attendance: any,
 ): attendance is TeamAttendance => {
   return isTeamAttendancePivot(attendance.pivot);
 };
 
 export type UserRole = "operator" | "admin" | "user";
 export type TeamMemberRole = "captain" | "member" | "invited";
-export type TeamMembership = { user: User; role: TeamMemberRole };
+export type TeamMembership = {
+  user: User;
+  role: TeamMemberRole;
+  team: Team;
+};
 export interface Team {
   name: string;
   code: string;
@@ -70,12 +74,17 @@ export interface BaseActivity {
   attendance: Attendance;
 }
 
+export const SlotType = {
+  Presentation: "Előadássáv",
+  Program: "Programsáv",
+} as const;
+
 export interface Slot {
   id: number;
   start: string;
   end: string;
   events?: Event[];
-  slot_type: "Előadássáv" | "Programsáv";
+  slot_type: (typeof SlotType)[keyof typeof SlotType];
   name: string;
 }
 
@@ -96,6 +105,11 @@ export interface Event {
   signup_deadline?: string | null;
   starts_at: string;
   ends_at: string;
+  direct_child?: boolean | null;
+  direct_child_slot_id?: number | null;
+  root_parent?: boolean | null;
+  root_parent_slot_id?: number | null;
+
   //TODO
 }
 

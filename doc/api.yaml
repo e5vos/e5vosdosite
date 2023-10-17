@@ -423,7 +423,14 @@ paths:
 
   /event/{eventId}/attendees:
     description: Event attendance management
-
+    parameters:
+      - name: eventId
+        in: path
+        description: ID of event
+        required: true
+        schema:
+          type: integer
+          format: int64
     get:
       tags:
         - attendance
@@ -554,6 +561,14 @@ paths:
           description: Team not found
   /team/{teamId}/members:
     description: Team member management
+    parameters:
+      - name: teamId
+        in: path
+        description: ID of TEAM
+        required: true
+        schema:
+          type: integer
+          format: int64
     post:
       tags:
         - team
@@ -602,6 +617,14 @@ paths:
           description: Team or member not found
   /team/{teamId}/activity:
     description: Team activity view
+    parameters:
+      - name: teamId
+        in: path
+        description: ID of TEAM
+        required: true
+        schema:
+          type: integer
+          format: int64
     get:
       tags:
         - team

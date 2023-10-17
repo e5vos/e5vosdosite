@@ -197,15 +197,14 @@ class EventController extends Controller
             EventController::unsignup($request, $event->root_parent);
             return;
         }
-        if ($event->direct_child !== null) {
-            EventController::unsignup($request, $event->direct_child, true);
-        }
-
         $attender = strlen($request->attender) == 13 || is_numeric($request->attender) ? 'user_id' : 'team_code';
         $attenderId = $attender === 'user_id' && !is_numeric($request->attender) ? User::where('e5code', $request->attender)->firstOrFail()->id : $request->attender;
         $attendance = Attendance::where('event_id', $eventId)->where($attender, $attenderId)->first();
         if ($attendance === null) {
             throw new ResourceDidNoExistException();
+        }
+        if ($event->direct_child !== null) {
+            EventController::unsignup($request, $event->direct_child, true);
         }
         $attendance->delete();
         Cache::forget('e5n.events.all');
@@ -223,7 +222,11 @@ class EventController extends Controller
     public function attend(Request $request, $eventId)
     {
         $event = Event::findOrFail($eventId);
-        $attender = is_numeric($request->attender) ? User::findOrFail($request->attender) : (strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail());
+        $attender = is_numeric($request->attender)
+            ? User::findOrFail($request->attender)
+                : (strlen($request->attender) == 13
+                    ? User::where('e5code', $request->attender)->firstOrFail()
+                        : Team::where('code', $request->attender)->firstOrFail());
         Cache::forget('e5n.events.' . $event->id . '.signups');
         return response($attender->attend($event), 200);
     }

@@ -5,8 +5,9 @@ namespace App\Policies;
 use App\Exceptions\NoE5NException;
 use App\Exceptions\SignupClosedException;
 use App\Exceptions\SignupRequiredException;
+use App\Exceptions\WrongSignupTypeException;
+use App\Helpers\PermissionType;
 use App\Helpers\SlotType;
-use App\Models\Attendance;
 use App\Models\Event;
 use App\Models\Setting;
 use App\Models\User;
@@ -112,10 +113,10 @@ class EventPolicy
             throw new SignupClosedException();
         }
         if ($event->signup_type !== 'team_user' && $event->signup_type !== $attenderType) {
-            return false;
+            throw new WrongSignupTypeException();
         }
         $attender = $attenderType == 'user' ? (is_numeric($attenderCode) ? $user->id == $attenderCode : $user->e5code === $attenderCode) : $user->isLeaderOfTeam($attenderCode);
-        return $attender || $user->hasPermission('ADM') || $user->hasPermission('TCH') || $user->hasPermission('TAD');
+        return $attender || $user->hasPermission(PermissionType::Aadmin->value) || $user->hasPermission(PermissionType::Teacher->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
     }
 
     /**

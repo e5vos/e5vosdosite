@@ -31,7 +31,7 @@ const rootReducer = persistReducer(
     auth: AuthReducer,
     settings: settingsReducer,
     [baseAPI.reducerPath]: baseAPI.reducer,
-  })
+  }),
 );
 
 const store = configureStore({

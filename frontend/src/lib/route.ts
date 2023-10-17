@@ -1,8 +1,7 @@
 import { Capacitor } from "@capacitor/core";
 import ziggyroute, {
   Config,
-  RouteParam,
-  RouteParamsWithQueryOverload,
+  RouteParams,
 } from "ziggy-js";
 
 import includedZiggy from "./ziggy.json";
@@ -13,7 +12,7 @@ declare global {
     route:
       | ((
           name: string,
-          params?: RouteParamsWithQueryOverload | RouteParam
+          params?: RouteParams<string>,
         ) => string)
       | undefined;
   }
@@ -42,8 +41,8 @@ declare global {
 
 const routeSwitcher = (
   name: keyof typeof includedZiggy.routes | string,
-  params?: RouteParamsWithQueryOverload | RouteParam | undefined,
-  absolute?: boolean | undefined
+  params?: RouteParams<string> | undefined,
+  absolute?: boolean | undefined,
 ): string => {
   try {
     if (Capacitor.getPlatform() === "web" && window.route)
@@ -53,7 +52,7 @@ const routeSwitcher = (
         name,
         params,
         absolute,
-        remoteZiggyConfig ?? (includedZiggy as Config)
+        remoteZiggyConfig ?? (includedZiggy as Config),
       );
   } catch (error) {
     if (process.env.NODE_ENV === "development") {

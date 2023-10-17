@@ -87,11 +87,19 @@ const Form = ({
 
 const Check = ({
   className,
+  invalid,
+  onInvalid: onInvalidCallback,
   ...rest
-}: HTMLInputProps<HTMLInputElement> & { type?: never }) => {
+}: HTMLInputProps<HTMLInputElement> & {
+  type?: never;
+  invalid?: boolean;
+  onInvalid?: FormEventHandler<HTMLInputElement>;
+}) => {
   return (
     <input
       {...rest}
+      pattern={invalid ? "" : undefined}
+      onInvalid={onInvalidCallback}
       type="checkbox"
       className={`disabled:bg-gray-300 ${className}`}
     />
@@ -109,7 +117,7 @@ const Select = ({ children, ...rest }: HTMLInputProps<HTMLSelectElement>) => {
 const ComboBoxOption = ({
   children,
   key,
-  value
+  value,
 }: {
   children: ReactNode;
   key: any;
@@ -126,7 +134,7 @@ const ComboBox = <T = any,>({
   options,
   filter,
   onChange,
-  renderElement
+  renderElement,
 }: {
   options: T[];
   filter: (s: string) => (e: T) => boolean;
@@ -168,5 +176,5 @@ export default Object.assign(Form, {
   Group,
   Check,
   Select,
-  ComboBox
+  ComboBox,
 });

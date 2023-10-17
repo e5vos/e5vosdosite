@@ -56,7 +56,7 @@ const StudentCodePage = () => {
       studentCode: Yup.string()
         .matches(
           /^20(\d{2})([A-FN])(\d{2})EJG(\d{3})$/,
-          locale.mustBeStudentCode
+          locale.mustBeStudentCode,
         )
         .required(locale.studentCodeRequired),
     }),

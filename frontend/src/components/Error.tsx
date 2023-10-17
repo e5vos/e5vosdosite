@@ -15,9 +15,9 @@ const locale = Locale({
       500: "Hiba történt a kiszolgáló oldalon",
       502: "Hiba történt a kiszolgáló oldalon",
       503: "Hiba történt a kiszolgáló oldalon",
-      504: "Hiba történt a kiszolgáló oldalon"
+      504: "Hiba történt a kiszolgáló oldalon",
     },
-    unknown: "Ismeretlen hiba történt"
+    unknown: "Ismeretlen hiba történt",
   },
   en: {
     code: {
@@ -28,10 +28,10 @@ const locale = Locale({
       500: "An error occured on the server",
       502: "An error occured on the server",
       503: "An error occured on the server",
-      504: "An error occured on the server"
+      504: "An error occured on the server",
     },
-    unknown: "An unknown error occured"
-  }
+    unknown: "An unknown error occured",
+  },
 });
 
 const getDefaultMessage = (code: HTTPErrorCode): string => {
@@ -41,7 +41,7 @@ const getDefaultMessage = (code: HTTPErrorCode): string => {
 const Error = ({
   code,
   message,
-  children
+  children,
 }: {
   code: HTTPErrorCode;
   message?: string;

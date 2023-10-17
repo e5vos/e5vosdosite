@@ -28,9 +28,9 @@ export const eventAPI = baseAPI
         providesTags: (result) => {
           if (result) {
             return [
-              ...result.map(({ id }) => ({ type: "Event", id: id } as const)),
+              ...result.map(({ id }) => ({ type: "Event", id: id }) as const),
               ...result.map(
-                ({ slot }) => ({ type: "Event", id: `LIST${slot}` } as const)
+                ({ slot }) => ({ type: "Event", id: `LIST${slot}` }) as const,
               ),
               { type: "Event", id: "LIST" },
             ];
@@ -58,7 +58,7 @@ export const eventAPI = baseAPI
         providesTags: (result) => {
           if (result) {
             return [
-              ...result.map(({ id }) => ({ type: "Slot", id: id } as const)),
+              ...result.map(({ id }) => ({ type: "Slot", id: id }) as const),
               { type: "Slot", id: "LIST" },
             ];
           } else return [{ type: "Slot", id: "LIST" }];
@@ -94,7 +94,7 @@ export const eventAPI = baseAPI
         providesTags: (result) =>
           result
             ? [
-                ...result.map(({ id }) => ({ type: "Event", id } as const)),
+                ...result.map(({ id }) => ({ type: "Event", id }) as const),
                 { type: "Event", id: "MYLIST" },
               ]
             : [{ type: "Event", id: "MYLIST" }],

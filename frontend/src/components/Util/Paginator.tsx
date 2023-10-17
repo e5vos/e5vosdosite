@@ -26,7 +26,7 @@ export default function Paginator({
           disabled={i === currentPage}
         >
           {i}
-        </Button>
+        </Button>,
       );
     }
     return <>{startButtons}</>;
@@ -46,7 +46,7 @@ export default function Paginator({
           key={i}
         >
           {i}
-        </Button>
+        </Button>,
       );
     }
     return <>{middleButtons}</>;
@@ -62,7 +62,7 @@ export default function Paginator({
           key={i}
         >
           {i}
-        </Button>
+        </Button>,
       );
     }
     return <>{endButtons}</>;

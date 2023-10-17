@@ -39,18 +39,18 @@ const teamRoutes = (
 
 const ManageEventsPage = React.lazy(() => import("pages/event/manage"));
 const ManageEventPage = React.lazy(
-  () => import("pages/event/[eventid]/manage/index")
+  () => import("pages/event/[eventid]/manage/index"),
 );
 const EventsPage = React.lazy(() => import("pages/event"));
 const EventPage = React.lazy(
-  () => import("pages/event/[eventid]/manage/index")
+  () => import("pages/event/[eventid]/manage/index"),
 );
 const ScannerPage = React.lazy(
-  () => import("pages/event/[eventid]/manage/scanner")
+  () => import("pages/event/[eventid]/manage/scanner"),
 );
 
 const EditEventPage = React.lazy(
-  () => import("pages/event/[eventid]/manage/edit")
+  () => import("pages/event/[eventid]/manage/edit"),
 );
 
 const eventRoutes = (
@@ -75,7 +75,7 @@ const eventRoutes = (
 
 const PresentationPage = React.lazy(() => import("pages/presentation"));
 const PresentationsManagePage = React.lazy(
-  () => import("pages/presentation/manage")
+  () => import("pages/presentation/manage"),
 );
 const AttendanceSheet = React.lazy(() => import("pages/attendance"));
 

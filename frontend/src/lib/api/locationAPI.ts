@@ -15,7 +15,7 @@ export const locationAPI = baseAPI
         providesTags: (result) =>
           result
             ? [
-                ...result.map(({ id }) => ({ type: "Location", id } as const)),
+                ...result.map(({ id }) => ({ type: "Location", id }) as const),
                 { type: "Location", id: "LIST" },
               ]
             : [{ type: "Location", id: "LIST" }],

@@ -6,7 +6,7 @@ export type GateFunction<T = any> = ((user: User, ...rest: T[]) => boolean) & {
 
 const gate = <T = any>(
   fun: (user: User, ...rest: T[]) => boolean,
-  message?: string
+  message?: string,
 ): GateFunction => {
   return Object.assign(
     (user: User, ...rest: T[]) => {
@@ -17,7 +17,7 @@ const gate = <T = any>(
         return true;
       return fun(user, ...rest);
     },
-    { message }
+    { message },
   );
 };
 
@@ -34,11 +34,6 @@ export const isOperator = gate((user) => {
     undefined
   );
 }, "Csak operátorok számára elérhető");
-
-export const is9NY = gate(
-  (user) => user?.ejg_class === "9.NY",
-  "Csak 9NY osztály számára elérhető"
-);
 
 export const isTeacherAdmin = gate((user) => {
   return (

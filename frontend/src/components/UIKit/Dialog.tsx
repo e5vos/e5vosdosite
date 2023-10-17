@@ -8,15 +8,15 @@ import Loader from "./Loader";
 
 const locale = Locale({
   hu: {
-    close: "Bezárás"
+    close: "Bezárás",
   },
   en: {
-    close: "Close"
-  }
+    close: "Close",
+  },
 });
 
 const Scroller = ({ children }: { children: ReactNode }) => {
-  return <div className="h-[500px]  overflow-auto scroller">{children}</div>;
+  return <div className="scroller  h-[500px] overflow-auto">{children}</div>;
 };
 
 const Dialog = ({
@@ -25,7 +25,7 @@ const Dialog = ({
   title,
   description,
   children,
-  isLoading = false
+  isLoading = false,
 }: {
   open: boolean;
   title?: string;

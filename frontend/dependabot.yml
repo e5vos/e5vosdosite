@@ -1,0 +1,7 @@
+version: 1
+updates:
+  # Update all packages
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"

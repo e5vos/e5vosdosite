@@ -39,3 +39,10 @@ export const is9NY = gate(
   (user) => user?.ejg_class === "9.NY",
   "Csak 9NY osztály számára elérhető"
 );
+
+export const isTeacherAdmin = gate((user) => {
+  return (
+    user.permissions?.find((permission) => permission.code === "TAD") !==
+    undefined
+  );
+}, "Csak tanár adminok számára elérhető");

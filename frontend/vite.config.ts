@@ -47,7 +47,7 @@ export const config = {
   build: {
     sourcemap: process.env.SOURCE_MAP === "true",
   },
-  plugins: [tsconfigPaths(), react(), svgr(), VitePWA(pwaOptions)],
+  plugins: [tsconfigPaths(), react(), svgr()],
 };
 
 export default defineConfig(config);

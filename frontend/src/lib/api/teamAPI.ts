@@ -25,8 +25,8 @@ export const teamAPI = baseAPI.injectEndpoints({
     promote: builder.mutation<void, Pick<TeamMembership, "user" | "team">>({
       query: (data) => ({
         url: routeSwitcher("team.promote", {
-          user_id: data.team.code,
-          team_code: data.user.id,
+          user_id: data.team?.code ?? -1,
+          team_code: data.user?.id ?? -1,
         }),
         method: "POST",
         params: data,
@@ -36,8 +36,8 @@ export const teamAPI = baseAPI.injectEndpoints({
     demote: builder.mutation<void, Pick<TeamMembership, "user" | "team">>({
       query: (data) => ({
         url: routeSwitcher("team.demote", {
-          user_id: data.team.code,
-          team_code: data.user.id,
+          user_id: data.team?.code ?? -1,
+          team_code: data.user?.id ?? -1,
         }),
         method: "POST",
         params: data,
@@ -46,8 +46,8 @@ export const teamAPI = baseAPI.injectEndpoints({
     leave: builder.mutation<void, Pick<TeamMembership, "user" | "team">>({
       query: (data) => ({
         url: routeSwitcher("team.leave", {
-          user_id: data.team.code,
-          team_code: data.user.id,
+          user_id: data.team?.code ?? -1,
+          team_code: data.user?.id ?? -1,
         }),
         method: "DELETE",
         params: data,

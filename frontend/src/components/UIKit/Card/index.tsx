@@ -7,6 +7,8 @@ const Card = ({
   subtitle,
   children,
   className,
+  titleClassName,
+  subtitleClassName,
   buttonBar: buttonGroup,
   ...rest
 }: React.DetailedHTMLProps<
@@ -17,6 +19,8 @@ const Card = ({
   subtitle?: ReactNode;
   children: ReactNode;
   buttonBar?: ReturnType<typeof ButtonGroup>;
+  titleClassName?: string;
+  subtitleClassName?: string;
 }) => (
   <div
     className={`mb-3 flex flex-col justify-between rounded-lg bg-gray-100 p-2 ${
@@ -26,11 +30,15 @@ const Card = ({
   >
     {title && (
       <div>
-        <h3 className="tex-lg px-2 text-center font-bold ">{title}</h3>
+        <h3 className={`px-2 text-center font-bold ${titleClassName ?? ""}`}>
+          {title}
+        </h3>
         {subtitle && (
           <>
             <hr />
-            <h4 className="px-2 text-center">{subtitle}</h4>
+            <h4 className={`px-2 text-center ${subtitleClassName ?? ""}`}>
+              {subtitle}
+            </h4>
           </>
         )}
       </div>

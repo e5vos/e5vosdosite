@@ -5,6 +5,6 @@ const ButtonGroup = ({
   React.HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
 >) => {
-  return <div className={`buttongroup ${className}`}>{children}</div>;
+  return <div className={`buttongroup-sm ${className}`}>{children}</div>;
 };
 export default ButtonGroup;

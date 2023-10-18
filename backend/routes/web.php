@@ -19,29 +19,29 @@ use Illuminate\Support\Facades\Route;
 require __DIR__ . '/auth.php';
 Route::get('/auth/callback', [AuthController::class, 'callback']);
 
-
-Route::any('/', function () {
+Route::get('/{any}', function () {
     return view('frontend');
-});
+})->where('any', '.*');
 
 
-Route::any('/eloadas', function () {
-    return view('frontend');
-});
 
-Route::any('/eloadas/kezel', function () {
-    return view('frontend');
-});
+// Route::any('/eloadas', function () {
+//     return view('frontend');
+// });
 
-Route::any('/eloadas/kezel/{id}', function () {
-    return view('frontend');
-});
+// Route::any('/eloadas/kezel', function () {
+//     return view('frontend');
+// });
+
+// Route::any('/eloadas/kezel/{id}', function () {
+//     return view('frontend');
+// });
 
 
-Route::any('/login', function () {
-    return view('frontend');
-});
+// Route::any('/login', function () {
+//     return view('frontend');
+// });
 
-Route::any('/logout', function () {
-    return view('frontend');
-});
+// Route::any('/logout', function () {
+//     return view('frontend');
+// });

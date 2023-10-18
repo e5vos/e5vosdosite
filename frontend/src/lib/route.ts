@@ -32,7 +32,7 @@ let remoteZiggyConfig: Config | undefined = undefined;
 fetch(`${import.meta.env.VITE_BACKEND}/api/ziggy`, { credentials: "include" })
   .then((res) => res.json())
   .then((res) => {
-    remoteZiggyConfig = res;
+    remoteZiggyConfig =  includedZiggy as Config;
   })
   .catch((error) => console.error(error));
 declare global {
@@ -45,14 +45,11 @@ const routeSwitcher = (
   absolute?: boolean | undefined,
 ): string => {
   try {
-    if (Capacitor.getPlatform() === "web" && window.route)
-      return window.route(name, params);
-    else
       return ziggyroute(
         name,
         params,
         absolute,
-        remoteZiggyConfig ?? (includedZiggy as Config),
+        includedZiggy as Config,
       );
   } catch (error) {
     if (process.env.NODE_ENV === "development") {

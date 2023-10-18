@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import svgr from "vite-plugin-svgr";
-import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
+import {VitePWAOptions } from "vite-plugin-pwa";
 // https://vitejs.dev/config/
 
 const pwaOptions: Partial<VitePWAOptions> = {

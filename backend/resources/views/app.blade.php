@@ -12,8 +12,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <!-- Scripts -->
     @routes
-    @viteReactRefresh
-    @vite('resources/ts/app.tsx')
 </head>
 
 <body class="font-sans antialiased">

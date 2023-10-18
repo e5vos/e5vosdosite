@@ -27,26 +27,27 @@ Route::get('/{any}', function (string $any) {
     }
     //if not found, return the frontend
     return view('frontend');
-});
+})->where('any', '.*');
 
 
-Route::any('/eloadas', function () {
-    return view('frontend');
-});
 
-Route::any('/eloadas/kezel', function () {
-    return view('frontend');
-});
+// Route::any('/eloadas', function () {
+//     return view('frontend');
+// });
 
-Route::any('/eloadas/kezel/{id}', function () {
-    return view('frontend');
-});
+// Route::any('/eloadas/kezel', function () {
+//     return view('frontend');
+// });
+
+// Route::any('/eloadas/kezel/{id}', function () {
+//     return view('frontend');
+// });
 
 
-Route::any('/login', function () {
-    return view('frontend');
-});
+// Route::any('/login', function () {
+//     return view('frontend');
+// });
 
-Route::any('/logout', function () {
-    return view('frontend');
-});
+// Route::any('/logout', function () {
+//     return view('frontend');
+// });

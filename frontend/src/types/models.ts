@@ -12,6 +12,7 @@ export interface User {
   teams?: Team[];
   permissions?: Permission[];
   presentations?: Event[];
+  activity?: {event: Event, attendance: UserAttendance}[]
 }
 
 export const isTeam = (team: any): team is Team => {
@@ -19,7 +20,7 @@ export const isTeam = (team: any): team is Team => {
 };
 interface BasicAttendance {
   is_present: boolean;
-  rank: number | null;
+  place: number | null;
   event_id: number;
 }
 export interface UserAttendancePivot extends BasicAttendance {
@@ -59,15 +60,16 @@ export const isTeamAttendance = (
 export type UserRole = "operator" | "admin" | "user";
 export type TeamMemberRole = "captain" | "member" | "invited";
 export type TeamMembership = {
-  user: User;
+  user?: User;
   role: TeamMemberRole;
-  team: Team;
+  team?: Team;
 };
 export interface Team {
   name: string;
   code: string;
   description: string;
-  members: TeamMembership[];
+  members?: TeamMembership[];
+  activity?: {event: Event, attendance: TeamAttendance}[]
 }
 export interface BaseActivity {
   event: Event;

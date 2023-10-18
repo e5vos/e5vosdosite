@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 
-import { User } from "types/models";
+import { Attendance, User } from "types/models";
 
 import routeSwitcher from "../route";
 import { RootState } from "../store";
@@ -49,6 +49,9 @@ export const baseAPI = createApi({
         params: { e5code: code },
       }),
     }),
+    getUserActivity: builder.query<{event: Event, attendance: Attendance}[],Pick<User, "id">>({
+      query: (user) => routeSwitcher("user.activity", { userid: user.id }),
+    })
   }),
 });
 export default baseAPI;

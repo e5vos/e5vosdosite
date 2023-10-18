@@ -91,9 +91,11 @@ const AttendancePage = () => {
             {participants?.map((attending, index) => (
               <li
                 key={attending.name}
-                className="mx-2 my-2 flex flex-row justify-center gap-4  align-middle"
+                className={`col- mx-2 my-2 grid max-w-lg justify-center gap-4 align-middle ${
+                  user && isOperator(user) ? "grid-cols-7" : "grid-cols-6"
+                }`}
               >
-                <span className="mx-4">
+                <span className="col-span-4 mx-4">
                   {isUserAttendance(attending)
                     ? reverseNameOrder(attending.name)
                     : attending.name}{" "}
@@ -103,12 +105,13 @@ const AttendancePage = () => {
                   defaultChecked={attending.pivot.is_present}
                   onClick={toggle(attending)}
                   disabled={isLoading || isParticipantsFetching}
-                  className="h-5 w-5"
+                  className="col-span-1 h-5 w-5"
                 />
                 {user && isOperator(user) && (
                   <Button
                     variant="danger"
                     onClick={() => deleteAttendanceAction(attending)}
+                    className="col-span-2"
                   >
                     {locale.delete}
                   </Button>

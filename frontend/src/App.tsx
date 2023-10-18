@@ -105,6 +105,8 @@ const authRoutes = (
   </Route>
 );
 
+const TestPage = React.lazy(() => import("pages/test"));
+
 // Application body
 
 function App() {
@@ -127,6 +129,7 @@ function App() {
                   {authRoutes}
                   <Route path="/legal" element={<LegalPage />} />
                   <Route path="/admin" element={<AdminPage />} />
+                  <Route path="/test" element={<TestPage />} />
                   <Route path="*" element={<Error code={404} />} />
                 </Route>
               </Routes>

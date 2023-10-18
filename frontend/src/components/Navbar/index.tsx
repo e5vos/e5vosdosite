@@ -10,12 +10,14 @@ const locale = Locale({
     homepage: "Főoldal",
     login: "Bejelentkezés",
     logout: "Kijelentkezés",
+    info: "DÖ Információk"
   },
   en: {
     presentationSignup: "Presentation signup",
     homepage: "Homepage",
     login: "Login",
     logout: "Logout",
+    info: "SU Information"
   },
 });
 
@@ -23,8 +25,9 @@ const CustomNavbar = () => {
   const { user } = useUser(false);
   return (
     <Navbar
-      brand={<Navbar.Brand>{user ? user.name : locale.homepage}</Navbar.Brand>}
+      brand={<Navbar.Brand href="/">{user ? user.name : locale.homepage}</Navbar.Brand>}
     >
+      <Navbar.Link href="https://info.e5vosdo.hu">{locale.info}</Navbar.Link>
       <Navbar.Link href="/eloadas">{locale.presentationSignup}</Navbar.Link>
       {!user && <Navbar.Link href="/login">{locale.login}</Navbar.Link>}
       {user && <Navbar.Link href="/logout">{locale.logout}</Navbar.Link>}

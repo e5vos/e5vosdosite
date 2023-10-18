@@ -1,7 +1,9 @@
 import useUser from "hooks/useUser";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { isTeacher } from "lib/gates";
+import { useSelector } from "lib/store";
 
 import LoginForm from "components/Login";
 import Button from "components/UIKit/Button";
@@ -10,6 +12,13 @@ import Loader from "components/UIKit/Loader";
 const LoginRecoveryPanel = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+  const params = useParams();
+  const token = useSelector((state) => state.auth.token);
+  useEffect(() => {
+    if (token !== "") {
+      navigate(params.next ?? "/eloadas", { replace: true });
+    }
+  }, [navigate, params.next, token]);
   if (!user) return <Loader />;
   return (
     <div>

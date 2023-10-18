@@ -19,6 +19,10 @@ use Illuminate\Support\Facades\Route;
 require __DIR__ . '/auth.php';
 Route::get('/auth/callback', [AuthController::class, 'callback']);
 
+Route::get('/', function () {
+    return view('frontend');
+});
+
 Route::get('/{any}', function (string $any) {
     //search ../public/ for the file
     $path = base_path() . '/public/' . $any;

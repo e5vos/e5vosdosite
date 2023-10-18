@@ -6,3 +6,4 @@ vendor
 backend/resources/js/ziggy.js
 backend/public
 backend/resources/views/frontend.blade.php
+laravel-default.zip

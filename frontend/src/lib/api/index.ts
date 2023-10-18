@@ -16,7 +16,7 @@ export const baseAPI = createApi({
         return fetch(input, init);
       }
     },
-    baseUrl: import.meta.env.VITE_BACKEND,
+    baseUrl: "https://e5vosdo.hu",
     prepareHeaders: async (headers, { getState }) => {
       headers.set("Accept", "application/json");
 

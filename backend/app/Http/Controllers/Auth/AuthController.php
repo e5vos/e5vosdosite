@@ -80,7 +80,7 @@ class AuthController extends Controller
      */
     public function setE5code(Request $request)
     {
-        $validated = Http::post('https://e5vos.dev/api/student/verify', [
+        $validated = Http::post(env('E5VOS_API_URL'), [
             'email' => $request->user()->email,
             'studentId' => $request->e5code,
             'api_token' => env('E5VOS_API_TOKEN')

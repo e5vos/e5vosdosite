@@ -18,7 +18,7 @@ import { Title } from "components/UIKit/Typography";
 
 const locale = Locale({
   hu: {
-    title: "E5N - Előadásjelentkezés",
+    title: "Egyetemi Napok - Előadásjelentkezés",
     selectedPresentation: "Általad választott előadás",
     presentationNotYetSelected: "Még nem választottál előadást",
     select: "Választás",
@@ -34,7 +34,7 @@ const locale = Locale({
     ),
   },
   en: {
-    title: "E5N - Presentation signup",
+    title: "University Days - Presentation signup",
     selectedPresentation: "Your selected presentation",
     presentationNotYetSelected: "You have not selected a presentation yet",
     select: "Select",

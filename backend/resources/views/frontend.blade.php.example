@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="/assets/index.8ba794be.css">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <!-- Scripts -->
-    @routes
 </head>
   <body>
     <div id="root"></div>

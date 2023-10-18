@@ -1,20 +1,11 @@
-import { Capacitor } from "@capacitor/core";
-import ziggyroute, {
-  Config,
-  RouteParams,
-} from "ziggy-js";
+import ziggyroute, { Config, RouteParams } from "ziggy-js";
 
 import includedZiggy from "./ziggy.json";
 
 declare global {
   interface Window {
     Ziggy: any;
-    route:
-      | ((
-          name: string,
-          params?: RouteParams<string>,
-        ) => string)
-      | undefined;
+    route: ((name: string, params?: RouteParams<string>) => string) | undefined;
   }
 }
 
@@ -32,7 +23,7 @@ let remoteZiggyConfig: Config | undefined = undefined;
 fetch(`${import.meta.env.VITE_BACKEND}/api/ziggy`, { credentials: "include" })
   .then((res) => res.json())
   .then((res) => {
-    remoteZiggyConfig = res;
+    remoteZiggyConfig = includedZiggy as Config;
   })
   .catch((error) => console.error(error));
 declare global {
@@ -45,15 +36,7 @@ const routeSwitcher = (
   absolute?: boolean | undefined,
 ): string => {
   try {
-    if (Capacitor.getPlatform() === "web" && window.route)
-      return window.route(name, params);
-    else
-      return ziggyroute(
-        name,
-        params,
-        absolute,
-        remoteZiggyConfig ?? (includedZiggy as Config),
-      );
+    return ziggyroute(name, params, absolute, includedZiggy as Config);
   } catch (error) {
     if (process.env.NODE_ENV === "development") {
       console.error("PROD FATAL ERROR ", error);

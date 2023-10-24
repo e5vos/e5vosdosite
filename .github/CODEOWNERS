@@ -1,9 +1,17 @@
 
 # Frontend
-/frontend @difcsi
+/src/resources/frontend @difcsi
 
 # Backend
-/backend @volubepossum
+/src/app @volubepossum
+/src/bootstrap @volubepossum
+/src/config @volubepossum
+/src/database @volubepossum
+/src/routes @volubepossum
+/src/public @volubepossum
+/src/tests @volubepossum
+
+
 
 # API YAML
 /doc/api.yaml @difcsi @volubepossum

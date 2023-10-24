@@ -105,6 +105,9 @@ const authRoutes = (
   </Route>
 );
 
+// const TermsPage = React.lazy(() => import("pages/terms"));
+const PrivacyPolicyPage = React.lazy(() => import("pages/privacypolicy"));
+
 const TestPage = React.lazy(() => import("pages/test"));
 
 // Application body
@@ -127,6 +130,10 @@ function App() {
                   {eventRoutes}
                   {presentationRoutes}
                   {authRoutes}
+                  <Route
+                    path="/privacypolicy"
+                    element={<PrivacyPolicyPage />}
+                  />
                   <Route path="/legal" element={<LegalPage />} />
                   <Route path="/admin" element={<AdminPage />} />
                   <Route path="/test" element={<TestPage />} />

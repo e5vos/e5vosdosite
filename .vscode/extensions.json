@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "onecentlin.laravel-extension-pack",
+        "csstools.postcss",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "antfu.vite",
+        "dbaeumer.vscode-eslint",
+        "mikestead.dotenv",
+        "devsense.composer-php-vscode"
+    ]
+}

@@ -76,7 +76,7 @@ class User extends Authenticable
         $permissions = Cache::remember('users.' . $this->id . '.permissions', now()->addMinutes(5), function () {
             return $this->permissions()->get()->pluck('code')->toArray();
         });
-        return in_array($code, $permissions);
+        return in_array($code, $permissions) || in_array(PermissionType::Operator->value, $permissions);
     }
 
     /**
@@ -167,7 +167,8 @@ class User extends Authenticable
     /**
      * Sign up user to $event
      *
-     * @param  Event $event
+     * @param  Event $event the event to sign up for
+     * @param  bool $force whether to force the signup even if it has a root parent
      * @throws StudentBusyException if user is busy at the event timeslot
      * @throws EventFullException if the event is full
      * @throws AlreadySignedUpException Student is signed up for this event
@@ -177,22 +178,22 @@ class User extends Authenticable
     {
         if (!$force && $event->root_parent !== null) {
             $this->signUp(Event::findOrFail($event->root_parent));
-            return;
-        }
-        if ($event->direct_child !== null) {
-            $this->signUp(Event::findOrFail($event->direct_child), true);
+            return Attendance::where('user_id', $this->id)->where('event_id', $event->id)->first();
         }
         if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusy($event->slot)) {
             throw new StudentBusyException();
         }
         if (
             isset($event->capacity) && $event->occupancy >= $event->capacity  &&
-            !request()->user()->hasPermission(PermissionType::Operator->value)
+            !request()->user()->hasPermission(PermissionType::Aadmin->value)
         ) {
             throw new EventFullException();
         }
         if (Attendance::where('user_id', $this->id)->where('event_id', $event->id)->exists()) {
             throw new AlreadySignedUpException();
+        }
+        if ($event->direct_child !== null) {
+            $this->signUp(Event::findOrFail($event->direct_child), true);
         }
         $signup = new Attendance();
         $signup->event()->associate($event);
@@ -204,20 +205,23 @@ class User extends Authenticable
     /**
      * make user attend $event
      *
-     * @param  Event $event
+     * @param  Event $event the event to attend
+     * @param  bool $force whether to force the signup even if it has a root parent
      * @throws StudentBusyException if user is busy at the event timeslot
      * @return EventSignup the newly created EventSignup object
      */
-    public function attend(Event $event)
+    public function attend(Event $event, bool $force = false)
     {
-        if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusy($event->slot)) {
-            throw new StudentBusyException();
+        if (!$force && $event->root_parent !== null) {
+            $this->attend(Event::findOrFail($event->root_parent));
+            return $this->signups()->where('event_id', $event->id)->first();
         }
         $signup = $this->signups()->where('event_id', $event->id)->first();
         if (!isset($signup)) {
-            $signup = new Attendance();
-            $signup->event()->associate($event);
-            $signup->user()->associate($this);
+           $this->signUp($event);
+        }
+        if ($event->direct_child !== null) {
+            $this->attend(Event::findOrFail($event->direct_child), true);
         }
         $signup->togglePresent();
         $signup->save();

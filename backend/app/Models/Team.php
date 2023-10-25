@@ -106,18 +106,26 @@ class Team extends Model
      * Sign up user to $event
      *
      * @param  Event $event
+     * @param  bool $force whether to force the signup even if it has a root parent
      * @throws EventFullException if the event is full
      * @throws AlreadySignedUpException if the user is already signed up
      * @throws SignupNotRequiredException if the event does not require signups
      * @return Attendance the newly created attendance
      */
-    public function signUp(Event $event)
+    public function signUp(Event $event, bool $force = false)
     {
+        if (!$force && $event->root_parent !== null) {
+            $this->signUp(Event::findOrFail($event->root_parent));
+            return $this->signups()->where('event_id', $event->id)->first();
+        }
         if (isset($event->capacity) && $event->occupancy >= $event->capacity) {
             throw new EventFullException();
         }
         if ($this->signups()->where('event_id', $event->id)->exists()) {
             throw new AlreadySignedUpException();
+        }
+        if($event->direct_child !== null) {
+            $this->signUp(Event::findOrFail($event->direct_child), true);
         }
         $signup = new Attendance();
         $signup->event()->associate($event);
@@ -127,21 +135,28 @@ class Team extends Model
     }
 
     /**
-     * make user attend $event
+     * make team attend $event
      *
      * @param  Event $event
-     * @throws StudentBusyException if user is busy at the event timeslot
-     * @throws EventFullException if the event is full
+     * @param  bool $force whether to force the signup even if it has a root parent
      * @return EventSignup the newly created EventSignup object
      */
-    public function attend(Event $event)
+    public function attend(Event $event, bool $force = false)
     {
-        $signup = $this->signups()->where('event_id', $event->id)->first();
-        if (!isset($signup)) {
-            $signup = new Attendance();
-            $signup->event()->associate($event);
-            $signup->user()->associate($this);
+        if (!$force && $event->root_parent !== null) {
+            $this->attend(Event::findOrFail($event->root_parent));
+            return $this->signups()->where('event_id', $event->id)->first();
         }
+
+        $signup = $this->signups()->where('event_id', $event->id)->first();
+
+        if (!isset($signup)) {
+            $signup = $this->signUp($event);
+        }
+        if ($event->direct_child !== null) {
+            $this->attend(Event::findOrFail($event->direct_child), true);
+        }
+
         $signup->togglePresent();
         $signup->save();
         return $signup;

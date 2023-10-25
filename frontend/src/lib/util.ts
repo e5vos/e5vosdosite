@@ -35,3 +35,8 @@ export const reverseNameOrder = (s: string) => {
   const names = s.split(" ");
   return [names.at(-1), ...names.slice(0, -1)].join(" ");
 };
+
+export const getInitials = (s: string) => {
+  const names = s.split(" ");
+  return names.map((name) => name[0]).join("");
+}

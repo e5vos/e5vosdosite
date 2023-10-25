@@ -19,7 +19,7 @@ form {
   }
 }
 
-div.buttongroup {
+div.buttongroup-md {
   @apply md:inline-flex;
   button {
     @apply mb-3 w-full md:mb-0 md:rounded-none;
@@ -31,6 +31,21 @@ div.buttongroup {
 
   button:last-child {
     @apply md:rounded-r-md;
+  }
+}
+
+div.buttongroup-sm {
+  @apply sm:inline-flex;
+  button {
+    @apply mb-3 w-full sm:mb-0 sm:rounded-none;
+  }
+
+  button:first-child {
+    @apply sm:rounded-l-md;
+  }
+
+  button:last-child {
+    @apply sm:rounded-r-md;
   }
 }
 

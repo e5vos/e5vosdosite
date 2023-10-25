@@ -105,6 +105,7 @@ const authRoutes = (
   </Route>
 );
 
+
 // Application body
 
 function App() {

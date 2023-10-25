@@ -1,4 +1,4 @@
 const ScoreBoardBox = () => {
-  return <></>;
+    return <></>;
 };
 export default ScoreBoardBox;

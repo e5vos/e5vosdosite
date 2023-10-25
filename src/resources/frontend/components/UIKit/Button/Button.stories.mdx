@@ -9,30 +9,36 @@ export const Template = (args) => <Button {...args} />;
 # Navbar
 
 <Canvas>
-  <Story
-    name="Button"
-    args={{
-      children: "Button",
-      variant: "primary",
-    }}
-    argTypes={{
-      variant: {
-        control: {
-          type: "select",
-          options: ["primary", "secondary", "success", "danger", "default"],
-        },
-      },
-    }}
-  >
-    {Template.bind({})}
-  </Story>
-  <Story
-    name="Button"
-    args={{
-      children: "Button",
-      variant: "danger",
-    }}
-  >
-    {Template.bind({})}
-  </Story>
+    <Story
+        name="Button"
+        args={{
+            children: "Button",
+            variant: "primary",
+        }}
+        argTypes={{
+            variant: {
+                control: {
+                    type: "select",
+                    options: [
+                        "primary",
+                        "secondary",
+                        "success",
+                        "danger",
+                        "default",
+                    ],
+                },
+            },
+        }}
+    >
+        {Template.bind({})}
+    </Story>
+    <Story
+        name="Button"
+        args={{
+            children: "Button",
+            variant: "danger",
+        }}
+    >
+        {Template.bind({})}
+    </Story>
 </Canvas>

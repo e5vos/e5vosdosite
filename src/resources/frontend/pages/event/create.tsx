@@ -3,7 +3,7 @@ import { isOperator } from "lib/gates";
 import { gated } from "components/Gate";
 
 const CreateEventPage = () => {
-  return <></>;
+    return <></>;
 };
 
 export default gated(CreateEventPage, isOperator);

@@ -1,7 +1,7 @@
 import {
-  cleanupOutdatedCaches,
-  createHandlerBoundToURL,
-  precacheAndRoute,
+    cleanupOutdatedCaches,
+    createHandlerBoundToURL,
+    precacheAndRoute,
 } from "workbox-precaching";
 import { NavigationRoute, registerRoute } from "workbox-routing";
 

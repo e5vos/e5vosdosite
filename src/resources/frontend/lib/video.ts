@@ -6,14 +6,14 @@
  * @param muted
  */
 export function showVideo(
-  stream: MediaStream | null,
-  video: HTMLVideoElement,
-  muted: boolean = true,
+    stream: MediaStream | null,
+    video: HTMLVideoElement,
+    muted: boolean = true,
 ) {
-  video.srcObject = stream;
-  video.volume = muted ? 0 : 1;
-  video.onloadedmetadata = () =>
-    video.play().catch((error) => {
-      console.error(error);
-    });
+    video.srcObject = stream;
+    video.volume = muted ? 0 : 1;
+    video.onloadedmetadata = () =>
+        video.play().catch((error) => {
+            console.error(error);
+        });
 }

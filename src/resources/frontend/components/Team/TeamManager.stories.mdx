@@ -12,44 +12,44 @@ This component is used to manage a team.
 
 Features:
 
-- [ ] Add members to the team
-- [ ] Remove members from the team
-- [ ] Promote members to team leader
-- [ ] Demote members from team leader
-- [ ] Leave team
-- [ ] Change the team name
+-   [ ] Add members to the team
+-   [ ] Remove members from the team
+-   [ ] Promote members to team leader
+-   [ ] Demote members from team leader
+-   [ ] Leave team
+-   [ ] Change the team name
 
 <Canvas>
-  <Story
-    name="TeamManager"
-    args={{
-      team: {
-        name: "Team 1",
-        code: "Asd",
-        description: "Description",
-        members: [
-          {
-            role: "admin",
-            user: {
-              id: 1,
-              first_name: "Béla",
-              last_name: "Példa",
-              class: "2014A",
+    <Story
+        name="TeamManager"
+        args={{
+            team: {
+                name: "Team 1",
+                code: "Asd",
+                description: "Description",
+                members: [
+                    {
+                        role: "admin",
+                        user: {
+                            id: 1,
+                            first_name: "Béla",
+                            last_name: "Példa",
+                            class: "2014A",
+                        },
+                    },
+                    {
+                        role: "member",
+                        user: {
+                            id: 2,
+                            first_name: "József",
+                            last_name: "Példa",
+                            class: "2014A",
+                        },
+                    },
+                ],
             },
-          },
-          {
-            role: "member",
-            user: {
-              id: 2,
-              first_name: "József",
-              last_name: "Példa",
-              class: "2014A",
-            },
-          },
-        ],
-      },
-    }}
-  >
-    {Template.bind({})}
-  </Story>
+        }}
+    >
+        {Template.bind({})}
+    </Story>
 </Canvas>

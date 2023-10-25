@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
  * @returns navigator object if exists
  */
 export default function useNavigator() {
-  const [navigator, setnavigator] = useState<Navigator | undefined>();
-  useEffect(() => {
-    setnavigator(window.navigator);
-  }, []);
-  return navigator;
+    const [navigator, setnavigator] = useState<Navigator | undefined>();
+    useEffect(() => {
+        setnavigator(window.navigator);
+    }, []);
+    return navigator;
 }

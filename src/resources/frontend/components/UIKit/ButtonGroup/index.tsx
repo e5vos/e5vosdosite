@@ -1,10 +1,10 @@
 const ButtonGroup = ({
-  children,
-  className,
+    children,
+    className,
 }: React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
 >) => {
-  return <div className={`buttongroup-sm ${className}`}>{children}</div>;
+    return <div className={`buttongroup-sm ${className}`}>{children}</div>;
 };
 export default ButtonGroup;

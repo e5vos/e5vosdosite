@@ -18,7 +18,7 @@
         "dev": "rimraf dev-dist && cross-env DEBUG=vite-plugin-pwa:* SW_DEV=true vite",
         "build": "rimraf dist && tsc && cross-env DEBUG=vite-plugin-pwa:* BASE_URL=/ SOURCE_MAP=true vite build && cordova-res ios --skip-config --copy && cordova-res android --skip-config --copy && npx cap sync",
         "preview": "vite preview",
-        "prettier": "prettier --write ./src",
+        "prettier": "prettier --write .",
         "test": "jest --coverage ",
         "storybook": "start-storybook -p 6006",
         "build-storybook": "build-storybook",

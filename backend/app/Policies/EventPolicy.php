@@ -153,10 +153,10 @@ class EventPolicy
         if (!Setting::find('e5n')?->value) {
             throw new NoE5NException();
         }
-        $event = $event ?? Event::findOrFail(request()->eventId);
+        $event ??= Event::findOrFail(request()->eventId);
         $attender = request()->attender ?? request()->user()->e5code;
         if (isset($event->signup_type) && !$event->signuppers()->find(strlen($attender) === 13 ? 'e5code' : 'code', $attender)) {
-            return new SignupRequiredException();
+            return new SignupRequiredException();   
         }
         return $event->slot->slot_type === SlotType::presentation->value ? $user->hasPermission('TCH') : ($user->organisesEvent($event->id) || $user->hasPermission('ADM'));
     }

@@ -42,7 +42,11 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
-        $team = Team::create($request->all());
+        try {
+            $team = Team::create($request->all());
+        } catch (\Exception $e) {
+            throw new NotAllowedException();
+        }
         $team->members()->attach(Auth::user()->id, ['role' => MembershipType::Leader]);
         $team = new TeamResource($team->load('members'));
         Cache::forget('e5n.teams.all');
@@ -62,7 +66,7 @@ class TeamController extends Controller
         $team = new TeamResource($team->load('members'));
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.presentations');
-        return Cache::rememberForever('e5n.teams.' . $team->code, $team->jsonSerialize());
+        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
     }
 
     /**
@@ -110,7 +114,7 @@ class TeamController extends Controller
         $team->members()->attach(User::where('e5code', $request->userCode)->firstOrFail(), ['role' => MembershipType::Invited]);
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.' . $team->code);
-        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
+        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
     }
 
     /**

@@ -5,11 +5,13 @@ services:
     network_mode: service:db
     command: sleep infinity
     volumes:
-      - ../..:/workspace:cached
+      - ..:/e5vosdosite:cached
+      - ./vendor:/e5vosdosite/src/vendor
+      - ./node_modules:/e5vosdosite/src/node_modules
   db:
     image: mysql:latest
     restart: unless-stopped
-    volumes: 
+    volumes:
       - db:/var/lib/mysql
     environment:
       - MYSQL_DATABASE='e5vosdosite'

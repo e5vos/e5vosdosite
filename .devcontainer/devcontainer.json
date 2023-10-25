@@ -3,7 +3,7 @@
 {
   "name": "E5VosDoSite",
 
-  "workspaceFolder": "/workspace/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/e5vosdosite",
   "dockerComposeFile": "./docker-compose.yml",
   "service": "app",
   "forwardPorts": [3000, 8000, 3306],
@@ -41,7 +41,7 @@
         "editor.formatOnSave": true
       }
     }
-  }
+  },
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-  // "remoteUser": "root"
+  "remoteUser": "root"
 }

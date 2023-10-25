@@ -1,12 +1,18 @@
 {
-    "recommendations": [
-        "onecentlin.laravel-extension-pack",
-        "csstools.postcss",
-        "esbenp.prettier-vscode",
-        "bradlc.vscode-tailwindcss",
-        "antfu.vite",
-        "dbaeumer.vscode-eslint",
-        "mikestead.dotenv",
-        "devsense.composer-php-vscode"
-    ]
+  "recommendations": [
+    "onecentlin.laravel-extension-pack",
+    "csstools.postcss",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "antfu.vite",
+    "dbaeumer.vscode-eslint",
+    "mikestead.dotenv",
+    "devsense.composer-php-vscode",
+    "devsense.intelli-php-vscode",
+    "devsense.phptools-vscode",
+    "xdebug.php-debug",
+    "zobo.php-intellisense",
+    "bmewburn.vscode-intelephense-client",
+    "devsense.profiler-php-vscode"
+  ]
 }

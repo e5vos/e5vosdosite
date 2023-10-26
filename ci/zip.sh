@@ -1,0 +1,1 @@
+zip $1 -r * .[^.]* -x "vendor/*" -x "node_modules/*" -x "doc/*" -x ".devcontainer/*" -x ".github/*" -x ".vscode/*" -x "storage/logs/*"

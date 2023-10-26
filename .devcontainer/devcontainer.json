@@ -1,0 +1,47 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/alpine
+{
+  "name": "E5VosDoSite",
+
+  "workspaceFolder": "/e5vosdosite",
+  "dockerComposeFile": "./docker-compose.yml",
+  "service": "app",
+  "forwardPorts": [3000, 8000, 3306],
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/devcontainers/features/php:1": {},
+    "ghcr.io/itsmechlark/features/act:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/aws-cli:1": {},
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
+
+  // Use 'postCreateCommand' to run commands after the container is created.
+  // "postCreateCommand": "uname -a",
+  "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
+  "postStartCommand": "./.devcontainer/postStartCommand.sh",
+
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "onecentlin.laravel-extension-pack",
+        "csstools.postcss",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "antfu.vite",
+        "dbaeumer.vscode-eslint",
+        "mikestead.dotenv",
+        "devsense.composer-php-vscode"
+      ],
+      "settings": {
+        "files.watcherExclude": {
+          "**/target": true
+        },
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  "remoteUser": "root"
+}

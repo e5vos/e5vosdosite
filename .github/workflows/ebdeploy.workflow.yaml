@@ -1,0 +1,110 @@
+name: Deploy prod
+on:
+  push:
+    branches:
+      - prod
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    environment: Elastic Beanstalk
+    steps:
+      - name: Calculate version number
+        id: vnum
+        run: echo "::set-output name=version::$(sh ./ci/deployver.sh)"
+      - name: Print version number
+        run: echo ${{steps.vnum.outputs.version}}
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Generate dotevn file
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          APP_NAME: e5vosdo.hu
+          APP_ENV: production
+          APP_KEY: ${{secrets.APP_KEY}}
+          APP_DEBUG: false
+          APP_DOMAIN: e5vosdo.hu
+          APP_URL: "https://${APP_DOMAIN}"
+          VITE_BACKEND: "${APP_URL}"
+          LOG_CHANNEL: stack
+          LOG_DEPRECATIONS_CHANNEL: null
+          LOG_LEVEL: error
+
+          DB_CONNECTION: mysql
+          DB_HOST: ${{secrets.DB_HOST}}}
+          DB_PORT: ${{secrets.DB_PORT}}
+          DB_DATABASE: ${{secrets.DB_DATABASE}}}
+          DB_USERNAME: ${{secrets.DB_USERNAME}}}
+          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+          MYSQL_ATTR_SSL_CA: /etc/pki/tls/certs/ca-bundle.crt
+
+          BROADCAST_DRIVER: pusher
+          CACHE_DRIVER: database
+          FILESYSTEM_DISK: local
+          QUEUE_CONNECTION: sync
+          SESSION_DRIVER: file
+          SESSION_LIFETIME: 120
+          SESSION_DOMAIN: "${APP_DOMAIN}"
+          SESSION_COOKIE: "${APP_NAME}_session"
+          SANCTUM_STATEFUIL_DOMAINS: "${APP_URL}"
+
+          MEMCACHED_HOST: 127.0.0.1
+
+          REDIS_HOST: 127.0.0.1
+          REDIS_PASSWORD: null
+          REDIS_PORT: 6379
+
+          MAIL_MAILER: smtp
+          MAIL_HOST: mailhog
+          MAIL_PORT: 1025
+          MAIL_USERNAME: null
+          MAIL_PASSWORD: null
+          MAIL_ENCRYPTION: null
+          MAIL_FROM_ADDRESS: do@e5vos.hu
+          MAIL_FROM_NAME: "${APP_NAME}"
+
+          AWS_ACCESS_KEY_ID:
+          AWS_SECRET_ACCESS_KEY:
+          AWS_DEFAULT_REGION: ${{vars.AWS_REGION}}
+          AWS_BUCKET:
+          AWS_USE_PATH_STYLE_ENDPOINT: false
+
+          PUSHER_APP_ID:
+          PUSHER_APP_KEY:
+          PUSHER_APP_SECRET:
+          PUSHER_HOST:
+          PUSHER_PORT: 443
+          PUSHER_SCHEME: https
+          PUSHER_APP_CLUSTER: mt1
+
+          VITE_PUSHER_APP_KEY: "${PUSHER_APP_KEY}"
+          VITE_PUSHER_HOST: "${PUSHER_HOST}"
+          VITE_PUSHER_PORT: "${PUSHER_PORT}"
+          VITE_PUSHER_SCHEME: "${PUSHER_SCHEME}"
+          VITE_PUSHER_APP_CLUSTER: "${PUSHER_APP_CLUSTER}"
+
+          GOOGLE_CLIENT_ID: "${{secrets.GOOGLE_CLIENT_ID}}"
+          GOOGLE_CLIENT_SECRET: "${{secrets.GOOGLE_CLIENT_SECRET}}"
+          GOOGLE_REDIRECT_URI: "${APP_URL}/auth/callback"
+
+          E5VOS_API_TOKEN: "${{secrets.E5VOS_API_TOKEN}}"
+          E5VOS_API_URL: "${{vars.E5VOS_API_URL}}"
+          E5VOS_FAKE_API: false
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Zip files
+        run: sh ./ci/zip.sh deploy_${{steps.vnum.outputs.version}}.zip
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          region: ${{vars.AWS_REGION}}
+          application_name: ${{vars.EB_APP_NAM}}
+          environment_name: ${{vars.EB_ENV_NAME}}
+          version-label: ${{steps.vnum.outputs.version}}
+          deployment_package: deploy_${{steps.vnum.outputs.version}}.zip
+          aws_access_key: ${{secrets.AWS_DEPLOY_ACCESS_KEY_ID}}
+          aws_secret_key: ${{secrets.AWS_DEPLOY_SECRET_ACCESS_KEY}}

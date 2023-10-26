@@ -1,5 +1,7 @@
 name: Deploy prod
 on:
+  worworkflow_dispatch:
+    
   push:
     branches:
       - prod

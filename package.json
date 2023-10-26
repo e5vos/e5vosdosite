@@ -1,7 +1,8 @@
 {
-    "name": "e5vosdo-site",
+    "name": "e5vosdosite-frontend",
+    "version": "1.0.0",
     "private": true,
-    "version": "0.0.0",
+    "description": "EötvösDÖ website frontend",
     "author": {
         "name": "EötvösDÖ Dev Team",
         "email": "do@e5vos.hu",
@@ -16,7 +17,7 @@
     },
     "scripts": {
         "dev": "vite",
-        "build": "vite build && vite build --sssr",
+        "build": "vite build",
         "preview": "vite preview",
         "prettier": "prettier --write .",
         "test": "jest --coverage ",

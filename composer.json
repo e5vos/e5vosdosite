@@ -1,10 +1,17 @@
 {
-    "name": "laravel/laravel",
+    "name": "eotvosdosite/backend",
+    "version": "1.0.0",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "EötvösDÖ Website Backend",
     "keywords": [
         "framework",
         "laravel"
+    ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/difcsi/e5vosdosite.git"
+        }
     ],
     "license": "MIT",
     "require": {

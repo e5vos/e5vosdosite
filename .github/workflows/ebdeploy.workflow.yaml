@@ -10,13 +10,13 @@ jobs:
     runs-on: "ubuntu-latest"
     environment: Elastic Beanstalk
     steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
       - name: Calculate version number
         id: vnum
         run: echo "::set-output name=version::$(sh ./ci/deployver.sh)"
       - name: Print version number
         run: echo ${{steps.vnum.outputs.version}}
-      - name: Checkout source code
-        uses: actions/checkout@v2
       - name: Install frontend dependencies
         run: npm ci
       - name: Generate dotevn file

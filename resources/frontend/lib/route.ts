@@ -1,6 +1,6 @@
-import ziggyroute, { Config, RouteParams } from "ziggy-js";
+import ziggyroute, { Config, RouteName, RouteParams } from "ziggy-js";
 
-import includedZiggy from "./ziggy.json";
+import includedZiggy from "./includeZiggy";
 
 declare global {
     interface Window {
@@ -33,7 +33,7 @@ declare global {
 }
 
 const routeSwitcher = (
-    name: keyof typeof includedZiggy.routes | string,
+    name: RouteName,
     params?: RouteParams<string> | undefined,
     absolute?: boolean | undefined,
 ): string => {

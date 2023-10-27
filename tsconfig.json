@@ -16,7 +16,12 @@
         "noEmit": true,
         "jsx": "react-jsx",
         "baseUrl": "resources/frontend",
-        "types": ["node", "vite-plugin-pwa", "vite-plugin-pwa/client"]
+        "types": [
+            "node",
+            "vite-plugin-pwa",
+            "vite-plugin-pwa/client",
+            "./resources/frontend/js/ziggy.d.ts"
+        ]
     },
     "include": ["./resources/frontend"],
     "references": [{ "path": "./tsconfig.node.json" }]

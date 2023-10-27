@@ -38,10 +38,10 @@ jobs:
           envkey_LOG_LEVEL: error
 
           envkey_DB_CONNECTION: mysql
-          envkey_DB_HOST: ${{secrets.DB_HOST}}}
+          envkey_DB_HOST: ${{secrets.DB_HOST}}
           envkey_DB_PORT: ${{secrets.DB_PORT}}
-          envkey_DB_DATABASE: ${{secrets.DB_DATABASE}}}
-          envkey_DB_USERNAME: ${{secrets.DB_USERNAME}}}
+          envkey_DB_DATABASE: ${{secrets.DB_DATABASE}}
+          envkey_DB_USERNAME: ${{secrets.DB_USERNAME}}
           envkey_DB_PASSWORD: ${{secrets.DB_PASSWORD}}
           envkey_MYSQL_ATTR_SSL_CA: /etc/pki/tls/certs/ca-bundle.crt
 

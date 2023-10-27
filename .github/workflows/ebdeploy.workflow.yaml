@@ -1,4 +1,4 @@
-name: Deploy prod
+name: Deploy to production
 on:
   workflow_dispatch:
 
@@ -23,80 +23,80 @@ jobs:
         run: composer install
       - name: Generate Routes
         run: php artisan ziggy:generate --types
-      - name: Generate dotevn file
+      - name: Generate dotenv file
         uses: SpicyPizza/create-envfile@v2.0
         with:
-          APP_NAME: e5vosdo.hu
-          APP_ENV: production
-          APP_KEY: ${{secrets.APP_KEY}}
-          APP_DEBUG: false
-          APP_DOMAIN: e5vosdo.hu
-          APP_URL: "https://${APP_DOMAIN}"
-          VITE_BACKEND: "${APP_URL}"
-          LOG_CHANNEL: stack
-          LOG_DEPRECATIONS_CHANNEL: null
-          LOG_LEVEL: error
+          envkey_APP_NAME: e5vosdo.hu
+          envkey_APP_ENV: production
+          envkey_APP_KEY: ${{secrets.APP_KEY}}
+          envkey_APP_DEBUG: false
+          envkey_APP_DOMAIN: e5vosdo.hu
+          envkey_APP_URL: "https://${APP_DOMAIN}"
+          envkey_VITE_BACKEND: "${APP_URL}"
+          envkey_LOG_CHANNEL: stack
+          envkey_LOG_DEPRECATIONS_CHANNEL: null
+          envkey_LOG_LEVEL: error
 
-          DB_CONNECTION: mysql
-          DB_HOST: ${{secrets.DB_HOST}}}
-          DB_PORT: ${{secrets.DB_PORT}}
-          DB_DATABASE: ${{secrets.DB_DATABASE}}}
-          DB_USERNAME: ${{secrets.DB_USERNAME}}}
-          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
-          MYSQL_ATTR_SSL_CA: /etc/pki/tls/certs/ca-bundle.crt
+          envkey_DB_CONNECTION: mysql
+          envkey_DB_HOST: ${{secrets.DB_HOST}}}
+          envkey_DB_PORT: ${{secrets.DB_PORT}}
+          envkey_DB_DATABASE: ${{secrets.DB_DATABASE}}}
+          envkey_DB_USERNAME: ${{secrets.DB_USERNAME}}}
+          envkey_DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+          envkey_MYSQL_ATTR_SSL_CA: /etc/pki/tls/certs/ca-bundle.crt
 
-          BROADCAST_DRIVER: pusher
-          CACHE_DRIVER: database
-          FILESYSTEM_DISK: local
-          QUEUE_CONNECTION: sync
-          SESSION_DRIVER: file
-          SESSION_LIFETIME: 120
-          SESSION_DOMAIN: "${APP_DOMAIN}"
-          SESSION_COOKIE: "${APP_NAME}_session"
-          SANCTUM_STATEFUIL_DOMAINS: "${APP_URL}"
+          envkey_BROADCAST_DRIVER: pusher
+          envkey_CACHE_DRIVER: database
+          envkey_FILESYSTEM_DISK: local
+          envkey_QUEUE_CONNECTION: sync
+          envkey_SESSION_DRIVER: file
+          envkey_SESSION_LIFETIME: 120
+          envkey_SESSION_DOMAIN: "${APP_DOMAIN}"
+          envkey_SESSION_COOKIE: "${APP_NAME}_session"
+          envkey_SANCTUM_STATEFUIL_DOMAINS: "${APP_URL}"
 
-          MEMCACHED_HOST: 127.0.0.1
+          envkey_MEMCACHED_HOST: 127.0.0.1
 
-          REDIS_HOST: 127.0.0.1
-          REDIS_PASSWORD: null
-          REDIS_PORT: 6379
+          envkey_REDIS_HOST: 127.0.0.1
+          envkey_REDIS_PASSWORD: null
+          envkey_REDIS_PORT: 6379
 
-          MAIL_MAILER: smtp
-          MAIL_HOST: mailhog
-          MAIL_PORT: 1025
-          MAIL_USERNAME: null
-          MAIL_PASSWORD: null
-          MAIL_ENCRYPTION: null
-          MAIL_FROM_ADDRESS: do@e5vos.hu
-          MAIL_FROM_NAME: "${APP_NAME}"
+          envkey_MAIL_MAILER: smtp
+          envkey_MAIL_HOST: mailhog
+          envkey_MAIL_PORT: 1025
+          envkey_MAIL_USERNAME: null
+          envkey_MAIL_PASSWORD: null
+          envkey_MAIL_ENCRYPTION: null
+          envkey_MAIL_FROM_ADDRESS: do@e5vos.hu
+          envkey_MAIL_FROM_NAME: "${APP_NAME}"
 
-          AWS_ACCESS_KEY_ID:
-          AWS_SECRET_ACCESS_KEY:
-          AWS_DEFAULT_REGION: ${{vars.AWS_REGION}}
-          AWS_BUCKET:
-          AWS_USE_PATH_STYLE_ENDPOINT: false
+          envkey_AWS_ACCESS_KEY_ID:
+          envkey_AWS_SECRET_ACCESS_KEY:
+          envkey_AWS_DEFAULT_REGION: ${{vars.AWS_REGION}}
+          envkey_AWS_BUCKET:
+          envkey_AWS_USE_PATH_STYLE_ENDPOINT: false
 
-          PUSHER_APP_ID:
-          PUSHER_APP_KEY:
-          PUSHER_APP_SECRET:
-          PUSHER_HOST:
-          PUSHER_PORT: 443
-          PUSHER_SCHEME: https
-          PUSHER_APP_CLUSTER: mt1
+          envkey_PUSHER_APP_ID:
+          envkey_PUSHER_APP_KEY:
+          envkey_PUSHER_APP_SECRET:
+          envkey_PUSHER_HOST:
+          envkey_PUSHER_PORT: 443
+          envkey_PUSHER_SCHEME: https
+          envkey_PUSHER_APP_CLUSTER: mt1
 
-          VITE_PUSHER_APP_KEY: "${PUSHER_APP_KEY}"
-          VITE_PUSHER_HOST: "${PUSHER_HOST}"
-          VITE_PUSHER_PORT: "${PUSHER_PORT}"
-          VITE_PUSHER_SCHEME: "${PUSHER_SCHEME}"
-          VITE_PUSHER_APP_CLUSTER: "${PUSHER_APP_CLUSTER}"
+          envkey_VITE_PUSHER_APP_KEY: "${PUSHER_APP_KEY}"
+          envkey_VITE_PUSHER_HOST: "${PUSHER_HOST}"
+          envkey_VITE_PUSHER_PORT: "${PUSHER_PORT}"
+          envkey_VITE_PUSHER_SCHEME: "${PUSHER_SCHEME}"
+          envkey_VITE_PUSHER_APP_CLUSTER: "${PUSHER_APP_CLUSTER}"
 
-          GOOGLE_CLIENT_ID: "${{secrets.GOOGLE_CLIENT_ID}}"
-          GOOGLE_CLIENT_SECRET: "${{secrets.GOOGLE_CLIENT_SECRET}}"
-          GOOGLE_REDIRECT_URI: "${APP_URL}/auth/callback"
+          envkey_GOOGLE_CLIENT_ID: "${{secrets.GOOGLE_CLIENT_ID}}"
+          envkey_GOOGLE_CLIENT_SECRET: "${{secrets.GOOGLE_CLIENT_SECRET}}"
+          envkey_GOOGLE_REDIRECT_URI: "${APP_URL}/auth/callback"
 
-          E5VOS_API_TOKEN: "${{secrets.E5VOS_API_TOKEN}}"
-          E5VOS_API_URL: "${{vars.E5VOS_API_URL}}"
-          E5VOS_FAKE_API: false
+          envkey_E5VOS_API_TOKEN: "${{secrets.E5VOS_API_TOKEN}}"
+          envkey_E5VOS_API_URL: "${{vars.E5VOS_API_URL}}"
+          envkey_E5VOS_FAKE_API: false
 
       - name: Build frontend
         run: npm run build
@@ -115,3 +115,4 @@ jobs:
           deployment_package: deploy_${{steps.vnum.outputs.version}}.zip
           aws_access_key: ${{secrets.AWS_DEPLOY_ACCESS_KEY_ID}}
           aws_secret_key: ${{secrets.AWS_DEPLOY_SECRET_ACCESS_KEY}}
+          wait_for_deployment: true

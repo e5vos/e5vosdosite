@@ -1,0 +1,7 @@
+ios
+android
+node_modules
+vendor
+package-lock.json
+package.json
+composer.lock

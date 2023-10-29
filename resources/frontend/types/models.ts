@@ -83,8 +83,8 @@ export const SlotType = {
 
 export interface Slot {
     id: number;
-    start: string;
-    end: string;
+    starts_at: string;
+    ends_at: string;
     events?: Event[];
     slot_type: (typeof SlotType)[keyof typeof SlotType];
     name: string;

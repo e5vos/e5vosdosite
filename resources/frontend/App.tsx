@@ -17,7 +17,7 @@ const Error = React.lazy(() => import("components/Error"));
 // Misc
 
 const LegalPage = React.lazy(() => import("pages/Legal"));
-const AdminPage = React.lazy(() => import("pages/admin/e5nAdmin"));
+const AdminPage = React.lazy(() => import("pages/admin"));
 
 // Teams
 const TeamsPage = React.lazy(() => import("pages/team"));
@@ -92,6 +92,27 @@ const presentationRoutes = (
     </Route>
 );
 
+// Admin
+
+const AdminsPage = React.lazy(() => import("pages/admin"));
+const SlotsPage = React.lazy(() => import("pages/admin/slot"));
+const SlotsCreatePage = React.lazy(() => import("pages/admin/slot/create"));
+const SlotsEditPage = React.lazy(
+    () => import("pages/admin/slot/[slotid]/edit"),
+);
+const adminRoutes = (
+    <Route path="admin">
+        <Route index element={<AdminsPage />} />
+        <Route path="slot">
+            <Route index element={<SlotsPage />} />
+            <Route path="create" element={<SlotsCreatePage />} />
+            <Route path=":slotid">
+                <Route path="edit" element={<SlotsEditPage />} />
+            </Route>
+        </Route>
+    </Route>
+);
+
 // Auth
 
 const LoginPage = React.lazy(() => import("pages/login"));
@@ -127,6 +148,7 @@ function App() {
                                     {teamRoutes}
                                     {eventRoutes}
                                     {presentationRoutes}
+                                    {adminRoutes}
                                     {authRoutes}
                                     <Route
                                         path="/privacypolicy"
@@ -135,10 +157,6 @@ function App() {
                                     <Route
                                         path="/legal"
                                         element={<LegalPage />}
-                                    />
-                                    <Route
-                                        path="/admin"
-                                        element={<AdminPage />}
                                     />
                                     <Route
                                         path="*"

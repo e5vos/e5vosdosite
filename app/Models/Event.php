@@ -213,4 +213,12 @@ class Event extends Model
     {
         return $this->signup_type != null && $this->signup_deadline > now();
     }
+
+    /**
+     * return if the event is running
+     */
+    public function isRunning()
+    {
+        return $this->starts_at < now() && $this->ends_at > now();
+    }
 }

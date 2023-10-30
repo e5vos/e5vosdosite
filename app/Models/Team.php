@@ -122,7 +122,7 @@ class Team extends Model
         if ($this->signups()->where('event_id', $event->id)->exists()) {
             throw new AlreadySignedUpException();
         }
-        if($event->direct_child !== null) {
+        if ($event->direct_child !== null) {
             $this->signUp(Event::findOrFail($event->direct_child), true);
         }
         $signup = new Attendance();
@@ -135,8 +135,9 @@ class Team extends Model
     /**
      * make team attend $event
      *
-     * @param  Event $event
+     * @param  Event $eventv the event to attend
      * @param  bool $force whether to force the signup even if it has a root parent
+     * @throws EventFullException if the event is full
      * @return EventSignup the newly created EventSignup object
      */
     public function attend(Event $event, bool $force = false)
@@ -149,7 +150,12 @@ class Team extends Model
         $signup = $this->signups()->where('event_id', $event->id)->first();
 
         if (!isset($signup)) {
-            $signup = $this->signUp($event);
+            if (isset($event->capacity) && $event->occupancy >= $event->capacity) {
+                throw new EventFullException();
+            }
+            $signup = new Attendance();
+            $signup->event()->associate($event);
+            $signup->team()->associate($this);
         }
         if ($event->direct_child !== null) {
             $this->attend(Event::findOrFail($event->direct_child), true);

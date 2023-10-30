@@ -11,23 +11,23 @@ declare global {
     }
 }
 
-if (import.meta.env.DEV) {
-    includedZiggy.url = import.meta.env.VITE_BACKEND;
-    console.log("Ziggy url overridden for development");
-}
+let remoteZiggyConfig: Config | undefined = undefined;
 
 if (typeof window !== "undefined" && typeof window.Ziggy !== "undefined") {
     Object.assign(includedZiggy.routes, window.Ziggy.routes);
+} else if (import.meta.env.VITE_USE_REMOTE_ZIGGY) {
+    fetch(`${import.meta.env.VITE_BACKEND}/api/ziggy`, {
+        credentials: "include",
+    })
+        .then((res) => res.json())
+        .then((res) => {
+            remoteZiggyConfig = res as Config;
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 }
 
-let remoteZiggyConfig: Config | undefined = undefined;
-
-fetch(`${import.meta.env.VITE_BACKEND}/api/ziggy`, { credentials: "include" })
-    .then((res) => res.json())
-    .then((res) => {
-        remoteZiggyConfig = includedZiggy as Config;
-    })
-    .catch((error) => console.error(error));
 declare global {
     interface Window {}
 }
@@ -38,7 +38,12 @@ const routeSwitcher = (
     absolute?: boolean | undefined,
 ): string => {
     try {
-        return ziggyroute(name, params, absolute, includedZiggy as Config);
+        return ziggyroute(
+            name,
+            params,
+            absolute,
+            remoteZiggyConfig ?? includedZiggy,
+        );
     } catch (error) {
         if (process.env.NODE_ENV === "development") {
             console.error("PROD FATAL ERROR ", error);

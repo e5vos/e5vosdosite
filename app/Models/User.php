@@ -185,7 +185,7 @@ class User extends Authenticable
         }
         if (
             isset($event->capacity) && $event->occupancy >= $event->capacity  &&
-            !request()->user()->hasPermission(PermissionType::Aadmin->value)
+            !request()->user()->hasPermission(PermissionType::Admin->value)
         ) {
             throw new EventFullException();
         }
@@ -207,7 +207,6 @@ class User extends Authenticable
      *
      * @param  Event $event the event to attend
      * @param  bool $force whether to force the signup even if it has a root parent
-     * @throws StudentBusyException if user is busy at the event timeslot
      * @return EventSignup the newly created EventSignup object
      */
     public function attend(Event $event, bool $force = false)
@@ -218,11 +217,17 @@ class User extends Authenticable
         }
         $signup = $this->signups()->where('event_id', $event->id)->first();
         if (!isset($signup)) {
-           $this->signUp($event);
+            if (isset($event->capacity) && $event->occupancy >= $event->capacity) {
+                throw new EventFullException();
+            }
+            $signup = new Attendance();
+            $signup->event()->associate($event);
+            $signup->team()->associate($this);
         }
         if ($event->direct_child !== null) {
             $this->attend(Event::findOrFail($event->direct_child), true);
         }
+
         $signup->togglePresent();
         $signup->save();
         return $signup;

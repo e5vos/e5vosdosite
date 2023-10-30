@@ -42,9 +42,11 @@ use App\Http\Resources\{
 
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return (new UserResource($request->user()->load('permissions')))->jsonSerialize();
-})->name('user');
+Route::middleware(['auth:sanctum'])->prefix('/user')->group(function () {
+    Route::get('/', function (Request $request) {
+        return (new UserResource($request->user()->load('permissions')))->jsonSerialize();
+    })->name('user');
+});
 
 Route::get('/ziggy', fn () => response()->json(new Ziggy));
 
@@ -133,3 +135,9 @@ Route::any('cacheclear', [AdminController::class, "cacheClear"])->name('cachecle
 Route::post('/ping', function () {
     Ping::dispatch();
 });
+
+
+//if anything else that starts with /api/ is requested, return 404
+Route::any('/{any}', function () {
+    abort(404);
+})->where('any', '.*');

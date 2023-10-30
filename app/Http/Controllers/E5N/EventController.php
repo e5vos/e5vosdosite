@@ -11,14 +11,12 @@ use App\Http\Controllers\{
 use App\Models\{
     Attendance,
     Event,
-    TeamMemberAttendance,
     User,
     Team,
     Slot,
 };
 
 use App\Helpers\SlotType;
-use App\Http\Resources\AttendanceResource;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\{

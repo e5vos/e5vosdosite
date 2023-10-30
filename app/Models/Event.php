@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\{
     Casts\Attribute,
     Relations\BelongsTo,
     Relations\HasMany,
-    Relations\HasManyThrough,
 };
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
@@ -211,6 +210,14 @@ class Event extends Model
      */
     public function isSignupOpen()
     {
-        return $this->signup_type != null && $this->signup_deadline > now();
+        return $this->signup_type != null && $this->signup_deadline->isFuture();
+    }
+
+    /**
+     * return if the event is running
+     */
+    public function isRunning()
+    {
+        return $this->starts_at->isPast() && $this->ends_at->isFuture();
     }
 }

@@ -1,12 +1,10 @@
 name: Deploy to production
 on:
-  workflow_dispatch:
-
   push:
     branches:
       - prod
 jobs:
-  build:
+  deploy:
     runs-on: "ubuntu-latest"
     environment: Elastic Beanstalk
     steps:
@@ -21,8 +19,6 @@ jobs:
         run: npm ci
       - name: Install backend dependencies
         run: composer install
-      - name: Generate Routes
-        run: php artisan ziggy:generate --types
       - name: Generate dotenv file
         uses: SpicyPizza/create-envfile@v2.0
         with:
@@ -97,7 +93,10 @@ jobs:
           envkey_E5VOS_API_TOKEN: "${{secrets.E5VOS_API_TOKEN}}"
           envkey_E5VOS_API_URL: "${{vars.E5VOS_API_URL}}"
           envkey_E5VOS_FAKE_API: false
-
+      
+      - name: Generate Routes
+        run: php artisan ziggy:generate --types
+        
       - name: Build frontend
         run: npm run build
 

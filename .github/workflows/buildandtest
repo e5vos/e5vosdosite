@@ -1,0 +1,20 @@
+name: Build and test
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    environment: Elastic Beanstalk
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Install backend dependencies
+        run: composer install      
+      - name: Generate Routes
+        run: php artisan ziggy:generate --types
+      - name: Build frontend
+        run: npm run build

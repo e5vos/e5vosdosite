@@ -62,7 +62,7 @@ class TeamController extends Controller
         $team = new TeamResource($team->load('members'));
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.presentations');
-        return Cache::rememberForever('e5n.teams.' . $team->code, $team->jsonSerialize());
+        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
     }
 
     /**
@@ -110,7 +110,7 @@ class TeamController extends Controller
         $team->members()->attach(User::where('e5code', $request->userCode)->firstOrFail(), ['role' => MembershipType::Invited]);
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.' . $team->code);
-        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
+        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
     }
 
     /**

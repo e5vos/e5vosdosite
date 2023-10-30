@@ -38,31 +38,32 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
         "401":
-          description: "Unauthorized"
-  # /user/{id}:
-  #   description: Returns user by id
-  #   get:
-  #     summary: Get user by id
-  #     tags:
-  #       - user
-  #     parameters:
-  #       - name: id
-  #         in: path
-  #         description: User id
-  #         required: true
-  #         schema:
-  #           type: integer
-  #     responses:
-  #       "200":
-  #         description: User data
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/User"
-  #       "404":
-  #         description: "User does not exist"
-  #       "403":
-  #         description: "Forbidden-> not admin, not teacher, not teacher admin, not opertator"
+          description: "Current user does not exist"
+
+  /user/{id}:
+    description: Returns user by id
+    get:
+      summary: Get user by id
+      tags:
+        - user
+      parameters:
+        - name: id
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: "User does not exist"
+        "403":
+          description: "User does not have permission to access this resource"
   /user/{id}/activity:
     description: Returns user activity by id
     get:
@@ -502,10 +503,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Team"
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden-> not admin, not teacher, not teacher admin, not opertator
     post:
       summary: "Create team"
       tags:
@@ -517,18 +514,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Team"
-        "401":
-          description: Unauthorized
-  /team/{teamCode}:
+
+  /team/{teamId}:
     parameters:
-      - name: teamCode
+      - name: teamId
         in: path
-        description: Code of TEAM
+        description: ID of TEAM
         required: true
         schema:
-          type: string
+          type: integer
+          format: int64
     get:
-      summary: Get team with members
+      summary: Get team
       tags:
         - team
       responses:
@@ -538,20 +535,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Team"
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden-> not in team, not admin, not teacher, not teacher admin, not opertator
         "404":
           description: Team not found
     put:
-      parameters:
-        - name: team
-          in: query
-          description: Team data
-          required: true
-          schema:
-            $ref: "#/components/schemas/Team"
       summary: Update team
       tags:
         - team
@@ -562,10 +548,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Team"
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden-> not leader of team, not admin, not teacher admin, not opertator)
         "404":
           description: Team not found
     delete:
@@ -575,63 +557,36 @@ paths:
       responses:
         "200":
           description: Team deleted
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden-> not leader of team, not admin, not opertator
-        "404":
-          description: Team not found
-  /team/{teamCode}/restore:
-    parameters:
-      - name: teamCode
-        in: path
-        description: Code of TEAM
-        required: true
-        schema:
-          type: string
-    put:
-      summary: Restore team
-      tags:
-        - team
-      responses:
-        "200":
-          description: Team restored
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Team"
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden-> not leader of team, not admin, not opertator
         "404":
           description: Team not found
   /team/{teamId}/members:
     description: Team member management
     parameters:
-      - name: teamCode
+      - name: teamId
         in: path
-        description: code of TEAM
+        description: ID of TEAM
         required: true
         schema:
-          type: string
+          type: integer
+          format: int64
     post:
       tags:
         - team
       summary: Invite a user to a team
       parameters:
-        - name: e5code
-          description: e5code of user to invite
+        - name: UserId
+          description: User to invite
           in: query
           schema:
-            type: string
+            type: number
+            format: int64
       responses:
         "201":
           description: Member created
         "401":
           description: Unauthorized
         "403":
-          description: Forbidden-> not leader of team, not admin, not opertator
+          description: Forbidden
         "404":
           description: Team not found
     put:
@@ -639,13 +594,14 @@ paths:
         - team
       summary: Promote or demote a team member
       parameters:
-        - name: e5code
-          description: e5code of user to promote
+        - name: UserId
+          description: Member to affect
           in: query
           schema:
-            type: string
+            type: number
+            format: int64
         - name: promote
-          description: Promote member to team leader, accept invite / demote to regular member
+          description: Promote member to team leader / accept invite
           in: query
           schema:
             type: boolean
@@ -659,59 +615,40 @@ paths:
           description: Forbidden
         "404":
           description: Team or member not found
-    delete:
+  /team/{teamId}/activity:
+    description: Team activity view
+    parameters:
+      - name: teamId
+        in: path
+        description: ID of TEAM
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
       tags:
         - team
-      summary: Kick a team member
-      parameters:
-        - name: e5code
-          description: e5code of user to remove
-          in: query
-          schema:
-            type: string
+      summary: Get team activity
       responses:
-        "204":
-          description: Member deleted
+        "200":
+          description: Team activity
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    event:
+                      $ref: "#/components/schemas/Event"
+                    attendance:
+                      $ref: "#/components/schemas/TeamAttendance"
         "401":
           description: Unauthorized
         "403":
-          description: Forbidden-> not leader of team, not admin, not opertator
+          description: Forbidden
         "404":
-          description: Team or member not found
-  # /team/{teamId}/activity:
-  #   description: Team activity view
-  #   parameters:
-  #     - name: teamId
-  #       in: path
-  #       description: ID of TEAM
-  #       required: true
-  #       schema:
-  #         type: integer
-  #         format: int64
-  #   get:
-  #     tags:
-  #       - team
-  #     summary: Get team activity
-  #     responses:
-  #       "200":
-  #         description: Team activity
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: array
-  #               items:
-  #                 type: object
-  #                 properties:
-  #                   event:
-  #                     $ref: "#/components/schemas/Event"
-  #                   attendance:
-  #                     $ref: "#/components/schemas/TeamAttendance"
-  #       "401":
-  #         description: Unauthorized
-  #       "403":
-  #         description: Forbidden
-  #       "404":
-  #         description: Team not found
+          description: Team not found
   /setting:
     get:
       summary: "Settings"
@@ -980,8 +917,7 @@ components:
       properties:
         code:
           type: string
-          example: abcdef
-          pattern: "[a-zA-Z]{1,10}$"
+          example: 4fc213
         name:
           type: string
           example: Sauercloud

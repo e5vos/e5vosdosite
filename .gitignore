@@ -1,20 +1,9 @@
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/public/assets
-/storage/*.key
-/vendor
+node_modules
+storage
+vendor
 .env
-.env.backup
-.phpunit.result.cache
-.env.testing
-Homestead.json
-Homestead.yaml
-auth.json
-npm-debug.log
-yarn-error.log
-/.idea
-/.vscode
 
-deploy.zip
+backend/resources/js/ziggy.js
+backend/public
+backend/resources/views/frontend.blade.php
+laravel-default.zip

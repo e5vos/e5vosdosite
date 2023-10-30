@@ -1,22 +1,9 @@
-# Deployment
-/.devcontainer @difcsi
-/.github/workflows @difcsi
-
-/ci @difcsi
 
 # Frontend
-/resources/frontend @difcsi
-/.storybook @difcsi
+/frontend @difcsi
 
 # Backend
-/app @volubepossum
-/bootstrap @volubepossum
-/config @volubepossum
-/database @volubepossum
-/routes @volubepossum
-/public @volubepossum
-/tests @volubepossum
-
+/backend @volubepossum
 
 # API YAML
 /doc/api.yaml @difcsi @volubepossum

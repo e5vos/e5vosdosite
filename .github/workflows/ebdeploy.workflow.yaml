@@ -4,7 +4,7 @@ on:
     branches:
       - prod
 jobs:
-  build:
+  deploy:
     runs-on: "ubuntu-latest"
     environment: Elastic Beanstalk
     steps:

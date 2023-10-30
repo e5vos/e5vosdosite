@@ -62,7 +62,7 @@ class TeamPolicy
      */
     public function update(User $user)
     {
-        return $user->isLeaderOfTeam(request()->teamCode);
+        return $user->isLeaderOfTeam(request()->teamCode) || $user->hasPermission('TAD');
     }
 
     /**

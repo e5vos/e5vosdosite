@@ -36,11 +36,12 @@ class TeamMemberShipPolicy
      * Determine whether the user can create models.
      *
      * @param  \App\Models\User  $user
+     * @param  Team|string  $team
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user, Team|string $teamCode = null)
+    public function create(User $user, Team|string $team = null)
     {
-        return $user->isLeaderOfTeam($teamCode->code ?? $teamCode ?? request()->teamCode);
+        return $user->isLeaderOfTeam($team->code ?? $team ?? request()->team);
     }
 
     /**

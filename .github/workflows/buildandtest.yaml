@@ -5,6 +5,7 @@ on:
       - master
 jobs:
   build:
+    name: "Build + test"
     runs-on: "ubuntu-latest"
     environment: Elastic Beanstalk
     steps:

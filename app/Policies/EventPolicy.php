@@ -156,7 +156,6 @@ class EventPolicy
         $attender = request()->attender ?? request()->user()->e5code;
         if (isset($event->signup_type) && !$event->signuppers()->find(strlen($attender) === 13 ? 'e5code' : 'code', $attender)) {
             throw new SignupRequiredException();
-            return new SignupRequiredException();
         }
         if ($event->slot->slot_type === SlotType::presentation->value) {
             return $user->hasPermission('TCH') || $user->hasPermission('TAD');

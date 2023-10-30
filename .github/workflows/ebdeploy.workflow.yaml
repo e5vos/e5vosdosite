@@ -23,8 +23,6 @@ jobs:
         run: composer install
       - name: Generate Routes
         run: php artisan ziggy:generate --types
-      - name: Optimise backend
-        run: php artisan optimize
       - name: Generate dotenv file
         uses: SpicyPizza/create-envfile@v2.0
         with:

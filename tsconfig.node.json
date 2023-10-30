@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "lib": ["dom", "DOM.Iterable", "esnext"],
+        "allowJs": false,
+        "forceConsistentCasingInFileNames": true,
+        "composite": true,
+        "incremental": true,
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "isolatedModules": true,
+        "resolveJsonModule": true,
+        "baseUrl": "."
+    },
+    "ts-node": {
+        "esm": true,
+        "experimentalSpecifierResolution": "node",
+        "files": true
+    },
+    "include": ["vite.config.ts"]
+}

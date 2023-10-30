@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/base:ubuntu
+    network_mode: service:db
+    command: sleep infinity
+    volumes:
+      - ..:/e5vosdosite:cached
+      - ./vendor:/e5vosdosite/src/vendor
+      - ./node_modules:/e5vosdosite/src/node_modules
+  db:
+    image: mysql:latest
+    restart: unless-stopped
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE='e5vosdosite'
+      - MYSQL_USER='user'
+      - MYSQL_PASSWORD='password'
+      - MYSQL_ROOT_PASSWORD='password'
+volumes:
+  db:

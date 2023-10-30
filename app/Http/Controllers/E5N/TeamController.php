@@ -42,11 +42,7 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $team = Team::create($request->all());
-        } catch (\Exception $e) {
-            throw new NotAllowedException();
-        }
+        $team = Team::create($request->all());
         $team->members()->attach(Auth::user()->id, ['role' => MembershipType::Leader]);
         $team = new TeamResource($team->load('members'));
         Cache::forget('e5n.teams.all');

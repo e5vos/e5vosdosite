@@ -9,7 +9,6 @@ use App\Exceptions\WrongSignupTypeException;
 use App\Helpers\PermissionType;
 use App\Helpers\SlotType;
 use App\Models\Event;
-use App\Models\Permission;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -26,7 +25,7 @@ class EventPolicy
      */
     public function before(User $user)
     {
-        if ($user->hasPermission('OPT')) {
+        if ($user->hasPermission(PermissionType::Operator->value)) {
             return true;
         }
     }
@@ -41,7 +40,7 @@ class EventPolicy
     public function update(User $user, Event $event = null)
     {
         $eventId = $event->id ?? request()->eventId;
-        return $user->hasPermission('ADM') || $user->organisesEvent($eventId);
+        return $user->hasPermission(PermissionType::Admin->value) || $user->organisesEvent($eventId);
     }
 
 
@@ -71,7 +70,7 @@ class EventPolicy
     public function delete(User $user, Event $event = null)
     {
         $eventId = $event->id ?? request()->eventId;
-        return $user->hasPermission(PermissionType::Aadmin->value) || $user->organisesEvent($eventId);
+        return $user->hasPermission(PermissionType::Admin->value) || $user->organisesEvent($eventId);
     }
 
     /**
@@ -82,7 +81,7 @@ class EventPolicy
      */
     public function restore($user)
     {
-        return $user->hasPermission(PermissionType::Aadmin->value);
+        return $user->hasPermission(PermissionType::Admin->value);
     }
 
     /**
@@ -113,8 +112,12 @@ class EventPolicy
         if ($event->signup_type !== 'team_user' && $event->signup_type !== $attenderType) {
             throw new WrongSignupTypeException();
         }
-        $attender = $attenderType == 'user' ? (is_numeric($attenderCode) ? $user->id == $attenderCode : $user->e5code === $attenderCode) : $user->isLeaderOfTeam($attenderCode);
-        return $attender || $user->hasPermission(PermissionType::Aadmin->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
+        if ($attenderType === 'user') {
+            $isAttender = is_numeric($attenderCode) ? $user->id == $attenderCode : $user->e5code === $attenderCode; // check for both id and e5code
+        } else { // if team
+            $isAttender = $user->isLeaderOfTeam($attenderCode);
+        }
+        return $isAttender || $user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
     }
 
     /**
@@ -136,7 +139,7 @@ class EventPolicy
         if (!request()->has('attender')) {
             abort(400, 'No attender specified');
         }
-        return request()->attender === $user->e5code || $user->isLeaderOfTeam(request()->attender) || $user->hasPermission(PermissionType::Aadmin->value);
+        return request()->attender === $user->e5code || $user->isLeaderOfTeam(request()->attender) || $user->hasPermission(PermissionType::Admin->value);
     }
 
     /**
@@ -158,9 +161,9 @@ class EventPolicy
             throw new SignupRequiredException();
         }
         if ($event->slot->slot_type === SlotType::presentation->value) {
-            return $user->hasPermission('TCH') || $user->hasPermission('TAD');
+            return $user->hasPermission(PermissionType::Teacher->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
         } else { // if not a presentation
-            return $user->hasPermission('ADM') || ($user->organisesEvent($event->id) && $event->isRunning());
+            return $user->hasPermission(PermissionType::Admin->value) || ($user->organisesEvent($event->id) && $event->isRunning());
         }
     }
 }

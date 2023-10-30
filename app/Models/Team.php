@@ -135,7 +135,7 @@ class Team extends Model
     /**
      * make team attend $event
      *
-     * @param  Event $eventv the event to attend
+     * @param  Event $event the event to attend
      * @param  bool $force whether to force the signup even if it has a root parent
      * @throws EventFullException if the event is full
      * @return EventSignup the newly created EventSignup object

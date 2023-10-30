@@ -185,7 +185,7 @@ class User extends Authenticable
         }
         if (
             isset($event->capacity) && $event->occupancy >= $event->capacity  &&
-            !request()->user()->hasPermission(PermissionType::Aadmin->value)
+            !request()->user()->hasPermission(PermissionType::Admin->value)
         ) {
             throw new EventFullException();
         }

@@ -645,7 +645,7 @@ paths:
           schema:
             type: string
         - name: promote
-          description: Promote member to team leader, accept invite / demote to regular member 
+          description: Promote member to team leader, accept invite / demote to regular member
           in: query
           schema:
             type: boolean
@@ -980,7 +980,8 @@ components:
       properties:
         code:
           type: string
-          example: 4fc213
+          example: abcdef
+          pattern: "[a-zA-Z]{1,10}$"
         name:
           type: string
           example: Sauercloud

@@ -39,6 +39,30 @@ paths:
                 $ref: "#/components/schemas/User"
         "401":
           description: "Unauthorized"
+  /user/search:
+    description: Returns users matching query
+    get:
+      summary: Get users matching query
+      tags:
+        - user
+      parameters:
+        - name: q
+          in: query
+          description: Search query on user name
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Users matching query
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "401":
+          description: "Unauthorized. User search should require authentication"
   # /user/{id}:
   #   description: Returns user by id
   #   get:
@@ -309,7 +333,7 @@ paths:
           format: int64
       - name: attender
         in: query
-        description: ID of user or attending, and the team_code if attending in a team
+        description: "If user, e5code or user id. Else, team_code"
         required: true
         schema:
           type: object
@@ -346,7 +370,7 @@ paths:
           format: int64
       - name: attender
         in: query
-        description: ID of user or attending, and the team_code if attending in a team
+        description: "If user, e5code or user id. Else, team_code"
         required: true
         schema:
           type: object
@@ -491,6 +515,7 @@ paths:
   /team:
     get:
       summary: "Team List"
+      description: "Returns all teams visible to the user (member of team, or admin)"
       tags:
         - team
       responses:
@@ -620,8 +645,8 @@ paths:
         - team
       summary: Invite a user to a team
       parameters:
-        - name: e5code
-          description: e5code of user to invite
+        - name: email
+          description: email of user to invite
           in: query
           schema:
             type: string
@@ -639,8 +664,8 @@ paths:
         - team
       summary: Promote or demote a team member
       parameters:
-        - name: e5code
-          description: e5code of user to promote
+        - name: email / id
+          description: email/id of user to promote
           in: query
           schema:
             type: string
@@ -664,8 +689,8 @@ paths:
         - team
       summary: Kick a team member
       parameters:
-        - name: e5code
-          description: e5code of user to remove
+        - name: email / id
+          description: email / id of user to remove
           in: query
           schema:
             type: string

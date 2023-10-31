@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
 import "style/App.pcss";
 import { BaseLayout } from "templates";
@@ -8,6 +8,7 @@ import { BaseLayout } from "templates";
 import refreshCSRF from "lib/csrf";
 import store, { persistor } from "lib/store";
 
+import { BackendError, HTTPErrorCode } from "components/Error";
 import Loader from "components/UIKit/Loader";
 
 // Generic Routes
@@ -142,7 +143,13 @@ function App() {
                                     />
                                     <Route
                                         path="*"
-                                        element={<Error code={404} />}
+                                        element={
+                                            window.statusCode ? (
+                                                <BackendError />
+                                            ) : (
+                                                <Error code={404} />
+                                            )
+                                        }
                                     />
                                 </Route>
                             </Routes>

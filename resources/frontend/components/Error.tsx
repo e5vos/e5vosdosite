@@ -1,7 +1,11 @@
 import { ReactComponent as Donci } from "assets/donci.svg";
-import { ReactNode } from "react";
+import { useEffectOnce } from "hooks/useEffectOnce";
+import { ReactNode, useState } from "react";
 
 import Locale from "lib/locale";
+
+import Button from "./UIKit/Button";
+import Loader from "./UIKit/Loader";
 
 export type HTTPErrorCode = 400 | 401 | 403 | 404 | 500 | 502 | 503 | 504;
 
@@ -18,6 +22,7 @@ const locale = Locale({
             504: "Hiba történt a kiszolgáló oldalon",
         },
         unknown: "Ismeretlen hiba történt",
+        acknowledge: "Rendben",
     },
     en: {
         code: {
@@ -31,6 +36,7 @@ const locale = Locale({
             504: "An error occured on the server",
         },
         unknown: "An unknown error occured",
+        acknowledge: "Acknowledge",
     },
 });
 
@@ -42,10 +48,12 @@ const Error = ({
     code,
     message,
     children,
+    onClose,
 }: {
     code: HTTPErrorCode;
     message?: string;
     children?: ReactNode;
+    onClose?: () => void;
 }) => {
     return (
         <div className="flex h-full flex-col items-center justify-center">
@@ -54,12 +62,42 @@ const Error = ({
                 {code}{" "}
             </div>
             {children ?? (
-                <div className="text-2xl">
-                    {message ?? getDefaultMessage(code)}
+                <div>
+                    <div className="text-2xl">
+                        {message ?? getDefaultMessage(code)}
+                    </div>
+                    {onClose && (
+                        <Button
+                            variant="danger"
+                            className="mt-3 w-full"
+                            onClick={onClose}
+                        >
+                            {locale.acknowledge}
+                        </Button>
+                    )}
                 </div>
             )}
         </div>
     );
+};
+
+export const BackendError = () => {
+    const [data, setData] = useState<{
+        code: HTTPErrorCode;
+        message?: string;
+    }>();
+    useEffectOnce(() => {
+        setData({
+            code: window.statusCode as HTTPErrorCode,
+            message: window.message,
+        });
+        return () => {
+            window.statusCode = undefined;
+            window.message = undefined;
+        };
+    });
+    if (!data) return <Loader />;
+    return <Error code={data.code} message={data.message} />;
 };
 
 export default Error;

@@ -162,6 +162,27 @@ const locale = {
             title: "Cookie-k (Sütik) használata",
             description:
                 "A sütik (cookie-k) valójában kis, adatot tároló fájlok, amiket a látogató böngészője menedzsel. A látogató a saját böngészőjében engedélyezheti vagy letilthatja a sütik használatát, törölheti a korábban elhelyezett sütiket.",
+            cookiesIntro: "Az oldalunk a következő sütiket használja:",
+            cookiesHeader: {
+                name: "Név",
+                duration: "Élettartam",
+                description: "Leírás",
+                required: "Müködéshez szükséges",
+            },
+            cookies: [
+                {
+                    name: "XSRF-TOKEN",
+                    duration: "Ismeretlen",
+                    description: "CSRF védelmi süti",
+                    required: "Szükséges",
+                },
+                {
+                    name: "e5vosdo.hu_session",
+                    duration: "Ismeretlen",
+                    description: "Munkamenet azonosíto süti",
+                    required: "Szükséges",
+                },
+            ],
         },
     },
     ownersRights: {
@@ -319,7 +340,7 @@ const PrivacyPolicyPage = () => {
                 <h2 className=" text-lg font-bold">1. {locale.laws.title}</h2>
                 <ol className="list-lower-latin ml-16">
                     {locale.laws.array.map((e) => (
-                        <li>{e}</li>
+                        <li key={e}>{e}</li>
                     ))}
                 </ol>
             </section>
@@ -332,82 +353,100 @@ const PrivacyPolicyPage = () => {
                         2.1 {locale.participants.handler.title}
                     </h3>
                     <table className="mb-2 w-full text-left">
-                        <tr>
-                            <th scope="row">
-                                {locale.participants.handler.headers.name}
-                            </th>
-                            <td>{locale.participants.handler.values.name}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                {locale.participants.handler.headers.address}
-                            </th>
-                            <td>
-                                {locale.participants.handler.values.address}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                {locale.participants.handler.headers.phone}
-                            </th>
-                            <td>{locale.participants.handler.values.phone}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                {locale.participants.handler.headers.email}
-                            </th>
-                            <td>
-                                <Link
-                                    to={`mailto:${locale.participants.handler.values.email}`}
-                                >
-                                    {locale.participants.handler.values.email}
-                                </Link>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                {locale.participants.handler.headers.website}
-                            </th>
-                            <td>
-                                <Link
-                                    to={
-                                        locale.participants.handler.values
+                        <tbody>
+                            <tr>
+                                <th scope="row">
+                                    {locale.participants.handler.headers.name}
+                                </th>
+                                <td>
+                                    {locale.participants.handler.values.name}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    {
+                                        locale.participants.handler.headers
+                                            .address
+                                    }
+                                </th>
+                                <td>
+                                    {locale.participants.handler.values.address}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    {locale.participants.handler.headers.phone}
+                                </th>
+                                <td>
+                                    {locale.participants.handler.values.phone}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    {locale.participants.handler.headers.email}
+                                </th>
+                                <td>
+                                    <Link
+                                        to={`mailto:${locale.participants.handler.values.email}`}
+                                    >
+                                        {
+                                            locale.participants.handler.values
+                                                .email
+                                        }
+                                    </Link>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    {
+                                        locale.participants.handler.headers
                                             .website
                                     }
-                                >
-                                    {locale.participants.handler.values.website}{" "}
-                                </Link>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                {
-                                    locale.participants.handler.headers
-                                        .activity_location
-                                }
-                            </th>
-                            <td>
-                                {
-                                    locale.participants.handler.values
-                                        .activity_location
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                {
-                                    locale.participants.handler.headers
-                                        .storageprovider
-                                }
-                            </th>
-                            <td>
-                                {" "}
-                                {
-                                    locale.participants.handler.values
-                                        .storageprovider
-                                }
-                            </td>
-                        </tr>
+                                </th>
+                                <td>
+                                    <Link
+                                        to={
+                                            locale.participants.handler.values
+                                                .website
+                                        }
+                                    >
+                                        {
+                                            locale.participants.handler.values
+                                                .website
+                                        }{" "}
+                                    </Link>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    {
+                                        locale.participants.handler.headers
+                                            .activity_location
+                                    }
+                                </th>
+                                <td>
+                                    {
+                                        locale.participants.handler.values
+                                            .activity_location
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    {
+                                        locale.participants.handler.headers
+                                            .storageprovider
+                                    }
+                                </th>
+                                <td>
+                                    {" "}
+                                    {
+                                        locale.participants.handler.values
+                                            .storageprovider
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                     <p>{locale.participants.handler.description}</p>
                 </div>
@@ -557,6 +596,48 @@ const PrivacyPolicyPage = () => {
                     <h3 className="font-bold">
                         4.1 {locale.miscellaneous.cookie.title}
                     </h3>
+                    <p>{locale.miscellaneous.cookie.description}</p>
+                    <h4>{locale.miscellaneous.cookie.cookiesIntro}</h4>
+                    <table className="mb-2 w-full text-left">
+                        <thead>
+                            <tr>
+                                <th>
+                                    {
+                                        locale.miscellaneous.cookie
+                                            .cookiesHeader.name
+                                    }
+                                </th>
+                                <th>
+                                    {
+                                        locale.miscellaneous.cookie
+                                            .cookiesHeader.duration
+                                    }
+                                </th>
+                                <th>
+                                    {
+                                        locale.miscellaneous.cookie
+                                            .cookiesHeader.description
+                                    }
+                                </th>
+                                <th>
+                                    {
+                                        locale.miscellaneous.cookie
+                                            .cookiesHeader.required
+                                    }
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {locale.miscellaneous.cookie.cookies.map((e) => (
+                                <tr key={e.name}>
+                                    <td>{e.name}</td>
+                                    <td>{e.duration}</td>
+                                    <td>{e.description}</td>
+                                    <td>{e.required}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </section>
             <section>
@@ -703,115 +784,117 @@ const PrivacyPolicyPage = () => {
                         </ol>
                     </div>
                     <table className="mb-2 w-full text-left">
-                        <tr>
-                            <th scope="row">
-                                {
-                                    locale.complaint.authoritiesStart.authority
-                                        .headers.name
-                                }
-                            </th>
-                            <td>
-                                {
-                                    locale.complaint.authoritiesStart.authority
-                                        .values.name
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                {
-                                    locale.complaint.authoritiesStart.authority
-                                        .headers.address
-                                }
-                            </th>
-                            <td>
-                                {
-                                    locale.complaint.authoritiesStart.authority
-                                        .values.address
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                {
-                                    locale.complaint.authoritiesStart.authority
-                                        .headers.postalAddress
-                                }
-                            </th>
-                            <td>
-                                {
-                                    locale.complaint.authoritiesStart.authority
-                                        .values.postalAddress
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                {
-                                    locale.complaint.authoritiesStart.authority
-                                        .headers.phoneNumber
-                                }
-                            </th>
-                            <td>
-                                {
-                                    locale.complaint.authoritiesStart.authority
-                                        .values.phoneNumber
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                {
-                                    locale.complaint.authoritiesStart.authority
-                                        .headers.faxNumber
-                                }
-                            </th>
-                            <td>
-                                {
-                                    locale.complaint.authoritiesStart.authority
-                                        .values.faxNumber
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                {
-                                    locale.complaint.authoritiesStart.authority
-                                        .headers.email
-                                }
-                            </th>
-                            <td>
-                                <Link
-                                    to={`mailto:${locale.complaint.authoritiesStart.authority.values.email}`}
-                                >
+                        <tbody>
+                            <tr>
+                                <th scope="row">
                                     {
                                         locale.complaint.authoritiesStart
-                                            .authority.values.email
+                                            .authority.headers.name
                                     }
-                                </Link>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                {
-                                    locale.complaint.authoritiesStart.authority
-                                        .headers.website
-                                }
-                            </th>
-                            <td>
-                                <Link
-                                    to={
-                                        locale.complaint.authoritiesStart
-                                            .authority.values.website
-                                    }
-                                >
+                                </th>
+                                <td>
                                     {
                                         locale.complaint.authoritiesStart
-                                            .authority.values.website
+                                            .authority.values.name
                                     }
-                                </Link>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    {
+                                        locale.complaint.authoritiesStart
+                                            .authority.headers.address
+                                    }
+                                </th>
+                                <td>
+                                    {
+                                        locale.complaint.authoritiesStart
+                                            .authority.values.address
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    {
+                                        locale.complaint.authoritiesStart
+                                            .authority.headers.postalAddress
+                                    }
+                                </th>
+                                <td>
+                                    {
+                                        locale.complaint.authoritiesStart
+                                            .authority.values.postalAddress
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    {
+                                        locale.complaint.authoritiesStart
+                                            .authority.headers.phoneNumber
+                                    }
+                                </th>
+                                <td>
+                                    {
+                                        locale.complaint.authoritiesStart
+                                            .authority.values.phoneNumber
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    {
+                                        locale.complaint.authoritiesStart
+                                            .authority.headers.faxNumber
+                                    }
+                                </th>
+                                <td>
+                                    {
+                                        locale.complaint.authoritiesStart
+                                            .authority.values.faxNumber
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    {
+                                        locale.complaint.authoritiesStart
+                                            .authority.headers.email
+                                    }
+                                </th>
+                                <td>
+                                    <Link
+                                        to={`mailto:${locale.complaint.authoritiesStart.authority.values.email}`}
+                                    >
+                                        {
+                                            locale.complaint.authoritiesStart
+                                                .authority.values.email
+                                        }
+                                    </Link>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    {
+                                        locale.complaint.authoritiesStart
+                                            .authority.headers.website
+                                    }
+                                </th>
+                                <td>
+                                    <Link
+                                        to={
+                                            locale.complaint.authoritiesStart
+                                                .authority.values.website
+                                        }
+                                    >
+                                        {
+                                            locale.complaint.authoritiesStart
+                                                .authority.values.website
+                                        }
+                                    </Link>
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </section>

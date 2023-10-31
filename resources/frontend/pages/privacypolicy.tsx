@@ -1,9 +1,5 @@
 import { Link } from "react-router-dom";
 
-import { isAdmin, isOperator } from "lib/gates";
-
-import { gated } from "components/Gate";
-
 const locale = {
     title: "A Budapest V. kerületi Eötvös József Gimnázium Diákönkormányzat honlapjának Adatkezelési Tájékoztatója",
     date: "2023 október",
@@ -316,112 +312,124 @@ const locale = {
 
 const PrivacyPolicyPage = () => {
     return (
-        <div>
+        <div className="mx-auto max-w-4xl">
             <h1 className="text-center text-xl">{locale.title}</h1>
             <div className="text-center">{locale.date}</div>
-            <section>
-                <h2 className="text-center text-lg font-bold">
-                    1. {locale.laws.title}
-                </h2>
-                <ol className="list-lower-latin ml-4">
+            <section className="my-4">
+                <h2 className=" text-lg font-bold">1. {locale.laws.title}</h2>
+                <ol className="list-lower-latin ml-16">
                     {locale.laws.array.map((e) => (
                         <li>{e}</li>
                     ))}
                 </ol>
             </section>
-            <section>
+            <section className="my-4">
                 <h2 className="text-center text-lg font-bold">
                     2. {locale.participants.title}
                 </h2>
-                <h3 className="font-bold">
-                    2.1 {locale.participants.handler.title}
-                </h3>
-                <table>
-                    <tr>
-                        <th scope="row">
-                            {locale.participants.handler.headers.name}
-                        </th>
-                        <td>{locale.participants.handler.values.name}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            {locale.participants.handler.headers.address}
-                        </th>
-                        <td>{locale.participants.handler.values.address}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            {locale.participants.handler.headers.phone}
-                        </th>
-                        <td>{locale.participants.handler.values.phone}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            {locale.participants.handler.headers.email}
-                        </th>
-                        <td>
-                            <Link
-                                to={`mailto:${locale.participants.handler.values.email}`}
-                            >
-                                {locale.participants.handler.values.email}
-                            </Link>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            {locale.participants.handler.headers.website}
-                        </th>
-                        <td>
-                            <Link
-                                to={locale.participants.handler.values.website}
-                            >
-                                {locale.participants.handler.values.website}{" "}
-                            </Link>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            {
-                                locale.participants.handler.headers
-                                    .activity_location
-                            }
-                        </th>
-                        <td>
-                            {
-                                locale.participants.handler.values
-                                    .activity_location
-                            }
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            {
-                                locale.participants.handler.headers
-                                    .storageprovider
-                            }
-                        </th>
-                        <td>
-                            {" "}
-                            {locale.participants.handler.values.storageprovider}
-                        </td>
-                    </tr>
-                </table>
-                <p>{locale.participants.handler.description}</p>
-                <h2 className="text-center font-bold">
-                    2.2 {locale.participants.processor.title}
-                </h2>
-                <p>{locale.participants.processor.description}</p>
-                <h2 className="text-center font-bold">
-                    2.3 {locale.participants.owner.title}
-                </h2>
-                <p>{locale.participants.owner.description}</p>
+                <div>
+                    <h3 className="font-bold">
+                        2.1 {locale.participants.handler.title}
+                    </h3>
+                    <table className="mb-2 w-full text-left">
+                        <tr>
+                            <th scope="row">
+                                {locale.participants.handler.headers.name}
+                            </th>
+                            <td>{locale.participants.handler.values.name}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                {locale.participants.handler.headers.address}
+                            </th>
+                            <td>
+                                {locale.participants.handler.values.address}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                {locale.participants.handler.headers.phone}
+                            </th>
+                            <td>{locale.participants.handler.values.phone}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                {locale.participants.handler.headers.email}
+                            </th>
+                            <td>
+                                <Link
+                                    to={`mailto:${locale.participants.handler.values.email}`}
+                                >
+                                    {locale.participants.handler.values.email}
+                                </Link>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                {locale.participants.handler.headers.website}
+                            </th>
+                            <td>
+                                <Link
+                                    to={
+                                        locale.participants.handler.values
+                                            .website
+                                    }
+                                >
+                                    {locale.participants.handler.values.website}{" "}
+                                </Link>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                {
+                                    locale.participants.handler.headers
+                                        .activity_location
+                                }
+                            </th>
+                            <td>
+                                {
+                                    locale.participants.handler.values
+                                        .activity_location
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                {
+                                    locale.participants.handler.headers
+                                        .storageprovider
+                                }
+                            </th>
+                            <td>
+                                {" "}
+                                {
+                                    locale.participants.handler.values
+                                        .storageprovider
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                    <p>{locale.participants.handler.description}</p>
+                </div>
+                <div className="my-2">
+                    <h2 className="font-bold">
+                        2.2 {locale.participants.processor.title}
+                    </h2>
+                    <p>{locale.participants.processor.description}</p>
+                </div>
+                <div className="my-2">
+                    <h2 className="font-bold">
+                        2.3 {locale.participants.owner.title}
+                    </h2>
+                    <p>{locale.participants.owner.description}</p>
+                </div>
             </section>
             <section>
                 <h2 className="text-center text-lg font-bold">
                     3. {locale.handling.title}
                 </h2>
-                <div>
-                    <h3 className="text-center font-bold">
+                <div className="my-2">
+                    <h3 className="font-bold">
                         3.1 {locale.handling.principles.title}
                     </h3>
                     <div>
@@ -434,46 +442,46 @@ const PrivacyPolicyPage = () => {
                             </p>
                         ))}
                     </div>
-                    <p className="font-bold">
+                    <p className="mt-3 font-bold">
                         {locale.handling.principles.accountability}
                     </p>
                 </div>
-                <div>
-                    <h3 className="text-center font-bold">
+                <div className="my-2">
+                    <h3 className=" font-bold">
                         3.2 {locale.handling.basis.title}
                     </h3>
                     <p>{locale.handling.basis.description}</p>
                 </div>
-                <div>
-                    <h3 className="text-center font-bold">
+                <div className="my-2">
+                    <h3 className=" font-bold">
                         3.3 {locale.handling.goal.title}
                     </h3>
                     <p>{locale.handling.goal.description}</p>
                 </div>
-                <div>
-                    <h3 className="text-center font-bold">
+                <div className="my-2">
+                    <h3 className="font-bold">
                         3.4 {locale.handling.tech.title}
                     </h3>
                     <div>
                         <p>{locale.handling.tech.description}</p>
-                        <div>
+                        <div className="mt-2">
                             <span>{locale.handling.tech.sourcesIntro}</span>
-                            <ol className="list-lower-latin ml-4">
+                            <ol className="list-lower-latin ml-16">
                                 {locale.handling.tech.sources.map((e) => (
                                     <li key={e}>{e}</li>
                                 ))}
                             </ol>
                         </div>
-                        <p>{locale.handling.tech.location}</p>
+                        <p className="mt-2">{locale.handling.tech.location}</p>
                     </div>
                 </div>
-                <div>
-                    <h3 className="text-center font-bold">
+                <div className="my-2">
+                    <h3 className="font-bold">
                         3.5 {locale.handling.access.title}
                     </h3>
                     <div>
                         <span>{locale.handling.access.intro}</span>
-                        <ol className="list-lower-latin ml-4">
+                        <ol className="list-lower-latin ml-16">
                             {locale.handling.access.accessors.map((e) => (
                                 <li key={e}>{e}</li>
                             ))}
@@ -481,8 +489,8 @@ const PrivacyPolicyPage = () => {
                         <div>{locale.handling.access.location}</div>
                     </div>
                 </div>
-                <div>
-                    <h3 className="text-center font-bold">
+                <div className="my-2">
+                    <h3 className="font-bold">
                         3.6 {locale.handling.duration.title}
                     </h3>
                     <p>{locale.handling.duration.description}</p>
@@ -492,15 +500,15 @@ const PrivacyPolicyPage = () => {
                 <h2 className="text-center text-lg font-bold">
                     4. {locale.miscellaneous.title}
                 </h2>
-                <div>
-                    <h3 className="text-center font-bold">
+                <div className="my-2">
+                    <h3 className="font-bold">
                         4.1 {locale.miscellaneous.securityMeasures.title}
                     </h3>
-                    <div>
+                    <div className="my-2">
                         <span>
                             {locale.miscellaneous.securityMeasures.intro}
                         </span>
-                        <ol className="list-lower-latin ml-4">
+                        <ol className="list-lower-latin ml-16">
                             {locale.miscellaneous.securityMeasures.sources.map(
                                 (e) => (
                                     <li key={e}>{e}</li>
@@ -508,14 +516,14 @@ const PrivacyPolicyPage = () => {
                             )}
                         </ol>
                     </div>
-                    <div>
+                    <div className="my-2">
                         <span>
                             {
                                 locale.miscellaneous.securityMeasures
                                     .techMeasuresIntro
                             }
                         </span>
-                        <ol className="list-lower-latin ml-4">
+                        <ol className="list-lower-latin ml-16">
                             {locale.miscellaneous.securityMeasures.techMeasures.map(
                                 (e) => (
                                     <li key={e}>{e}</li>
@@ -523,14 +531,14 @@ const PrivacyPolicyPage = () => {
                             )}
                         </ol>
                     </div>
-                    <div>
+                    <div className="my-2">
                         <span>
                             {
                                 locale.miscellaneous.securityMeasures
                                     .circumstancesIntro
                             }
                         </span>
-                        <ol className="list-lower-latin ml-4">
+                        <ol className="list-lower-latin ml-16">
                             {locale.miscellaneous.securityMeasures.circumstances.map(
                                 (e) => (
                                     <li key={e}>{e}</li>
@@ -538,45 +546,51 @@ const PrivacyPolicyPage = () => {
                             )}
                         </ol>
                     </div>
-                    <p>{locale.miscellaneous.securityMeasures.methods}</p>
-                    <p>{locale.miscellaneous.securityMeasures.policy}</p>
+                    <p className="my-2">
+                        {locale.miscellaneous.securityMeasures.methods}
+                    </p>
+                    <p className="my-2">
+                        {locale.miscellaneous.securityMeasures.policy}
+                    </p>
                 </div>
-                <h3 className="text-center font-bold">
-                    4.1 {locale.miscellaneous.cookie.title}
-                </h3>
+                <div className="my-2">
+                    <h3 className="font-bold">
+                        4.1 {locale.miscellaneous.cookie.title}
+                    </h3>
+                </div>
             </section>
             <section>
                 <h2 className="text-center text-lg font-bold">
                     5. {locale.ownersRights.title}
                 </h2>
                 <div>
-                    <span>{locale.ownersRights.rightsList}</span>
-                    <ol className="list-lower-latin ml-4">
+                    <span>{locale.ownersRights.rightsListIntro}</span>
+                    <ol className="list-lower-latin ml-16">
                         {locale.ownersRights.rightsList.map((e) => (
                             <li key={e}>{e}</li>
                         ))}
                     </ol>
                 </div>
-                <div>
+                <div className="my-2">
                     <h3 className="text-center font-bold">
                         5.2 {locale.ownersRights.access.title}
                     </h3>
                     <p>{locale.ownersRights.access.description}</p>
                 </div>
-                <div>
+                <div className="my-2">
                     <h3 className="text-center font-bold">
                         5.3 {locale.ownersRights.correction.title}
                     </h3>
                     <p>{locale.ownersRights.correction.description}</p>
                 </div>
-                <div>
+                <div className="my-2">
                     <h3 className="text-center font-bold">
                         5.4 {locale.ownersRights.delete.title}
                     </h3>
                     <div>
-                        <div>
+                        <div className="my-2">
                             <span>{locale.ownersRights.delete.intro}</span>
-                            <ol className="list-lower-latin ml-4">
+                            <ol className="list-lower-latin ml-16">
                                 {locale.ownersRights.delete.causes.map((e) => (
                                     <li key={e}>{e}</li>
                                 ))}
@@ -587,21 +601,21 @@ const PrivacyPolicyPage = () => {
                         ))}
                     </div>
                 </div>
-                <div>
+                <div className="my-2">
                     <h3 className="text-center font-bold">
                         5.5 {locale.ownersRights.limit.title}
                     </h3>
-                    <div>
+                    <div className="my-2">
                         <span>{locale.ownersRights.limit.requestIntro}</span>
-                        <ol className="list-lower-latin ml-4">
+                        <ol className="list-lower-latin ml-16">
                             {locale.ownersRights.limit.requestTypes.map((e) => (
                                 <li key={e}>{e}</li>
                             ))}
                         </ol>
                     </div>
-                    <div>
+                    <div className="my-2">
                         <span>{locale.ownersRights.limit.durationIntro}</span>
-                        <ol className="list-lower-latin ml-4">
+                        <ol className="list-lower-latin ml-16">
                             {locale.ownersRights.limit.durationScopes.map(
                                 (e) => (
                                     <li key={e}>{e}</li>
@@ -611,13 +625,13 @@ const PrivacyPolicyPage = () => {
                     </div>
                     <p>{locale.ownersRights.limit.rights}</p>
                 </div>
-                <div>
+                <div className="my-2">
                     <h3 className="text-center font-bold">
                         5.6 {locale.ownersRights.portability.title}
                     </h3>
                     <p>{locale.ownersRights.portability.description}</p>
                 </div>
-                <div>
+                <div className="my-2">
                     <h3 className="text-center font-bold">
                         5.7 {locale.ownersRights.complain.title}
                     </h3>
@@ -632,30 +646,29 @@ const PrivacyPolicyPage = () => {
                     <h3 className="text-center font-bold">
                         6.1 {locale.complaint.contact.title}
                     </h3>
-                    <div>
+                    <div className="my-2">
                         <span>{locale.complaint.contact.intro}</span>
-                        <ol className="list-lower-latin ml-4">
+                        <ol className="list-lower-latin ml-16">
                             {locale.complaint.contact.causes.map((e) => (
                                 <li key={e}>{e}</li>
                             ))}
                         </ol>
                     </div>
                     <p>{locale.complaint.contact.deadline}</p>
-                    <div>
+                    <div className="my-2">
                         <span>{locale.complaint.contact.cost}</span>
-                        <ol className="list-lower-latin ml-4">
+                        <ol className="list-lower-latin ml-16">
                             {locale.complaint.contact.exceptWhen.map((e) => (
                                 <li key={e}>{e}</li>
                             ))}
                         </ol>
                     </div>
-                    <p></p>
                     <p className="font-bold">
                         {locale.complaint.contact.pleaseno}
                     </p>
                     <div>
                         <span>{locale.complaint.contact.damagesIntro}</span>
-                        <ol className="list-lower-latin ml-4">
+                        <ol className="list-lower-latin ml-16">
                             {locale.complaint.contact.damagesExceptions.map(
                                 (e) => (
                                     <li key={e}>{e}</li>
@@ -664,7 +677,7 @@ const PrivacyPolicyPage = () => {
                         </ol>
                     </div>
                 </div>
-                <div>
+                <div className="my-2">
                     <h3 className="text-center font-bold">
                         6.2 {locale.complaint.courtStart.title}
                     </h3>
@@ -674,9 +687,9 @@ const PrivacyPolicyPage = () => {
                     <h3 className="text-center font-bold">
                         6.3 {locale.complaint.authoritiesStart.title}
                     </h3>
-                    <div>
+                    <div className="my-2">
                         <span>{locale.complaint.authoritiesStart.intro}</span>
-                        <ol className="list-lower-latin ml-4">
+                        <ol className="list-lower-latin ml-16">
                             {locale.complaint.authoritiesStart.options.map(
                                 (e) => (
                                     <li key={e.name}>
@@ -689,7 +702,7 @@ const PrivacyPolicyPage = () => {
                             )}
                         </ol>
                     </div>
-                    <table>
+                    <table className="mb-2 w-full text-left">
                         <tr>
                             <th scope="row">
                                 {
@@ -806,10 +819,10 @@ const PrivacyPolicyPage = () => {
                 <h2 className="text-center text-lg font-bold">
                     7. {locale.timescope.title}
                 </h2>
-                <p>{locale.timescope.description}</p>
+                <p className="my-2">{locale.timescope.description}</p>
             </section>
         </div>
     );
 };
 
-export default gated(PrivacyPolicyPage, isAdmin);
+export default PrivacyPolicyPage;

@@ -103,11 +103,11 @@ const SlotsEditPage = React.lazy(
 const adminRoutes = (
     <Route path="admin">
         <Route index element={<AdminsPage />} />
-        <Route path="slot">
+        <Route path="sav">
             <Route index element={<SlotsPage />} />
-            <Route path="create" element={<SlotsCreatePage />} />
+            <Route path="uj" element={<SlotsCreatePage />} />
             <Route path=":slotid">
-                <Route path="edit" element={<SlotsEditPage />} />
+                <Route path="kezel" element={<SlotsEditPage />} />
             </Route>
         </Route>
     </Route>

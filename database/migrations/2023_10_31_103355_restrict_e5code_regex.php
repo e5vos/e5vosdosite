@@ -12,8 +12,7 @@ return new class extends Migration
      */
     public function up()
     {
-        DB::statement('ALTER TABLE `teams` ADD CONSTRAINT `teams_code_ten_long_non_numeric` CHECK(code RLIKE"[a-zA-Z]{1,10}$")');
-
+        DB::statement('ALTER TABLE users ADD CONSTRAINT `users_e5code_format` CHECK(e5code RLIKE "20[1-9]{2}[A-FN][1-9]{2}EJG[1-9]{3}$")');
     }
 
     /**
@@ -23,6 +22,6 @@ return new class extends Migration
      */
     public function down()
     {
-        DB::statement('ALTER TABLE `teams` DROP CONSTRAINT `teams_code_ten_long_non_numeric`');
+        DB::statement('ALTER TABLE users DROP CONSTRAINT `users_e5code_format`');
     }
 };

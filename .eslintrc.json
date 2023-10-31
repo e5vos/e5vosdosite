@@ -1,7 +1,15 @@
 {
-    "extends": ["react-app", "prettier"],
-    "ignorePatterns": ["node_modules/"],
-    "plugins": ["unused-imports"],
+    "extends": [
+        "react-app",
+        "prettier",
+        "plugin:storybook/recommended"
+    ],
+    "ignorePatterns": [
+        "node_modules/"
+    ],
+    "plugins": [
+        "unused-imports"
+    ],
     "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": "latest"

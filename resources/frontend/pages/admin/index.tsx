@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import adminAPI from "lib/api/adminAPI";
 import { isOperator } from "lib/gates";
@@ -20,6 +21,10 @@ const locale = Locale({
         eventsDialog: {
             title: "Események",
         },
+        slots: {
+            title: "Sávok",
+            button: "Sávok kezelése",
+        },
     },
     en: {
         title: "Eötvös Napok Admin",
@@ -31,6 +36,10 @@ const locale = Locale({
         },
         eventsDialog: {
             title: "Events",
+        },
+        slots: {
+            title: "Slots",
+            button: "Manage slots",
         },
     },
 });
@@ -93,6 +102,7 @@ const EventsDialog = ({
 
 const AdminPage = () => {
     const [clearCache] = adminAPI.useClearCacheMutation();
+    const navigate = useNavigate();
     const [usersDialogOpen, setUsersDialogOpen] = useState(false);
     const [eventsDialogOpen, setEventsDialogOpen] = useState(false);
     return (
@@ -128,6 +138,17 @@ const AdminPage = () => {
                             Users
                         </Button>
                         <Button></Button>
+                    </div>
+                    <div className="">
+                        <h3 className="mb-3 text-center text-2xl font-bold">
+                            {locale.slots.title}
+                        </h3>
+                        <Button
+                            onClick={() => navigate("/admin/slot/")}
+                            variant="info"
+                        >
+                            {locale.slots.button}
+                        </Button>
                     </div>
                 </div>
             </div>

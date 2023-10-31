@@ -16,10 +16,13 @@ export const eventAPI = baseAPI
     })
     .injectEndpoints({
         endpoints: (builder) => ({
-            getEvents: builder.query<Event[] | undefined, number | void>({
+            getEvents: builder.query<
+                Event[] | undefined,
+                Pick<Slot, "id"> | void
+            >({
                 query: (slot?) =>
                     slot
-                        ? routeSwitcher("events.slot", { slot_id: slot })
+                        ? routeSwitcher("events.slot", { slot_id: slot.id })
                         : routeSwitcher("events.index"),
                 transformResponse: (response: any) => {
                     if (!Array.isArray(response)) return [response];
@@ -46,13 +49,18 @@ export const eventAPI = baseAPI
                     }
                 },
             }),
-            getEvent: builder.query<Event, number>({
-                query: (id) => routeSwitcher("event.show", id),
-                providesTags: (result, error, id) => [{ type: "Event", id }],
+            getEvent: builder.query<Event, Pick<Event, "id">>({
+                query: ({ id }) => routeSwitcher("event.show", { id }),
+                providesTags: (result, error, { id }) => [
+                    { type: "Event", id },
+                ],
             }),
-            getEventParticipants: builder.query<Array<Attendance>, number>({
-                query: (id) => routeSwitcher("event.participants", id),
-                providesTags: (result, error, id) => [
+            getEventParticipants: builder.query<
+                Array<Attendance>,
+                Pick<Event, "id">
+            >({
+                query: ({ id }) => routeSwitcher("event.participants", id),
+                providesTags: (result, error, { id }) => [
                     { type: "EventParticipants", id },
                 ],
             }),

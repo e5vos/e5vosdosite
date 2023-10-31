@@ -39,22 +39,25 @@ const locale = Locale({
 
 const AdminCounter = ({ slotId }: { slotId: number }) => {
     const { data: notSignedUpStudents } = adminAPI.useGetFreeUsersQuery(
-        slotId,
+        { id: slotId },
         {
             pollingInterval: 5000,
         },
     );
 
     const { data: missingStudents } = adminAPI.useGetNotPresentUsersQuery(
-        slotId,
+        { id: slotId },
         {
             pollingInterval: 5000,
         },
     );
 
-    const { data: presentStudents } = adminAPI.useGetPresentUsersQuery(slotId, {
-        pollingInterval: 5000,
-    });
+    const { data: presentStudents } = adminAPI.useGetPresentUsersQuery(
+        { id: slotId },
+        {
+            pollingInterval: 5000,
+        },
+    );
 
     return (
         <div className="mx-auto mb-3 w-fit rounded-lg bg-red-500 px-4 py-4 text-center text-xl">

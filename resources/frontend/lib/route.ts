@@ -1,4 +1,4 @@
-import ziggyroute, { Config, RouteName, RouteParams } from "ziggy-js";
+import ziggyroute, { Config, Route, RouteName, RouteParams } from "ziggy-js";
 
 import includedZiggy from "./includeZiggy";
 
@@ -32,12 +32,13 @@ declare global {
     interface Window {}
 }
 
-const routeSwitcher = (
-    name: RouteName,
-    params?: RouteParams<string> | undefined,
+const routeSwitcher = <T extends RouteName>(
+    name: T,
+    params?: RouteParams<T> | undefined,
     absolute?: boolean | undefined,
 ): string => {
     try {
+        ziggyroute("event.show");
         return ziggyroute(name, params, absolute, includedZiggy as Config);
     } catch (error) {
         if (process.env.NODE_ENV === "development") {

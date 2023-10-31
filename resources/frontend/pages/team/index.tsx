@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import QRCode from "react-qr-code";
 import { useNavigate } from "react-router-dom";
 
-import { Team, TeamMemberRole, TeamMembership, User } from "types/models";
+import { Team, TeamMemberRole, TeamMembership } from "types/models";
 
 import teamAPI from "lib/api/teamAPI";
 import Locale from "lib/locale";

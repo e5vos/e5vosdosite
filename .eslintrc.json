@@ -1,15 +1,22 @@
 {
-    "extends": [
-        "react-app",
-        "prettier",
-        "plugin:storybook/recommended"
-    ],
+    "extends": ["react-app", "prettier", "plugin:storybook/recommended"],
     "ignorePatterns": [
-        "node_modules/"
+        "node_modules/",
+        "vendor/",
+        "app/",
+        "bootstrap/",
+        "config/",
+        "database/",
+        "lang/",
+        "public/",
+        "routes/",
+        "storage/",
+        "tests/",
+        "resources/views/",
+        "resources/js/ziggy.d.ts",
+        "resources/js/ziggy.js"
     ],
-    "plugins": [
-        "unused-imports"
-    ],
+    "plugins": ["unused-imports"],
     "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": "latest"

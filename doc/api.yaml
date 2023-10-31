@@ -54,13 +54,21 @@ paths:
             type: string
       responses:
         "200":
-          description: Users matching query
+          description: User stubs matching query
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                      example: 10
+                    name:
+                      type: string
+                      example: John Doe (10.A)
         "401":
           description: "Unauthorized. User search should require authentication"
   # /user/{id}:
@@ -650,6 +658,12 @@ paths:
           in: query
           schema:
             type: string
+        - name: id
+          description: id of user to invite
+          in: query
+          schema:
+            type: integer
+            format: int64
       responses:
         "201":
           description: Member created
@@ -664,11 +678,17 @@ paths:
         - team
       summary: Promote or demote a team member
       parameters:
-        - name: email / id
-          description: email/id of user to promote
+        - name: email
+          description: email of user to promote
           in: query
           schema:
             type: string
+        - name: id
+          description: id of user to promote
+          in: query
+          schema:
+            type: integer
+            format: int64
         - name: promote
           description: Promote member to team leader, accept invite / demote to regular member
           in: query
@@ -689,11 +709,17 @@ paths:
         - team
       summary: Kick a team member
       parameters:
-        - name: email / id
-          description: email / id of user to remove
+        - name: email
+          description: email of user to remove
           in: query
           schema:
             type: string
+        - name: id
+          description: id of user to remove
+          in: query
+          schema:
+            type: integer
+            format: int64
       responses:
         "204":
           description: Member deleted

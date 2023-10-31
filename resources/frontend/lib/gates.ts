@@ -36,6 +36,13 @@ export const isOperator = gate((user) => {
     );
 }, "Csak operátorok számára elérhető");
 
+export const isAdmin = gate((user) => {
+    return (
+        user.permissions?.find((permission) => permission.code === "ADM") !==
+        undefined
+    );
+}, "Csak adminok számára elérhető");
+
 export const isTeacherAdmin = gate((user) => {
     return (
         user.permissions?.find((permission) => permission.code === "TAD") !==

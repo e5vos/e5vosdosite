@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import adminAPI from "lib/api/adminAPI";
 import eventAPI from "lib/api/eventAPI";
-import { isOperator } from "lib/gates";
+import { isAdmin } from "lib/gates";
 import Locale from "lib/locale";
 
 import { gated } from "components/Gate";
@@ -71,7 +71,7 @@ const SlotsPage = () => {
                         className="mx-1"
                         onClick={async () => {
                             if (!slotToDelete) return;
-                            await deleteSlot(slotToDelete);
+                            await deleteSlot({ id: slotToDelete });
                             setOpen(false);
                             setSlotToDelete(null);
                         }}
@@ -87,12 +87,9 @@ const SlotsPage = () => {
                 </h1>
             </div>
             <div className="mx-auto mt-2 flex max-w-fit flex-col justify-center">
-                <Button
-                    variant="primary"
-                    onClick={() => navigate("/admin/slot/create")}
-                >
-                    {locale.create}
-                </Button>
+                <Link to="/admin/sav/uj">
+                    <Button variant="primary">{locale.create}</Button>
+                </Link>
                 <table className="mt-2 w-auto table-auto">
                     <thead className="dark:bg-gray-700 dark:text-gray-400 bg-gray-50 text-xs uppercase text-gray-700">
                         <tr>
@@ -138,17 +135,11 @@ const SlotsPage = () => {
                                     {slot.ends_at}
                                 </td>
                                 <td className="whitespace-nowrap px-6 py-4 font-medium text-white">
-                                    <Button
-                                        variant="info"
-                                        className="mx-1"
-                                        onClick={() =>
-                                            navigate(
-                                                `/admin/slot/${slot.id}/edit`,
-                                            )
-                                        }
-                                    >
-                                        {locale.slots.edit}
-                                    </Button>
+                                    <Link to={`/admin/sav/${slot.id}/kezel`}>
+                                        <Button variant="info" className="mx-1">
+                                            {locale.slots.edit}
+                                        </Button>
+                                    </Link>
                                     <Button
                                         variant="danger"
                                         className="mx-1"
@@ -169,4 +160,4 @@ const SlotsPage = () => {
     );
 };
 
-export default gated(SlotsPage, isOperator);
+export default gated(SlotsPage, isAdmin);

@@ -1,18 +1,16 @@
-import { useFormik } from "formik";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import * as Yup from "yup";
+import { useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { Slot, SlotType } from "types/models";
+import { Slot } from "types/models";
 
 import adminAPI from "lib/api/adminAPI";
 import eventAPI from "lib/api/eventAPI";
-import { isOperator } from "lib/gates";
+import { isAdmin } from "lib/gates";
 import Locale from "lib/locale";
 
+import SlotForm, { SlotFormValues } from "components/Forms/SlotForm";
 import { gated } from "components/Gate";
-import Button from "components/UIKit/Button";
-import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
 
 const locale = Locale({
@@ -43,10 +41,11 @@ const EditSlotPage = () => {
     const { slotid } = useParams();
     const [updateSelectedSlot] = adminAPI.useUpdateSlotMutation();
     const { data: slots } = eventAPI.useGetSlotsQuery();
-    const [initialValues, setInitialValue] = useState({
-        id: Number(null),
+    const navigate = useNavigate();
+    const [initialValues, setInitialValue] = useState<SlotFormValues>({
+        id: -1,
         name: "",
-        slot_type: "",
+        slot_type: "Előadássáv",
         starts_at: "",
         ends_at: "",
     });
@@ -62,92 +61,25 @@ const EditSlotPage = () => {
             starts_at: slot.starts_at,
             ends_at: slot.ends_at,
         });
-    }, [slots]);
+    }, [slotid, slots]);
 
-    const formik = useFormik({
-        initialValues: initialValues,
-        enableReinitialize: true,
-        validationSchema: Yup.object({
-            id: Yup.number().required(locale.required),
-            name: Yup.string().required(locale.required),
-            slot_type: Yup.string()
-                .required(locale.required)
-                .oneOf(Object.values(SlotType)),
-            starts_at: Yup.string().required(locale.required),
-            ends_at: Yup.string().required(locale.required),
-        }),
-        onSubmit: async (values) => {
-            const updatedSlot = {
-                id: values.id,
-                name: values.name,
-                slot_type: values.slot_type,
-                starts_at: values.starts_at,
-                ends_at: values.ends_at,
-            };
-            if (!values.id) return;
-            console.log(updateSelectedSlot);
-            await updateSelectedSlot(updatedSlot as Slot);
+    const onSubmit = useCallback(
+        async (values: any) => {
+            await updateSelectedSlot(values as Slot);
+            navigate("/admin/sav");
         },
-    });
+        [updateSelectedSlot, navigate],
+    );
 
     if (initialValues.name === "") return <Loader />;
     return (
-        <>
-            <div className="mx-auto max-w-4xl">
-                <h1 className="text-center text-4xl font-bold">
-                    {locale.title}
-                </h1>
-            </div>
-            <div className="min-w-12 mx-28 mt-2 flex flex-col justify-center align-middle">
-                <Form onSubmit={formik.handleSubmit}>
-                    <Form.Group>
-                        <Form.Label>{locale.slot.name}</Form.Label>
-                        <Form.Control
-                            name="name"
-                            value={formik.values.name}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            invalid={Boolean(formik.errors.name)}
-                        />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>{locale.slot.slot_type}</Form.Label>
-                        <Form.Control
-                            name="slot_type"
-                            value={formik.values.slot_type}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            invalid={Boolean(formik.errors.slot_type)}
-                        />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>{locale.slot.starts_at}</Form.Label>
-                        <Form.Control
-                            name="starts_at"
-                            value={formik.values.starts_at}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            invalid={Boolean(formik.errors.starts_at)}
-                        />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>{locale.slot.ends_at}</Form.Label>
-                        <Form.Control
-                            name="ends_at"
-                            value={formik.values.ends_at}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            invalid={Boolean(formik.errors.ends_at)}
-                        />
-                    </Form.Group>
-
-                    <Form.Group>
-                        <Button type="submit">{locale.submit}</Button>
-                    </Form.Group>
-                </Form>
-            </div>
-        </>
+        <SlotForm
+            initialValues={initialValues}
+            onSubmit={onSubmit}
+            submitLabel={locale.submit}
+            enableReinitialize={true}
+        />
     );
 };
 
-export default gated(EditSlotPage, isOperator);
+export default gated(EditSlotPage, isAdmin);

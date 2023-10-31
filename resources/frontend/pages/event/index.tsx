@@ -24,7 +24,7 @@ const EventsPage = () => {
     const [currentSlot, setCurrentSlot] = useState(0);
 
     const { data: events, isFetching: isEventsFetching } =
-        eventAPI.useGetEventsQuery(slots ? slots[currentSlot]?.id ?? -1 : -1);
+        eventAPI.useGetEventsQuery(slots ? slots[currentSlot] ?? -1 : -1);
 
     if (slotsError) return <Error code={500} />;
     if (!slots) return <Loader />;
@@ -35,8 +35,8 @@ const EventsPage = () => {
                 <h1 className="max-w-f pb-4 text-center text-4xl font-bold">
                     {locale.title}
                 </h1>
-                <div className="mb-4 md:flex ">
-                    <ButtonGroup>
+                <div className="mx-auto mb-4 md:flex">
+                    <ButtonGroup className="mx-auto">
                         {slots.map((slot, index) => (
                             <Button
                                 variant="secondary"

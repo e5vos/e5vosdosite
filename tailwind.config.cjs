@@ -105,6 +105,9 @@ module.exports = {
                     900: "#030200",
                 },
             },
+            listStyleType: {
+                "lower-latin": "lower-latin",
+            },
         },
     },
     plugins: [

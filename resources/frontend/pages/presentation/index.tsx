@@ -112,9 +112,12 @@ const PresentationsPage = () => {
         isLoading: isEventsLoading,
         isFetching: isEventsFetching,
         refetch: refetchEvents,
-    } = eventAPI.useGetEventsQuery(slots?.[currentSlot]?.id ?? -1, {
-        pollingInterval: 10000,
-    });
+    } = eventAPI.useGetEventsQuery(
+        { id: slots?.[currentSlot]?.id ?? -1 },
+        {
+            pollingInterval: 10000,
+        },
+    );
     const [signUp, { isLoading: signupInProgress, error: signupError }] =
         eventAPI.useSignUpMutation();
     const [

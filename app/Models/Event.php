@@ -210,7 +210,7 @@ class Event extends Model
      */
     public function isSignupOpen()
     {
-        return $this->signup_type != null && $this->signup_deadline->isFuture();
+        return $this->signup_type != null && ($this->signup_deadline?->isFuture() ?? true);
     }
 
     /**

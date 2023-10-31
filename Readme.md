@@ -1,13 +1,15 @@
 # Setting up the Development Environment
 
-Install both frontend and backend dependencies in folder `src` :
+Install both frontend and backend dependencies :
  `composer install && npm install`
 
-Run both backend server and frontend servlet from src folder at the same time:
+Create a `.env` file from `.env.example`. For Google credentials, we recommend setting up a sandbox on `localtest.me` (points to `localhost`) or setting up any `.local` domain. For convenience, you can use the sandbox project on `dev.do@e5vos.hu` if you have access.
+
+Run both backend server and frontend servlet at the same time:
 `php artisan serve`
 `npm run dev`
 
-**Important!: Application is accessible via backend's URL. Frontend URL for HMR (Hot Module Replacement) use only.**
+**Important!: The application is accessible via the backend's URL. Frontend URL for development tooling's internal use only.**
 
 # Contributing
 

@@ -10,13 +10,13 @@ export const baseAPI = createApi({
     reducerPath: "e5nApi",
     baseQuery: fetchBaseQuery({
         fetchFn(input, init?) {
-            if (input instanceof Request && input.url.includes("-1")) {
+            if (input instanceof Request && input.url.includes("/-1/")) {
                 throw new Error("-1 in URL");
             } else {
                 return fetch(input, init);
             }
         },
-        baseUrl: "https://e5vosdo.hu",
+        baseUrl: import.meta.env.VITE_BACKEND,
         prepareHeaders: async (headers, { getState }) => {
             headers.set("Accept", "application/json");
 

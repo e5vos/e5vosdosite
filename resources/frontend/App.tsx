@@ -42,9 +42,7 @@ const ManageEventPage = React.lazy(
     () => import("pages/event/[eventid]/manage/index"),
 );
 const EventsPage = React.lazy(() => import("pages/event"));
-const EventPage = React.lazy(
-    () => import("pages/event/[eventid]/manage/index"),
-);
+const EventPage = React.lazy(() => import("pages/event/[eventid]/index"));
 const ScannerPage = React.lazy(
     () => import("pages/event/[eventid]/manage/scanner"),
 );

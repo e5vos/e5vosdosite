@@ -50,7 +50,7 @@ export const eventAPI = baseAPI
                 },
             }),
             getEvent: builder.query<Event, Pick<Event, "id">>({
-                query: ({ id }) => routeSwitcher("event.show", { id }),
+                query: ({ id }) => routeSwitcher("event.show", {eventId: id}),
                 providesTags: (result, error, { id }) => [
                     { type: "Event", id },
                 ],

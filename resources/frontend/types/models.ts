@@ -13,6 +13,8 @@ export interface User {
     permissions?: Permission[];
     presentations?: Event[];
     activity?: { event: Event; attendance: UserAttendance }[];
+    img_url?: string;
+    email?: string;
 }
 
 export const isTeam = (team: any): team is Team => {
@@ -48,7 +50,7 @@ export const isUserAttendancePivot = (
 export const isUserAttendance = (
     attendance: any,
 ): attendance is UserAttendance => {
-    return attendance.e5code !== undefined;
+    return isUserAttendancePivot(attendance.pivot);
 };
 
 export const isTeamAttendance = (
@@ -58,17 +60,20 @@ export const isTeamAttendance = (
 };
 
 export type UserRole = "operator" | "admin" | "user";
-export type TeamMemberRole = "captain" | "member" | "invited";
+export type TeamMemberRole = "meghívott" | "tag" | "vezető";
 export type TeamMembership = {
-    user?: User;
+    team_code: string;
+    user_id: number;
     role: TeamMemberRole;
-    team?: Team;
 };
+export type TeamMember = Required<
+    Pick<User, "ejg_class" | "email" | "id" | "img_url" | "name">
+> & { pivot: TeamMembership };
 export interface Team {
     name: string;
     code: string;
     description: string;
-    members?: TeamMembership[];
+    members?: TeamMember[];
     activity?: { event: Event; attendance: TeamAttendance }[];
 }
 export interface BaseActivity {

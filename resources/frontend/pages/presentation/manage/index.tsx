@@ -80,7 +80,7 @@ const PresentationManagePage = () => {
     const [currentSlot, setcurrentSlot] = useState(0);
     const { data: slots } = useGetPresentationSlotsQuery();
     const { data: presentations, isFetching: isEventsFetching } =
-        eventAPI.useGetEventsQuery(slots?.[currentSlot]?.id ?? -1);
+        eventAPI.useGetEventsQuery(slots?.[currentSlot] ?? { id: -1 });
 
     const { user } = useUser();
 

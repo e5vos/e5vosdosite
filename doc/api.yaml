@@ -89,7 +89,7 @@ paths:
                     event:
                       $ref: "#/components/schemas/Event"
                     attendance:
-                      $ref: "#/components/schemas/IndivitualAttendance"
+                      $ref: "#/components/schemas/IndividualAttendance"
         "404":
           description: "User does not exist"
         "403":
@@ -293,7 +293,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/IndivitualAttendance"
+                  $ref: "#/components/schemas/IndividualAttendance"
         "403":
           description: Forbidden
         "404":
@@ -330,7 +330,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/IndivitualAttendance"
+                $ref: "#/components/schemas/IndividualAttendance"
         "403":
           description: Can't signup for event
         "404":
@@ -907,10 +907,15 @@ components:
           nullable: true
           items:
             $ref: "#/components/schemas/Team"
-    IndivitualAttendance:
+    IndividualAttendance:
       type: object
       properties:
-        present:
+        id:
+          type: integer
+          format: int64
+          example: 10
+          description: ID of attendance
+        is_present:
           type: boolean
           example: true
         created_at:
@@ -940,7 +945,12 @@ components:
     TeamAttendance:
       type: object
       properties:
-        present:
+        id:
+          type: integer
+          format: int64
+          example: 10
+          description: ID of attendance
+        is_present:
           type: boolean
           example: true
         created_at:
@@ -973,7 +983,7 @@ components:
             $ref: "#/components/schemas/User"
     Attendance:
       oneOf:
-        - $ref: "#/components/schemas/IndivitualAttendance"
+        - $ref: "#/components/schemas/IndividualAttendance"
         - $ref: "#/components/schemas/TeamAttendance"
     Team:
       type: object

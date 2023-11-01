@@ -30,13 +30,13 @@ const locale = Locale({
 const AttendancePage = () => {
     const { eventid } = useParams<{ eventid: string }>();
     const { data: event, isLoading: isEventLoading } =
-        eventAPI.useGetEventQuery(Number(eventid ?? -1));
+        eventAPI.useGetEventQuery({ id: Number(eventid ?? -1) });
     const {
         data: participantsData,
         isLoading: isParticipantsLoading,
         isFetching: isParticipantsFetching,
         refetch,
-    } = eventAPI.useGetEventParticipantsQuery(Number(eventid ?? -1));
+    } = eventAPI.useGetEventParticipantsQuery({ id: Number(eventid ?? -1) });
 
     const [deleteAttendance] = eventAPI.useCancelSignUpMutation();
     const { user } = useUser();

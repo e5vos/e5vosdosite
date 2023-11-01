@@ -9,8 +9,9 @@ import eventAPI from "lib/api/eventAPI";
 import { isAdmin } from "lib/gates";
 import Locale from "lib/locale";
 
-import SlotForm, { SlotFormValues } from "components/Forms/SlotForm";
+import { SlotFormValues } from "components/Forms/SlotForm";
 import { gated } from "components/Gate";
+import SlotCRUD from "components/Slot/CRUD";
 import Loader from "components/UIKit/Loader";
 
 const locale = Locale({
@@ -39,10 +40,8 @@ const locale = Locale({
 });
 const EditSlotPage = () => {
     const { slotid } = useParams();
-    const [updateSelectedSlot] = adminAPI.useUpdateSlotMutation();
     const { data: slots } = eventAPI.useGetSlotsQuery();
-    const navigate = useNavigate();
-    const [initialValues, setInitialValue] = useState<SlotFormValues>({
+    const [initialValues, setInitialValue] = useState<Slot>({
         id: -1,
         name: "",
         slot_type: "Előadássáv",
@@ -51,34 +50,24 @@ const EditSlotPage = () => {
     });
 
     useEffect(() => {
-        if (!slots) return;
-        const slot = slots.find((slot) => Number(slot.id) === Number(slotid));
+        const slotIdAsNum = Number(slotid);
+        const slot = slots?.find((slot) => slot.id === slotIdAsNum);
         if (!slot) return;
-        setInitialValue({
-            id: Number(slotid),
-            name: slot.name,
-            slot_type: slot.slot_type,
-            starts_at: slot.starts_at,
-            ends_at: slot.ends_at,
-        });
+        setInitialValue(slot);
     }, [slotid, slots]);
-
-    const onSubmit = useCallback(
-        async (values: any) => {
-            await updateSelectedSlot(values as Slot);
-            navigate("/admin/sav");
-        },
-        [updateSelectedSlot, navigate],
-    );
 
     if (initialValues.name === "") return <Loader />;
     return (
-        <SlotForm
-            initialValues={initialValues}
-            onSubmit={onSubmit}
-            submitLabel={locale.submit}
-            enableReinitialize={true}
-        />
+        <div>
+            <div className="mx-auto max-w-4xl">
+                <h1 className="text-center text-4xl font-bold">
+                    {locale.title}
+                </h1>
+            </div>
+            <div className="min-w-12 mx-28 mt-2 flex flex-col justify-center align-middle">
+                <SlotCRUD.Updater value={initialValues} />
+            </div>
+        </div>
     );
 };
 

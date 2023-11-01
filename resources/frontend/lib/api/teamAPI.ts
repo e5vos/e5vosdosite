@@ -16,10 +16,23 @@ export const teamAPI = baseAPI.injectEndpoints({
         >({
             query: ({ code }) => routeSwitcher("team.show", { teamCode: code }),
         }),
-        createTeam: builder.mutation<Team, Pick<Team, "name" | "description">>({
+        createTeam: builder.mutation<
+            Team,
+            Pick<Team, "name" | "code" | "description">
+        >({
             query: (data) => ({
                 url: routeSwitcher("team.create"),
                 method: "POST",
+                params: data,
+            }),
+        }),
+        editTeam: builder.mutation<
+            Team,
+            Pick<Team, "name" | "code" | "description">
+        >({
+            query: (data) => ({
+                url: routeSwitcher("team.edit", { teamCode: data.code }),
+                method: "PUT",
                 params: data,
             }),
         }),

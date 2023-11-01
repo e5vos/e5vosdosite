@@ -6,15 +6,20 @@ export interface Permission {
     code: string;
 }
 
+export interface TeamMemberAttendance {
+    user_id: number;
+    team_code: string;
+    is_present: boolean;
+}
+
 export interface User {
-    e5code: string;
+    e5code: string | null;
     name: string;
     id: number;
-    ejg_class?: string;
+    ejg_class: string | null;
     teams?: Team[];
     permissions?: Permission[];
-    presentations?: Event[];
-    activity?: { event: Event; attendance: UserAttendance }[];
+    attendances: Attendance[];
     img_url?: string;
     email?: string;
 }
@@ -25,7 +30,7 @@ export const isTeam = (team: any): team is Team => {
 interface BasicAttendance {
     id: number;
     is_present: boolean;
-    place: number | null;
+    rank: number | null;
     event_id: number;
 }
 export interface UserAttendancePivot extends BasicAttendance {
@@ -33,6 +38,7 @@ export interface UserAttendancePivot extends BasicAttendance {
 }
 export interface TeamAttendancePivot extends BasicAttendance {
     team_code: string;
+    member_attendances: TeamMemberAttendance[];
 }
 
 export type TeamAttendance = RequiredFields<
@@ -69,16 +75,23 @@ export const isTeamAttendance = (
     return isTeamAttendancePivot(attendance.pivot);
 };
 
-export type UserRole = "operator" | "admin" | "user";
-export type TeamMemberRole = "meghívott" | "tag" | "vezető";
+export const TeamMemberRole = {
+    invited: "meghívott",
+    member: "tag",
+    leader: "vezető",
+} as const;
+
 export type TeamMembership = {
     team_code: string;
     user_id: number;
-    role: TeamMemberRole;
+    role: (typeof TeamMemberRole)[keyof typeof TeamMemberRole];
 };
-export type TeamMember = Required<
-    Pick<User, "ejg_class" | "email" | "id" | "name">
-> & { pivot: TeamMembership };
+export type TeamMember = RequiredFields<
+    Omit<User, "teams" | "attendances">,
+    "ejg_class" | "id" | "name"
+> & {
+    pivot: TeamMembership;
+};
 export interface Team {
     name: string;
     code: string;
@@ -86,11 +99,6 @@ export interface Team {
     members?: TeamMember[];
     activity?: { event: Event; attendance: TeamAttendance }[];
 }
-export interface BaseActivity {
-    event: Event;
-    attendance: Attendance;
-}
-
 export const SlotType = {
     Presentation: "Előadássáv",
     Program: "Programsáv",
@@ -106,36 +114,35 @@ export interface Slot {
 }
 
 export interface Event {
-    name: string;
     id: number;
+    name: string;
     description: string;
     organiser: string;
-    capacity?: number | null;
+    capacity: number | null;
     occupancy: number;
-    attendees?: Attendance[] | null;
+    attendees?: Attendance[];
     slot?: Slot;
-    slot_id?: number | null;
-    location_id: number | null;
+    slot_id: number | null;
+    location_id: number;
     location?: Location;
     is_competition: boolean;
-    img_url?: string | null;
-    signup_deadline?: string | null;
+    img_url: string | null;
+    signup_deadline: string | null;
     starts_at: string;
     ends_at: string;
-    direct_child?: boolean | null;
-    direct_child_slot_id?: number | null;
-    root_parent?: boolean | null;
-    root_parent_slot_id?: number | null;
-
-    //TODO
+    direct_child?: number | null;
+    direct_child_slot_id: number | null;
+    root_parent?: number | null;
+    root_parent_slot_id: number | null;
 }
 
 export interface Location {
     id: number;
     name: string;
+    floor: string;
+    events?: Event[];
 }
 
 export interface Presentation extends Event {
     slot_id: number;
 }
-export interface Challange extends Event {}

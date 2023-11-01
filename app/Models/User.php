@@ -58,6 +58,16 @@ class User extends Authenticable
     protected $primaryKey = 'id';
 
     /**
+     * Boot the model.
+     * 
+     * Assing global scopes, etc. Order by ejg_class and name
+     */
+    protected static function boot() {
+        parent::boot();
+        static::addGlobalScope('order', fn ($builder) => $builder->orderBy('ejg_class')->orderBy('name'));
+    }
+
+    /**
      * Get all of the permissions for the User
      */
     public function permissions(): HasMany

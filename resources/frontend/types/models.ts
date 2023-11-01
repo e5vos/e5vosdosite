@@ -1,3 +1,5 @@
+import { RequiredFields } from "./misc";
+
 export interface Permission {
     user_id: number;
     event_id: number;
@@ -21,6 +23,7 @@ export const isTeam = (team: any): team is Team => {
     return team.code !== undefined;
 };
 interface BasicAttendance {
+    id: number;
     is_present: boolean;
     place: number | null;
     event_id: number;
@@ -32,8 +35,15 @@ export interface TeamAttendancePivot extends BasicAttendance {
     team_code: string;
 }
 
-export type TeamAttendance = Team & { pivot: TeamAttendancePivot };
-export type UserAttendance = User & { pivot: UserAttendancePivot };
+export type TeamAttendance = RequiredFields<
+    Omit<Team, "activity">,
+    "members"
+> & {
+    pivot: TeamAttendancePivot;
+};
+export type UserAttendance = Omit<User, "activity"> & {
+    pivot: UserAttendancePivot;
+};
 
 export type Attendance = UserAttendance | TeamAttendance;
 export const isTeamAttendancePivot = (
@@ -67,7 +77,7 @@ export type TeamMembership = {
     role: TeamMemberRole;
 };
 export type TeamMember = Required<
-    Pick<User, "ejg_class" | "email" | "id" | "img_url" | "name">
+    Pick<User, "ejg_class" | "email" | "id" | "name">
 > & { pivot: TeamMembership };
 export interface Team {
     name: string;

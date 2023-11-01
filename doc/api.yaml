@@ -89,7 +89,9 @@ paths:
                     event:
                       $ref: "#/components/schemas/Event"
                     attendance:
-                      $ref: "#/components/schemas/IndividualAttendance"
+                      oneOf:
+                        - $ref: "#/components/schemas/IndividualAttendance"
+                        - $ref: "#/components/schemas/TeamAttendance"
         "404":
           description: "User does not exist"
         "403":

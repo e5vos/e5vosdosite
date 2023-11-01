@@ -134,16 +134,19 @@ const ComboBox = <T = any,>({
     options,
     filter,
     onChange,
+    onQueryChange,
     renderElement,
+    className,
 }: {
     options: T[];
-    filter: (s: string) => (e: T) => boolean;
+    filter?: (s: string) => (e: T) => boolean;
     onChange?: (e: T | null) => void;
+    onQueryChange?: (s: string) => void;
     renderElement: (e: T) => ReactNode;
-}) => {
+} & HTMLInputProps<HTMLInputElement>) => {
     const [query, setQuery] = React.useState("");
     const [selected, setSelected] = React.useState<T | null>(null);
-    const filteredOptions = options.filter(filter(query));
+    const filteredOptions = filter ? options.filter(filter(query)) : options;
 
     return (
         <Combobox
@@ -155,8 +158,13 @@ const ComboBox = <T = any,>({
         >
             <Combobox.Input
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="border-b-2 border-white bg-transparent text-white focus:border-gray-400"
+                onChange={(e) => {
+                    setQuery(e.target.value);
+                    onQueryChange?.(e.target.value);
+                }}
+                className={`border-b-2 border-white bg-transparent text-white focus:border-gray-400 ${
+                    className ?? ""
+                }`}
             />
             <Combobox.Options>
                 {filteredOptions.map((option, index) => (

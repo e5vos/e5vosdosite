@@ -145,6 +145,26 @@ export const eventAPI = baseAPI
                 }),
             }),
 
+            deleteEvent: builder.mutation<void, Pick<Event, "id">>({
+                query: ({ id }) => ({
+                    url: routeSwitcher("event.delete", { id }),
+                    method: "DELETE",
+                }),
+                invalidatesTags: (result) => [
+                    { type: "Event", id: "LIST" },
+                ],
+            }),
+
+            closeSignUp: builder.mutation<void, Pick<Event, "id">>({
+                query: ({ id }) => ({
+                    url: routeSwitcher("event.close_signup", { id }),
+                    method: "PUT",
+                }),
+                invalidatesTags: (result) => [
+                    { type: "Event", id: "LIST" },
+                ],
+            }),
+
             updateEvent: builder.mutation<Event, Omit<Event, "occupancy">>({
                 query: (event) => ({
                     url: routeSwitcher("event.update", { id: event.id }),

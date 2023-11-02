@@ -41,7 +41,7 @@ const EventPage = () => {
     if (!event) return <Loader />;
     if (!user) return <Loader />;
     return (
-        <div className="!mx-12 mt-4 grid grid-cols-3 gap-3 sm:mx-2">
+        <div className="mx-2 mt-4 grid-cols-3 gap-3 lg:mx-12 lg:grid">
             <div className="col-span-1">
                 {event.img_url && (
                     <img
@@ -54,6 +54,18 @@ const EventPage = () => {
                 <h2 className="mt-1 text-xl">
                     {locale.organiser}: {event.organiser}
                 </h2>
+                {isAdmin(user) && (
+                    <ButtonGroup className="mt-6 !block w-full sm:hidden">
+                        <Link
+                            className="w-full"
+                            to={`/esemeny/${event.id}/kezel`}
+                        >
+                            <Button className="text-white" variant="info">
+                                {locale.manage}
+                            </Button>
+                        </Link>
+                    </ButtonGroup>
+                )}
             </div>
             <div className="col-span-2 !mt-0 sm:mt-2">
                 <Card title={locale.description} className="!bg-slate-500">
@@ -74,7 +86,7 @@ const EventPage = () => {
                 </Card>
             </div>
             {isAdmin(user) && (
-                <ButtonGroup className="mt-2  w-full">
+                <ButtonGroup className="mt-2  !hidden w-full sm:block">
                     <Link className="w-full" to={`/esemeny/${event.id}/kezel`}>
                         <Button className="text-white" variant="info">
                             {locale.manage}

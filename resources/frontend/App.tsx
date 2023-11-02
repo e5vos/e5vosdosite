@@ -17,7 +17,6 @@ const Error = React.lazy(() => import("components/Error"));
 // Misc
 
 const LegalPage = React.lazy(() => import("pages/Legal"));
-const AdminPage = React.lazy(() => import("pages/admin"));
 
 // Teams
 const TeamsPage = React.lazy(() => import("pages/team"));

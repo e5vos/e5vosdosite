@@ -67,7 +67,7 @@ const initialValues: {
 
 const EditEventPage = () => {
     const { eventid } = useParams();
-    const { data: event } = eventAPI.useGetEventQuery(Number(eventid));
+    const { data: event } = eventAPI.useGetEventQuery({ id: Number(eventid) });
     const { data: locations } = locationAPI.useGetLocationsQuery();
     const [updateEvent] = eventAPI.useUpdateEventMutation();
 
@@ -84,11 +84,12 @@ const EditEventPage = () => {
             updateEvent(newEvent);
         },
     });
-    console.log(event, locations);
-    if (!event || !locations) return <Loader />;
+    console.log(event);
+    if (!event) return <Loader />;
+    if (!locations) return <Loader />;
     return (
         <div className="container mx-auto">
-            <h1>{locale.title}</h1>
+            <h1 className="text-center text-4xl font-bold">{locale.title}</h1>
             <Form onSubmit={formik.handleSubmit}>
                 <Form.Group>
                     <Form.Label>{locale.event.name}</Form.Label>

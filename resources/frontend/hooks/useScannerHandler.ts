@@ -3,8 +3,11 @@ import { useCallback } from "react";
 import {
     Attendance,
     Event,
+    Team,
     TeamMember,
     TeamMemberAttendance,
+    TeamMemberRole,
+    isTeamAttendance,
     isTeamCode,
 } from "types/models";
 
@@ -34,32 +37,57 @@ const useScannerHandler = ({
 
     return useCallback(
         async (scanvalue: string) => {
-            let attendance;
+            let attendance: Attendance;
             try {
                 attendance = await attend({
                     event: event,
                     attender: scanvalue,
                 }).unwrap();
             } catch (e) {
-                // TODO: Handle error
+                /* TODO: Handle error
+                
+                
+                403: Permission denied
+                409: (Conflict): Already signed up & is present
+                ERROR FORMAT
+                /* {
+                   message: "Hungarian error message"
+                } */
+
                 return;
             }
-            if (!isTeamCode(scanvalue)) {
+            if (!isTeamAttendance(attendance)) {
                 onSuccess?.(attendance);
                 return;
             }
 
-            const team = await getTeam({ code: scanvalue }).unwrap();
+            let team: Team;
+            try {
+                team = await getTeam({ code: scanvalue }).unwrap();
+            } catch (e) {
+                /*
+                 404: Team not found (noop)
+                 403: Permission denied (low priority)
+                    you can only get team info if:
+                        - you are a member of the team
+                        - you are a SCN of an event that the team is signed up for 
+                 
+                 */
+                return;
+            }
+
             if (team.members === undefined || team.members.length === 0) {
                 onError?.("TeamEmpty");
                 return;
             }
             let memberAttendances: TeamMemberAttendance[] = [];
 
-            for (const member of team.members) {
+            for (const member of team.members.filter(
+                (member) => member.pivot.role !== TeamMemberRole.invited,
+            )) {
                 memberAttendances.push({
                     is_present: await teamMemberPrompt(member),
-                    team_code: team.code,
+                    attendance_id: attendance.pivot.id,
                     user_id: member.id,
                 });
             }
@@ -67,7 +95,12 @@ const useScannerHandler = ({
             try {
                 await teamMemberAttend(memberAttendances).unwrap();
             } catch (e) {
-                // TODO: Handle error
+                /* TODO: Handle error
+
+                    403: Permission denied
+                    attendance_id must belong to an event that the submitting user is SCN of.
+                    
+                */
                 return;
             }
             onSuccess?.(attendance);

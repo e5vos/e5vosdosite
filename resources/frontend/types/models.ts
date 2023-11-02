@@ -8,7 +8,7 @@ export interface Permission {
 
 export interface TeamMemberAttendance {
     user_id: number;
-    team_code: string;
+    attendance_id: number;
     is_present: boolean;
 }
 
@@ -38,7 +38,7 @@ export interface UserAttendancePivot extends BasicAttendance {
 }
 export interface TeamAttendancePivot extends BasicAttendance {
     team_code: string;
-    member_attendances: TeamMemberAttendance[];
+    member_attendances?: TeamMemberAttendance[];
 }
 
 export type TeamAttendance = RequiredFields<

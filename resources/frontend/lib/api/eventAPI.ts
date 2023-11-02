@@ -140,17 +140,19 @@ export const eventAPI = baseAPI
                 { event: Pick<Event, "id">; attender: string | number }
             >({
                 query: (body) => ({
-                    url: routeSwitcher("event.signup", { id: body.event.id }),
+                    url: routeSwitcher("event.attend", {
+                        eventId: body.event.id,
+                    }),
                     method: "POST",
                     params: { attender: body.attender },
                 }),
             }),
             teamMemberAttend: builder.mutation<
-                TeamMemberAttendance,
+                TeamMemberAttendance[],
                 TeamMemberAttendance[]
             >({
                 query: (data) => ({
-                    url: routeSwitcher("team.attend", {}),
+                    url: routeSwitcher("team.member.attend"),
                     method: "POST",
                     params: data,
                 }),
@@ -165,7 +167,6 @@ export const eventAPI = baseAPI
                     params: { attender: body.attender },
                 }),
             }),
-
             updateEvent: builder.mutation<Event, Omit<Event, "occupancy">>({
                 query: (event) => ({
                     url: routeSwitcher("event.update", { id: event.id }),

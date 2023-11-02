@@ -1,8 +1,8 @@
 import useUser from "hooks/useUser";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 
-import { Team } from "types/models";
+import { Team, TeamMemberRole } from "types/models";
 
 import teamAPI from "lib/api/teamAPI";
 import Locale from "lib/locale";
@@ -55,6 +55,11 @@ const YourTeamsPage = () => {
         setShownTeam(null);
     }, [shownQR]);
 
+    const currentUserMember = useCallback(
+        (team: Team) => team.members?.find((member) => member.id === user?.id),
+        [user],
+    );
+
     if (!user) return <Loader />;
     return (
         <>
@@ -93,6 +98,12 @@ const YourTeamsPage = () => {
                                     key={team.code}
                                     title={team.name}
                                     subtitle={team.code}
+                                    className={
+                                        currentUserMember(team)?.pivot.role ===
+                                        TeamMemberRole.invited
+                                            ? "bg-green-200"
+                                            : ""
+                                    }
                                     buttonBar={
                                         <ButtonGroup>
                                             <Button

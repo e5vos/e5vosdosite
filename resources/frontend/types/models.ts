@@ -146,3 +146,9 @@ export interface Location {
 export interface Presentation extends Event {
     slot_id: number;
 }
+
+export const isTeamCode = (code: string): boolean =>
+    code.match(/^[a-zA-Z]{1,10}$/) !== null;
+
+export const isE5Code = (code: string): boolean =>
+    code.match(/^20[0-9]{2}[A-FN][0-9]{2}EJG[0-9]{3}$/) !== null;

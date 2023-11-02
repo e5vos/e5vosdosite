@@ -19,7 +19,9 @@ const locale = Locale({
 
 const Scanner = () => {
     const { eventid } = useParams();
-    const { data: event, error } = eventAPI.useGetEventQuery(Number(eventid));
+    const { data: event, error } = eventAPI.useGetEventQuery({
+        id: Number(eventid),
+    });
     const [attend] = eventAPI.useSignUpMutation();
     const { user } = useUser();
 
@@ -47,6 +49,7 @@ const Scanner = () => {
                     }
                 }}
                 constraints={{ facingMode: "environment" }}
+                className="mx-auto max-h-[1/2] max-w-4xl hover:opacity-75"
             />
         </div>
     );

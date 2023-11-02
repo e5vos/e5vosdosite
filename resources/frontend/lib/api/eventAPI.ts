@@ -3,6 +3,7 @@ import {
     Event,
     Presentation,
     Slot,
+    TeamMemberAttendance,
     isUserAttendance,
 } from "types/models";
 
@@ -50,7 +51,7 @@ export const eventAPI = baseAPI
                 },
             }),
             getEvent: builder.query<Event, Pick<Event, "id">>({
-                query: ({ id }) => routeSwitcher("event.show", { id }),
+                query: ({ id }) => routeSwitcher("event.show", { eventId: id }),
                 providesTags: (result, error, { id }) => [
                     { type: "Event", id },
                 ],
@@ -133,6 +134,26 @@ export const eventAPI = baseAPI
                     return [];
                     //return [{ type: "Event", id: result?.pivot.event_id } as const];
                 },
+            }),
+            attend: builder.mutation<
+                Attendance,
+                { event: Pick<Event, "id">; attender: string | number }
+            >({
+                query: (body) => ({
+                    url: routeSwitcher("event.signup", { id: body.event.id }),
+                    method: "POST",
+                    params: { attender: body.attender },
+                }),
+            }),
+            teamMemberAttend: builder.mutation<
+                TeamMemberAttendance,
+                TeamMemberAttendance[]
+            >({
+                query: (data) => ({
+                    url: routeSwitcher("team.attend", {}),
+                    method: "POST",
+                    params: data,
+                }),
             }),
             cancelSignUp: builder.mutation<
                 void,

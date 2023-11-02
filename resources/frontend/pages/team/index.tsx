@@ -48,6 +48,14 @@ const YourTeamsPage = () => {
             setShownTeam(null);
     }, [shownTeam, teams]);
 
+    useEffect(() => {
+        setShownQR(null);
+    }, [shownTeam]);
+
+    useEffect(() => {
+        setShownTeam(null);
+    }, [shownQR]);
+
     if (!user) return <Loader />;
     return (
         <>

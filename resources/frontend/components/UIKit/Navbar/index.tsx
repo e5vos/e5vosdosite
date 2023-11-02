@@ -6,10 +6,18 @@ import { ReactNode } from "react";
 import { ReactComponent as Caret } from "./assets/caret.svg";
 import { ReactComponent as MobileMenu } from "./assets/mobileMenu.svg";
 
-const Brand = ({ href, children }: { href?: string; children: ReactNode }) => {
+const Brand = ({
+    href,
+    children,
+    onClick,
+}: {
+    href?: string;
+    children: ReactNode;
+    onClick?: () => any;
+}) => {
     const Tag = href ? "a" : "span";
     return (
-        <Tag href={href} className="flex items-center">
+        <Tag href={href} className="flex items-center" onClick={onClick}>
             <Donci fill="white" className="mr-5 h-full w-12" />
             <span className="self-center whitespace-nowrap text-xl font-semibold">
                 {children}

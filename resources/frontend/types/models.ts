@@ -19,7 +19,7 @@ export interface User {
     ejg_class: string | null;
     teams?: Team[];
     permissions?: Permission[];
-    attendances: Attendance[];
+    attendances?: Attendance[];
     img_url?: string;
     email?: string;
 }

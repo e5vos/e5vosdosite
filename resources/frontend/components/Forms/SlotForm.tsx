@@ -88,13 +88,14 @@ const SlotForm = ({
             </Form.Group>
             <Form.Group>
                 <Form.Label>{locale.slot.slot_type}</Form.Label>
-                <Form.Select>
+                <Form.Select
+                    defaultValue={initialValues.slot_type}
+                    name="slot_type"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                >
                     {Object.entries(SlotType).map(([key, value]) => (
-                        <option
-                            key={key}
-                            value={key}
-                            selected={initialValues.slot_type === key}
-                        >
+                        <option key={key} value={value}>
                             {value}
                         </option>
                     ))}

@@ -67,7 +67,9 @@ const YourTeamsPage = () => {
                 <span className="w-full text-center">
                     {shownQR?.code ?? ""}
                 </span>
-                {shownQR && <QRCode value={shownQR?.code} />}
+                {shownQR && (
+                    <QRCode className="max-w-full" value={shownQR?.code} />
+                )}
             </Dialog>
             <Dialog open={shownTeam != null} onClose={() => setShownTeam(null)}>
                 {shownTeam && <TeamCard team={shownTeam} currentUser={user} />}
@@ -79,7 +81,7 @@ const YourTeamsPage = () => {
                         <h3 className="mb-4 text-center text-2xl font-bold">
                             {locale.new_team}
                         </h3>
-                        <TeamCRUD.Creator />
+                        <TeamCRUD.Creator className="mb-5 md:mb-0" />
                     </div>
                     {isFetching ? (
                         <div className="h-full md:grid-cols-2 xl:col-span-3">

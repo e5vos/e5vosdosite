@@ -157,18 +157,20 @@ const TeamCard = ({
                 </div>
             )}
             <hr />
-            <h2 className="text-center text-lg font-bold">
-                {cardLocale.activities}
-            </h2>
-            <div>
-                {team.attendance?.map((e) => (
-                    <AttendanceShowcase key={e.pivot.id} attendance={e} />
-                )) ?? (
-                    <div className="text-center italic">
-                        {cardLocale.noAttendanceYet}
-                    </div>
-                )}
-            </div>
+            <span className="hidden md:block">
+                <h2 className="text-center text-lg font-bold">
+                    {cardLocale.activities}
+                </h2>
+                <div>
+                    {team.attendance?.map((e) => (
+                        <AttendanceShowcase key={e.pivot.id} attendance={e} />
+                    )) ?? (
+                        <div className="text-center italic">
+                            {cardLocale.noAttendanceYet}
+                        </div>
+                    )}
+                </div>
+            </span>
             <hr />
             <h2 className="text-center text-lg font-bold">
                 {cardLocale.members}
@@ -177,7 +179,7 @@ const TeamCard = ({
                 {team.members?.map((member) => (
                     <div
                         key={member.id}
-                        className=" border-8 border-gray-300 px-3 sm:grid sm:grid-cols-2 sm:border-none sm:px-0"
+                        className="mb-4 border-8 border-gray-300 px-3 sm:mb-4 sm:grid sm:grid-cols-2 sm:border-none sm:px-0"
                     >
                         <div className="py-2 text-center sm:mr-5 sm:text-left">
                             <span className="font-semibold">
@@ -229,9 +231,12 @@ const TeamCard = ({
             {(true ||
                 currentUsersMembership?.pivot.role ===
                     TeamMemberRole.leader) && (
-                <div className="mt-6 grid grid-cols-3 gap-6">
+                <div className="mt-6 grid-cols-3 gap-6 md:grid">
                     <UserSearchCombobox onChange={setSelectedUser} />
-                    <Button className="col-span-1" onClick={inviteSelected}>
+                    <Button
+                        className="col-span-1 mt-3 md:mt-0"
+                        onClick={inviteSelected}
+                    >
                         {cardLocale.invite.send}
                     </Button>
                 </div>

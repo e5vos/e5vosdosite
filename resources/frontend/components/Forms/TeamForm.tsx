@@ -1,4 +1,4 @@
-import { FormikValues, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { CRUDForm } from "types/misc";
@@ -101,7 +101,7 @@ const TeamForm = ({
                     invalid={Boolean(formik.errors.description)}
                 />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="w-full text-center">
                 <Button type="submit">{submitLabel}</Button>
             </Form.Group>
         </Form>

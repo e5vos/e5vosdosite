@@ -59,12 +59,7 @@ const Group = ({
     ...rest
 }: HTMLInputProps<HTMLLabelElement>) => {
     return (
-        <label
-            {...rest}
-            className={`form-group mb-3 flex flex-row items-center justify-center${
-                className ?? ""
-            }`}
-        >
+        <label {...rest} className={`form-group mb-3 ${className ?? ""}`}>
             {children}
         </label>
     );
@@ -79,7 +74,7 @@ const Form = ({
     HTMLFormElement
 >) => {
     return (
-        <form {...rest} className={`${className}`}>
+        <form {...rest} className={`${className ?? ""}`}>
             {children}
         </form>
     );

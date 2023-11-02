@@ -7,7 +7,7 @@ export const BaseLayout = ({ children }: { children: ReactNode }) => {
     return (
         <>
             <Navbar />
-            <main>{children}</main>
+            <main className="mx-2">{children}</main>
             <Footer />
         </>
     );

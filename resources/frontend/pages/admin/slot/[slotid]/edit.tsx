@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
-import { useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { Slot } from "types/models";
 
-import adminAPI from "lib/api/adminAPI";
 import eventAPI from "lib/api/eventAPI";
 import { isAdmin } from "lib/gates";
 import Locale from "lib/locale";
 
-import { SlotFormValues } from "components/Forms/SlotForm";
 import { gated } from "components/Gate";
 import SlotCRUD from "components/Slot/CRUD";
 import Loader from "components/UIKit/Loader";

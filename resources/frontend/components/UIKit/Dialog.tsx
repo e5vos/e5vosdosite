@@ -28,9 +28,9 @@ const Dialog = ({
     isLoading = false,
 }: {
     open: boolean;
-    title?: string;
-    description?: string;
-    children?: React.ReactNode;
+    title?: string | ReactNode;
+    description?: string | ReactNode;
+    children?: ReactNode;
     onClose: () => void;
     isLoading?: boolean;
 }) => {

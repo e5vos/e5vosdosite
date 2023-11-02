@@ -7,7 +7,8 @@ import { Team, TeamMemberRole } from "types/models";
 import teamAPI from "lib/api/teamAPI";
 import Locale from "lib/locale";
 
-import TeamCard from "components/Team/TeamCard";
+import TeamCRUD from "components/Team/CRUD";
+import TeamCard from "components/Team/TeamCard.1";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
 import Card from "components/UIKit/Card";
@@ -21,39 +22,17 @@ const locale = Locale({
         view_team: "Csapat megtekintése",
         view_code: "Csapat kódjának megtekintése",
         leave_team: "Csapat elhagyása",
+        new_team: "Új csapat",
         team_code: (team_name: string) => `A(z) ${team_name} csapat kódja:`,
-        membership: (role: TeamMemberRole): string => {
-            switch (role) {
-                case "vezető":
-                    return "Kapitány";
-                case "tag":
-                    return "Tag";
-                case "meghívott":
-                    return "Meghívott";
-                default:
-                    return "Ismeretlen";
-            }
-        },
     },
     en: {
         your_teams: "Your teams",
         view_team: "View team",
         view_code: "View team code",
         leave_team: "Leave team",
+        new_team: "New Team",
         team_code: (team_name: string) =>
             `The code of the ${team_name} team is:`,
-        membership: (role: TeamMemberRole) => {
-            switch (role) {
-                case "vezető":
-                    return "Captain";
-                case "tag":
-                    return "Member";
-                case "meghívott":
-                    return "Invited";
-                default:
-                    return "Unknown";
-            }
-        },
     },
 });
 
@@ -61,9 +40,9 @@ const YourTeamsPage = () => {
     const [shownTeam, setShownTeam] = useState<Team | null>(null);
     const [shownQR, setShownQR] = useState<Team | null>(null);
     const { user } = useUser();
-    const { data: teams } = teamAPI.useGetAllTeamsQuery();
+    const { data: teams, isFetching } = teamAPI.useGetAllTeamsQuery();
     const [leave] = teamAPI.useLeaveMutation();
-    console.log(shownTeam);
+
     if (!user) return <Loader />;
     return (
         <>
@@ -72,48 +51,67 @@ const YourTeamsPage = () => {
                 open={shownQR !== null}
                 onClose={() => setShownQR(null)}
             >
+                <span className="w-full text-center">
+                    {shownQR?.code ?? ""}
+                </span>
                 {shownQR && <QRCode value={shownQR?.code} />}
             </Dialog>
             {shownTeam && <TeamCard team={shownTeam} currentUser={user} />}
             <div>
                 <Title>{locale.your_teams}</Title>
-                <div className="gap-2 md:grid  md:grid-cols-3 xl:grid-cols-4">
-                    {teams?.map((team) => (
-                        <Card
-                            key={team.code}
-                            title={team.name}
-                            subtitle={team.code}
-                            buttonBar={
-                                <ButtonGroup>
-                                    <Button
-                                        variant="primary"
-                                        onClick={() => setShownTeam(team)}
-                                    >
-                                        {locale.view_team}
-                                    </Button>
-                                    <Button
-                                        variant="info"
-                                        onClick={() => setShownQR(team)}
-                                    >
-                                        {locale.view_code}
-                                    </Button>
-                                    <Button
-                                        variant="danger"
-                                        onClick={() =>
-                                            leave({
-                                                user_id: user.id,
-                                                team_code: team.code,
-                                            })
-                                        }
-                                    >
-                                        {locale.leave_team}
-                                    </Button>
-                                </ButtonGroup>
-                            }
-                        >
-                            {team.description}
-                        </Card>
-                    ))}
+                <div className="gap-5 md:grid md:grid-cols-3 xl:grid-cols-4">
+                    <div className="my-auto h-1/2 w-full px-6">
+                        <h3 className="mb-4 text-center text-2xl font-bold">
+                            {locale.new_team}
+                        </h3>
+                        <TeamCRUD.Creator />
+                    </div>
+                    {isFetching ? (
+                        <div className="h-full md:grid-cols-2 xl:col-span-3">
+                            <Loader className="" />
+                        </div>
+                    ) : (
+                        <div className="gap-2 md:col-span-2 md:grid md:grid-cols-2 xl:col-span-3 xl:grid-cols-3">
+                            {teams?.map((team) => (
+                                <Card
+                                    key={team.code}
+                                    title={team.name}
+                                    subtitle={team.code}
+                                    buttonBar={
+                                        <ButtonGroup>
+                                            <Button
+                                                variant="primary"
+                                                onClick={() =>
+                                                    setShownTeam(team)
+                                                }
+                                            >
+                                                {locale.view_team}
+                                            </Button>
+                                            <Button
+                                                variant="info"
+                                                onClick={() => setShownQR(team)}
+                                            >
+                                                {locale.view_code}
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                onClick={() =>
+                                                    leave({
+                                                        user_id: user.id,
+                                                        team_code: team.code,
+                                                    })
+                                                }
+                                            >
+                                                {locale.leave_team}
+                                            </Button>
+                                        </ButtonGroup>
+                                    }
+                                >
+                                    {team.description}
+                                </Card>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </>

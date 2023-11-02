@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { CRUDInterface } from "types/misc";
+import { CRUDForm, CRUDInterface } from "types/misc";
 import { Team } from "types/models";
 
 import teamAPI from "lib/api/teamAPI";
@@ -26,34 +26,47 @@ export type TeamFormValues = {
     description: string;
 };
 
-const TeamCreator = () => {
+const TeamCreator = ({ ...rest }: CRUDForm) => {
     const [createTeam] = teamAPI.useCreateTeamMutation();
-    const navigate = useNavigate();
+    const { refetch } = teamAPI.endpoints.getAllTeams.useQuerySubscription();
     const onSubmit = useCallback(
         async (team: TeamFormValues) => {
+            console.log("yay");
             await createTeam(team);
-            navigate(`/teams/${team.code}`);
+            refetch();
         },
-        [createTeam, navigate],
+        [createTeam, refetch],
     );
     return (
         <TeamForm
             initialValues={{ code: "", description: "", name: "" }}
             onSubmit={onSubmit}
             submitLabel={locale.create}
+            resetOnSubmit={true}
+            {...rest}
         />
     );
 };
 
-const TeamUpdater = ({ value: team }: { value: TeamFormValues }) => {
+const TeamUpdater = ({
+    value: team,
+    ...rest
+}: { value: TeamFormValues } & CRUDForm) => {
     const [updateTeam] = teamAPI.useEditTeamMutation();
-    const navigate = useNavigate();
+    const { refetch: refetchTeams } =
+        teamAPI.endpoints.getAllTeams.useQuerySubscription();
+    const { refetch: refetchTeam } =
+        teamAPI.endpoints.getTeam.useQuerySubscription({
+            code: team.code,
+        });
+
     const onSubmit = useCallback(
         async (team: TeamFormValues) => {
             await updateTeam(team);
-            navigate(`/teams/${team.code}`);
+            refetchTeams();
+            refetchTeam();
         },
-        [updateTeam, navigate],
+        [updateTeam, refetchTeams, refetchTeam],
     );
     return (
         <TeamForm
@@ -61,6 +74,7 @@ const TeamUpdater = ({ value: team }: { value: TeamFormValues }) => {
             onSubmit={onSubmit}
             submitLabel={locale.edit}
             enableReinitialize={true}
+            {...rest}
         />
     );
 };

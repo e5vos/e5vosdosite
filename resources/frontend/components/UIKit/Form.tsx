@@ -61,7 +61,7 @@ const Group = ({
     return (
         <label
             {...rest}
-            className={`form-group mb-3 flex flex-row items-center justify-center ${
+            className={`form-group mb-3 flex flex-row items-center justify-center${
                 className ?? ""
             }`}
         >

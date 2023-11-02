@@ -1,7 +1,8 @@
 import { FormikValues, useFormik } from "formik";
 import * as Yup from "yup";
 
-import { SlotType } from "types/models";
+import { CRUDForm } from "types/misc";
+import { SlotType, SlotTypeType } from "types/models";
 
 import Locale from "lib/locale";
 
@@ -44,7 +45,7 @@ const locale = Locale({
 export type SlotFormValues = {
     id?: number;
     name: string;
-    slot_type: (typeof SlotType)[keyof typeof SlotType];
+    slot_type: SlotTypeType;
     starts_at: string;
     ends_at: string;
 };
@@ -53,12 +54,14 @@ const SlotForm = ({
     initialValues,
     onSubmit,
     submitLabel = locale.submit,
+    enableReinitialize = false,
     ...rest
 }: {
     initialValues: SlotFormValues;
     onSubmit: (values: SlotFormValues) => void;
     submitLabel?: string;
-} & Omit<Parameters<typeof useFormik>[0], "onSubmit">) => {
+    enableReinitialize?: boolean;
+} & CRUDForm) => {
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
@@ -69,68 +72,63 @@ const SlotForm = ({
             ends_at: Yup.string().required(locale.required),
         }),
         onSubmit: onSubmit as (values: FormikValues) => void,
-        ...rest,
+        enableReinitialize: enableReinitialize,
     });
     return (
-        <>
-            <div className="mx-auto max-w-4xl">
-                <h1 className="text-center text-4xl font-bold">
-                    {locale.title}
-                </h1>
+        <Form onSubmit={formik.handleSubmit} {...rest}>
+            <Form.Group>
+                <Form.Label>{locale.slot.name}</Form.Label>
+                <Form.Control
+                    name="name"
+                    value={formik.values.name}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    invalid={Boolean(formik.errors.name)}
+                />
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>{locale.slot.slot_type}</Form.Label>
+                <Form.Select>
+                    {Object.entries(SlotType).map(([key, value]) => (
+                        <option
+                            key={key}
+                            value={key}
+                            selected={initialValues.slot_type === key}
+                        >
+                            {value}
+                        </option>
+                    ))}
+                </Form.Select>
+            </Form.Group>
+            <div className="grid-cols-2 gap-10 sm:grid">
+                <Form.Group>
+                    <Form.Label>{locale.slot.starts_at}</Form.Label>
+                    <Form.Control
+                        type="datetime-local"
+                        name="starts_at"
+                        value={formik.values.starts_at}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        invalid={Boolean(formik.errors.starts_at)}
+                    />
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>{locale.slot.ends_at}</Form.Label>
+                    <Form.Control
+                        type="datetime-local"
+                        name="ends_at"
+                        value={formik.values.ends_at}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        invalid={Boolean(formik.errors.ends_at)}
+                    />
+                </Form.Group>
             </div>
-            <div className="min-w-12 mx-28 mt-2 flex flex-col justify-center align-middle">
-                <Form onSubmit={formik.handleSubmit}>
-                    <Form.Group>
-                        <Form.Label>{locale.slot.name}</Form.Label>
-                        <Form.Control
-                            name="name"
-                            value={formik.values.name}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            invalid={Boolean(formik.errors.name)}
-                        />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>{locale.slot.slot_type}</Form.Label>
-                        <Form.Select>
-                            {Object.entries(SlotType).map(([key, value]) => (
-                                <option key={key} value={key}>
-                                    {value}
-                                </option>
-                            ))}
-                        </Form.Select>
-                    </Form.Group>
-                    <div className="grid-cols-2 gap-10 sm:grid">
-                        <Form.Group>
-                            <Form.Label>{locale.slot.starts_at}</Form.Label>
-                            <Form.Control
-                                type="datetime-local"
-                                name="starts_at"
-                                value={formik.values.starts_at}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                invalid={Boolean(formik.errors.starts_at)}
-                            />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>{locale.slot.ends_at}</Form.Label>
-                            <Form.Control
-                                type="datetime-local"
-                                name="ends_at"
-                                value={formik.values.ends_at}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                invalid={Boolean(formik.errors.ends_at)}
-                            />
-                        </Form.Group>
-                    </div>
 
-                    <Form.Group>
-                        <Button type="submit">{submitLabel}</Button>
-                    </Form.Group>
-                </Form>
-            </div>
-        </>
+            <Form.Group>
+                <Button type="submit">{submitLabel}</Button>
+            </Form.Group>
+        </Form>
     );
 };
 export default SlotForm;

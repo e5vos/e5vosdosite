@@ -81,10 +81,13 @@ export const TeamMemberRole = {
     leader: "vezető",
 } as const;
 
+export type TeamMemberRoleType =
+    (typeof TeamMemberRole)[keyof typeof TeamMemberRole];
+
 export type TeamMembership = {
     team_code: string;
     user_id: number;
-    role: (typeof TeamMemberRole)[keyof typeof TeamMemberRole];
+    role: TeamMemberRoleType;
 };
 export type TeamMember = RequiredFields<
     Omit<User, "teams" | "attendances">,
@@ -97,19 +100,21 @@ export interface Team {
     code: string;
     description: string;
     members?: TeamMember[];
-    activity?: { event: Event; attendance: TeamAttendance }[];
+    attendance?: TeamAttendance[];
 }
 export const SlotType = {
     Presentation: "Előadássáv",
     Program: "Programsáv",
 } as const;
 
+export type SlotTypeType = (typeof SlotType)[keyof typeof SlotType];
+
 export interface Slot {
     id: number;
     starts_at: string;
     ends_at: string;
     events?: Event[];
-    slot_type: (typeof SlotType)[keyof typeof SlotType];
+    slot_type: SlotTypeType;
     name: string;
 }
 

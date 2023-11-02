@@ -11,7 +11,7 @@ export const teamAPI = baseAPI.injectEndpoints({
             query: () => routeSwitcher("teams.index"),
         }),
         getTeam: builder.query<
-            RequiredFields<Team, "activity">,
+            RequiredFields<Team, "attendance">,
             Pick<Team, "code">
         >({
             query: ({ code }) => routeSwitcher("team.show", { teamCode: code }),
@@ -21,7 +21,7 @@ export const teamAPI = baseAPI.injectEndpoints({
             Pick<Team, "name" | "code" | "description">
         >({
             query: (data) => ({
-                url: routeSwitcher("team.create"),
+                url: routeSwitcher("team.store"),
                 method: "POST",
                 params: data,
             }),
@@ -34,6 +34,20 @@ export const teamAPI = baseAPI.injectEndpoints({
                 url: routeSwitcher("team.edit", { teamCode: data.code }),
                 method: "PUT",
                 params: data,
+            }),
+        }),
+        invite: builder.mutation<
+            void,
+            Pick<TeamMembership, "user_id" | "team_code">
+        >({
+            query: (data) => ({
+                url: routeSwitcher("team.invite", {
+                    team_code: data.team_code ?? -1,
+                }),
+                method: "POST",
+                params: {
+                    id: data.user_id,
+                },
             }),
         }),
         promote: builder.mutation<

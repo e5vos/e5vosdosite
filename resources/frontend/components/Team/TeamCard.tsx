@@ -1,9 +1,18 @@
+import { useCallback, useMemo, useState } from "react";
+
 import { RequiredFields } from "types/misc";
-import { Team, TeamMember, TeamMemberRole, User } from "types/models";
+import {
+    Team,
+    TeamMember,
+    TeamMemberRole,
+    TeamMemberRoleType,
+    User,
+} from "types/models";
 
 import teamAPI from "lib/api/teamAPI";
 import Locale from "lib/locale";
 
+import AttendanceShowcase from "components/AttendanceShowcase";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
 import Card from "components/UIKit/Card";
@@ -12,13 +21,13 @@ import UserSearchCombobox from "components/User/UserSearch";
 
 const cardLocale = Locale({
     hu: {
-        membership: (role: TeamMemberRole): string => {
+        membership: (role: TeamMemberRoleType): string => {
             switch (role) {
-                case "vezető":
+                case TeamMemberRole.leader:
                     return "Kapitány";
-                case "tag":
+                case TeamMemberRole.member:
                     return "Tag";
-                case "meghívott":
+                case TeamMemberRole.invited:
                     return "Meghívott";
                 default:
                     return "Ismeretlen";
@@ -34,16 +43,18 @@ const cardLocale = Locale({
         members: "Tagok",
         promote: "Előléptetés",
         demote: "Kizárás",
-        noActivityYet: "Még nincs aktivitás",
+        resign: "Lemondás",
+        leave: "Kilépés",
+        noAttendanceYet: "Még nincs aktivitás",
     },
     en: {
-        membership: (role: TeamMemberRole) => {
+        membership: (role: TeamMemberRoleType) => {
             switch (role) {
-                case "vezető":
+                case TeamMemberRole.leader:
                     return "Captain";
-                case "tag":
+                case TeamMemberRole.member:
                     return "Member";
-                case "meghívott":
+                case TeamMemberRole.invited:
                     return "Invited";
                 default:
                     return "Unknown";
@@ -59,7 +70,9 @@ const cardLocale = Locale({
         members: "Members",
         promote: "Promote",
         demote: "Demote",
-        noActivityYet: "No activity yet",
+        resign: "Resign",
+        leave: "Leave",
+        noAttendanceYet: "No activity yet",
     },
 });
 
@@ -67,23 +80,46 @@ const TeamCard = ({
     team,
     currentUser: user,
 }: {
-    team: RequiredFields<Team, "activity" | "members">;
+    team: RequiredFields<Team, "attendance" | "members">;
     currentUser: User;
 }) => {
     const [promote] = teamAPI.usePromoteMutation();
     const [demote] = teamAPI.useDemoteMutation();
-    if (!team || !user) return <Loader />;
-    const currentUsersMembership = team.members?.find(
-        (member) => member.id === user?.id,
+    const [invite] = teamAPI.useInviteMutation();
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+    const currentUsersMembership = useMemo(
+        () => team.members?.find((member) => member.id === user?.id),
+        [team, user],
     );
+
+    const inviteSelected = useCallback(async () => {
+        if (!selectedUser) return;
+        await invite({
+            user_id: selectedUser.id,
+            team_code: team.code,
+        });
+    }, [invite, selectedUser, team.code]);
+
+    const moreThanOneLeader = useMemo(
+        () =>
+            team.members.filter((e) => e.pivot.role === TeamMemberRole.leader)
+                .length > 1,
+        [team],
+    );
+
+    if (!team || !user) return <Loader />;
+
     const canPromote = (member: TeamMember) =>
         true ||
-        (currentUsersMembership?.pivot.role === "vezető" &&
-            member.pivot.role === "tag");
+        (currentUsersMembership?.pivot.role === TeamMemberRole.leader &&
+            member.pivot.role === TeamMemberRole.member);
     const canDemote = (member: TeamMember) =>
         true ||
-        (currentUsersMembership?.pivot.role === "vezető" &&
-            member.pivot.role !== "vezető");
+        (currentUsersMembership?.pivot.role === TeamMemberRole.leader &&
+            (member.pivot.role !== TeamMemberRole.leader ||
+                (member.id === currentUsersMembership?.id &&
+                    moreThanOneLeader)));
     return (
         <Card
             title={team.name}
@@ -129,12 +165,11 @@ const TeamCard = ({
                 {cardLocale.activities}
             </h2>
             <div>
-                {team.activity?.map((e) => (
-                    <></>
-                    //<AttendanceShowcase key={e.attendance.id} attendance={e} />
+                {team.attendance?.map((e) => (
+                    <AttendanceShowcase key={e.pivot.id} attendance={e} />
                 )) ?? (
                     <div className="text-center italic">
-                        {cardLocale.noActivityYet}
+                        {cardLocale.noAttendanceYet}
                     </div>
                 )}
             </div>
@@ -182,7 +217,12 @@ const TeamCard = ({
                                             })
                                         }
                                     >
-                                        {cardLocale.demote}
+                                        {member.id === user.id
+                                            ? member.pivot.role ===
+                                              TeamMemberRole.member
+                                                ? cardLocale.resign
+                                                : cardLocale.leave
+                                            : cardLocale.demote}
                                     </Button>
                                 )}
                             </ButtonGroup>
@@ -190,10 +230,16 @@ const TeamCard = ({
                     </div>
                 ))}
             </div>
-            <div className="mt-6 grid grid-cols-3 gap-6">
-                <UserSearchCombobox />
-                <Button className="col-span-1">{cardLocale.invite.send}</Button>
-            </div>
+            {(true ||
+                currentUsersMembership?.pivot.role ===
+                    TeamMemberRole.leader) && (
+                <div className="mt-6 grid grid-cols-3 gap-6">
+                    <UserSearchCombobox onChange={setSelectedUser} />
+                    <Button className="col-span-1" onClick={inviteSelected}>
+                        {cardLocale.invite.send}
+                    </Button>
+                </div>
+            )}
         </Card>
     );
 };

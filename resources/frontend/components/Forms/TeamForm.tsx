@@ -1,6 +1,8 @@
 import { FormikValues, useFormik } from "formik";
 import * as Yup from "yup";
 
+import { CRUDForm } from "types/misc";
+
 import Locale from "lib/locale";
 
 import { TeamFormValues } from "components/Team/CRUD";
@@ -10,45 +12,67 @@ import Form from "components/UIKit/Form";
 const locale = Locale({
     hu: {
         required: "Kötelező mező",
-        mustBe12: "12 karakter hosszú kell legyen",
+        gte2: "Legalább 2 karakter",
+        lte11: "Legfeljebb 10 karakter",
         mustBeLetters: "Csak betűk lehetnek",
         submit: "Létrehozás",
+        labels: {
+            name: "Név",
+            code: "Kód",
+            description: "Leírás",
+        },
     },
     en: {
         required: "Required",
-        mustBe12: "Must be 12 characters",
+        gte2: "At least 2 characters",
+        lte11: "At most 10 characters",
         mustBeLetters: "Must be letters only",
         submit: "Create",
+        labels: {
+            name: "Name",
+            code: "Code",
+            description: "Description",
+        },
     },
 });
 
 const TeamForm = ({
     initialValues,
     onSubmit,
-    submitLabel = locale.form.submit,
+    submitLabel = locale.submit,
+    enableReinitialize = false,
+    resetOnSubmit = false,
     ...rest
 }: {
     initialValues: TeamFormValues;
     onSubmit: (values: TeamFormValues) => void;
     submitLabel?: string;
-} & Omit<Parameters<typeof useFormik>[0], "onSubmit">) => {
+    enableReinitialize?: boolean;
+    resetOnSubmit?: boolean;
+} & CRUDForm) => {
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
             name: Yup.string().required(locale.required),
             code: Yup.string()
                 .required(locale.required)
-                .length(12, locale.mustBe12)
+                .min(2, locale.gte2)
+                .max(10, locale.lte11)
+                .matches(/^[a-zA-Z]{1,10}$/, locale.mustBeLetters)
                 .matches(/^[a-zA-Z]+$/, locale.mustBeLetters),
             description: Yup.string(),
         }),
-        onSubmit: onSubmit as (values: FormikValues) => void,
-        ...rest,
+        onSubmit: (values) => {
+            const val = onSubmit(values);
+            if (resetOnSubmit) formik.resetForm();
+            return val;
+        },
+        enableReinitialize: enableReinitialize,
     });
     return (
-        <Form onSubmit={formik.handleSubmit}>
+        <Form onSubmit={formik.handleSubmit} {...rest}>
             <Form.Group>
-                <Form.Label>Name</Form.Label>
+                <Form.Label>{locale.labels.name}</Form.Label>
                 <Form.Control
                     name="name"
                     value={formik.values.name}
@@ -58,7 +82,7 @@ const TeamForm = ({
                 />
             </Form.Group>
             <Form.Group>
-                <Form.Label>Code</Form.Label>
+                <Form.Label>{locale.labels.code}</Form.Label>
                 <Form.Control
                     name="code"
                     value={formik.values.code}
@@ -68,7 +92,7 @@ const TeamForm = ({
                 />
             </Form.Group>
             <Form.Group>
-                <Form.Label>Description</Form.Label>
+                <Form.Label>{locale.labels.description}</Form.Label>
                 <Form.Control
                     name="description"
                     value={formik.values.description}

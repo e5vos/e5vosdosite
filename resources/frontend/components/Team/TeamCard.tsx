@@ -111,15 +111,12 @@ const TeamCard = ({
     if (!team || !user) return <Loader />;
 
     const canPromote = (member: TeamMember) =>
-        true ||
-        (currentUsersMembership?.pivot.role === TeamMemberRole.leader &&
-            member.pivot.role === TeamMemberRole.member);
+        currentUsersMembership?.pivot.role === TeamMemberRole.leader &&
+        member.pivot.role === TeamMemberRole.member;
     const canDemote = (member: TeamMember) =>
-        true ||
-        (currentUsersMembership?.pivot.role === TeamMemberRole.leader &&
-            (member.pivot.role !== TeamMemberRole.leader ||
-                (member.id === currentUsersMembership?.id &&
-                    moreThanOneLeader)));
+        currentUsersMembership?.pivot.role === TeamMemberRole.leader &&
+        (member.pivot.role !== TeamMemberRole.leader ||
+            (member.id === currentUsersMembership?.id && moreThanOneLeader));
     return (
         <Card
             title={team.name}
@@ -128,38 +125,37 @@ const TeamCard = ({
             titleClassName="text-2xl"
         >
             {team.description}
-            {currentUsersMembership?.pivot.role === "meghívott" ||
-                (true && (
-                    <div className="mb-3">
-                        <h3 className="text-center text-xl font-bold text-yellow-500">
-                            {cardLocale.invite.pending}
-                        </h3>
-                        <ButtonGroup className="w-full">
-                            <Button
-                                variant="success"
-                                onClick={() =>
-                                    promote({
-                                        user_id: user.id,
-                                        team_code: team.code,
-                                    })
-                                }
-                            >
-                                {cardLocale.invite.accept}
-                            </Button>
-                            <Button
-                                variant="danger"
-                                onClick={() =>
-                                    demote({
-                                        user_id: user.id,
-                                        team_code: team.code,
-                                    })
-                                }
-                            >
-                                {cardLocale.invite.decline}
-                            </Button>
-                        </ButtonGroup>
-                    </div>
-                ))}
+            {currentUsersMembership?.pivot.role === "meghívott" && (
+                <div className="mb-3">
+                    <h3 className="text-center text-xl font-bold text-yellow-500">
+                        {cardLocale.invite.pending}
+                    </h3>
+                    <ButtonGroup className="w-full">
+                        <Button
+                            variant="success"
+                            onClick={() =>
+                                promote({
+                                    user_id: user.id,
+                                    team_code: team.code,
+                                })
+                            }
+                        >
+                            {cardLocale.invite.accept}
+                        </Button>
+                        <Button
+                            variant="danger"
+                            onClick={() =>
+                                demote({
+                                    user_id: user.id,
+                                    team_code: team.code,
+                                })
+                            }
+                        >
+                            {cardLocale.invite.decline}
+                        </Button>
+                    </ButtonGroup>
+                </div>
+            )}
             <hr />
             <h2 className="text-center text-lg font-bold">
                 {cardLocale.activities}

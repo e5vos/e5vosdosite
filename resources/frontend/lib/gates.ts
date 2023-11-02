@@ -1,22 +1,19 @@
-import { User } from "types/models";
+import { Event, PermissionCode, User } from "types/models";
 
-export type GateFunction<T = any> = ((user: User, ...rest: T[]) => boolean) & {
+export type GateFunction = ((user: User) => boolean) & {
     message?: string;
 };
 
-const gate = <T = any>(
-    fun: (user: User, ...rest: T[]) => boolean,
-    message?: string,
-): GateFunction => {
+const gate = (fun: (user: User) => boolean, message?: string): GateFunction => {
     return Object.assign(
-        (user: User, ...rest: T[]) => {
+        (user: User) => {
             if (
                 user.permissions?.find(
-                    (permission) => permission.code === "OPT",
+                    (permission) => permission.code === PermissionCode.operator,
                 ) !== undefined
             )
                 return true;
-            return fun(user, ...rest);
+            return fun(user);
         },
         { message },
     );
@@ -24,28 +21,54 @@ const gate = <T = any>(
 
 export const isTeacher = gate((user) => {
     return (
-        user.permissions?.find((permission) => permission.code === "TCH") !==
-        undefined
+        user.permissions?.find(
+            (permission) => permission.code === PermissionCode.teacher,
+        ) !== undefined
     );
 }, "Csak tanárok számára elérhető");
 
 export const isOperator = gate((user) => {
     return (
-        user.permissions?.find((permission) => permission.code === "OPT") !==
-        undefined
+        user.permissions?.find(
+            (permission) => permission.code === PermissionCode.operator,
+        ) !== undefined
     );
 }, "Csak operátorok számára elérhető");
 
 export const isAdmin = gate((user) => {
     return (
-        user.permissions?.find((permission) => permission.code === "ADM") !==
-        undefined
+        user.permissions?.find(
+            (permission) => permission.code === PermissionCode.admin,
+        ) !== undefined
     );
 }, "Csak adminok számára elérhető");
 
 export const isTeacherAdmin = gate((user) => {
     return (
-        user.permissions?.find((permission) => permission.code === "TAD") !==
-        undefined
+        user.permissions?.find(
+            (permission) => permission.code === PermissionCode.teacheradmin,
+        ) !== undefined
     );
 }, "Csak tanár adminok számára elérhető");
+
+export const isScanner = (event: Event) =>
+    gate((user) => {
+        return (
+            user.permissions?.find(
+                (permission) =>
+                    permission.code === "SCN" &&
+                    permission.event_id === event.id,
+            ) !== undefined
+        );
+    }, "Csak scannerek számára elérhető");
+
+export const isOrganiser = (event: Event) =>
+    gate((user) => {
+        return (
+            user.permissions?.find(
+                (permission) =>
+                    permission.code === "ORG" &&
+                    permission.event_id === event.id,
+            ) !== undefined
+        );
+    }, "Csak szervezők számára elérhető");

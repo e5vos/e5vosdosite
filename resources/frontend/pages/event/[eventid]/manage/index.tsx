@@ -1,10 +1,11 @@
+import useEventDates from "hooks/useEventDates";
 import useUser from "hooks/useUser";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import eventAPI from "lib/api/eventAPI";
-import { isAdmin } from "lib/gates";
+import { isAdmin, isOrganiser, isScanner } from "lib/gates";
 import Locale from "lib/locale";
 
 import Button from "components/UIKit/Button";
@@ -65,19 +66,16 @@ const ManageEventPage = () => {
     const [closeSignup] = eventAPI.useCloseSignUpMutation();
     const { user } = useUser();
 
+    const { now, starts_at, ends_at, signup_deadline } = useEventDates(event);
+
     if (!event) return <Loader />;
     if (!user) return <Loader />;
 
-    const isUserOrganiser = user.permissions?.some(
-        (e) => e.code === "ORG" && e.event_id === event.id,
-    );
-    const isUserScanner = user.permissions?.some(
-        (e) => e.code === "SCN" && e.event_id === event.id,
-    );
+    const isUserOrganiser = isOrganiser(event)(user);
+    const isUserScanner = isScanner(event)(user);
 
-    const dateNow = new Date();
-    const isEventSignupDateStillRelevant = event.signup_deadline
-        ? dateNow < new Date(event.signup_deadline)
+    const isEventSignupDateStillRelevant = signup_deadline
+        ? now < signup_deadline
         : false;
 
     return (
@@ -199,11 +197,11 @@ const ManageEventPage = () => {
                     <Card title={locale.times} className="!bg-slate-500">
                         <p>
                             <strong>{locale.starts_at}</strong>:{" "}
-                            {new Date(event.starts_at).toLocaleString("hu-HU")}
+                            {starts_at?.toLocaleString("hu-HU")}
                         </p>
                         <p>
                             <strong>{locale.ends_at}</strong>:{" "}
-                            {new Date(event.ends_at).toLocaleString("hu-HU")}
+                            {ends_at?.toLocaleString("hu-HU")}
                         </p>
                     </Card>
                     <Card title={locale.location} className="!bg-slate-500">

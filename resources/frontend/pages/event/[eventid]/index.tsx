@@ -1,3 +1,4 @@
+import useEventDates from "hooks/useEventDates";
 import useUser from "hooks/useUser";
 import { Link, useParams } from "react-router-dom";
 
@@ -10,36 +11,35 @@ import ButtonGroup from "components/UIKit/ButtonGroup";
 import Card from "components/UIKit/Card";
 import Loader from "components/UIKit/Loader";
 
+const locale = Locale({
+    hu: {
+        organiser: "Szervező",
+        description: "Leírás",
+        times: "Időpontok",
+        starts_at: "Kezdés",
+        ends_at: "Befejezés",
+        location: "Helyszín",
+        unknown: "Ismeretlen",
+        manage: "Kezelés",
+    },
+    en: {
+        organiser: "Organiser",
+        description: "Description",
+        times: "Timetable",
+        starts_at: "Starts at",
+        ends_at: "Ends at",
+        location: "Location",
+        unknown: "Unknown",
+        manage: "Manage",
+    },
+});
+
 const EventPage = () => {
     const { eventid } = useParams();
     const { user } = useUser();
     const { data: event } = eventAPI.useGetEventQuery({ id: Number(eventid) });
-
-    const locale = Locale({
-        hu: {
-            organiser: "Szervező",
-            description: "Leírás",
-            times: "Időpontok",
-            starts_at: "Kezdés",
-            ends_at: "Befejezés",
-            location: "Helyszín",
-            unknown: "Ismeretlen",
-            manage: "Kezelés",
-        },
-        en: {
-            organiser: "Organiser",
-            description: "Description",
-            times: "Timetable",
-            starts_at: "Starts at",
-            ends_at: "Ends at",
-            location: "Location",
-            unknown: "Unknown",
-            manage: "Manage",
-        },
-    });
-
-    if (!event) return <Loader />;
-    if (!user) return <Loader />;
+    const { starts_at, ends_at } = useEventDates(event);
+    if (!event || !user) return <Loader />;
     return (
         <div className="mx-2 mt-4 grid-cols-3 gap-3 lg:mx-12 lg:grid">
             <div className="col-span-1">
@@ -74,11 +74,11 @@ const EventPage = () => {
                 <Card title={locale.times} className="!bg-slate-500">
                     <p>
                         <strong>{locale.starts_at}</strong>:{" "}
-                        {new Date(event.starts_at).toLocaleString("hu-HU")}
+                        {starts_at?.toLocaleString("hu-HU")}
                     </p>
                     <p>
                         <strong>{locale.ends_at}</strong>:{" "}
-                        {new Date(event.ends_at).toLocaleString("hu-HU")}
+                        {ends_at.toLocaleString("hu-HU")}
                     </p>
                 </Card>
                 <Card title={locale.location} className="!bg-slate-500">

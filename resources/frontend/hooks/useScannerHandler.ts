@@ -23,8 +23,8 @@ const useScannerHandler = ({
     onSuccess,
     onError,
 }: {
-    event: Event;
-    teamMemberPrompt: (member: TeamMember) => boolean;
+    event: Pick<Event, "id">;
+    teamMemberPrompt: (member: TeamMember) => Promise<boolean>;
     onSuccess?: (attendance: Attendance) => any;
     onError?: (error: ScannerError) => any;
 }) => {
@@ -54,13 +54,16 @@ const useScannerHandler = ({
                 onError?.("TeamEmpty");
                 return;
             }
-            const memberAttendances: TeamMemberAttendance[] = team.members.map(
-                (member) => ({
-                    is_present: teamMemberPrompt(member),
+            let memberAttendances: TeamMemberAttendance[] = [];
+
+            for (const member of team.members) {
+                memberAttendances.push({
+                    is_present: await teamMemberPrompt(member),
                     team_code: team.code,
                     user_id: member.id,
-                }),
-            );
+                });
+            }
+
             try {
                 await teamMemberAttend(memberAttendances).unwrap();
             } catch (e) {

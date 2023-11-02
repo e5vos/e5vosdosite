@@ -19,23 +19,39 @@ const Scroller = ({ children }: { children: ReactNode }) => {
     return <div className="scroller  h-[500px] overflow-auto">{children}</div>;
 };
 
+type Closable = {
+    onClose: () => void;
+    closable?: true;
+};
+
+type Unclosable = {
+    onClose?: never;
+    closable: false;
+};
+
+const noop = (a: boolean) => {};
+
 const Dialog = ({
-    open,
-    onClose,
+    open = true,
     title,
     description,
     children,
     isLoading = false,
+    onClose,
+    closable,
 }: {
-    open: boolean;
+    open?: boolean;
     title?: string | ReactNode;
     description?: string | ReactNode;
     children?: ReactNode;
-    onClose: () => void;
     isLoading?: boolean;
-}) => {
+} & (Closable | Unclosable)) => {
     return (
-        <DialogHeadless open={open} onClose={onClose} className="relative z-50">
+        <DialogHeadless
+            open={open}
+            onClose={closable ? onClose! : noop}
+            className="relative z-50"
+        >
             <div className="fixed inset-0 bg-gray-500/50" aria-hidden="true" />
             <div className="fixed inset-0 flex items-center justify-center p-4">
                 <DialogHeadless.Panel className="mx-auto flex max-h-[95%] min-w-[200px] max-w-[95%] flex-col gap-4 rounded-3xl border-8 border-gray-800/50 bg-gray-100 p-3 shadow-2xl  shadow-gray-800">
@@ -60,11 +76,13 @@ const Dialog = ({
                             </div>
                         )}
                     </div>
-                    <div className="mx-auto text-center">
-                        <Button onClick={onClose} variant="danger">
-                            {locale.close}
-                        </Button>
-                    </div>
+                    {closable !== false && (
+                        <div className="mx-auto text-center">
+                            <Button onClick={onClose} variant="danger">
+                                {locale.close}
+                            </Button>
+                        </div>
+                    )}
                 </DialogHeadless.Panel>
             </div>
         </DialogHeadless>

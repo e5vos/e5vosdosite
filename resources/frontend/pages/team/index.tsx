@@ -41,7 +41,6 @@ const YourTeamsPage = () => {
     const [shownQR, setShownQR] = useState<Team | null>(null);
     const { user } = useUser();
     const { data: teams, isFetching } = teamAPI.useGetAllTeamsQuery();
-    const [leave] = teamAPI.useLeaveMutation();
 
     useEffect(() => {
         if (shownTeam && !teams?.find((e) => e.code === shownTeam.code))
@@ -109,17 +108,6 @@ const YourTeamsPage = () => {
                                                 onClick={() => setShownQR(team)}
                                             >
                                                 {locale.view_code}
-                                            </Button>
-                                            <Button
-                                                variant="danger"
-                                                onClick={() =>
-                                                    leave({
-                                                        user_id: user.id,
-                                                        team_code: team.code,
-                                                    })
-                                                }
-                                            >
-                                                {locale.leave_team}
                                             </Button>
                                         </ButtonGroup>
                                     }

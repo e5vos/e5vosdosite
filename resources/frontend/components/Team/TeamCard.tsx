@@ -228,9 +228,7 @@ const TeamCard = ({
                     </div>
                 ))}
             </div>
-            {(true ||
-                currentUsersMembership?.pivot.role ===
-                    TeamMemberRole.leader) && (
+            {currentUsersMembership?.pivot.role === TeamMemberRole.leader && (
                 <div className="mt-6 grid-cols-3 gap-6 md:grid">
                     <UserSearchCombobox onChange={setSelectedUser} />
                     <Button

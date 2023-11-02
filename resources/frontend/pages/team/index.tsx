@@ -1,14 +1,14 @@
 import useUser from "hooks/useUser";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 
-import { Team, TeamMemberRole } from "types/models";
+import { Team } from "types/models";
 
 import teamAPI from "lib/api/teamAPI";
 import Locale from "lib/locale";
 
 import TeamCRUD from "components/Team/CRUD";
-import TeamCard from "components/Team/TeamCard.1";
+import TeamCard from "components/Team/TeamCard";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
 import Card from "components/UIKit/Card";
@@ -43,6 +43,11 @@ const YourTeamsPage = () => {
     const { data: teams, isFetching } = teamAPI.useGetAllTeamsQuery();
     const [leave] = teamAPI.useLeaveMutation();
 
+    useEffect(() => {
+        if (shownTeam && !teams?.find((e) => e.code === shownTeam.code))
+            setShownTeam(null);
+    }, [shownTeam, teams]);
+
     if (!user) return <Loader />;
     return (
         <>
@@ -56,7 +61,9 @@ const YourTeamsPage = () => {
                 </span>
                 {shownQR && <QRCode value={shownQR?.code} />}
             </Dialog>
-            {shownTeam && <TeamCard team={shownTeam} currentUser={user} />}
+            <Dialog open={shownTeam != null} onClose={() => setShownTeam(null)}>
+                {shownTeam && <TeamCard team={shownTeam} currentUser={user} />}
+            </Dialog>
             <div>
                 <Title>{locale.your_teams}</Title>
                 <div className="gap-5 md:grid md:grid-cols-3 xl:grid-cols-4">

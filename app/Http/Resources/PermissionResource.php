@@ -15,7 +15,6 @@ class PermissionResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
             'user_id' => $this->user_id,
             'user' => new UserResource($this->whenLoaded('user')),
             'event_id' => $this->event_id,

@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     Auth\AuthController,
     E5N\SlotController,
     E5N\TeamController,
+    Misc\UserController,
 };
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\PermissionController;
@@ -19,6 +20,7 @@ use App\Models\{
     Setting,
     TeamMembership,
     Team,
+    User,
 };
 use Tightenco\Ziggy\Ziggy;
 use App\Events\{
@@ -42,16 +44,23 @@ use App\Http\Resources\{
 
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
-Route::middleware(['auth:sanctum'])->prefix('/user')->group(function () {
-    Route::get('/', function (Request $request) {
-        return (new UserResource($request->user()->load('permissions')))->jsonSerialize();
-    })->name('user');
-});
 
 Route::get('/ziggy', fn () => response()->json(new Ziggy));
 
 Route::get('/login', [AuthController::class, 'redirect'])->name('login');
 Route::middleware(['auth:sanctum'])->patch('/e5code', [AuthController::class, 'setE5code'])->name('user.e5code');
+
+Route::controller(UserController::class)->middleware(['auth:sanctum'])->prefix('/user')->group(function () {
+    Route::get('/', function (Request $request) {
+        return (new UserResource($request->user()->load('permissions')))->jsonSerialize();
+    })->name('user');
+    Route::get('/{userId}', 'show')->can('view', User::class)->name('users.show');
+    Route::put('/{userId}', 'update')->can('update', User::class)->name('users.update');
+    Route::delete('/{userId}', 'destroy')->can('delete', User::class)->name('users.destroy');
+    Route::put('/{userId}/restore', 'restore')->can('restore', User::class)->name('users.restore');
+});
+Route::get('/users', [UserController::class, 'index'])->middleware(['auth:sanctum'])->can('viewAny', User::class)->name('users.index');
+// Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
 //routes telated to e5n slots
 Route::controller(SlotController::class)->prefix('/slot')->group(function () {

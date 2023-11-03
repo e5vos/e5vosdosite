@@ -8,8 +8,9 @@ use App\Exceptions\StudentBusyException;
 use App\Helpers\MembershipType;
 use App\Helpers\PermissionType;
 use App\Helpers\SlotType;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,9 +27,14 @@ use Illuminate\Support\Facades\Cache;
  * @property string $ejg_class
  * @property string|null $img_url
  */
-class User extends Authenticable
+class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * The table associated with the model.
+     */
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -50,6 +56,7 @@ class User extends Authenticable
      */
     protected $hidden = [
         'google_id',
+        'e5code',
     ];
 
     /**
@@ -73,9 +80,10 @@ class User extends Authenticable
      */
     public function hasPermission(string $code)
     {
-        $permissions = Cache::remember('users.' . $this->id . '.permissions', now()->addMinutes(5), function () {
+        $permissions = $_SESSION['permissions'] ?? Cache::remember('users.' . $this->id . '.permissions', now()->addMinutes(5), function () {
             return $this->permissions()->get()->pluck('code')->toArray();
         });
+        $_SESSION['permissions'] = $permissions;
         return in_array($code, $permissions) || in_array(PermissionType::Operator->value, $permissions);
     }
 
@@ -154,6 +162,44 @@ class User extends Authenticable
     public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class);
+    }
+
+
+    /**
+     * Get all teamattendances of the user
+     */
+    public function teamSignups(): BelongsToMany
+    {
+        return $this->belongsToMany(Attendance::class, 'team_member_attendances', 'user_id', 'attendance_id');
+    }
+
+    /**
+     * Get all events the user has signed up for WITHOUT a team
+     */
+    public function userActivity(): HasMany
+    {
+        return $this->signups()->with(['event:name,id,location_id']);
+    }
+
+    /**
+     * Get all events the user has signed up for WITH a team
+     */
+    public function teamActivity(): BelongsToMany
+    {
+        return $this->teamSignups()->with([
+            'event:name,id,location_id',
+            'team:name,code',
+            'team.members:id,name,ejg_class',
+            'teamMemberAttendances:user_id,is_present,attendance_id'
+        ]);
+    }
+
+    /**
+     * Get all events the user has signed up for
+     */
+    public function activity()
+    {
+        return $this->userActivity->union($this->teamActivity);
     }
 
     /**

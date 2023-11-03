@@ -6,8 +6,8 @@ import baseAPI from ".";
 
 export const teamAPI = baseAPI.injectEndpoints({
     endpoints: (builder) => ({
-        getTeams: builder.query<Team[], Pick<User, "id">>({
-            query: (user) => routeSwitcher("teams", { userid: user.id }),
+        getMyTeams: builder.query<Team[], void>({
+            query: (user) => routeSwitcher("user.myteams"), // roland todo
         }),
         getAllTeams: builder.query<Team[], void>({
             query: () => routeSwitcher("teams"),
@@ -22,36 +22,43 @@ export const teamAPI = baseAPI.injectEndpoints({
                 params: data,
             }),
         }),
-        promote: builder.mutation<void, Pick<TeamMembership, "user" | "team">>({
+        promote: builder.mutation<
+            Team,
+            Pick<TeamMembership, "user_id" | "team_code">
+        >({
             query: (data) => ({
                 url: routeSwitcher("team.promote", {
-                    user_id: data.team?.code ?? -1,
-                    team_code: data.user?.id ?? -1,
+                    teamCode: data.team_code,
                 }),
                 method: "POST",
-                params: data,
+                params: {
+                    userId: data.user_id,
+                },
             }),
         }),
 
-        demote: builder.mutation<void, Pick<TeamMembership, "user" | "team">>({
+        demote: builder.mutation<
+            Team,
+            Pick<TeamMembership, "user_id" | "team_code">
+        >({
             query: (data) => ({
                 url: routeSwitcher("team.demote", {
-                    user_id: data.team?.code ?? -1,
-                    team_code: data.user?.id ?? -1,
+                    team_code: data.team_code,
                 }),
                 method: "POST",
-                params: data,
+                params: {
+                    userId: data.user_id,
+                },
             }),
         }),
-        leave: builder.mutation<void, Pick<TeamMembership, "user" | "team">>({
-            query: (data) => ({
-                url: routeSwitcher("team.leave", {
-                    user_id: data.team?.code ?? -1,
-                    team_code: data.user?.id ?? -1,
+        invite: builder.mutation<
+            Team,
+            Pick<TeamMembership, "team_code" | "user_id">
+        >({
+            query: (data) =>
+                routeSwitcher("team.invite", {
+                    teamCode: data.team_code,
                 }),
-                method: "DELETE",
-                params: data,
-            }),
         }),
     }),
 });

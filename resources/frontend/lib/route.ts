@@ -32,9 +32,9 @@ declare global {
     interface Window {}
 }
 
-const routeSwitcher = (
-    name: RouteName,
-    params?: RouteParams<string> | undefined,
+const routeSwitcher = <T extends RouteName>(
+    name: T,
+    params?: RouteParams<T> | undefined,
     absolute?: boolean | undefined,
 ): string => {
     try {

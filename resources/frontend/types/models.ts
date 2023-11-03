@@ -60,9 +60,9 @@ export const isTeamAttendance = (
 export type UserRole = "operator" | "admin" | "user";
 export type TeamMemberRole = "captain" | "member" | "invited";
 export type TeamMembership = {
-    user?: User;
+    user_id: number;
     role: TeamMemberRole;
-    team?: Team;
+    team_code: string;
 };
 export interface Team {
     name: string;

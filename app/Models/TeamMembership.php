@@ -11,7 +11,7 @@ use App\Helpers\MembershipType;
 /**
  * App\Models\TeamMembership
  * @property int $user_id
- * @property int $team_id
+ * @property int $team_code
  * @property string $role
  */
 class TeamMembership extends Model
@@ -24,7 +24,7 @@ class TeamMembership extends Model
      */
     protected $table = 'team_memberships';
 
-    protected $primaryKey = ['user_id', 'team_id'];
+    protected $primaryKey = ['user_id', 'attendance_id'];
 
     public $incrementing = false;
 

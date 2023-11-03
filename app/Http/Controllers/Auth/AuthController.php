@@ -48,7 +48,7 @@ class AuthController extends Controller
                 'email' => $userData->email,
                 'img_url' => $userData->avatar,
             ]);
-            Permission::create([
+            Permission::firstOrCreate([
                 'user_id' => $user->id,
                 'code' => 'STD',
             ]);
@@ -114,7 +114,7 @@ class AuthController extends Controller
             }
             $request->user()->ejg_class = strval($ejgYear) . '.' . $ejgLetter;
             $request->user()->save();
-            Permission::create([
+            Permission::firstOrCreate([
                 'user_id' => $request->user()->id,
                 'code' => 'STD',
             ]);

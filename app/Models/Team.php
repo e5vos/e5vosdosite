@@ -59,6 +59,11 @@ class Team extends Model
         return $this->hasMany(Attendance::class);
     }
 
+    public function activity(): HasMany
+    {
+        return $this->signups()->with('event:name,id,location', 'teamMemberAttendance');
+    }
+
     /**
      * Get all signups where the team was present
      */

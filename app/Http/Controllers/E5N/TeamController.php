@@ -104,10 +104,10 @@ class TeamController extends Controller
     public function invite(Request $request, $teamCode)
     {
         $team = Team::findOrFail($teamCode)->load('members');
-        if ($team->members->pluck('e5code')->contains($request->userCode)) {
+        if ($team->members->pluck('id')->contains($request->userId)) {
             throw new AlreadyInTeamException();
         }
-        $team->members()->attach(User::where('e5code', $request->userCode)->firstOrFail(), ['role' => MembershipType::Invited]);
+        $team->members()->attach(User::where('id', $request->userId)->firstOrFail(), ['role' => MembershipType::Invited]);
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.' . $team->code);
         return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
@@ -119,7 +119,7 @@ class TeamController extends Controller
     public function kick(Request $request, $teamCode)
     {
         $team = Team::findOrFail($teamCode)->load('members');
-        $team->members()->detach(User::where('e5code', $request->userCode)->firstOrFail());
+        $team->members()->detach(User::where('id', $request->userId)->firstOrFail());
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.' . $team->code);
         return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
@@ -131,7 +131,7 @@ class TeamController extends Controller
     public function promote(Request $request, $teamCode)
     {
         $team = Team::findOrFail($teamCode)->load('members');
-        $user = User::where("e5code", $request->userCode)->firstOrFail();
+        $user = User::where("id", $request->userId)->firstOrFail();
         $role = TeamMembership::where('team_code', $team->code)->where('user_id', $user->id)->first()->role;
         if ($request->promote === 'promote') {
             $role = $role === MembershipType::Invited->value ? MembershipType::Member->value : MembershipType::Leader->value;

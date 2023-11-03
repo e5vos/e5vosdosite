@@ -18,7 +18,7 @@ class AttendanceResource extends JsonResource
             "id" => $this->id,
             "user_id" => $this->user_id,
             "user" => new UserResource($this->whenLoaded('user')),
-            "team_id" => $this->team_id,
+            "team_code" => $this->team_code,
             "team" => new TeamResource($this->whenLoaded('team')),
             "event_id" => $this->event_id,
             "event" => new EventResource($this->whenLoaded('event')),

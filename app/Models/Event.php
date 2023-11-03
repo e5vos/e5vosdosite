@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Exceptions\NotPresentationException;
 use App\Helpers\PermissionType;
 use App\Helpers\SlotType;
+use Astrotomic\CachableAttributes\CachableAttributes;
+use Astrotomic\CachableAttributes\CachesAttributes;
 use Illuminate\Database\Eloquent\{
     Factories\HasFactory,
     Model,
@@ -37,10 +39,9 @@ use Illuminate\Support\Collection;
  * @property int|null root_parent
  * @property int|null direct_child
  */
-class Event extends Model
+class Event extends Model implements CachableAttributes
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes, CachesAttributes;
 
     protected $table = 'events';
 
@@ -64,15 +65,13 @@ class Event extends Model
         'signup_deadline' => 'datetime',
     ];
 
-    protected $appends = [
+    protected $cachableAttributes = [
         'occupancy',
     ];
 
-    public function occupancy(): Attribute
+    public function getOccupancyAttribute(): int
     {
-        return Attribute::make(
-            get: fn () => $this->attendanceCount(),
-        )->shouldCache();
+        return $this->rememberForever('occupancy', fn () => $this->attendanceCount());
     }
 
     /**
@@ -97,7 +96,7 @@ class Event extends Model
      *
      * @return int visitor count of an event
      */
-    public function attendanceCount()
+    public function attendanceCount(): int
     {
         return $this->attendances()->count();
     }

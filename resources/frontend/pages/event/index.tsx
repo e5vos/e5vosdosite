@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import eventAPI from "lib/api/eventAPI";
 import Locale from "lib/locale";
@@ -12,9 +13,11 @@ import Loader from "components/UIKit/Loader";
 const locale = Locale({
     hu: {
         title: "E5N - Programok",
+        create: "Program hozzadása",
     },
     en: {
         title: "E5N - Events",
+        create: "Create event",
     },
 });
 
@@ -35,7 +38,10 @@ const EventsPage = () => {
                 <h1 className="max-w-f pb-4 text-center text-4xl font-bold">
                     {locale.title}
                 </h1>
-                <div className="mx-auto mb-4 md:flex">
+                <Link to="/esemeny/uj" className="!mb-4">
+                    <Button variant="primary">{locale.create}</Button>
+                </Link>
+                <div className="mx-auto mb-4 mt-4 md:flex">
                     <ButtonGroup className="mx-auto">
                         {slots.map((slot, index) => (
                             <Button

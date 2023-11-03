@@ -1,15 +1,12 @@
 import { useFormik } from "formik";
-import { useParams } from "react-router-dom";
 import * as Yup from "yup";
 
 import { Event, Location } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import locationAPI from "lib/api/locationAPI";
-import { isOperator } from "lib/gates";
 import Locale from "lib/locale";
 
-import { gated } from "components/Gate";
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
@@ -177,4 +174,4 @@ const CreateEventPage = () => {
     );
 };
 
-export default gated(CreateEventPage, isOperator);
+export default CreateEventPage;

@@ -5,8 +5,10 @@ import { Event, Location } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import locationAPI from "lib/api/locationAPI";
+import { isAdmin } from "lib/gates";
 import Locale from "lib/locale";
 
+import { gated } from "components/Gate";
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
@@ -174,4 +176,4 @@ const CreateEventPage = () => {
     );
 };
 
-export default CreateEventPage;
+export default gated(CreateEventPage, isAdmin);

@@ -22,8 +22,12 @@ jobs:
       - name: Run linters
         uses: wearerequired/lint-action@v2
         with:
-          eslint: true
+          eslint: true,
+          eslint_extensions: "js,jsx,cjs,mjs,ts,tsx,cts,mts"
+
           prettier: true
+          prettier_extensions: "css,html,js,json,jsx,md,sass,scss,ts,tsx,vue,yaml,yml"
+
           php_codesniffer: true
       - name: Build frontend
         run: npm run build

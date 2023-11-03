@@ -33,6 +33,7 @@ return [
      |
      */
     'storage' => [
+        'open'       => true,
         'enabled'    => true,
         'open'       => env('DEBUGBAR_OPEN_STORAGE', false), // bool/callback.
         'driver'     => 'file', // redis, file, pdo, socket, custom

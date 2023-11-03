@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Ramsey\Uuid\Type\Integer;
 
 use App\Models\Event;
 

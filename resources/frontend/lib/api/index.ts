@@ -38,8 +38,15 @@ export const baseAPI = createApi({
     }),
     tagTypes: ["User"],
     endpoints: (builder) => ({
-        getUserData: builder.query<User, void>({
-            query: () => routeSwitcher("user"),
+        getUserData: builder.query<User, Pick<User, "id"> | undefined>({
+            // return type depends zoli TODO
+            query: (data) => ({
+                url: routeSwitcher(
+                    "user",
+                    data ? { userId: data.id } : undefined,
+                ),
+                method: "GET",
+            }),
             providesTags: (result) => [{ type: "User", id: result?.id }],
         }),
         setStudentCode: builder.mutation<User, string>({
@@ -49,8 +56,8 @@ export const baseAPI = createApi({
                 params: { e5code: code },
             }),
         }),
-        searchUsers: builder.query<User[], string>({
-            query: (query) => routeSwitcher("user.search", { query }),
+        searchUsers: builder.query<User[], string | null>({
+            query: (q) => ({ url: routeSwitcher("user.index"), params: { q } }),
         }),
     }),
 });

@@ -25,8 +25,8 @@ class UserResource extends JsonResource
             "teams" => TeamResource::collection($this->whenLoaded('teams')),
             "permissions" => PermissionResource::collection($this->whenLoaded('permissions')),
             "organisedEvents" => EventResource::collection($this->whenLoaded('organisedEvents')),
-            "events" => EventResource::collection($this->whenLoaded('events')),
             "presentations" => EventResource::collection($this->whenLoaded('presentations')),
+            "isBusy" => $this->whenLoaded('isBusy', fn () => $this->isBusy()),
 
             "pivot" => $this->whenPivotLoaded($this->pivot?->getTable(), fn () => $this->pivot),
         ];

@@ -48,7 +48,7 @@ class AuthController extends Controller
                 'email' => $userData->email,
                 'img_url' => $userData->avatar,
             ]);
-            Permission::create([
+            Permission::firstOrCreate([
                 'user_id' => $user->id,
                 'code' => 'STD',
             ]);
@@ -85,11 +85,11 @@ class AuthController extends Controller
             'studentId' => $request->e5code,
             'api_token' => env('E5VOS_API_TOKEN')
         ])->body() === "true";
-        if (
-            !$validated
-        ) {
+
+        if (!$validated) {
             throw new InvalidCodeException();
         }
+
         $request->user()->e5code = $request->e5code;
         $ejgLetter = $request->e5code[4];
         $codeYear = intval($request->e5code);
@@ -116,7 +116,7 @@ class AuthController extends Controller
         }
         $request->user()->ejg_class = strval($ejgYear) . '.' . $ejgLetter;
         $request->user()->save();
-        Permission::create([
+        Permission::firstOrCreate([
             'user_id' => $request->user()->id,
             'code' => 'STD',
         ]);

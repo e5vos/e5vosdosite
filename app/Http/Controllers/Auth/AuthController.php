@@ -80,49 +80,48 @@ class AuthController extends Controller
      */
     public function setE5code(Request $request)
     {
-        $validated = Http::post(env('E5VOS_API_URL'), [
+        $validated = env("E5VOS_FAKE_API") ||  Http::post(env('E5VOS_API_URL'), [
             'email' => $request->user()->email,
             'studentId' => $request->e5code,
             'api_token' => env('E5VOS_API_TOKEN')
-        ])->body();
+        ])->body() === "true";
         if (
-            $validated === "true" || env("E5VOS_FAKE_API")
+            !$validated
         ) {
-            $request->user()->e5code = $request->e5code;
-            $ejgLetter = $request->e5code[4];
-            $codeYear = intval($request->e5code);
-            $ejgYear = date('Y') - $codeYear;
-            $currmonth =  date('m');
-
-            if ($currmonth < 9) {
-                $ejgYear--;
-            }
-
-            if ($ejgLetter === 'N') {
-
-                $ejgYear += 8;
-                if (($currmonth < 9 && $codeYear == date('Y') - 1) || ($currmonth > 8 && $codeYear == date('Y'))) {
-                    $ejgYear++;
-                    $ejgLetter = 'NY';
-                } else {
-                    $ejgLetter = 'E';
-                }
-            } elseif ($ejgLetter === 'A' || $ejgLetter === 'B') {
-                $ejgYear += 7;
-            } else {
-                $ejgYear += 9;
-            }
-            $request->user()->ejg_class = strval($ejgYear) . '.' . $ejgLetter;
-            $request->user()->save();
-            Permission::create([
-                'user_id' => $request->user()->id,
-                'code' => 'STD',
-            ]);
-            return response()->json([
-                'message' => 'E5 code set'
-            ], 200);
-        } else {
             throw new InvalidCodeException();
         }
+        $request->user()->e5code = $request->e5code;
+        $ejgLetter = $request->e5code[4];
+        $codeYear = intval($request->e5code);
+        $ejgYear = date('Y') - $codeYear;
+        $currmonth =  date('m');
+
+        if ($currmonth < 9) {
+            $ejgYear--;
+        }
+
+        if ($ejgLetter === 'N') {
+
+            $ejgYear += 8;
+            if (($currmonth < 9 && $codeYear == date('Y') - 1) || ($currmonth > 8 && $codeYear == date('Y'))) {
+                $ejgYear++;
+                $ejgLetter = 'NY';
+            } else {
+                $ejgLetter = 'E';
+            }
+        } elseif ($ejgLetter === 'A' || $ejgLetter === 'B') {
+            $ejgYear += 7;
+        } else {
+            $ejgYear += 9;
+        }
+        $request->user()->ejg_class = strval($ejgYear) . '.' . $ejgLetter;
+        $request->user()->save();
+        Permission::create([
+            'user_id' => $request->user()->id,
+            'code' => 'STD',
+        ]);
+        return response()->json([
+            'message' => 'E5 code set'
+        ], 200);
     }
 }

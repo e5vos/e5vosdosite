@@ -78,7 +78,7 @@ const EventPage = () => {
                     </p>
                     <p>
                         <strong>{locale.ends_at}</strong>:{" "}
-                        {ends_at.toLocaleString("hu-HU")}
+                        {ends_at?.toLocaleString("hu-HU")}
                     </p>
                 </Card>
                 <Card title={locale.location} className="!bg-slate-500">

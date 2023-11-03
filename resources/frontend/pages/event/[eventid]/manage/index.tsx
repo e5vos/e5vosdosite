@@ -110,9 +110,7 @@ const ManageEventPage = () => {
             >
                 <Button
                     onClick={async () => {
-                        await closeSignup({
-                            id: Number(eventid),
-                        });
+                        await closeSignup(event);
                         setCloseSignupDialog(false);
                     }}
                     variant="danger"

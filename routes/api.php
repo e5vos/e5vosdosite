@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     Auth\AuthController,
     E5N\SlotController,
     E5N\TeamController,
+    LocationController,
 };
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\PermissionController;
@@ -48,7 +49,7 @@ Route::middleware(['auth:sanctum'])->prefix('/user')->group(function () {
     })->name('user');
 });
 
-Route::get('/ziggy', fn() => response()->json(new Ziggy));
+Route::get('/ziggy', fn () => response()->json(new Ziggy));
 
 Route::get('/login', [AuthController::class, 'redirect'])->name('login');
 Route::middleware(['auth:sanctum'])->patch('/e5code', [AuthController::class, 'setE5code'])->name('user.e5code');
@@ -104,6 +105,11 @@ Route::controller(TeamController::class)->middleware(['auth:sanctum'])->group(fu
             Route::put('/', 'promote')->can('update', TeamMemberShip::class)->name('team.promote');
         });
     });
+});
+
+// Routes related to locations
+Route::controller(LocationController::class)->prefix('locations')->group(function () {
+    Route::get('/', 'index')->name('location.index');
 });
 
 //routes related to permissions

@@ -19,5 +19,11 @@ jobs:
     
       - name: Generate Routes
         run: php artisan ziggy:generate --types
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          eslint: true
+          prettier: true
+          php_codesniffer: true
       - name: Build frontend
         run: npm run build

@@ -6,7 +6,7 @@ import { Location } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import locationAPI from "lib/api/locationAPI";
-import { isOperator } from "lib/gates";
+import { isAdmin } from "lib/gates";
 import Locale from "lib/locale";
 
 import { gated } from "components/Gate";
@@ -27,6 +27,7 @@ const locale = Locale({
             capacity: "Kapacitás",
             is_competition: "Verseny",
         },
+        required: "Kötelező mező",
         submit: "Szerkesztés",
     },
     en: {
@@ -41,6 +42,7 @@ const locale = Locale({
             capacity: "Capacity",
             is_competition: "Competition",
         },
+        required: "Required field",
         submit: "Edit",
     },
 });
@@ -67,7 +69,7 @@ const initialValues: {
 
 const EditEventPage = () => {
     const { eventid } = useParams();
-    const { data: event } = eventAPI.useGetEventQuery(Number(eventid));
+    const { data: event } = eventAPI.useGetEventQuery({ id: Number(eventid) });
     const { data: locations } = locationAPI.useGetLocationsQuery();
     const [updateEvent] = eventAPI.useUpdateEventMutation();
 
@@ -75,7 +77,7 @@ const EditEventPage = () => {
         initialValues: initialValues,
         validationSchema: Yup.object({
             id: Yup.number().required(),
-            name: Yup.string().required("Kötelező mező"),
+            name: Yup.string().required(locale.required),
         }),
         onSubmit: async (values) => {
             if (!event) return;
@@ -84,11 +86,12 @@ const EditEventPage = () => {
             updateEvent(newEvent);
         },
     });
-    console.log(event, locations);
+
     if (!event || !locations) return <Loader />;
+
     return (
         <div className="container mx-auto">
-            <h1>{locale.title}</h1>
+            <h1 className="text-center text-4xl font-bold">{locale.title}</h1>
             <Form onSubmit={formik.handleSubmit}>
                 <Form.Group>
                     <Form.Label>{locale.event.name}</Form.Label>
@@ -180,4 +183,4 @@ const EditEventPage = () => {
     );
 };
 
-export default gated(EditEventPage, isOperator);
+export default gated(EditEventPage, isAdmin);

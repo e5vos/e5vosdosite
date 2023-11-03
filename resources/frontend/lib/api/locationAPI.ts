@@ -11,8 +11,7 @@ export const locationAPI = baseAPI
     .injectEndpoints({
         endpoints: (builder) => ({
             getLocations: builder.query<Location[], void>({
-                // todo roland
-                query: () => routeSwitcher("locations"),
+                query: () => routeSwitcher("location.index"),
                 providesTags: (result) =>
                     result
                         ? [

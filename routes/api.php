@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     Auth\AuthController,
     E5N\SlotController,
     E5N\TeamController,
+    LocationController,
 };
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\PermissionController;
@@ -80,7 +81,7 @@ Route::controller(EventController::class)->group(function () {
             Route::put('/', 'update')->can('update', Event::class)->name('event.update');
             Route::delete('/', 'delete')->can('delete', Event::class)->name('event.delete');
             Route::put('/restore', 'restore')->can('restore', Event::class)->name('event.restore');
-            Route::put('/close', 'close_sigup')->can('update', Event::class)->name('event.close_signup');
+            Route::put('/close', 'close_signup')->can('update', Event::class)->name('event.close_signup');
             Route::get('/participants', 'participants')->can('viewAny', Attendance::class)->name('event.participants');
             Route::post('/signup', 'signup')->can('signup', Event::class)->name('event.signup');
             Route::delete('/signup', 'unsignup')->can('unsignup', Event::class)->name('event.unsignup');
@@ -104,6 +105,11 @@ Route::controller(TeamController::class)->middleware(['auth:sanctum'])->group(fu
             Route::put('/', 'promote')->can('update', TeamMemberShip::class)->name('team.promote');
         });
     });
+});
+
+// Routes related to locations
+Route::controller(LocationController::class)->prefix('locations')->group(function () {
+    Route::get('/', 'index')->name('location.index');
 });
 
 //routes related to permissions

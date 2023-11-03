@@ -1,5 +1,18 @@
 import { RequiredFields } from "./misc";
 
+export const PermissionCode = {
+    organiser: "ORG",
+    scanner: " SCN",
+    admin: "ADM",
+    teacher: "TCH",
+    student: "STD",
+    operator: "OPT",
+    teacheradmin: "TAD",
+};
+
+export type PermissionCodeType =
+    (typeof PermissionCode)[keyof typeof PermissionCode];
+
 export interface Permission {
     user_id: number;
     event_id: number;

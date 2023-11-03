@@ -18,7 +18,6 @@ const Error = React.lazy(() => import("components/Error"));
 // Misc
 
 const LegalPage = React.lazy(() => import("pages/Legal"));
-const AdminPage = React.lazy(() => import("pages/admin"));
 
 // Teams
 const TeamsPage = React.lazy(() => import("pages/team"));
@@ -43,9 +42,7 @@ const ManageEventPage = React.lazy(
     () => import("pages/event/[eventid]/manage/index"),
 );
 const EventsPage = React.lazy(() => import("pages/event"));
-const EventPage = React.lazy(
-    () => import("pages/event/[eventid]/manage/index"),
-);
+const EventPage = React.lazy(() => import("pages/event/[eventid]/index"));
 const ScannerPage = React.lazy(
     () => import("pages/event/[eventid]/manage/scanner"),
 );

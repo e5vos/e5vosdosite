@@ -222,9 +222,9 @@ class EventController extends Controller
         $event = Event::findOrFail($eventId);
         $attender = is_numeric($request->attender)
             ? User::findOrFail($request->attender)
-                : (strlen($request->attender) == 13
-                    ? User::where('e5code', $request->attender)->firstOrFail()
-                        : Team::where('code', $request->attender)->firstOrFail());
+            : (strlen($request->attender) == 13
+                ? User::where('e5code', $request->attender)->firstOrFail()
+                : Team::where('code', $request->attender)->firstOrFail());
         Cache::forget('e5n.events.' . $event->id . '.signups');
         return response($attender->attend($event), 200);
     }
@@ -237,8 +237,8 @@ class EventController extends Controller
         return Cache::rememberForever(
             'e5n.events.' . $eventId . '.signups',
             function () use ($eventId) {
-                $event = Event::findOrFail($eventId)->load('users', 'teams');
-                return UserResource::collection($event->users)->merge(TeamResource::collection($event->teams))->jsonSerialize();
+                $event = Event::findOrFail($eventId)->load('attendances.user:id,name,ejg_class', 'attendances.team.members:id,name,ejg_class', 'attendances.teamMemberAttendances'); // roland to check
+                return UserResource::collection($event->users)->concat(TeamResource::collection($event->teams))->jsonSerialize();
             }
         );
     }

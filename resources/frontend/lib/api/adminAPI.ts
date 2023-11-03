@@ -59,7 +59,7 @@ export const adminAPI = baseAPI
 
             clearCache: builder.mutation<void, void>({
                 query: () => ({
-                    url: routeSwitcher("cache.clear"),
+                    url: routeSwitcher("cacheclear"),
                     method: "POST",
                 }),
             }),

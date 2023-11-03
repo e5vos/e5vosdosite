@@ -83,6 +83,7 @@ export const eventAPI = baseAPI
                 },
             }),
             toggleAttendance: builder.mutation<Attendance, Attendance>({
+                // TODO: Fix this roland toggle only when requested zoli remove this -> use attend instread
                 query: (data) => {
                     const params = {
                         attender: isUserAttendance(data)
@@ -148,6 +149,7 @@ export const eventAPI = baseAPI
                 }),
             }),
             teamMemberAttend: builder.mutation<
+                // todo: roland
                 TeamMemberAttendance[],
                 TeamMemberAttendance[]
             >({
@@ -158,6 +160,7 @@ export const eventAPI = baseAPI
                 }),
             }),
             cancelSignUp: builder.mutation<
+                // todo roland check if not present or signup closed -> nodelete
                 void,
                 { attender: string; event: Pick<Event, "id"> }
             >({

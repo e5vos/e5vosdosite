@@ -49,13 +49,6 @@ export const baseAPI = createApi({
                 params: { e5code: code },
             }),
         }),
-        getUserActivity: builder.query<
-            { event: Event; attendance: Attendance }[],
-            Pick<User, "id">
-        >({
-            query: (user) =>
-                routeSwitcher("user.activity", { userid: user.id }),
-        }),
         searchUsers: builder.query<User[], string>({
             query: (query) => routeSwitcher("user.search", { query }),
         }),

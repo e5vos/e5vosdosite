@@ -11,6 +11,7 @@ export const locationAPI = baseAPI
     .injectEndpoints({
         endpoints: (builder) => ({
             getLocations: builder.query<Location[], void>({
+                // todo roland
                 query: () => routeSwitcher("locations"),
                 providesTags: (result) =>
                     result
@@ -24,6 +25,7 @@ export const locationAPI = baseAPI
                         : [{ type: "Location", id: "LIST" }],
             }),
             updateLocation: builder.mutation<Location, Location>({
+                // todo roland
                 query: (location) => ({
                     url: routeSwitcher("location.update", { id: location.id }),
                     method: "PATCH",

@@ -90,16 +90,6 @@ export const teamAPI = baseAPI.injectEndpoints({
                 params: data,
             }),
         }),
-        attendMember: builder.mutation<
-            void,
-            { user_id: number; attendance_id: number; is_present: boolean }
-        >({
-            query: (data) => ({
-                url: routeSwitcher("team.attend", {}),
-                method: "POST",
-                params: data,
-            }),
-        }),
     }),
 });
 

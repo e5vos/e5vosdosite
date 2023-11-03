@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\DB;
 class AdminController extends Controller
 {
     /**
-     *
+     * Clear the cache
      */
     public function cacheClear(Request $request)
     {
-        if (env('APP_ENV') === 'production' || !$request->user()->hasPermission('OPT')) {
+        if (env('APP_ENV') === 'production' && !$request->user()->hasPermission('OPT')) {
             throw new NotAllowedException();
         }
         DB::table('cache')->truncate();

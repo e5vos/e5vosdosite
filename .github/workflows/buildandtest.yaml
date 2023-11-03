@@ -13,7 +13,10 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
       - name: Install backend dependencies
-        run: composer install      
+        run: |
+          composer install --prefer-dist --no-progress --no-ansi --no-interaction
+          echo "${PWD}/vendor/bin" >> $GITHUB_PATH
+    
       - name: Generate Routes
         run: php artisan ziggy:generate --types
       - name: Build frontend

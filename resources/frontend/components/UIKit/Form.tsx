@@ -101,12 +101,20 @@ const Check = ({
     );
 };
 
-const Select = ({ children, ...rest }: HTMLInputProps<HTMLSelectElement>) => {
+const Select = ({
+    children,
+    className,
+    ...rest
+}: HTMLInputProps<HTMLSelectElement>) => {
     return (
-        <select className="bg-gray" {...rest}>
+        <select className={`form-select bg-gray ${className ?? ""}`} {...rest}>
             {children}
         </select>
     );
+};
+
+const Option = ({ children, ...rest }: HTMLInputProps<HTMLOptionElement>) => {
+    return <option {...rest}>{children}</option>;
 };
 
 const ComboBoxOption = ({
@@ -179,5 +187,6 @@ export default Object.assign(Form, {
     Group,
     Check,
     Select,
+    Option,
     ComboBox,
 });

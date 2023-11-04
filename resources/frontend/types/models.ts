@@ -131,6 +131,14 @@ export interface Slot {
     name: string;
 }
 
+export const SignupType = {
+    Individual: "user",
+    Team: "team",
+    Both: "team_user",
+} as const;
+
+export type SignupTypeType = (typeof SignupType)[keyof typeof SignupType];
+
 export interface Event {
     id: number;
     name: string;
@@ -141,7 +149,7 @@ export interface Event {
     attendees?: Attendance[];
     slot?: Slot;
     slot_id: number | null;
-    location_id: number;
+    location_id?: number;
     location?: Location;
     is_competition: boolean;
     img_url: string | null;
@@ -152,6 +160,7 @@ export interface Event {
     direct_child_slot_id: number | null;
     root_parent?: number | null;
     root_parent_slot_id: number | null;
+    signup_type: SignupTypeType;
 }
 
 export interface Location {

@@ -26,7 +26,7 @@ const TeamPage = React.lazy(() => import("pages/team/[teamcode]"));
 const teamRoutes = (
     <Route path="csapat">
         <Route index element={<TeamsPage />} />
-        <Route path=":teamid">
+        <Route path=":teamcode">
             <Route index element={<TeamPage />} />
             <Route path="admin" element={<>TeamAdminPage</>} />
         </Route>

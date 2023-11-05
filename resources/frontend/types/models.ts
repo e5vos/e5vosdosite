@@ -16,7 +16,7 @@ export type PermissionCodeType =
 export interface Permission {
     user_id: number;
     event_id?: number | null;
-    code: string;
+    code: PermissionCodeType;
 }
 
 export interface TeamMemberAttendance {

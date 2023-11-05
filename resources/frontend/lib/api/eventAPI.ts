@@ -1,4 +1,3 @@
-import { RequiredAndOmitFields } from "types/misc";
 import {
     Attendance,
     Event,

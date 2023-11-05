@@ -11,7 +11,7 @@ export const baseAPI = createApi({
     reducerPath: "e5nApi",
     baseQuery: fetchBaseQuery({
         fetchFn(input, init?) {
-            if (input instanceof Request && input.url.includes("/-1/")) {
+            if (input instanceof Request && input.url.includes("/-1")) {
                 throw new Error("-1 in URL");
             } else {
                 return fetch(input, init);
@@ -63,14 +63,15 @@ export const baseAPI = createApi({
                 params: q ? { q } : undefined,
             }),
         }),
-        getUser: builder.query<RequiredFields<User, "teams">, Pick<User, "id">>(
-            {
-                query: ({ id }) => ({
-                    url: routeSwitcher("users.show", { userId: id }),
-                }),
-                providesTags: (result) => [{ type: "User", id: result?.id }],
-            },
-        ),
+        getUser: builder.query<
+            RequiredFields<User, "teams" | "permissions">,
+            Pick<User, "id">
+        >({
+            query: ({ id }) => ({
+                url: routeSwitcher("users.show", { userId: id }),
+            }),
+            providesTags: (result) => [{ type: "User", id: result?.id }],
+        }),
     }),
 });
 export default baseAPI;

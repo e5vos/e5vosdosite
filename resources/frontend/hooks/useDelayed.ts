@@ -1,22 +1,22 @@
 import { useCallback, useState } from "react";
 
-const useDelayedSet = <T>(
-    setValue: React.Dispatch<React.SetStateAction<T>>,
+const useDelay = <T extends (...args: any[]) => void>(
+    callback: T,
     delay = 500,
 ) => {
     const [dt, setDt] = useState<number | undefined>();
 
     return useCallback(
-        (value: T) => {
+        (...params: Parameters<T>) => {
             clearTimeout(dt);
             setDt(
                 window.setTimeout(() => {
-                    setValue((value) => value);
+                    callback(...params);
                 }, delay),
             );
         },
-        [dt, delay, setValue],
+        [dt, delay, callback],
     );
 };
 
-export default useDelayedSet;
+export default useDelay;

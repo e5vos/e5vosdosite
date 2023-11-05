@@ -1,7 +1,22 @@
 import { Combobox } from "@headlessui/react";
 import React, { FormEventHandler, ReactNode } from "react";
 
+import Locale from "lib/locale";
+
 import { HTMLInputProps } from "./helpers";
+
+const locale = Locale({
+    hu: {
+        combobox: {
+            continued: "További találatok...",
+        },
+    },
+    en: {
+        combobox: {
+            continued: "More results...",
+        },
+    },
+});
 
 const Control = ({
     invalid,
@@ -123,7 +138,6 @@ const Option = ({ children, ...rest }: HTMLInputProps<HTMLOptionElement>) => {
 
 const ComboBoxOption = ({
     children,
-    key,
     value,
 }: {
     children: ReactNode;
@@ -131,7 +145,10 @@ const ComboBoxOption = ({
     value: any;
 }) => {
     return (
-        <Combobox.Option key={key} value={value}>
+        <Combobox.Option
+            value={value}
+            className="hover:bg-gray-300 hover:ring-0"
+        >
             {children}
         </Combobox.Option>
     );
@@ -143,14 +160,18 @@ const ComboBox = <T = any,>({
     onChange,
     onQueryChange,
     renderElement,
+    getElementName,
     className,
+    limit = 15,
 }: {
     options: T[];
     filter?: (s: string) => (e: T) => boolean;
     onChange?: (e: T | null) => void;
     onQueryChange?: (s: string) => void;
+    getElementName: (e: T) => string;
     renderElement: (e: T) => ReactNode;
-} & HTMLInputProps<HTMLInputElement>) => {
+    limit?: number;
+} & Omit<HTMLInputProps<HTMLInputElement>, "onChange">) => {
     const [query, setQuery] = React.useState("");
     const [selected, setSelected] = React.useState<T | null>(null);
     const filteredOptions = filter ? options.filter(filter(query)) : options;
@@ -159,6 +180,8 @@ const ComboBox = <T = any,>({
         <Combobox
             value={selected}
             onChange={(e) => {
+                if (!e) return;
+                setQuery(getElementName(e));
                 setSelected(e);
                 if (onChange) onChange(e);
             }}
@@ -169,16 +192,19 @@ const ComboBox = <T = any,>({
                     setQuery(e.target.value);
                     onQueryChange?.(e.target.value);
                 }}
-                className={`border-b-2 border-white bg-transparent text-white focus:border-gray-400 ${
+                className={`mb-2 mt-0 block w-full border-0 border-b-2 border-gray-200 bg-gray invalid:border-red invalid:text-red focus:border-gray-300 focus:ring-0 ${
                     className ?? ""
                 }`}
             />
-            <Combobox.Options>
-                {filteredOptions.map((option, index) => (
+            <Combobox.Options className="scrollbar-track-gray- scrollbar-thumb-min-h-5 mb-2 mt-0 block max-h-64 w-full overflow-auto bg-gray scrollbar-thin scrollbar-thumb-gray-50 hover:scrollbar-thumb-gray-300">
+                {filteredOptions.slice(0, limit).map((option, index) => (
                     <ComboBoxOption key={index} value={option}>
                         {renderElement(option)}
                     </ComboBoxOption>
                 ))}
+                {filteredOptions.length > limit && (
+                    <span>{locale.combobox.continued}</span>
+                )}
             </Combobox.Options>
         </Combobox>
     );

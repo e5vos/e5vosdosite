@@ -2,7 +2,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { CRUDForm } from "types/misc";
-import { Permission, PermissionCode, PermissionCodeType } from "types/models";
+import {
+    EventStub,
+    Permission,
+    PermissionCode,
+    PermissionCodeType,
+    UserStub,
+} from "types/models";
 
 import Locale from "lib/locale";
 
@@ -19,6 +25,7 @@ const locale = Locale({
         code: "Kód",
         submit: "Mentés",
         delete: "Törlés",
+        user: "Felhasználó",
         permissionName: (p: PermissionCodeType): string => {
             switch (p) {
                 case PermissionCode.admin:
@@ -45,6 +52,7 @@ const locale = Locale({
         code: "Code",
         submit: "Submit",
         delete: "Delete",
+        user: "User",
         permissionName: (p: PermissionCodeType) => {
             switch (p) {
                 case PermissionCode.admin:
@@ -94,7 +102,7 @@ const PermissionForm = ({
     return (
         <Form onSubmit={formik.handleSubmit}>
             <Form.Group>
-                <Form.Label></Form.Label>
+                <Form.Label>{locale.user}</Form.Label>
                 <UserSearchCombobox
                     onChange={(u) => formik.setFieldValue("user_id", u.id)}
                 />
@@ -107,15 +115,18 @@ const PermissionForm = ({
             </Form.Group>
             <Form.Group>
                 <Form.Label>{locale.code}</Form.Label>
-                <Form.Select>
+                <Form.Select defaultValue={initialValues.code}>
                     {Object.entries(PermissionCode).map((entry) => {
-                        console.log("entry", entry);
-                        return <></>;
+                        return (
+                            <option value={entry[1]} key={entry[1]}>
+                                {locale.permissionName(entry[1])}
+                            </option>
+                        );
                     })}
                 </Form.Select>
             </Form.Group>
             <Form.Group>
-                <Button type="submit">{submitLabel}</Button>í
+                <Button type="submit">{submitLabel}</Button>
                 {onDelete && (
                     <Button
                         variant="danger"

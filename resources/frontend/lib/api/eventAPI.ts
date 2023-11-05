@@ -204,7 +204,7 @@ export const eventAPI = baseAPI
             }),
 
             eventSearch: builder.query<EventStub[], string>({
-                query: (q) => routeSwitcher("event.index", { q }),
+                query: (q) => routeSwitcher("events.index", { q }),
                 providesTags: (result) =>
                     result
                         ? [

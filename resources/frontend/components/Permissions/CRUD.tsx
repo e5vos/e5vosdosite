@@ -1,4 +1,4 @@
-import useConfirm from "hooks/useConfirm";
+import useConfirm, { ConfirmDialogProps } from "hooks/useConfirm";
 import useUser from "hooks/useUser";
 import { useCallback } from "react";
 
@@ -6,42 +6,63 @@ import { CRUDFormImpl, CRUDInterface } from "types/misc";
 import { Permission, PermissionCode, PermissionCodeType } from "types/models";
 
 import adminAPI from "lib/api/adminAPI";
+import eventAPI from "lib/api/eventAPI";
 import { isAdmin, isOrganiser } from "lib/gates";
 import Locale from "lib/locale";
 
 import PermissionForm from "components/Forms/PermissionForm";
+import Button from "components/UIKit/Button";
 import Dialog from "components/UIKit/Dialog";
 
 const locale = Locale({
     hu: {
         confirm: "Biztosan törölni szeretnéd a jogosultságot?",
+        sure: "Igen, törlés",
+        no: "Mégse",
     },
     en: {
         confirm: "Are you sure you want to delete this permission?",
+        sure: "Yes, delete permission",
+        no: "No",
     },
 });
 
 const getPermissionColor = (type: PermissionCodeType) => {
     switch (type) {
         case PermissionCode.admin:
-            return "bg-red-400";
+            return "bg-red-400 hover:bg-red-300";
         case PermissionCode.teacher:
-            return "bg-yellow-400";
+            return "bg-yellow-800 hover:bg-yellow-700";
         case PermissionCode.operator:
-            return "bg-purple-400";
+            return "bg-purple-400 hover:bg-purple-300";
         case PermissionCode.organiser:
-            return "bg-blue-400";
+            return "bg-blue-400 hover:bg-blue-300";
         default:
-            return "bg-gray-400";
+            return "bg-gray-400 hover:bg-gray-300";
     }
 };
 
-const confirmDialog = () => <Dialog title={locale.confirm} closable={false} />;
+const confirmDialog = ({ handleConfirm, handleCancel }: ConfirmDialogProps) => (
+    <Dialog title={locale.confirm} closable={false}>
+        <div className="mt-3">
+            <Button variant="success" onClick={handleConfirm} className="mr-3">
+                {locale.sure}
+            </Button>
+            <Button variant="danger" onClick={handleCancel}>
+                {locale.no}
+            </Button>
+        </div>
+    </Dialog>
+);
 
 const PermissionBubble = ({ value }: CRUDFormImpl<Permission>) => {
     const [onDelete] = adminAPI.useDeletePermissionMutation();
     const [WrappedCofirmDialog, confirmDelete] = useConfirm(confirmDialog);
     const { user } = useUser(false);
+
+    const { data: event } = eventAPI.useGetEventQuery({
+        id: value.event_id ?? -1,
+    });
 
     const canDelete =
         isAdmin(user) ||
@@ -56,9 +77,10 @@ const PermissionBubble = ({ value }: CRUDFormImpl<Permission>) => {
         <>
             <WrappedCofirmDialog />
             <span
-                className={`${getPermissionColor(value.code)}`}
+                className={`rounded-md p-1 ${getPermissionColor(value.code)}`}
                 onClick={handleClick}
             >
+                {event ? `${event.name}:` : ""}
                 {value.code}
             </span>
         </>

@@ -1,3 +1,4 @@
+import useEventDates from "hooks/useEventDates";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -6,6 +7,7 @@ import { Event } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import Locale from "lib/locale";
+import { formatDateInput } from "lib/util";
 
 import EventForm from "components/Forms/EventForm";
 
@@ -40,7 +42,7 @@ const EventCreator = ({
     value,
     ...rest
 }: CRUDFormImpl<Event, Partial<EventFormValues>>) => {
-    const nowString = new Date().toLocaleString("hu-HU");
+    const now = new Date();
     const [createEvent] = eventAPI.useCreateEventMutation();
     const navigate = useNavigate();
     const onSubmit = useCallback(
@@ -60,9 +62,21 @@ const EventCreator = ({
                 id: value.id ?? 0,
                 name: value.name ?? "",
                 description: value.description ?? "",
-                starts_at: value.starts_at ?? nowString,
-                ends_at: value.ends_at ?? nowString,
-                signup_deadline: value.signup_deadline ?? nowString,
+                starts_at:
+                    value.starts_at ??
+                    formatDateInput(
+                        value.starts_at ? new Date(value.starts_at) : now,
+                    ),
+                ends_at:
+                    value.ends_at ??
+                    formatDateInput(
+                        value.ends_at ? new Date(value.ends_at) : now,
+                    ),
+                signup_deadline: formatDateInput(
+                    value.signup_deadline
+                        ? new Date(value.signup_deadline)
+                        : now,
+                ),
                 signup_type: value.signup_type ?? "team_user",
                 location_id: value.location_id ?? 0,
                 organiser: value.organiser ?? "",
@@ -82,9 +96,22 @@ const EventUpdater = ({
     ...rest
 }: CRUDFormImpl<Event, EventFormValues>) => {
     const [changeEvent] = eventAPI.useEditEventMutation();
+    const initialDates = useEventDates(value);
+
     return (
         <EventForm
-            initialValues={value}
+            initialValues={{
+                ...value,
+                ends_at: formatDateInput(
+                    initialDates.ends_at ?? initialDates.now,
+                ),
+                starts_at: formatDateInput(
+                    initialDates.starts_at ?? initialDates.now,
+                ),
+                signup_deadline: initialDates.signup_deadline
+                    ? formatDateInput(initialDates.signup_deadline)
+                    : "",
+            }}
             onSubmit={changeEvent}
             resetOnSubmit={true}
             submitLabel={locale.edit}

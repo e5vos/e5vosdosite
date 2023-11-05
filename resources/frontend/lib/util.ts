@@ -40,3 +40,14 @@ export const getInitials = (s: string) => {
     const names = s.split(" ");
     return names.map((name) => name[0]).join("");
 };
+
+export const formatDateInput = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    const monthStr = month < 10 ? `0${month}` : month;
+    const dayStr = day < 10 ? `0${day}` : day;
+
+    return `${year}-${monthStr}-${dayStr}`;
+};

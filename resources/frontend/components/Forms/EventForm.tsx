@@ -1,4 +1,5 @@
 import { useFormik } from "formik";
+import useEventDates from "hooks/useEventDates";
 import useUser from "hooks/useUser";
 import * as Yup from "yup";
 
@@ -6,6 +7,7 @@ import { CRUDForm } from "types/misc";
 
 import { isAdmin } from "lib/gates";
 import Locale from "lib/locale";
+import { formatDateInput } from "lib/util";
 
 import { EventFormValues } from "components/Event/CRUD";
 import LocationSearchCombobox from "components/Location/LocationSelect";
@@ -71,6 +73,7 @@ const EventForm = ({
         },
         enableReinitialize: enableReinitialize,
     });
+    const initialDates = useEventDates(initialValues);
     return (
         <Form onSubmit={formik.handleSubmit} {...rest}>
             <Form onSubmit={formik.handleSubmit}>
@@ -98,7 +101,10 @@ const EventForm = ({
                     <Form.Label>{locale.fields.starts_at}</Form.Label>
                     <Form.Control
                         name="starts_at"
-                        value={formik.values.starts_at}
+                        type="date"
+                        defaultValue={formatDateInput(
+                            initialDates.starts_at ?? initialDates.now,
+                        )}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         invalid={Boolean(formik.errors.starts_at)}
@@ -108,7 +114,10 @@ const EventForm = ({
                     <Form.Label>{locale.fields.ends_at}</Form.Label>
                     <Form.Control
                         name="ends_at"
-                        value={formik.values.ends_at}
+                        type="date"
+                        defaultValue={formatDateInput(
+                            initialDates.ends_at ?? initialDates.now,
+                        )}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         invalid={Boolean(formik.errors.ends_at)}

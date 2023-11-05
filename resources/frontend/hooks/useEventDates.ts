@@ -2,7 +2,9 @@ import { useMemo } from "react";
 
 import { Event } from "types/models";
 
-export const calculateEventDates = (event: Event | undefined) => ({
+type EventDateInput = Pick<Event, "starts_at" | "ends_at" | "signup_deadline">;
+
+export const calculateEventDates = (event: EventDateInput | undefined) => ({
     now: new Date(),
     starts_at: event?.starts_at ? new Date(event.starts_at) : undefined,
     ends_at: event?.ends_at ? new Date(event.ends_at) : undefined,
@@ -11,6 +13,6 @@ export const calculateEventDates = (event: Event | undefined) => ({
         : undefined,
 });
 
-const useEventDates = (event: Event | undefined) =>
+const useEventDates = (event: EventDateInput | undefined) =>
     useMemo(() => calculateEventDates(event), [event]);
 export default useEventDates;

@@ -56,7 +56,10 @@ Route::controller(UserController::class)->middleware(['auth:sanctum'])->prefix('
     Route::get('/currentuser', function (Request $request) {
         return (new UserResource($request->user()->load('permissions')))->jsonSerialize();
     })->name('user.current');
-    Route::get('/')->can('viewAny', User::class)->name('users.index');
+    Route::get('/currentuser/teams', function (Request $request) {
+        return (new UserResource($request->user()->load('teams')))->jsonSerialize();
+    })->name('user.myteams');
+    Route::get('/', 'show')->name('user.details');
     Route::get('/{userId}', 'show')->can('view', User::class)->name('users.show');
     Route::put('/{userId}', 'update')->can('update', User::class)->name('users.update');
     Route::delete('/{userId}', 'destroy')->can('delete', User::class)->name('users.destroy');
@@ -115,8 +118,8 @@ Route::controller(TeamController::class)->middleware(['auth:sanctum'])->group(fu
         Route::put('/', 'update')->can('update', Team::class)->name('team.update');
         Route::put('/restore', 'restore')->can('restore', Team::class)->name('team.restore');
         Route::prefix('/members')->group(function () {
-            Route::post('/', 'invite')->can('create', TeamMembership::class)->name('team.invite');
-            Route::delete('/', 'kick')->can('delete', TeamMembership::class)->name('team.kick');
+            // Route::post('/', 'invite')->can('create', TeamMembership::class)->name('team.invite');
+            // Route::delete('/', 'kick')->can('delete', TeamMembership::class)->name('team.kick');
             Route::put('/', 'promote')->can('update', TeamMemberShip::class)->name('team.promote');
         });
     });

@@ -296,8 +296,11 @@ class User extends Authenticatable
         if ($event->direct_child !== null) {
             $this->attend(Event::findOrFail($event->direct_child), true);
         }
-
-        $signup->togglePresent();
+        if (isset(request()->present)) {
+            $signup->is_present = request()->present;
+        } else {
+            $signup->togglePresent();
+        }
         $signup->save();
         $event->forget('occupancy');
         return $signup;

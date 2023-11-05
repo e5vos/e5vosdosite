@@ -47,7 +47,7 @@ class EventController extends Controller
                         ->get()->load('slot', 'location')
                 ));
             }
-            return Cache::rememberForever('e5n.events.slot.' . $slotId, fn () => EventResource::collection(Event::with('slot', 'location')->where('slot_id', $slotId)->get()->load('slot', 'location'))->jsonSerialize());
+            return Cache::rememberForever('e5n.events.slot.' . $slotId, fn () => EventResource::collection(Event::with('slot', 'location')->where('slot_id', $slotId)->get())->jsonSerialize());
         }
         if (isset(request()->q)) {
             return response()->json(EventResource::collection(
@@ -279,7 +279,7 @@ class EventController extends Controller
             'e5n.events.' . $eventId . '.signups',
             function () use ($eventId) {
                 $event = Event::findOrFail($eventId)->load('attendances.user:id,name,ejg_class', 'attendances.team.members:id,name,ejg_class', 'attendances.teamMemberAttendances'); // roland to check
-                return UserResource::collection($event->users)->concat(TeamResource::collection($event->teams))->jsonSerialize();
+                return UserResource::collection($event->users)->concat(TeamResource::collection($event->teams->with("members")))->jsonSerialize();
             }
         );
     }

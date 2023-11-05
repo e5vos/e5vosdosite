@@ -5,13 +5,13 @@ import Locale from "lib/locale";
 
 const locale = Locale({
     hu: {
-        title: "Eötvös DÖ",
+        title: "Eötvös József Gimnázium Diákönkormányzata",
         privacypolicy: "Adatvédelmi nyilatkozat",
         contact: "Kapcsolat",
         github: "GitHub",
     },
     en: {
-        title: "Eötvös DÖ",
+        title: "Student Union of Eötvös József Grammar School",
         privacypolicy: "Privacy policy",
         contact: "Contact",
         github: "GitHub",
@@ -20,37 +20,17 @@ const locale = Locale({
 
 const Footer = () => {
     return (
-        <div className="flex-shrink-0">
-            <div className="container mx-auto">
-                <div className="mx-auto mt-5 w-fit text-center">
-                    <div className="mx-auto flex flex-col text-center align-middle">
-                        <Donci
-                            fill="white"
-                            className="mx-auto w-10 hover:animate-wiggle"
-                        />
-                        <div>{locale.title}</div>
-                    </div>
-                </div>
-                <div className="mx-auto flex w-1/2">
-                    <Link
-                        to="/privacypolicy"
-                        className="mr-auto flex flex-1 justify-center"
-                    >
-                        {locale.privacypolicy}
-                    </Link>
-                    <Link
-                        to="mailto:dev.do@e5vos.hu"
-                        className="flex flex-1 justify-center"
-                    >
-                        {locale.contact}
-                    </Link>
-                    <Link
-                        to="https://github.com/difcsi/e5vosdosite"
-                        className="ml-auto flex flex-1 justify-center"
-                    >
-                        {locale.github}
-                    </Link>
-                </div>
+        <div className="flex justify-between bg-gray-600 px-8 py-3 align-middle">
+            <div className="flex w-full justify-start gap-2 text-center align-middle">
+                <Donci fill="white" className="w-10 hover:animate-wiggle" />
+                <p className="my-auto">{locale.title}</p>
+            </div>
+            <div className="mt-2 flex w-full justify-end gap-2">
+                <Link to="/privacypolicy">{locale.privacypolicy}</Link>
+                <Link to="mailto:dev.do@e5vos.hu">{locale.contact}</Link>
+                <Link to="https://github.com/difcsi/e5vosdosite">
+                    {locale.github}
+                </Link>
             </div>
         </div>
     );

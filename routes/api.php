@@ -18,6 +18,7 @@ use App\Models\{
     Attendance,
     Event,
     Location,
+    Permission,
     Slot,
     Setting,
     TeamMembership,
@@ -131,9 +132,9 @@ Route::controller(LocationController::class)->prefix('locations')->group(functio
 });
 
 //routes related to permissions
-Route::controller(PermissionController::class)->prefix('permissions')->middleware(['auth:sanctum'])->group(function () {
-    Route::post('/', 'addPermission')->can('create', Event::class)->name('permission.store');
-    Route::delete('/', 'removePermission')->can('destroy', Event::class)->name('permission.delete');
+Route::middleware(['auth:sanctum'])->controller(PermissionController::class)->prefix('permissions')->group(function () {
+    Route::post('/', 'addPermission')->can('create', Permission::class)->name('permission.store');
+    Route::delete('/', 'removePermission')->can('destroy', Permission::class)->name('permission.delete');
 });
 
 

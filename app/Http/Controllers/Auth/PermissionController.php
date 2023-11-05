@@ -19,10 +19,8 @@ class PermissionController extends Controller
 {
     /**
      *  add an organiser to an event
-     * @param int $eventId
-     * @param int $userId
      */
-    public function addPermission(int $userId)
+    public function addPermission()
     {
         $requestData = request()->permission;
         $permission = Permission::create([
@@ -35,10 +33,8 @@ class PermissionController extends Controller
 
     /**
      *  remove a permission
-     * @param int $eventId
-     * @param int $userId
      */
-    public function removePermission(int $userId)
+    public function removePermission()
     {
         $requestData = request()->permission;
         $permission = Permission::find([

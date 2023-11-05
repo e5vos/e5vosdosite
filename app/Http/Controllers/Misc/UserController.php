@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Misc;
 
-use App\Helpers\EjgClassType;
 use App\Helpers\PermissionType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
@@ -19,12 +18,6 @@ class UserController extends Controller
     public function index()
     {
         return response()->json(UserResource::collection(User::where('name', 'like', '%' . request()->q . '%')->select('id', 'name', 'ejg_class')->get()));
-        // return User::with(['userActivity', 'teamActivity'])->get()->map(function ($user) {
-        //     $user->activity = $user->userActivity->concat($user->teamActivity);
-        //     unset($user->userActivity);
-        //     unset($user->teamActivity);
-        //     return $user;
-        // })->jsonSerialize();
     }
 
     /**
@@ -36,18 +29,17 @@ class UserController extends Controller
      */
     public function show(int $userId = null)
     {
-        $userId ??= request()->userId;
+        $userId ??= request()->user()->id;
         $loadables = array('teams');
         if (request()->user()->id == $userId || request()->user()->hasPermission(PermissionType::Teacher->value) || request()->user()->hasPermission(PermissionType::Admin->value)) {
             $loadables[] = 'userActivity';
             $loadables[] = 'teamActivity';
         }
-        return User::find($userId)->with($loadables)->get()->map(function ($user) {
-            $user->activity = $user->userActivity->concat($user->teamActivity);
-            unset($user->userActivity);
-            unset($user->teamActivity);
-            return $user;
-        })->jsonSerialize();
+        $user = User::with($loadables)->findOrFail($userId);
+        $user->activity = $user->userActivity?->concat($user->teamActivity);
+        unset($user->userActivity);
+        unset($user->teamActivity);
+        return response()->json($user, 200);
     }
 
     /**
@@ -75,9 +67,9 @@ class UserController extends Controller
     public function destroy(int $userId = null)
     {
         $userId ??= request()->user->id;
-        $user = User::find($userId);
+        $user = User::findOrFail($userId);
         $user->delete();
-        return response()->json(null, 204);
+        return response()->json("User deleted", 204);
     }
 
     /**
@@ -92,6 +84,6 @@ class UserController extends Controller
         $userId ??= request()->user->id;
         $user = User::withTrashed()->find($userId);
         $user->restore();
-        return (new UserResource($user->load('')))->jsonSerialize();
+        return (new UserResource($user))->jsonSerialize();
     }
 }

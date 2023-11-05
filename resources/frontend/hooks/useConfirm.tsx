@@ -24,9 +24,12 @@ const useConfirm = (Dialog: FC<ConfirmDialogProps>) => {
         setPromise(null);
     };
 
-    const wrappedDialog = () => (
-        <Dialog handleConfirm={handleConfirm} handleCancel={handleCancel} />
-    );
+    const wrappedDialog = () => {
+        if (!promise) return <></>;
+        return (
+            <Dialog handleConfirm={handleConfirm} handleCancel={handleCancel} />
+        );
+    };
     return [wrappedDialog, confirm] as const;
 };
 

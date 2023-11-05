@@ -7,7 +7,10 @@ export type OptionalFields<T, K extends keyof T> = T & Partial<Pick<T, K>>;
  */
 export type CRUDInterface<T, K> = {
     Creator: ({ value, className }: CRUDFormImpl<T, Partial<K>>) => JSX.Element;
-    Reader?: ({ value, className }: CRUDFormImpl<T, K>) => JSX.Element;
+    Reader?: ({
+        value,
+        className,
+    }: CRUDFormImpl<T, K> & { value: T }) => JSX.Element;
     Updater: ({ value, className }: CRUDFormImpl<T, K>) => JSX.Element;
     Deleter?: ({ value, className }: CRUDFormImpl<T, K>) => JSX.Element;
 };

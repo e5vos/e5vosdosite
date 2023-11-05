@@ -69,6 +69,16 @@ const eventRoutes = (
     </Route>
 );
 
+// Slots
+
+const SlotsEventsPage = React.lazy(() => import("pages/slot"));
+
+const slotRoutes = (
+    <Route path="sav">
+        <Route index element={<SlotsEventsPage />} />
+    </Route>
+);
+
 // Presentations
 
 const PresentationPage = React.lazy(() => import("pages/presentation"));
@@ -144,6 +154,7 @@ function App() {
                                 <Route path="/">
                                     <Route index element={<Home />} />
                                     {teamRoutes}
+                                    {slotRoutes}
                                     {eventRoutes}
                                     {presentationRoutes}
                                     {adminRoutes}

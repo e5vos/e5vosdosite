@@ -47,7 +47,11 @@ const Label = ({
     ...rest
 }: HTMLInputProps<HTMLSpanElement>) => {
     return (
-        <span className="mr-1 font-bold underline underline-offset-4">
+        <span
+            className={`mr-1 font-bold underline underline-offset-4 ${
+                className ?? ""
+            }`}
+        >
             {children}
         </span>
     );

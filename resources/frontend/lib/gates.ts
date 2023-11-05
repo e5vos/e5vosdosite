@@ -1,12 +1,13 @@
 import { Event, PermissionCode, User } from "types/models";
 
-export type GateFunction = ((user: User) => boolean) & {
+export type GateFunction = ((user: User | undefined) => boolean) & {
     message?: string;
 };
 
 const gate = (fun: (user: User) => boolean, message?: string): GateFunction => {
     return Object.assign(
-        (user: User) => {
+        (user: User | undefined) => {
+            if (!user) return false;
             if (
                 user.permissions?.find(
                     (permission) => permission.code === PermissionCode.operator,

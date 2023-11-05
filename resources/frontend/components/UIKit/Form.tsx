@@ -47,7 +47,11 @@ const Label = ({
     ...rest
 }: HTMLInputProps<HTMLSpanElement>) => {
     return (
-        <span className="mr-1 font-bold underline underline-offset-4">
+        <span
+            className={`mr-1 font-bold underline underline-offset-4 ${
+                className ?? ""
+            }`}
+        >
             {children}
         </span>
     );
@@ -101,12 +105,20 @@ const Check = ({
     );
 };
 
-const Select = ({ children, ...rest }: HTMLInputProps<HTMLSelectElement>) => {
+const Select = ({
+    children,
+    className,
+    ...rest
+}: HTMLInputProps<HTMLSelectElement>) => {
     return (
-        <select className="bg-gray" {...rest}>
+        <select className={`form-select bg-gray ${className ?? ""}`} {...rest}>
             {children}
         </select>
     );
+};
+
+const Option = ({ children, ...rest }: HTMLInputProps<HTMLOptionElement>) => {
+    return <option {...rest}>{children}</option>;
 };
 
 const ComboBoxOption = ({
@@ -179,5 +191,6 @@ export default Object.assign(Form, {
     Group,
     Check,
     Select,
+    Option,
     ComboBox,
 });

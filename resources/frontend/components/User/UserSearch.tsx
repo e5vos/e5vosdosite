@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import useDelayedSet from "hooks/useDelayedSet";
+import { useState } from "react";
 
 import { User } from "types/models";
 
@@ -12,21 +13,9 @@ const UserSearchCombobox = ({
     onChange: (value: User) => any;
 }) => {
     const [search, setSearch] = useState("");
-    const [searchTimeout, setSearchTimeout] = useState<number | undefined>();
     const { data: options } = baseAPI.useSearchUsersQuery(search);
 
-    const onQueryChange = useCallback(
-        (e: any) => {
-            clearTimeout(searchTimeout);
-            setSearchTimeout(
-                window.setTimeout(() => {
-                    console.log(e);
-                    setSearch(e);
-                }, 500),
-            );
-        },
-        [searchTimeout],
-    );
+    const onQueryChange = useDelayedSet(setSearch);
     return (
         <Form.ComboBox
             className="col-span-2"

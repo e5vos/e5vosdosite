@@ -1,50 +1,41 @@
 import useUser from "hooks/useUser";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import eventAPI from "lib/api/eventAPI";
 import { isAdmin } from "lib/gates";
 import Locale from "lib/locale";
 
+import Error from "components/Error";
 import EventCard from "components/EventCard";
 import Button from "components/UIKit/Button";
-import Form from "components/UIKit/Form";
+import ButtonGroup from "components/UIKit/ButtonGroup";
 import Loader from "components/UIKit/Loader";
 
 const locale = Locale({
     hu: {
         title: "E5N - Programok",
         create: "Program hozzadása",
-        search: "Keresés",
     },
     en: {
         title: "E5N - Events",
         create: "Create event",
-        search: "Search",
     },
 });
 
-const EventsPage = () => {
+const ViewSlotEventsPage = () => {
+    const { data: slots, error: slotsError } = eventAPI.useGetSlotsQuery();
     const { user } = useUser(false);
+    const [currentSlot, setCurrentSlot] = useState(0);
 
     const { data: events, isFetching: isEventsFetching } =
-        eventAPI.useGetEventsQuery();
+        eventAPI.useGetEventsQuery(
+            slots ? slots[currentSlot] ?? { id: -1 } : { id: -1 },
+        );
 
-    const [search, setSearch] = useState("");
+    if (slotsError) return <Error code={500} />;
+    if (!slots) return <Loader />;
 
-    const filteredEvents = useMemo(() => {
-        if (!events) return [];
-
-        return events.filter((event) => {
-            return event.name.toLowerCase().includes(search.toLowerCase());
-        });
-    }, [events, search]);
-
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
-    };
-
-    if (!events) return <Loader />;
     return (
         <div className="mx-5">
             <div className="container mx-auto">
@@ -59,19 +50,28 @@ const EventsPage = () => {
                         </Link>
                     )}
                 </h1>
-            </div>
-            <div className="mx-auto my-3 w-fit rounded-lg bg-gray-100 p-2 text-center">
-                <Form.Group>
-                    <Form.Label className="!mr-3">{locale.search}</Form.Label>
-                    <Form.Control onChange={handleSearchChange} />
-                </Form.Group>
+
+                <div className="mx-auto mb-4 mt-4 md:flex">
+                    <ButtonGroup className="mx-auto">
+                        {slots.map((slot, index) => (
+                            <Button
+                                variant="secondary"
+                                key={slot.name}
+                                disabled={index === currentSlot}
+                                onClick={() => setCurrentSlot(index)}
+                            >
+                                {slot.name}
+                            </Button>
+                        ))}
+                    </ButtonGroup>
+                </div>
             </div>
 
             {isEventsFetching ? (
                 <Loader />
             ) : (
                 <div className="grid-cols-4 gap-2 md:grid">
-                    {filteredEvents.map((event) => (
+                    {events?.map((event) => (
                         <EventCard event={event} key={event.id} />
                     ))}
                 </div>
@@ -80,4 +80,4 @@ const EventsPage = () => {
     );
 };
 
-export default EventsPage;
+export default ViewSlotEventsPage;

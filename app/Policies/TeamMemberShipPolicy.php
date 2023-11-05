@@ -53,19 +53,23 @@ class TeamMemberShipPolicy
      */
     public function update(User $user)
     {
-        if (!request()->has('userCode') || !request()->has('promote')) {
+        if (!request()->has('userId') || !request()->has('promote')) {
             abort(400, 'Missing parameters');
         }
         $team = Cache::rememberForever('e5n.teams' . request()->teamCode, fn () => Team::find(request()->teamCode)->load('members'));
-        if (!$team->members->pluck('e5code')->contains((request()->userCode))) {
+        if (!$team->members->pluck('e5code')->contains((request()->userId))) {
             return false;
         }
-        $updatableRole = $team->members->where('e5code', request()->userCode)->firstOrFail()->pivot->role;
-        if (request()->promote === 'promote') {
-            return (($updatableRole === MembershipType::Invited->value && request()->userCode === $user->e5code)
-                || $updatableRole === MembershipType::Member->value && $user->isLeaderOfTeam($team->code));
-        } elseif (request()->promote === 'demote') {
-            return $updatableRole === MemberShipType::Leader->value && $user->isLeaderOfTeam($team->code) && $team->members->where('e5code', '!=', request()->userCode)->firstWhere('pivot.role', MembershipType::Leader->value) !== null;
+        $updatableRole = $team->members->where('e5code', request()->userId)->firstOrFail()->pivot->role;
+        $otherLeaderExists = $team->members->where('id', '!=', request()->userId)->firstWhere('pivot.role', MembershipType::Leader->value) !== null;
+        $isLeader = $user->isLeaderOfTeam($team->code);
+        if (request()->promote) {
+            return ($updatableRole === MembershipType::Member->value && $isLeader)
+                || ($updatableRole === MembershipType::Invited->value && $user->id === request()->userId);
+        } else {
+            return ($user->id === request()->userId
+                && ($updatableRole !== MembershipType::Leader->value || $otherLeaderExists)
+            ) || ($updatableRole !== MembershipType::Leader->value && $isLeader);
         }
     }
 

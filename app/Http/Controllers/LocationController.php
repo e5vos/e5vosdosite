@@ -29,7 +29,7 @@ class LocationController extends Controller
      */
     public function show(int $locationId)
     {
-        $location = Location::findOrFail($locationId);
+        $location = Location::with('events')->findOrFail($locationId);
         return Cache::rememberForever("locations.{$location->id}", fn () => new LocationResource($location));
     }
 

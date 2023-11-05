@@ -47,7 +47,7 @@ class EventController extends Controller
                         ->get()->load('slot', 'location')
                 ));
             }
-            return Cache::rememberForever('e5n.events.slot.' . $slotId, fn () => EventResource::collection(Event::with('slot', 'location')->where('slot_id', $slotId)->get()->load('slot', 'location'))->jsonSerialize());
+            return Cache::rememberForever('e5n.events.slot.' . $slotId, fn () => EventResource::collection(Event::with('slot', 'location')->where('slot_id', $slotId)->get())->jsonSerialize());
         }
         if (isset(request()->q)) {
             return response()->json(EventResource::collection(
@@ -216,6 +216,9 @@ class EventController extends Controller
         if ($attendance === null) {
             throw new ResourceDidNoExistException();
         }
+        if ($attendance->is_present) {
+            throw new NotAllowedException();
+        }
         if ($event->direct_child !== null) {
             EventController::unsignup($request, $event->direct_child, true);
         }
@@ -253,9 +256,18 @@ class EventController extends Controller
         if (!request()->user()->can('attend', $attendance->event)) {
             throw new NotAllowedException();
         }
-        $memberAttendances = array_map((fn ($memberAttendance) => get_object_vars($memberAttendance)), json_decode(request()->memberAttendances));
-        $attendance->teamMemberAttendances()->whereIn('user_id', array_column($memberAttendances, 'user_id'))->delete();
-        return response()->json($attendance->teamMemberAttendances()->createMany($memberAttendances), 200);
+        $presentAttendanceIds = [];
+        $absentAttendanceIds = [];
+        foreach (json_decode(request()->memberAttendances) as $memberAttendance) {
+            if ($memberAttendance->is_present) {
+                $presentAttendanceIds[] = $memberAttendance->user_id;
+            } else {
+                $absentAttendanceIds[] = $memberAttendance->user_id;
+            }
+        }
+        $attendance->teamMemberAttendances()->whereIn('user_id', $presentAttendanceIds)->update(['is_present' => true]);
+        $attendance->teamMemberAttendances()->whereIn('user_id', $absentAttendanceIds)->update(['is_present' => false]);
+        return response()->json($attendance->teamMemberAttendances, 200);
     }
 
     /**
@@ -267,7 +279,7 @@ class EventController extends Controller
             'e5n.events.' . $eventId . '.signups',
             function () use ($eventId) {
                 $event = Event::findOrFail($eventId)->load('attendances.user:id,name,ejg_class', 'attendances.team.members:id,name,ejg_class', 'attendances.teamMemberAttendances'); // roland to check
-                return UserResource::collection($event->users)->concat(TeamResource::collection($event->teams))->jsonSerialize();
+                return UserResource::collection($event->users)->concat(TeamResource::collection($event->teams->with("members")))->jsonSerialize();
             }
         );
     }

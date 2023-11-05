@@ -50,6 +50,13 @@ export const baseAPI = createApi({
             }),
             providesTags: (result) => [{ type: "User", id: result?.id }],
         }),
+        getCurrentUserDetails: builder.query<User, void>({
+            query: (data) => ({
+                url: routeSwitcher("user.details"),
+                method: "GET",
+            }),
+            providesTags: (result) => [{ type: "User", id: result?.id }],
+        }),
         setStudentCode: builder.mutation<User, string>({
             query: (code) => ({
                 url: routeSwitcher("user.e5code"),

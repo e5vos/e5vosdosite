@@ -34,6 +34,7 @@ const locale = Locale({
             close_signup: "lezárni a jelentkezést?",
             yes: "Igen, biztos vagyok",
         },
+        score: "Helyezés",
     },
     en: {
         organiser: "Organiser",
@@ -54,6 +55,7 @@ const locale = Locale({
             close_signup: "close the registration?",
             yes: "Yes, I'm sure",
         },
+        score: "Score",
     },
 });
 
@@ -189,6 +191,9 @@ const ManageEventPage = () => {
                     </ButtonGroup>
                 </div>
                 <div className="col-span-2 !mt-0 sm:mt-2">
+                    <Card title={locale.score} className="!bg-red-500">
+                        <div>a</div>
+                    </Card>
                     <Card title={locale.description} className="!bg-slate-500">
                         <p>{event.description}</p>
                     </Card>
@@ -205,6 +210,7 @@ const ManageEventPage = () => {
                     <Card title={locale.location} className="!bg-slate-500">
                         {event.location?.name ?? locale.unknown}
                     </Card>
+                    di
                 </div>
                 <ButtonGroup className="mt-2  !hidden w-full sm:block">
                     {(isAdmin(user) || isUserOrganiser || isUserScanner) && (

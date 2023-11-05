@@ -1,13 +1,15 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { CRUDInterface } from "types/misc";
+import { CRUDInterface, OptionalFields } from "types/misc";
 import { Slot } from "types/models";
 
 import adminAPI from "lib/api/adminAPI";
 import Locale from "lib/locale";
 
-import SlotForm, { SlotFormValues } from "components/Forms/SlotForm";
+import SlotForm from "components/Forms/SlotForm";
+
+export type SlotFormValues = Omit<OptionalFields<Slot, "id">, "events">;
 
 const locale = Locale({
     hu: {

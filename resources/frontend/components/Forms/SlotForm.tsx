@@ -1,11 +1,12 @@
-import { FormikValues, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { CRUDForm } from "types/misc";
-import { SlotType, SlotTypeType } from "types/models";
+import { SlotType } from "types/models";
 
 import Locale from "lib/locale";
 
+import { SlotFormValues } from "components/Slot/CRUD";
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
 
@@ -41,14 +42,6 @@ const locale = Locale({
         required: "Required",
     },
 });
-
-export type SlotFormValues = {
-    id?: number;
-    name: string;
-    slot_type: SlotTypeType;
-    starts_at: string;
-    ends_at: string;
-};
 
 const SlotForm = ({
     initialValues,

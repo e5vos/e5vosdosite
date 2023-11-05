@@ -1,4 +1,4 @@
-import { Slot, User } from "types/models";
+import { Permission, Slot, User } from "types/models";
 
 import routeSwitcher from "lib/route";
 
@@ -61,6 +61,27 @@ export const adminAPI = baseAPI
                 query: () => ({
                     url: routeSwitcher("cacheclear"),
                     method: "POST",
+                }),
+            }),
+            createPermission: builder.mutation<Permission, Permission>({
+                query: (data) => ({
+                    url: routeSwitcher("permission.st"),
+                    method: "POST",
+                    body: data,
+                }),
+            }),
+            updatePermission: builder.mutation<Permission, Permission>({
+                query: (data) => ({
+                    url: routeSwitcher("permission.st"),
+                    method: "PUT",
+                    body: data,
+                }),
+            }),
+            deletePermission: builder.mutation<void, Permission>({
+                query: (data) => ({
+                    url: routeSwitcher("permission.st"),
+                    method: "DELETE",
+                    body: data,
                 }),
             }),
         }),

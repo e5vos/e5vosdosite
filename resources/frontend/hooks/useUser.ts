@@ -6,17 +6,14 @@ import { useDispatch, useSelector } from "lib/store";
 
 const useUser = (redirect: boolean = true, destination?: string) => {
     const navigate = useNavigate();
-    const {
-        data: user,
-        error,
-        isLoading,
-        isFetching,
-        refetch,
-        ...rest
-    } = baseAPI.useGetCurrentUserDataQuery();
+    const token = useSelector((state) => state.auth.token);
+
+    const [
+        trigger,
+        { data: user, isUninitialized, error, isLoading, isFetching, ...rest },
+    ] = baseAPI.useLazyGetCurrentUserDataQuery();
 
     const location = useLocation();
-    const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -35,9 +32,7 @@ const useUser = (redirect: boolean = true, destination?: string) => {
         }
 
         if (
-            error &&
-            "status" in error &&
-            error.status === 401 &&
+            (!token || (error && "status" in error && error.status === 401)) &&
             redirectToLogin
         ) {
             navigate(redirectToLogin);
@@ -56,15 +51,16 @@ const useUser = (redirect: boolean = true, destination?: string) => {
     ]);
 
     useEffect(() => {
-        refetch();
-    }, [token, refetch]);
+        if (token) trigger();
+    }, [token, trigger]);
 
     return {
         user: user && !error && token ? user : undefined,
         error,
         isLoading,
         isFetching,
-        refetch,
+        refetch: trigger,
+        isUninitialized,
         ...rest,
     };
 };

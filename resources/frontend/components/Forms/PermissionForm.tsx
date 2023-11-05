@@ -1,18 +1,15 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { CRUDForm, CRUDFormImpl } from "types/misc";
-import { Permission } from "types/models";
+import { CRUDForm } from "types/misc";
+import { Permission, PermissionCode, PermissionCodeType } from "types/models";
 
 import Locale from "lib/locale";
 
 import EventSearchCombobox from "components/Event/EventSearch";
 import Button from "components/UIKit/Button";
 import Form from "components/UIKit/Form";
-
-export type PermissionFormValues = Omit<Permission, "id"> & {
-    id?: number;
-};
+import UserSearchCombobox from "components/User/UserSearch";
 
 const locale = Locale({
     hu: {
@@ -21,6 +18,25 @@ const locale = Locale({
         event: "Esemény",
         code: "Kód",
         submit: "Mentés",
+        delete: "Törlés",
+        permissionName: (p: PermissionCodeType): string => {
+            switch (p) {
+                case PermissionCode.admin:
+                    return "Adminisztrátor";
+                case PermissionCode.organiser:
+                    return "Programszervező";
+                case PermissionCode.scanner:
+                    return "Jelenlétellenőr";
+                case PermissionCode.student:
+                    return "Diák";
+                case PermissionCode.teacher:
+                    return "Tanár";
+                case PermissionCode.teacheradmin:
+                    return "Tanár Adminisztrátor";
+                case PermissionCode.operator:
+                    return "Zoland";
+            }
+        },
     },
     en: {
         required: "Required",
@@ -28,6 +44,25 @@ const locale = Locale({
         event: "Event",
         code: "Code",
         submit: "Submit",
+        delete: "Delete",
+        permissionName: (p: PermissionCodeType) => {
+            switch (p) {
+                case PermissionCode.admin:
+                    return "Admin";
+                case PermissionCode.organiser:
+                    return "Organiser";
+                case PermissionCode.scanner:
+                    return "Scanner";
+                case PermissionCode.student:
+                    return "Student";
+                case PermissionCode.teacher:
+                    return "Teacher";
+                case PermissionCode.teacheradmin:
+                    return "Teacher Admin";
+                case PermissionCode.operator:
+                    return "Zoland";
+            }
+        },
     },
 });
 
@@ -37,8 +72,9 @@ const PermissionForm = ({
     enableReinitialize,
     resetOnSubmit,
     submitLabel = locale.submit,
+    onDelete,
     ...rest
-}: CRUDForm<PermissionFormValues>) => {
+}: CRUDForm<Permission> & { onDelete?: (p: Permission) => void }) => {
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
@@ -58,6 +94,12 @@ const PermissionForm = ({
     return (
         <Form onSubmit={formik.handleSubmit}>
             <Form.Group>
+                <Form.Label></Form.Label>
+                <UserSearchCombobox
+                    onChange={(u) => formik.setFieldValue("user_id", u.id)}
+                />
+            </Form.Group>
+            <Form.Group>
                 <Form.Label>{locale.event}</Form.Label>
                 <EventSearchCombobox
                     onChange={(e) => formik.setFieldValue("event_id", e.id)}
@@ -65,15 +107,23 @@ const PermissionForm = ({
             </Form.Group>
             <Form.Group>
                 <Form.Label>{locale.code}</Form.Label>
-                <Form.Control
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    invalid={Boolean(formik.errors.code)}
-                    value={formik.values.code}
-                />
+                <Form.Select>
+                    {Object.entries(PermissionCode).map((entry) => {
+                        console.log("entry", entry);
+                        return <></>;
+                    })}
+                </Form.Select>
             </Form.Group>
             <Form.Group>
-                <Button type="submit">{submitLabel}</Button>
+                <Button type="submit">{submitLabel}</Button>í
+                {onDelete && (
+                    <Button
+                        variant="danger"
+                        onClick={() => onDelete(formik.values)}
+                    >
+                        {locale.delete}
+                    </Button>
+                )}
             </Form.Group>
         </Form>
     );

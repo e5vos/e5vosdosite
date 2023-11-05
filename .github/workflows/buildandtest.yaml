@@ -13,8 +13,21 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
       - name: Install backend dependencies
-        run: composer install      
+        run: |
+          composer install --prefer-dist --no-progress --no-ansi --no-interaction
+          echo "${PWD}/vendor/bin" >> $GITHUB_PATH
+    
       - name: Generate Routes
         run: php artisan ziggy:generate --types
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          eslint: true,
+          eslint_extensions: "js,jsx,cjs,mjs,ts,tsx,cts,mts"
+
+          prettier: true
+          prettier_extensions: "css,html,js,json,jsx,md,sass,scss,ts,tsx,vue,yaml,yml"
+
+          php_codesniffer: true
       - name: Build frontend
         run: npm run build

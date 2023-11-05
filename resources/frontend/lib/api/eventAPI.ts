@@ -99,13 +99,28 @@ export const eventAPI = baseAPI
                     };
                 },
             }),
-            createEvent: builder.mutation<Event, Event>({
+            createEvent: builder.mutation<
+                Event,
+                Omit<Event, "id" | "occupancy" | "">
+            >({
                 query: (event) => ({
                     url: routeSwitcher("events"),
                     method: "POST",
                     params: event,
                 }),
                 invalidatesTags: (result) => [
+                    { type: "Event", id: `LIST${result?.slot_id}` },
+                    { type: "Event", id: "LIST" },
+                ],
+            }),
+            editEvent: builder.mutation<Event, Omit<Event, "occupancy">>({
+                query: (event) => ({
+                    url: routeSwitcher("event.update", { id: event.id }),
+                    method: "PATCH",
+                    params: event,
+                }),
+                invalidatesTags: (result) => [
+                    { type: "Event", id: result?.id },
                     { type: "Event", id: `LIST${result?.slot_id}` },
                     { type: "Event", id: "LIST" },
                 ],

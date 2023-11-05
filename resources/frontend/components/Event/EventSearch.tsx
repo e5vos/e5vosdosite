@@ -9,8 +9,10 @@ import Form from "components/UIKit/Form";
 
 const EventSearchCombobox = ({
     onChange,
+    initialValue,
 }: {
     onChange: (value: Event) => any;
+    initialValue?: Event;
 }) => {
     const [search, setSearch] = useState("");
     const { data: options } = eventAPI.useEventSearchQuery(search);
@@ -32,6 +34,7 @@ const EventSearchCombobox = ({
             <Form.ComboBox
                 options={options ?? []}
                 onQueryChange={onQueryChange}
+                initialValue={initialValue ? initialValue.name : ""}
                 onChange={(e) => {
                     if (!e) return;
                     onChange(e);

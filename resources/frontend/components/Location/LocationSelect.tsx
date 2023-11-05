@@ -1,36 +1,20 @@
-import useDelay from "hooks/useDelayed";
-import { useState } from "react";
+import { Location } from "types/models";
 
-import { User } from "types/models";
-
-import baseAPI from "lib/api";
+import locationAPI from "lib/api/locationAPI";
 
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
 
-const elementName = (e: User) => `${e.name} - ${e.ejg_class}`;
+const elementName = (e: Location) => `${e.floor} - ${e.name}`;
 
-const UserSearchCombobox = ({
+const LocationSearchCombobox = ({
     onChange,
     initialValue,
 }: {
-    onChange: (value: User) => any;
-    initialValue?: User;
+    onChange: (value: Location) => any;
+    initialValue?: Location;
 }) => {
-    const [search, setSearch] = useState("");
-    const { data: options } = baseAPI.useUserSearchQuery(search);
-
-    const onQueryChange = useDelay((value: string) => {
-        if (
-            options?.some((e) =>
-                elementName(e)
-                    .toLocaleLowerCase()
-                    .includes(value.toLocaleLowerCase()),
-            )
-        ) {
-            setSearch(value);
-        }
-    }, 500);
+    const { data: options } = locationAPI.useGetLocationsQuery();
 
     if (!options) return <Loader />;
     return (
@@ -38,7 +22,6 @@ const UserSearchCombobox = ({
             <Form.ComboBox
                 options={options ?? []}
                 initialValue={initialValue ? elementName(initialValue) : ""}
-                onQueryChange={onQueryChange}
                 getElementName={elementName}
                 onChange={(e) => {
                     if (!e) return;
@@ -57,4 +40,4 @@ const UserSearchCombobox = ({
     );
 };
 
-export default UserSearchCombobox;
+export default LocationSearchCombobox;

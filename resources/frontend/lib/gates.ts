@@ -1,3 +1,5 @@
+import useUser from "hooks/useUser";
+
 import { Event, PermissionCode, User } from "types/models";
 
 export type GateFunction = ((user: User | undefined) => boolean) & {
@@ -73,3 +75,5 @@ export const isOrganiser = (event: Event) =>
             ) !== undefined
         );
     }, "Csak szervezők számára elérhető");
+
+export const userGate = gate(() => true, "Csak felhasználók számára érhető el");

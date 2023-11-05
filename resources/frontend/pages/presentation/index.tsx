@@ -7,8 +7,11 @@ import { useNavigate } from "react-router-dom";
 import { Presentation } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
+import { userGate } from "lib/gates";
 import Locale from "lib/locale";
+import { loginRequired } from "lib/loginrequired";
 
+import { gated } from "components/Gate";
 import PresentationsTable from "components/PresentationsTable";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
@@ -262,4 +265,4 @@ const PresentationsPage = () => {
         </div>
     );
 };
-export default PresentationsPage;
+export default loginRequired(PresentationsPage);

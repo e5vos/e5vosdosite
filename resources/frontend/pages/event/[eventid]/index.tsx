@@ -23,6 +23,7 @@ const locale = Locale({
         times: "Időpontok",
         starts_at: "Kezdés",
         ends_at: "Befejezés",
+        signup_deadline: "Jelentkezési határidő",
         location: "Helyszín",
         unknown: "Ismeretlen",
         manage: "Kezelés",
@@ -46,6 +47,7 @@ const locale = Locale({
         times: "Timetable",
         starts_at: "Starts at",
         ends_at: "Ends at",
+        signup_deadline: "Signup deadline",
         location: "Location",
         unknown: "Unknown",
         manage: "Manage",
@@ -69,7 +71,7 @@ const EventPage = () => {
     const { eventid } = useParams();
     const { user } = useUser();
     const { data: event } = eventAPI.useGetEventQuery({ id: Number(eventid) });
-    const { starts_at, ends_at } = useEventDates(event);
+    const { starts_at, ends_at, signup_deadline } = useEventDates(event);
     const { data: myteams } = teamAPI.useGetMyTeamsQuery();
     const [signup] = eventAPI.useSignUpMutation();
 
@@ -168,6 +170,10 @@ const EventPage = () => {
                     <p>
                         <strong>{locale.ends_at}</strong>:{" "}
                         {ends_at?.toLocaleString("hu-HU")}
+                    </p>
+                    <p>
+                        <strong>{locale.signup_deadline}</strong>:{" "}
+                        {signup_deadline?.toLocaleString("hu-HU")}
                     </p>
                 </Card>
                 <Card title={locale.location} className="!bg-slate-500">

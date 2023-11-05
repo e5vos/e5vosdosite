@@ -71,7 +71,8 @@ class User extends Authenticatable
      *
      * Assing global scopes, etc. Order by ejg_class and name
      */
-    protected static function boot() {
+    protected static function boot()
+    {
         parent::boot();
         static::addGlobalScope('order', fn ($builder) => $builder->orderBy('ejg_class')->orderBy('name'));
     }
@@ -266,7 +267,7 @@ class User extends Authenticatable
      *
      * @param  Event $event the event to attend
      * @param  bool $force whether to force the signup even if it has a root parent
-     * @return EventSignup the newly created EventSignup object
+     * @return Attendance the newly created Attendance object
      */
     public function attend(Event $event, bool $force = false)
     {

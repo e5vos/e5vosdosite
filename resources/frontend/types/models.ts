@@ -8,7 +8,7 @@ export const PermissionCode = {
     student: "STD",
     operator: "OPT",
     teacheradmin: "TAD",
-};
+} as const;
 
 export type PermissionCodeType =
     (typeof PermissionCode)[keyof typeof PermissionCode];
@@ -51,7 +51,7 @@ export interface UserAttendancePivot extends BasicAttendance {
 }
 export interface TeamAttendancePivot extends BasicAttendance {
     team_code: string;
-    member_attendances?: TeamMemberAttendance[];
+    member_attendances: TeamMemberAttendance[];
 }
 
 export type TeamAttendance = RequiredFields<
@@ -152,14 +152,14 @@ export interface Event {
     location_id?: number;
     location?: Location;
     is_competition: boolean;
-    img_url: string | null;
+    img_url?: string | null;
     signup_deadline: string | null;
     starts_at: string;
     ends_at: string;
     direct_child?: number | null;
-    direct_child_slot_id: number | null;
+    direct_child_slot_id?: number | null;
     root_parent?: number | null;
-    root_parent_slot_id: number | null;
+    root_parent_slot_id?: number | null;
     signup_type: SignupTypeType;
 }
 

@@ -9,11 +9,13 @@ const locale = Locale({
     hu: {
         combobox: {
             continued: "További találatok...",
+            nonematching: "Nincs találat",
         },
     },
     en: {
         combobox: {
             continued: "More results...",
+            nonematching: "No results",
         },
     },
 });
@@ -162,6 +164,7 @@ const ComboBox = <T = any,>({
     renderElement,
     getElementName,
     className,
+    initialValue = "",
     limit = 15,
 }: {
     options: T[];
@@ -170,9 +173,10 @@ const ComboBox = <T = any,>({
     onQueryChange?: (s: string) => void;
     getElementName: (e: T) => string;
     renderElement: (e: T) => ReactNode;
+    initialValue?: string;
     limit?: number;
 } & Omit<HTMLInputProps<HTMLInputElement>, "onChange">) => {
-    const [query, setQuery] = React.useState("");
+    const [query, setQuery] = React.useState(initialValue);
     const [selected, setSelected] = React.useState<T | null>(null);
     const filteredOptions = filter ? options.filter(filter(query)) : options;
 
@@ -204,6 +208,11 @@ const ComboBox = <T = any,>({
                 ))}
                 {filteredOptions.length > limit && (
                     <span>{locale.combobox.continued}</span>
+                )}
+                {filteredOptions.length === 0 && (
+                    <span className="text-red-500">
+                        {locale.combobox.nonematching}
+                    </span>
                 )}
             </Combobox.Options>
         </Combobox>

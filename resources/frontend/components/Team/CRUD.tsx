@@ -19,13 +19,12 @@ const locale = Locale({
     },
 });
 
-export type TeamFormValues = {
-    name: string;
-    code: string;
-    description: string;
-};
+export type TeamFormValues = Pick<Team, "name" | "code" | "description">;
 
-const TeamCreator = ({ ...rest }: CRUDFormImpl<Team, TeamFormValues>) => {
+const TeamCreator = ({
+    value,
+    ...rest
+}: CRUDFormImpl<Team, Partial<TeamFormValues>>) => {
     const [createTeam] = teamAPI.useCreateTeamMutation();
     const { refetch } = teamAPI.endpoints.getAllTeams.useQuerySubscription();
     const onSubmit = useCallback(
@@ -38,7 +37,11 @@ const TeamCreator = ({ ...rest }: CRUDFormImpl<Team, TeamFormValues>) => {
     );
     return (
         <TeamForm
-            initialValues={{ code: "", description: "", name: "" }}
+            initialValues={{
+                code: value.code ?? "",
+                description: value.description ?? "",
+                name: value.name ?? "",
+            }}
             onSubmit={onSubmit}
             submitLabel={locale.create}
             resetOnSubmit={true}

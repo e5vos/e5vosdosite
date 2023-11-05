@@ -137,7 +137,7 @@ class EventController extends Controller
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.' . $eventId);
-        return response('Az esemény sikeresen törölve', 204);
+        return response()->noContent();
     }
 
     /**
@@ -229,7 +229,7 @@ class EventController extends Controller
         Cache::forget('e5n.events.slot.' . Event::find($eventId)?->slot_id);
         Cache::forget('e5n.events.' . $eventId);
         $event->forget('occupancy');
-        return $event->root_parent === null ? response("Unsignupped.", 204) : null;
+        return $event->root_parent === null ? response()->noContent() : null;
     }
 
     /**

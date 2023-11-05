@@ -26,4 +26,10 @@ class Location extends Model
     {
         return $this->hasMany(Event::class);
     }
+
+    public function currentEvents($time = null)
+    {
+        $time = $time ?? now();
+        return $this->events()->where('starts_at', '<=', $time)->where('ends_at', '>=', $time);
+    }
 }

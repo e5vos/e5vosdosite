@@ -82,7 +82,7 @@ class TeamController extends Controller
         $team->delete();
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.' . $teamCode);
-        return response()->json(null, 204);
+        return response()->noContent();
     }
 
     /**

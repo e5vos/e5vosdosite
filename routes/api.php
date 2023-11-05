@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Models\{
     Attendance,
     Event,
+    Location,
     Slot,
     Setting,
     TeamMembership,
@@ -147,6 +148,21 @@ Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingContr
         Route::delete('/{key}', 'destroy')->can('delete', Setting::class)->name('setting.destroy');
     }
 );
+
+
+// location crud
+Route::controller(LocationController::class)->group(function () {
+    Route::get('/locations', 'index')->name('locations.index');
+    Route::get('/location/{locationId}', 'show')->name('locations.show');
+    Route::get('/location/{locationId}/events', 'events')->name('locations.events');
+    Route::get('/location/{locationId}/current_events', 'currentEvents')->name('locations.current_events');
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::post('/location', 'store')->can('create', Location::class)->name('locations.store');
+        Route::put('/location/{locationId}', 'update')->can('udate', Location::class)->name('locations.update');
+        Route::delete('/location/{locationId}', 'destroy')->can('delete', Location::class)->name('locations.destroy');
+    });
+});
+
 
 
 Route::any('cacheclear', [AdminController::class, "cacheClear"])->name('cacheclear');

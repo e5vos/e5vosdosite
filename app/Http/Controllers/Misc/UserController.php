@@ -69,7 +69,7 @@ class UserController extends Controller
         $userId ??= request()->user->id;
         $user = User::findOrFail($userId);
         $user->delete();
-        return response()->json("User deleted", 204);
+        return response()->noContent();
     }
 
     /**

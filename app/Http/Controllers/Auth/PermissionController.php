@@ -45,6 +45,6 @@ class PermissionController extends Controller
         $permission = Permission::find([$userId, $eventId, $code]);
         if ($permission->first() === null) throw new ResourceDidNoExistException();
         $permission->delete();
-        return response('', 204);
+        return response()->noContent();
     }
 }

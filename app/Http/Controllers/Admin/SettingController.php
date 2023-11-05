@@ -68,6 +68,6 @@ class SettingController extends Controller
     {
         $setting = Setting::where('key', $key)->firstOrFail();
         $setting->delete();
-        return response()->json(['message' => 'Setting deleted'], 204);
+        return response()->noContent();
     }
 }

@@ -31,7 +31,7 @@ class UserController extends Controller
     {
         $userId ??= request()->user()->id;
         $loadables = array('teams');
-        if (request()->user()->id == $userId || request()->user()->hasPermission(PermissionType::Teacher->value) || request()->user()->hasPermission(PermissionType::Admin->value || request()->user()->hasPermission(PermissionType::Operator->value)))) {
+        if (request()->user()->id == $userId || request()->user()->hasPermission(PermissionType::Teacher->value) || request()->user()->hasPermission(PermissionType::Admin->value || request()->user()->hasPermission(PermissionType::Operator->value))) {
             $loadables[] = 'userActivity';
             $loadables[] = 'teamActivity';
             $loadables[] = 'permissions';

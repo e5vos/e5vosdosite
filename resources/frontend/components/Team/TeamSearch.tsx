@@ -12,7 +12,7 @@ const TeamSearchCombobox = ({
     initialValue,
     myTeams = true,
 }: {
-    onChange: (value: Team) => void;
+    onChange: (value: Pick<Team, "code" | "name">) => void;
     initialValue: Team;
     myTeams?: boolean;
 }) => {

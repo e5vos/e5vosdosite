@@ -1,5 +1,3 @@
-import useUser from "hooks/useUser";
-
 import { Event, PermissionCode, User } from "types/models";
 
 export type GateFunction = ((user: User | undefined) => boolean) & {

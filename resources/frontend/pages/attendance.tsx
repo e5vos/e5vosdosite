@@ -2,7 +2,7 @@ import useUser from "hooks/useUser";
 import { MouseEventHandler } from "react";
 import { useParams } from "react-router-dom";
 
-import { Attendance, isUserAttendance } from "types/models";
+import { Attendance, isTeamAttendance, isUserAttendance } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import { isOperator, isTeacher } from "lib/gates";
@@ -49,7 +49,7 @@ const AttendancePage = () => {
                 ),
             ) ?? [];
 
-    const [toggleAPI, { isLoading }] = eventAPI.useToggleAttendanceMutation();
+    const [toggleAPI, { isLoading }] = eventAPI.useAttendMutation();
 
     if (isEventLoading || isParticipantsLoading || !event) return <Loader />;
 
@@ -59,17 +59,19 @@ const AttendancePage = () => {
             const target = e.currentTarget;
             e.preventDefault();
 
-            const res = await toggleAPI(attending);
+            const res = await toggleAPI({
+                attender: isTeamAttendance(attending)
+                    ? attending.code
+                    : attending.id,
+                event: event,
+                present: target.checked,
+            });
             if ("error" in res) {
                 alert("Error");
             } else {
                 target.checked = !target.checked;
             }
         };
-
-    const score = (attending: Attendance, score: number) => {
-        console.log(attending.name + " is now " + score);
-    };
 
     const deleteAttendanceAction = async (attending: Attendance) => {
         await deleteAttendance({

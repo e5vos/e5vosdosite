@@ -1,17 +1,16 @@
+import useDelay from "hooks/useDelayed";
 import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
 import useUser from "hooks/useUser";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 import { Presentation } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
-import { userGate } from "lib/gates";
 import Locale from "lib/locale";
 import { loginRequired } from "lib/loginrequired";
 
-import { gated } from "components/Gate";
 import PresentationsTable from "components/PresentationsTable";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
@@ -100,10 +99,7 @@ const SelectField = ({
 
 const PresentationsPage = () => {
     const [currentSlot, setcurrentSlot] = useState(0);
-    const [errorShown, setErrorShown] = useState(false);
-    const errorShownTimeout = useRef<ReturnType<typeof setTimeout> | null>(
-        null,
-    );
+
     const { data: slots } = useGetPresentationSlotsQuery();
     const {
         data: selectedPresentations,
@@ -142,6 +138,7 @@ const PresentationsPage = () => {
             if (!user.e5code) {
                 alert(locale.noe5code);
                 navigate("/studentcode?next=/eloadas");
+                return;
             }
             console.log("Signup");
             await signUp({
@@ -160,6 +157,7 @@ const PresentationsPage = () => {
         if (!user.e5code) {
             alert(locale.noe5code);
             navigate("/studentcode?next=/eloadas");
+            return;
         }
         try {
             if (user) {
@@ -199,29 +197,31 @@ const PresentationsPage = () => {
         [currentSlot, selectedPresentations, slots],
     );
 
-    const errormsg = useMemo(() => {
-        if (signupError && "status" in signupError) {
-            const message = (signupError.data as any).message;
-            if (!message && message === "") return locale.unknownError;
-            else return message;
-        }
-        if (cancelSignupError && "status" in cancelSignupError) {
-            const message = (cancelSignupError.data as any).message;
-            if (!message && message === "") return locale.unknownError;
-            else return message;
-        }
-    }, [signupError, cancelSignupError]);
+    const [errormsg, setErrormsg] = useState<string>("");
+
+    const cleanupErrormsg = useDelay(() => {
+        setErrormsg("");
+    }, 2500);
 
     useEffect(() => {
-        if (errormsg !== undefined) {
-            setErrorShown(true);
-            if (errorShownTimeout.current)
-                clearTimeout(errorShownTimeout.current);
-            errorShownTimeout.current = setTimeout(() => {
-                setErrorShown(false);
-            }, 3000);
+        if (signupError && "status" in signupError) {
+            const message = (signupError.data as any).message;
+            if (!message && message === "") setErrormsg(locale.unknownError);
+            else setErrormsg(message);
+            cleanupErrormsg();
         }
-    }, [errormsg]);
+    }, [cleanupErrormsg, signupError]);
+
+    useEffect(() => {
+        if (cancelSignupError && "status" in cancelSignupError) {
+            const message = (cancelSignupError.data as any).message;
+            if (!message && message === "") setErrormsg(locale.unknownError);
+            else setErrormsg(message);
+            cleanupErrormsg();
+        }
+    }, [cancelSignupError, cleanupErrormsg]);
+
+    useEffect(() => {});
 
     if (!slots || !selectedPresentations || !presentations) return <Loader />;
 
@@ -229,7 +229,7 @@ const PresentationsPage = () => {
         <div className="mx-5">
             <div className="container mx-auto">
                 <Title>{locale.title}</Title>
-                <ErrorMsgBox errorShown={errorShown} errormsg={errormsg} />
+                <ErrorMsgBox errorShown={errormsg !== ""} errormsg={errormsg} />
                 <div className="mb-4 flex-row items-stretch justify-between  md:flex ">
                     <ButtonGroup>
                         {slots.map((slot, index) => (

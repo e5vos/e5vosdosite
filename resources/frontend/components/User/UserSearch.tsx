@@ -1,21 +1,21 @@
 import useDelay from "hooks/useDelayed";
 import { useState } from "react";
 
-import { User } from "types/models";
+import { UserStub } from "types/models";
 
 import baseAPI from "lib/api";
 
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
 
-const elementName = (e: User) => `${e.name} - ${e.ejg_class}`;
+const elementName = (e: UserStub) => `${e.name} - ${e.ejg_class}`;
 
 const UserSearchCombobox = ({
     onChange,
     initialValue,
 }: {
-    onChange: (value: User) => any;
-    initialValue?: User;
+    onChange: (value: UserStub) => any;
+    initialValue?: UserStub;
 }) => {
     const [search, setSearch] = useState("");
     const { data: options } = baseAPI.useUserSearchQuery(search);

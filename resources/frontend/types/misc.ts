@@ -1,7 +1,13 @@
 import { useFormik } from "formik";
 
 export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
-export type OptionalFields<T, K extends keyof T> = T & Partial<Pick<T, K>>;
+export type OptionalFields<T, K extends keyof T> = Omit<T, K> &
+    Partial<Pick<T, K>>;
+export type RequiredAndOmitFields<
+    T,
+    R extends keyof T,
+    O extends keyof T,
+> = Omit<RequiredFields<T, R>, O>;
 /**
  * These are <Form> interfaces that are used to create, read, update, and delete a resource. They are styled and functional, but require placement on a page.
  */

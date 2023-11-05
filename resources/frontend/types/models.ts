@@ -1,4 +1,4 @@
-import { RequiredFields } from "./misc";
+import { RequiredAndOmitFields, RequiredFields } from "./misc";
 
 export const PermissionCode = {
     organiser: "ORG",
@@ -15,7 +15,7 @@ export type PermissionCodeType =
 
 export interface Permission {
     user_id: number;
-    event_id: number;
+    event_id?: number | null;
     code: string;
 }
 
@@ -36,6 +36,7 @@ export interface User {
     img_url?: string;
     email?: string;
 }
+export type UserStub = Required<Pick<User, "id" | "name" | "ejg_class">>;
 
 export const isTeam = (team: any): team is Team => {
     return team.code !== undefined;
@@ -54,9 +55,10 @@ export interface TeamAttendancePivot extends BasicAttendance {
     member_attendances: TeamMemberAttendance[];
 }
 
-export type TeamAttendance = RequiredFields<
-    Omit<Team, "activity">,
-    "members"
+export type TeamAttendance = RequiredAndOmitFields<
+    Team,
+    "members",
+    "activity"
 > & {
     pivot: TeamAttendancePivot;
 };
@@ -113,7 +115,7 @@ export interface Team {
     code: string;
     description: string;
     members?: TeamMember[];
-    attendance?: TeamAttendance[];
+    activity?: TeamAttendance[];
 }
 export const SlotType = {
     Presentation: "Előadássáv",
@@ -126,9 +128,10 @@ export interface Slot {
     id: number;
     starts_at: string;
     ends_at: string;
-    events?: Event[];
     slot_type: SlotTypeType;
     name: string;
+
+    events?: Event[];
 }
 
 export const SignupType = {
@@ -146,11 +149,8 @@ export interface Event {
     organiser: string;
     capacity: number | null;
     occupancy: number;
-    attendees?: Attendance[];
-    slot?: Slot;
     slot_id: number | null;
     location_id?: number;
-    location?: Location;
     is_competition: boolean;
     img_url?: string | null;
     signup_deadline: string | null;
@@ -161,13 +161,37 @@ export interface Event {
     root_parent?: number | null;
     root_parent_slot_id?: number | null;
     signup_type: SignupTypeType;
+    min_team_size?: number | null;
+    max_team_size?: number | null;
+
+    attendances?: Attendance[];
+
+    slot?: Slot;
+    location?: Location;
 }
+
+export type EventStub = RequiredAndOmitFields<
+    Event,
+    "slot" | "location",
+    "attendances"
+>;
+
+export const FloorType = {
+    basement: "alagsor",
+    ground: "földszint",
+    half: "félemelet",
+    first: "első emelet",
+    second: "második emelet",
+    third: "harmadik emelet",
+} as const;
+export type FloorTypeType = (typeof FloorType)[keyof typeof FloorType];
 
 export interface Location {
     id: number;
     name: string;
-    floor: string;
+    floor: FloorTypeType;
     events?: Event[];
+    currentEvent?: Event;
 }
 
 export interface Presentation extends Event {

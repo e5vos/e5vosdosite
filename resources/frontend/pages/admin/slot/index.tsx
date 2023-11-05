@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import adminAPI from "lib/api/adminAPI";
 import eventAPI from "lib/api/eventAPI";
@@ -56,7 +56,6 @@ const SlotsPage = () => {
     const [open, setOpen] = useState(false);
     const [deleteSlot] = adminAPI.useDeleteSlotMutation();
     const [slotToDelete, setSlotToDelete] = useState<number | null>(null);
-    const navigate = useNavigate();
     return (
         <>
             <Dialog

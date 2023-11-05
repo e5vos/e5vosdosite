@@ -1,5 +1,5 @@
 import useUser from "hooks/useUser";
-import { FC, ReactNode } from "react";
+import { ReactNode } from "react";
 
 import Loader from "components/UIKit/Loader";
 

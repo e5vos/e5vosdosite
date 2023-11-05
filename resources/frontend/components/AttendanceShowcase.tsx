@@ -10,19 +10,12 @@ const TeamAttendanceShowcase = ({
 }: {
     attendance: TeamAttendance;
 }) => {
-    const updatedDate = new Date(attendance.updated_at);
     return (
         <div>
             <div>
                 <div>Event name</div>
-                <div>{updated_at.}</div>
             </div>
-            <div className="overflow-auto">
-                {attendance.memberattendances.foreach((member) => (
-                    <span className={`${member.isPresent ? "" : ""}`}></span>
-                ))}
-                div
-            </div>
+            <div className="overflow-auto">div</div>
         </div>
     );
 };

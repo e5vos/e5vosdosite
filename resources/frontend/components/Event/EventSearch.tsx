@@ -1,7 +1,7 @@
 import useDelay from "hooks/useDelayed";
 import { useState } from "react";
 
-import { Event } from "types/models";
+import { EventStub } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 
@@ -11,8 +11,8 @@ const EventSearchCombobox = ({
     onChange,
     initialValue,
 }: {
-    onChange: (value: Event) => any;
-    initialValue?: Event;
+    onChange: (value: EventStub) => any;
+    initialValue?: EventStub;
 }) => {
     const [search, setSearch] = useState("");
     const { data: options } = eventAPI.useEventSearchQuery(search);

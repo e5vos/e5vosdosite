@@ -128,7 +128,10 @@ const Select = ({
     ...rest
 }: HTMLInputProps<HTMLSelectElement>) => {
     return (
-        <select className={`form-select bg-gray ${className ?? ""}`} {...rest}>
+        <select
+            className={`form-select max-w-sm bg-gray ${className ?? ""}`}
+            {...rest}
+        >
             {children}
         </select>
     );

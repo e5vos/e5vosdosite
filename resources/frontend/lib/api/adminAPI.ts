@@ -71,14 +71,14 @@ export const adminAPI = baseAPI
             }),
             createPermission: builder.mutation<Permission, Permission>({
                 query: (data) => ({
-                    url: routeSwitcher("permission.st"),
+                    url: routeSwitcher("permission.store"),
                     method: "POST",
                     body: data,
                 }),
             }),
             deletePermission: builder.mutation<void, Permission>({
                 query: (data) => ({
-                    url: routeSwitcher("permission.st"),
+                    url: routeSwitcher("permission.delete"),
                     method: "DELETE",
                     body: data,
                 }),

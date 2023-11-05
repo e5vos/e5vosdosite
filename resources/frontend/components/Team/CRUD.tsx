@@ -1,7 +1,6 @@
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 
-import { CRUDForm, CRUDInterface } from "types/misc";
+import { CRUDFormImpl, CRUDInterface } from "types/misc";
 import { Team } from "types/models";
 
 import teamAPI from "lib/api/teamAPI";
@@ -26,7 +25,7 @@ export type TeamFormValues = {
     description: string;
 };
 
-const TeamCreator = ({ ...rest }: CRUDForm) => {
+const TeamCreator = ({ ...rest }: CRUDFormImpl<Team, TeamFormValues>) => {
     const [createTeam] = teamAPI.useCreateTeamMutation();
     const { refetch } = teamAPI.endpoints.getAllTeams.useQuerySubscription();
     const onSubmit = useCallback(
@@ -51,7 +50,7 @@ const TeamCreator = ({ ...rest }: CRUDForm) => {
 const TeamUpdater = ({
     value: team,
     ...rest
-}: { value: TeamFormValues } & CRUDForm) => {
+}: CRUDFormImpl<Team, TeamFormValues>) => {
     const [updateTeam] = teamAPI.useEditTeamMutation();
     const { refetch: refetchTeams } =
         teamAPI.endpoints.getAllTeams.useQuerySubscription();
@@ -78,7 +77,7 @@ const TeamUpdater = ({
         />
     );
 };
-const TeamCRUD: CRUDInterface<Team> = {
+const TeamCRUD: CRUDInterface<Team, TeamFormValues> = {
     Creator: TeamCreator,
     Updater: TeamUpdater,
 };

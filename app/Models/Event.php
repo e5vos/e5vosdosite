@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\{
     Model,
     Builder,
     SoftDeletes,
-    Casts\Attribute,
     Relations\BelongsTo,
     Relations\HasMany,
 };
@@ -36,8 +35,8 @@ use Illuminate\Support\Collection;
  * @property \Illuminate\Support\Carbon|null $ends_at
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
- * @property int|null root_parent
- * @property int|null direct_child
+ * @property int|null $root_parent
+ * @property int|null $direct_child
  */
 class Event extends Model implements CachableAttributes
 {
@@ -56,6 +55,12 @@ class Event extends Model implements CachableAttributes
         'ends_at',
         'signup_deadline',
         'organiser',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
 

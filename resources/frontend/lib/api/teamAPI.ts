@@ -7,14 +7,20 @@ import baseAPI from ".";
 
 export const teamAPI = baseAPI.injectEndpoints({
     endpoints: (builder) => ({
-        getAllTeams: builder.query<Omit<Team, "activity" | "members">[], void>({
+        getAllTeams: builder.query<
+            Omit<Team, "attendance" | "members">[],
+            void
+        >({
             query: () => routeSwitcher("teams.index"),
         }),
-        getMyTeams: builder.query<Team[], void>({
+        getMyTeams: builder.query<
+            RequiredFields<Team, "attendance" | "members">[],
+            void
+        >({
             query: (user) => routeSwitcher("user.myteams"), // roland todo
         }),
         getTeam: builder.query<
-            RequiredFields<Team, "attendance">,
+            RequiredFields<Team, "attendance" | "members">,
             Pick<Team, "code">
         >({
             query: ({ code }) => routeSwitcher("team.show", { teamCode: code }),

@@ -13,7 +13,7 @@ const useUser = (redirect: boolean = true, destination?: string) => {
         isFetching,
         refetch,
         ...rest
-    } = baseAPI.useGetUserDataQuery();
+    } = baseAPI.useGetCurrentUserDataQuery();
 
     const location = useLocation();
     const token = useSelector((state) => state.auth.token);

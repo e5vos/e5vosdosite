@@ -37,9 +37,24 @@ class EventController extends Controller
      */
     public function index(int $slotId = null)
     {
-        return !isset($slotId) ?
-            Cache::rememberForever('e5n.events.all', fn () => EventResource::collection(Event::all()->load('slot', 'location'))->jsonSerialize()) :
-            Cache::rememberForever('e5n.events.slot.' . $slotId, fn () => EventResource::collection(Event::with('slot', 'location')->where('slot_id', $slotId)->get()->load('slot', 'location'))->jsonSerialize());
+        if (isset($slotId)) {
+            if (isset(request()->q)) {
+                return response()->json(EventResource::collection(
+                    Event::with('slot', 'location')
+                        ->where('slot_id', $slotId)
+                        ->where('name', 'like', '%' . request()->q . '%')
+                        ->get()->load('slot', 'location')
+                ));
+            }
+            return Cache::rememberForever('e5n.events.slot.' . $slotId, fn () => EventResource::collection(Event::with('slot', 'location')->where('slot_id', $slotId)->get()->load('slot', 'location'))->jsonSerialize());
+        }
+        if (isset(request()->q)) {
+            return response()->json(EventResource::collection(
+                Event::where('name', 'like', '%' . request()->q . '%')
+                    ->get()->load('slot', 'location')
+            ));
+        }
+        return Cache::rememberForever('e5n.events.all', fn () => EventResource::collection(Event::all()->load('slot', 'location'))->jsonSerialize());
     }
 
     /**
@@ -182,7 +197,6 @@ class EventController extends Controller
         Cache::forget('e5n.events.' . $event->id . '.signups');
         Cache::forget('e5n.events.slot.' . $event->slot_id);
         Cache::forget('e5n.events.' . $event->id);
-        $event->forget('occupancy');
         return response($attender->signUp($event), 201);
     }
 
@@ -205,7 +219,9 @@ class EventController extends Controller
         if ($event->direct_child !== null) {
             EventController::unsignup($request, $event->direct_child, true);
         }
+        $attendance->teamMemberAttendances()->delete();
         $attendance->delete();
+
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.mypresentations.' . $request->attender);
@@ -213,7 +229,7 @@ class EventController extends Controller
         Cache::forget('e5n.events.slot.' . Event::findOrFail($eventId)->slot_id);
         Cache::forget('e5n.events.' . $eventId);
         $event->forget('occupancy');
-        return response("", 204);
+        return response("Signup deleted.", 204);
     }
 
     /**
@@ -228,7 +244,6 @@ class EventController extends Controller
                 ? User::where('e5code', $request->attender)->firstOrFail()
                 : Team::where('code', $request->attender)->firstOrFail());
         Cache::forget('e5n.events.' . $event->id . '.signups');
-        $event->forget('occupancy');
         return response($attender->attend($event), 200);
     }
 

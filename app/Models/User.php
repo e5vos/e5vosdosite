@@ -57,6 +57,8 @@ class User extends Authenticatable
     protected $hidden = [
         'google_id',
         'e5code',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -66,7 +68,7 @@ class User extends Authenticatable
 
     /**
      * Boot the model.
-     * 
+     *
      * Assing global scopes, etc. Order by ejg_class and name
      */
     protected static function boot() {
@@ -228,7 +230,7 @@ class User extends Authenticatable
      * @throws StudentBusyException if user is busy at the event timeslot
      * @throws EventFullException if the event is full
      * @throws AlreadySignedUpException Student is signed up for this event
-     * @return EventSignup the newly created EventSignup object
+     * @return Attendance the newly created EventSignup object
      */
     public function signUp(Event $event, bool $force = false)
     {
@@ -255,6 +257,7 @@ class User extends Authenticatable
         $signup->event()->associate($event);
         $signup->user()->associate($this);
         $signup->save();
+        $event->forget('occupancy');
         return $signup;
     }
 
@@ -286,6 +289,7 @@ class User extends Authenticatable
 
         $signup->togglePresent();
         $signup->save();
+        $event->forget('occupancy');
         return $signup;
     }
 

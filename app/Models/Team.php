@@ -30,6 +30,11 @@ class Team extends Model
 
     protected $fillable = ['code', 'name'];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
     protected $casts = [
         'code' => 'string',
     ];
@@ -134,6 +139,11 @@ class Team extends Model
         $signup->event()->associate($event);
         $signup->team()->associate($this);
         $signup->save();
+
+        $members = $this->members()->get(['id AS user_id'])->toArray();
+        $signup->teamMemberAttendances()->createMany($members);
+
+        $event->forget('occupancy');
         return $signup;
     }
 
@@ -143,7 +153,7 @@ class Team extends Model
      * @param  Event $event the event to attend
      * @param  bool $force whether to force the signup even if it has a root parent
      * @throws EventFullException if the event is full
-     * @return EventSignup the newly created EventSignup object
+     * @return Attendance the newly created EventSignup object
      */
     public function attend(Event $event, bool $force = false)
     {
@@ -168,6 +178,7 @@ class Team extends Model
 
         $signup->togglePresent();
         $signup->save();
-        return $signup;
+        $event->forget('occupancy');
+        return $signup->load('teamMemberAttendances.user');
     }
 }

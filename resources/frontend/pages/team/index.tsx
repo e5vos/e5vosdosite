@@ -2,6 +2,7 @@ import useUser from "hooks/useUser";
 import { useCallback, useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 
+import { RequiredFields } from "types/misc";
 import { Team, TeamMemberRole } from "types/models";
 
 import teamAPI from "lib/api/teamAPI";
@@ -36,11 +37,31 @@ const locale = Locale({
     },
 });
 
+const QRDialog = ({
+    shownQR,
+    setShownQR,
+}: {
+    shownQR: Team | null;
+    setShownQR: (qr: Team | null) => any;
+}) => (
+    <Dialog
+        title={locale.team_code(shownQR?.name ?? "")}
+        open={shownQR !== null}
+        onClose={() => setShownQR(null)}
+    >
+        <span className="w-full text-center">{shownQR?.code ?? ""}</span>
+        {shownQR && <QRCode className="max-w-full" value={shownQR?.code} />}
+    </Dialog>
+);
+
 const YourTeamsPage = () => {
-    const [shownTeam, setShownTeam] = useState<Team | null>(null);
+    const [shownTeam, setShownTeam] = useState<RequiredFields<
+        Team,
+        "attendance" | "members"
+    > | null>(null);
     const [shownQR, setShownQR] = useState<Team | null>(null);
     const { user } = useUser();
-    const { data: teams, isFetching } = teamAPI.useGetAllTeamsQuery();
+    const { data: teams, isFetching } = teamAPI.useGetMyTeamsQuery();
 
     useEffect(() => {
         if (shownTeam && !teams?.find((e) => e.code === shownTeam.code))
@@ -63,18 +84,7 @@ const YourTeamsPage = () => {
     if (!user) return <Loader />;
     return (
         <>
-            <Dialog
-                title={locale.team_code(shownQR?.name ?? "")}
-                open={shownQR !== null}
-                onClose={() => setShownQR(null)}
-            >
-                <span className="w-full text-center">
-                    {shownQR?.code ?? ""}
-                </span>
-                {shownQR && (
-                    <QRCode className="max-w-full" value={shownQR?.code} />
-                )}
-            </Dialog>
+            <QRDialog shownQR={shownQR} setShownQR={setShownQR} />
             <Dialog open={shownTeam != null} onClose={() => setShownTeam(null)}>
                 {shownTeam && <TeamCard team={shownTeam} currentUser={user} />}
             </Dialog>

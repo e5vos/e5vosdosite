@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return UserResource::collection(User::where('name', 'like', '%' . request()->q . '%')->select('id', 'name', 'ejg_class')->get());
+        return response()->json(UserResource::collection(User::where('name', 'like', '%' . request()->q . '%')->select('id', 'name', 'ejg_class')->get()));
         // return User::with(['userActivity', 'teamActivity'])->get()->map(function ($user) {
         //     $user->activity = $user->userActivity->concat($user->teamActivity);
         //     unset($user->userActivity);

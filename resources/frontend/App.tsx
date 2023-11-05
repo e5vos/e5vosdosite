@@ -26,7 +26,7 @@ const TeamPage = React.lazy(() => import("pages/team/[teamcode]"));
 const teamRoutes = (
     <Route path="csapat">
         <Route index element={<TeamsPage />} />
-        <Route path=":teamid">
+        <Route path=":teamcode">
             <Route index element={<TeamPage />} />
             <Route path="admin" element={<>TeamAdminPage</>} />
         </Route>
@@ -69,6 +69,16 @@ const eventRoutes = (
     </Route>
 );
 
+// Slots
+
+const SlotsEventsPage = React.lazy(() => import("pages/slot"));
+
+const slotRoutes = (
+    <Route path="sav">
+        <Route index element={<SlotsEventsPage />} />
+    </Route>
+);
+
 // Presentations
 
 const PresentationPage = React.lazy(() => import("pages/presentation"));
@@ -98,6 +108,7 @@ const SlotsCreatePage = React.lazy(() => import("pages/admin/slot/create"));
 const SlotsEditPage = React.lazy(
     () => import("pages/admin/slot/[slotid]/edit"),
 );
+const PermissionsPage = React.lazy(() => import("pages/admin/permissions"));
 const adminRoutes = (
     <Route path="admin">
         <Route index element={<AdminsPage />} />
@@ -107,6 +118,9 @@ const adminRoutes = (
             <Route path=":slotid">
                 <Route path="kezel" element={<SlotsEditPage />} />
             </Route>
+        </Route>
+        <Route path="jogosultsagok">
+            <Route index element={<PermissionsPage />} />
         </Route>
     </Route>
 );
@@ -144,6 +158,7 @@ function App() {
                                 <Route path="/">
                                     <Route index element={<Home />} />
                                     {teamRoutes}
+                                    {slotRoutes}
                                     {eventRoutes}
                                     {presentationRoutes}
                                     {adminRoutes}

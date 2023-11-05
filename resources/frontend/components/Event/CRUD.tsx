@@ -1,11 +1,11 @@
 import useConfirm, { ConfirmDialogProps } from "hooks/useConfirm";
 import useEventDates from "hooks/useEventDates";
 import useUser from "hooks/useUser";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { CRUDFormImpl } from "types/misc";
-import { Event, SignupType, SignupTypeType } from "types/models";
+import { Attendance, Event, SignupType, SignupTypeType } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import teamAPI from "lib/api/teamAPI";
@@ -19,6 +19,8 @@ import ButtonGroup from "components/UIKit/ButtonGroup";
 import Card from "components/UIKit/Card";
 import Dialog from "components/UIKit/Dialog";
 import Form from "components/UIKit/Form";
+
+import ParticipantSearch from "./ParticipantSearch";
 
 export type EventFormValues = Pick<
     Event,
@@ -45,6 +47,7 @@ const locale = Locale({
         times: "Időpontok",
         starts_at: "Kezdés",
         ends_at: "Befejezés",
+        signup_deadline: "Jelentkezési határidő",
         location: "Helyszín",
         unknown: "Ismeretlen",
         delete: "Törlés",
@@ -72,6 +75,8 @@ const locale = Locale({
                     return "Egyéni és csapatos jelentkezés";
             }
         },
+        undefined: "Nincs megadva",
+        notyetset: "Még nincs megadva",
     },
     en: {
         create: "Create event",
@@ -81,6 +86,7 @@ const locale = Locale({
         times: "Timetable",
         starts_at: "Starts at",
         ends_at: "Ends at",
+        signup_deadline: "Signup deadline",
         location: "Location",
         unknown: "Unknown",
         delete: "Delete",
@@ -108,6 +114,8 @@ const locale = Locale({
                     return "Individual and team signup";
             }
         },
+        undefined: "Not set",
+        notyetset: "Not set yet",
     },
 });
 
@@ -153,10 +161,16 @@ const useCloseSignupDialogTemplate = (event: Event) =>
 
 const EventReader = ({
     value: event,
+    scoreLength = 3,
     ...rest
-}: CRUDFormImpl<Event, EventFormValues> & { value: Event }) => {
+}: CRUDFormImpl<Event, EventFormValues> & {
+    value: Event;
+    scoreLength?: number;
+}) => {
     const { user } = useUser(false);
     const { data: myteams } = teamAPI.useGetMyTeamsQuery();
+    const [triggerParticipants, { data: participants }] =
+        eventAPI.useLazyGetEventParticipantsQuery();
 
     const attenderSelect = useRef<HTMLSelectElement>(null);
 
@@ -197,6 +211,14 @@ const EventReader = ({
         );
     }, [event?.id, myteams]);
 
+    const setScore = useCallback((p: Attendance, score: number) => {
+        console.log(p, score);
+    }, []);
+
+    useEffect(() => {
+        if (event && isUserOrganiser) triggerParticipants(event);
+    }, [event, isUserOrganiser, triggerParticipants]);
+
     const isEventSignupDateStillRelevant = signup_deadline
         ? now < signup_deadline
         : false;
@@ -211,11 +233,13 @@ const EventReader = ({
                         <img
                             src={event.img_url}
                             alt={event.name}
-                            className="mb-2 w-auto rounded-lg"
+                            className="mx-auto mb-2 w-auto rounded-lg lg:mx-0"
                         />
                     )}
-                    <h1 className="text-4xl font-bold">{event.name}</h1>
-                    <h2 className="mt-1 text-xl">
+                    <h1 className="text-center text-4xl font-bold lg:text-left">
+                        {event.name}
+                    </h1>
+                    <h2 className="mt-1 text-center text-xl lg:text-left">
                         {locale.organiser}: {event.organiser}
                     </h2>
                     <p className="text-l mt-1 italic text-gray-50">
@@ -321,7 +345,30 @@ const EventReader = ({
                 </div>
                 <div className="col-span-2 !mt-0 sm:mt-2">
                     <Card title={locale.score} className="!bg-red-500">
-                        <div>a</div>
+                        {Array(scoreLength)
+                            .fill(0)
+                            .map((_, i) => (
+                                <div>
+                                    <span>{i + 1}.</span>
+                                    {isAdmin(user) &&
+                                    isUserOrganiser &&
+                                    participants ? (
+                                        <ParticipantSearch
+                                            event={{
+                                                ...event,
+                                                attendees: participants,
+                                            }}
+                                            onChange={(p) => setScore(p, i + 1)}
+                                        />
+                                    ) : (
+                                        <span>
+                                            {participants?.find(
+                                                (p) => p.pivot.rank === i,
+                                            )?.name ?? locale.notyetset}
+                                        </span>
+                                    )}
+                                </div>
+                            ))}
                     </Card>
                     <Card title={locale.description} className="!bg-slate-500">
                         <p>{event.description}</p>
@@ -334,6 +381,11 @@ const EventReader = ({
                         <p>
                             <strong>{locale.ends_at}</strong>:{" "}
                             {ends_at?.toLocaleString("hu-HU")}
+                        </p>
+                        <p>
+                            <strong>{locale.signup_deadline}</strong>:{" "}
+                            {signup_deadline?.toLocaleString("hu-HU") ??
+                                locale.undefined}
                         </p>
                     </Card>
                     <Card title={locale.location} className="!bg-slate-500">

@@ -204,7 +204,9 @@ class EventController extends Controller
         if ($event->direct_child !== null) {
             EventController::unsignup($request, $event->direct_child, true);
         }
+        $attendance->teamMemberAttendances()->delete();
         $attendance->delete();
+
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.mypresentations.' . $request->attender);
@@ -212,7 +214,7 @@ class EventController extends Controller
         Cache::forget('e5n.events.slot.' . Event::findOrFail($eventId)->slot_id);
         Cache::forget('e5n.events.' . $eventId);
         $event->forget('occupancy');
-        return response("", 204);
+        return response("Signup deleted.", 204);
     }
 
     /**

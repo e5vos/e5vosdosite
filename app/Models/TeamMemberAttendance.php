@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
+use App\Helpers\HasCompositeKey;
 
 /**
  * App\Models\TeamMemberAttendance
@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class TeamMemberAttendance extends Model
 {
-    use HasFactory;
+    use HasFactory, HasCompositeKey;
 
     protected $table = 'team_member_attendances';
 

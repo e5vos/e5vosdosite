@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\MembershipType;
+use App\Helpers\HasCompositeKey;
 
 /**
  * App\Models\TeamMembership
@@ -16,7 +17,7 @@ use App\Helpers\MembershipType;
  */
 class TeamMembership extends Model
 {
-    use HasFactory;
+    use HasFactory, HasCompositeKey;
     /**
      * The table associated with the model.
      *
@@ -24,7 +25,7 @@ class TeamMembership extends Model
      */
     protected $table = 'team_memberships';
 
-    protected $primaryKey = ['user_id', 'attendance_id'];
+    protected $primaryKey = ['user_id', 'team_code'];
 
     public $incrementing = false;
 

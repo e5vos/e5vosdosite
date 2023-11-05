@@ -1,4 +1,4 @@
-import { Permission, Slot, User } from "types/models";
+import { Permission, Slot, User, UserStub } from "types/models";
 
 import routeSwitcher from "lib/route";
 
@@ -10,25 +10,28 @@ export const adminAPI = baseAPI
     })
     .injectEndpoints({
         endpoints: (builder) => ({
-            getUsers: builder.query<User[], void>({
-                query: () => routeSwitcher("users"),
+            getUsers: builder.query<UserStub[], void>({
+                query: () => routeSwitcher("users.index"),
             }),
-            getFreeUsers: builder.query<User[], Pick<Slot, "id">>({
+            getFreeUsers: builder.query<UserStub[], Pick<Slot, "id">>({
                 query: (slot) =>
                     routeSwitcher("slot.free_students", { slotId: slot }),
             }),
-            getNotPresentUsers: builder.query<User[], Pick<Slot, "id">>({
+            getNotPresentUsers: builder.query<UserStub[], Pick<Slot, "id">>({
                 query: (slot) =>
                     routeSwitcher("slot.not_attending_students", {
                         slotId: slot,
                     }),
             }),
-            getPresentUsers: builder.query<User[], Pick<User, "id">>({
+            getPresentUsers: builder.query<UserStub[], Pick<User, "id">>({
                 query: (slot) =>
                     routeSwitcher("slot.attending_students", { slotId: slot }),
             }),
 
-            createSlot: builder.mutation<Slot, Omit<Slot, "id" | "events">>({
+            createSlot: builder.mutation<
+                Omit<Slot, "events">,
+                Omit<Slot, "id" | "events">
+            >({
                 query: (slot) => ({
                     url: routeSwitcher("slot.store"),
                     method: "POST",
@@ -37,14 +40,17 @@ export const adminAPI = baseAPI
                 invalidatesTags: [{ type: "Slot", id: "LIST" }],
             }),
 
-            deleteSlot: builder.mutation<Slot, Pick<Slot, "id">>({
+            deleteSlot: builder.mutation<
+                Omit<Slot, "events">,
+                Pick<Slot, "id">
+            >({
                 query: (slotId) => ({
                     url: routeSwitcher("slot.destroy", { slotId }),
                     method: "DELETE",
                 }),
             }),
 
-            updateSlot: builder.mutation<void, Slot>({
+            updateSlot: builder.mutation<Omit<Slot, "events">, Slot>({
                 query: (slot) => ({
                     url: routeSwitcher("slot.update", { slotId: slot.id }),
                     method: "PUT",
@@ -67,13 +73,6 @@ export const adminAPI = baseAPI
                 query: (data) => ({
                     url: routeSwitcher("permission.st"),
                     method: "POST",
-                    body: data,
-                }),
-            }),
-            updatePermission: builder.mutation<Permission, Permission>({
-                query: (data) => ({
-                    url: routeSwitcher("permission.st"),
-                    method: "PUT",
                     body: data,
                 }),
             }),

@@ -1,10 +1,11 @@
+import { RequiredAndOmitFields } from "types/misc";
 import {
     Attendance,
     Event,
+    EventStub,
     Presentation,
     Slot,
     TeamMemberAttendance,
-    isUserAttendance,
 } from "types/models";
 
 import routeSwitcher from "lib/route";
@@ -18,7 +19,7 @@ export const eventAPI = baseAPI
     .injectEndpoints({
         endpoints: (builder) => ({
             getEvents: builder.query<
-                Event[] | undefined,
+                EventStub[] | undefined,
                 Pick<Slot, "id"> | void
             >({
                 query: (slot?) =>
@@ -50,14 +51,14 @@ export const eventAPI = baseAPI
                     }
                 },
             }),
-            getEvent: builder.query<Event, Pick<Event, "id">>({
+            getEvent: builder.query<EventStub, Pick<Event, "id">>({
                 query: ({ id }) => routeSwitcher("event.show", { eventId: id }),
                 providesTags: (result, error, { id }) => [
                     { type: "Event", id },
                 ],
             }),
             getEventParticipants: builder.query<
-                Array<Attendance>,
+                Attendance[],
                 Pick<Event, "id">
             >({
                 query: ({ id }) => routeSwitcher("event.participants", id),
@@ -65,7 +66,7 @@ export const eventAPI = baseAPI
                     { type: "EventParticipants", id },
                 ],
             }),
-            getSlots: builder.query<Array<Slot>, void>({
+            getSlots: builder.query<Omit<Slot, "events">[], void>({
                 query: () => routeSwitcher("slot.index"),
                 transformResponse: (response: any) => {
                     if (!Array.isArray(response)) return [response];
@@ -80,23 +81,6 @@ export const eventAPI = baseAPI
                             { type: "Slot", id: "LIST" },
                         ];
                     } else return [{ type: "Slot", id: "LIST" }];
-                },
-            }),
-            toggleAttendance: builder.mutation<Attendance, Attendance>({
-                // TODO: Fix this roland toggle only when requested zoli remove this -> use attend instread
-                query: (data) => {
-                    const params = {
-                        attender: isUserAttendance(data)
-                            ? data.e5code
-                            : data.code,
-                    };
-                    return {
-                        url: routeSwitcher("event.attend", {
-                            eventId: data.pivot.event_id,
-                        }),
-                        method: "POST",
-                        params: params,
-                    };
                 },
             }),
             createEvent: builder.mutation<
@@ -153,18 +137,24 @@ export const eventAPI = baseAPI
             }),
             attend: builder.mutation<
                 Attendance,
-                { event: Pick<Event, "id">; attender: string | number }
+                {
+                    event: Pick<Event, "id">;
+                    attender: string | number;
+                    present?: boolean | undefined;
+                }
             >({
                 query: (body) => ({
                     url: routeSwitcher("event.attend", {
                         eventId: body.event.id,
                     }),
                     method: "POST",
-                    params: { attender: body.attender },
+                    params: {
+                        attender: body.attender,
+                        toogle: body.present,
+                    },
                 }),
             }),
             teamMemberAttend: builder.mutation<
-                // todo: roland
                 TeamMemberAttendance[],
                 TeamMemberAttendance[]
             >({
@@ -175,7 +165,6 @@ export const eventAPI = baseAPI
                 }),
             }),
             cancelSignUp: builder.mutation<
-                // todo roland check if not present or signup closed -> nodelete
                 void,
                 { attender: string; event: Pick<Event, "id"> }
             >({
@@ -194,7 +183,7 @@ export const eventAPI = baseAPI
                 invalidatesTags: (result) => [{ type: "Event", id: "LIST" }],
             }),
 
-            closeSignUp: builder.mutation<void, Pick<Event, "id">>({
+            closeSignUp: builder.mutation<EventStub, Pick<Event, "id">>({
                 query: ({ id }) => ({
                     url: routeSwitcher("event.close_signup", { id }),
                     method: "PUT",
@@ -202,7 +191,7 @@ export const eventAPI = baseAPI
                 invalidatesTags: (result) => [{ type: "Event", id: "LIST" }],
             }),
 
-            updateEvent: builder.mutation<Event, Omit<Event, "occupancy">>({
+            updateEvent: builder.mutation<EventStub, Omit<Event, "occupancy">>({
                 query: (event) => ({
                     url: routeSwitcher("event.update", { id: event.id }),
                     method: "PATCH",
@@ -214,8 +203,8 @@ export const eventAPI = baseAPI
                     { type: "Event", id: "LIST" },
                 ],
             }),
-            eventSearch: builder.query<Event[], string>({
-                // TODO FIX
+
+            eventSearch: builder.query<EventStub[], string>({
                 query: (q) => routeSwitcher("event.index", { q }),
                 providesTags: (result) =>
                     result

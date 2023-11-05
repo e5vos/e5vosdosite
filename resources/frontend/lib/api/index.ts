@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 
-import { User } from "types/models";
+import { RequiredAndOmitFields, RequiredFields } from "types/misc";
+import { User, UserStub } from "types/models";
 
 import routeSwitcher from "../route";
 import { RootState } from "../store";
@@ -38,7 +39,10 @@ export const baseAPI = createApi({
     }),
     tagTypes: ["User"],
     endpoints: (builder) => ({
-        getCurrentUserData: builder.query<User, void>({
+        getCurrentUserData: builder.query<
+            RequiredAndOmitFields<User, "permissions", "teams" | "activity">,
+            void
+        >({
             // return type depends zoli TODO
             query: (data) => ({
                 url: routeSwitcher("user.current"),
@@ -53,18 +57,20 @@ export const baseAPI = createApi({
                 params: { e5code: code },
             }),
         }),
-        userSearch: builder.query<User[], string | number>({
+        userSearch: builder.query<UserStub[], string | number>({
             query: (q) => ({
                 url: routeSwitcher("users.index"),
                 params: q ? { q } : undefined,
             }),
         }),
-        getUser: builder.query<User, number>({
-            query: (id) => ({
-                url: routeSwitcher("users.show", { userId: id }),
-            }),
-            providesTags: (result) => [{ type: "User", id: result?.id }],
-        }),
+        getUser: builder.query<RequiredFields<User, "teams">, Pick<User, "id">>(
+            {
+                query: ({ id }) => ({
+                    url: routeSwitcher("users.show", { userId: id }),
+                }),
+                providesTags: (result) => [{ type: "User", id: result?.id }],
+            },
+        ),
     }),
 });
 export default baseAPI;

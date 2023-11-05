@@ -8,7 +8,6 @@ import {
     TeamMemberAttendance,
     TeamMemberRole,
     isTeamAttendance,
-    isTeamCode,
 } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";

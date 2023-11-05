@@ -9,7 +9,7 @@ import Locale from "lib/locale";
 
 import SlotForm from "components/Forms/SlotForm";
 
-export type SlotFormValues = Omit<OptionalFields<Slot, "id">, "events">;
+export type SlotFormValues = OptionalFields<Omit<Slot, "events">, "id">;
 
 const locale = Locale({
     hu: {

@@ -7,6 +7,7 @@ import {
     TeamMemberRole,
     TeamMemberRoleType,
     User,
+    UserStub,
 } from "types/models";
 
 import teamAPI from "lib/api/teamAPI";
@@ -80,13 +81,13 @@ const TeamCard = ({
     team,
     currentUser: user,
 }: {
-    team: RequiredFields<Team, "attendance" | "members">;
+    team: RequiredFields<Team, "activity" | "members">;
     currentUser: User;
 }) => {
     const [promote] = teamAPI.usePromoteMutation();
-    const [demote] = teamAPI.useDemoteMutation();
+
     const [invite] = teamAPI.useInviteMutation();
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [selectedUser, setSelectedUser] = useState<UserStub | null>(null);
 
     const currentUsersMembership = useMemo(
         () => team.members?.find((member) => member.id === user?.id),
@@ -111,12 +112,15 @@ const TeamCard = ({
     if (!team || !user) return <Loader />;
 
     const canPromote = (member: TeamMember) =>
-        currentUsersMembership?.pivot.role === TeamMemberRole.leader &&
-        member.pivot.role === TeamMemberRole.member;
+        member.pivot.role === TeamMemberRole.member &&
+        currentUsersMembership?.pivot.role === TeamMemberRole.leader;
     const canDemote = (member: TeamMember) =>
-        currentUsersMembership?.pivot.role === TeamMemberRole.leader &&
-        (member.pivot.role !== TeamMemberRole.leader ||
-            (member.id === currentUsersMembership?.id && moreThanOneLeader));
+        (member.id === user.id &&
+            (member.pivot.role !== TeamMemberRole.leader ||
+                moreThanOneLeader)) ||
+        (member.pivot.role !== TeamMemberRole.leader &&
+            currentUsersMembership?.pivot.role === TeamMemberRole.leader);
+
     return (
         <Card
             title={team.name}
@@ -125,7 +129,7 @@ const TeamCard = ({
             titleClassName="text-2xl"
         >
             {team.description}
-            {currentUsersMembership?.pivot.role === "meghívott" && (
+            {currentUsersMembership?.pivot.role === TeamMemberRole.invited && (
                 <div className="mb-3">
                     <h3 className="text-center text-xl font-bold text-yellow-500">
                         {cardLocale.invite.pending}
@@ -137,6 +141,7 @@ const TeamCard = ({
                                 promote({
                                     user_id: user.id,
                                     team_code: team.code,
+                                    promote: true,
                                 })
                             }
                         >
@@ -145,9 +150,10 @@ const TeamCard = ({
                         <Button
                             variant="danger"
                             onClick={() =>
-                                demote({
+                                promote({
                                     user_id: user.id,
                                     team_code: team.code,
+                                    promote: false,
                                 })
                             }
                         >
@@ -162,7 +168,7 @@ const TeamCard = ({
                     {cardLocale.activities}
                 </h2>
                 <div>
-                    {team.attendance?.map((e) => (
+                    {team.activity?.map((e) => (
                         <AttendanceShowcase key={e.pivot.id} attendance={e} />
                     )) ?? (
                         <div className="text-center italic">
@@ -199,6 +205,7 @@ const TeamCard = ({
                                             promote({
                                                 user_id: member.id,
                                                 team_code: team.code,
+                                                promote: true,
                                             })
                                         }
                                     >
@@ -209,9 +216,10 @@ const TeamCard = ({
                                     <Button
                                         variant="danger"
                                         onClick={() =>
-                                            demote({
+                                            promote({
                                                 user_id: member.id,
                                                 team_code: team.code,
+                                                promote: false,
                                             })
                                         }
                                     >

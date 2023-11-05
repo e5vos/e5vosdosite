@@ -48,6 +48,7 @@ const useUser = (redirect: boolean = true, destination?: string) => {
         redirect,
         destination,
         location.pathname,
+        token,
     ]);
 
     useEffect(() => {

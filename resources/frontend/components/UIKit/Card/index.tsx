@@ -17,7 +17,7 @@ const Card = ({
 > & {
     title?: ReactNode;
     subtitle?: ReactNode;
-    children: ReactNode;
+    children?: ReactNode;
     buttonBar?: ReturnType<typeof ButtonGroup>;
     titleClassName?: string;
     subtitleClassName?: string;

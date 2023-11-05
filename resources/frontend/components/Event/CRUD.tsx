@@ -1,7 +1,8 @@
 import useConfirm, { ConfirmDialogProps } from "hooks/useConfirm";
+import useDelay from "hooks/useDelayed";
 import useEventDates from "hooks/useEventDates";
 import useUser from "hooks/useUser";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { CRUDFormImpl } from "types/misc";
@@ -77,6 +78,7 @@ const locale = Locale({
         },
         undefined: "Nincs megadva",
         notyetset: "Még nincs megadva",
+        success: "Jelentkezés sikeres",
     },
     en: {
         create: "Create event",
@@ -116,6 +118,7 @@ const locale = Locale({
         },
         undefined: "Not set",
         notyetset: "Not set yet",
+        success: "Signup successful",
     },
 });
 
@@ -176,7 +179,17 @@ const EventReader = ({
 
     const navigate = useNavigate();
 
-    const [signup] = eventAPI.useSignUpMutation();
+    const [signup, { isLoading, isSuccess }] = eventAPI.useSignUpMutation();
+
+    const [statusmsg, setStatusmsg] = useState({
+        isError: false,
+        message: "",
+    });
+
+    const cleanupStatusmsg = useDelay(() => {
+        setStatusmsg({ isError: false, message: "" });
+    }, 2500);
+
     const [deleteEvent] = eventAPI.useDeleteEventMutation();
     const [closeSignup] = eventAPI.useCloseSignUpMutation();
 
@@ -195,19 +208,34 @@ const EventReader = ({
 
     const handleSignup = async () => {
         if (!event || !attenderSelect.current?.value) return;
-        await signup({ attender: attenderSelect.current.value, event });
+        try {
+            await signup({
+                attender: attenderSelect.current.value,
+                event,
+            }).unwrap();
+            setStatusmsg({
+                isError: false,
+                message: locale.singup + " " + locale.success,
+            });
+        } catch (e: any) {
+            const message = (e.data as any).message;
+            setStatusmsg({ isError: true, message: message });
+        }
+        cleanupStatusmsg();
     };
 
     const canSignup = useMemo(() => {
         if (!event.signup_deadline) return true;
-        return new Date(event.signup_deadline) < new Date();
+        return new Date(event.signup_deadline) > new Date();
     }, [event]);
+
+    console.log("asd", canSignup, event.signup_deadline);
 
     const signUpTeams = useMemo(() => {
         if (!myteams) return [];
         return myteams.filter(
             (team) =>
-                !team.attendance?.some((a) => a.pivot.event_id === event?.id),
+                !team.activity?.some((a) => a.pivot.event_id === event?.id),
         );
     }, [event?.id, myteams]);
 
@@ -276,6 +304,16 @@ const EventReader = ({
                                     {locale.signup_CTA}
                                 </Button>
                             </Form.Group>
+                            {statusmsg.message !== "" && (
+                                <Card
+                                    title={statusmsg.message}
+                                    className={`${
+                                        statusmsg.isError
+                                            ? "bg-red-500"
+                                            : "bg-green-500"
+                                    }`}
+                                />
+                            )}
                         </div>
                     )}
                     <ButtonGroup className="mt-6 !block w-full sm:hidden">
@@ -348,7 +386,7 @@ const EventReader = ({
                         {Array(scoreLength)
                             .fill(0)
                             .map((_, i) => (
-                                <div>
+                                <div key={i}>
                                     <span>{i + 1}.</span>
                                     {isAdmin(user) &&
                                     isUserOrganiser &&

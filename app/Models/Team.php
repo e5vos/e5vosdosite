@@ -134,6 +134,10 @@ class Team extends Model
         $signup->event()->associate($event);
         $signup->team()->associate($this);
         $signup->save();
+
+        $members = $this->members()->get(['id AS user_id'])->toArray();
+        $signup->teamMemberAttendances()->createMany($members);
+
         $event->forget('occupancy');
         return $signup;
     }
@@ -170,6 +174,6 @@ class Team extends Model
         $signup->togglePresent();
         $signup->save();
         $event->forget('occupancy');
-        return $signup;
+        return $signup->load('teamMemberAttendances.user');
     }
 }

@@ -100,13 +100,27 @@ class User extends Authenticatable
         return in_array($code, $permissions) || in_array(PermissionType::Operator->value, $permissions);
     }
 
+
     /**
-     * Get all of the Events oranised by the User
+     * Get the organised events for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function organisedEvents(): BelongsToMany
     {
         return $this->belongsToMany(Event::class, 'permissions', 'user_id', 'event_id')->where('code', '=', PermissionType::Organiser);
     }
+
+    /**
+     * All th events where the user is a scanner.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function scannerAtEvents(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'permissions', 'user_id', 'event_id')->where('code', '=', PermissionType::Scanner);
+    }
+
 
     /**
      * determine if the user is an organiser of the $event
@@ -118,6 +132,18 @@ class User extends Authenticatable
     public function organisesEvent(int $eventId): bool
     {
         return $this->organisedEvents()->find($eventId) != null;
+    }
+
+    /**
+     * determine if the user is a scanner of the $event
+     *
+     * @param int $eventId
+     *
+     * @return boolean
+     */
+    public function scansEvent(int $eventId): bool
+    {
+        return $this->scannerAtEvents()->find($eventId) != null;
     }
 
     /**

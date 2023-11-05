@@ -131,14 +131,9 @@ Route::controller(LocationController::class)->prefix('locations')->group(functio
 });
 
 //routes related to permissions
-Route::controller(PermissionController::class)->prefix('permissions/{userId}')->middleware(['auth:sanctum'])->group(function () {
-    Route::prefix('/event/{eventId}')->group(function () {
-        Route::post('/', 'addPermission')->can('update', Event::class)->name('permission.add_organiser');
-        Route::delete('/', 'removePermission')->can('update', Event::class)->name('permission.remove_organiser');
-    });
-    Route::prefix('/{code}')->group(function () {
-        //
-    });
+Route::controller(PermissionController::class)->prefix('permissions')->middleware(['auth:sanctum'])->group(function () {
+    Route::post('/', 'addPermission')->can('create', Event::class)->name('permission.store');
+    Route::delete('/', 'removePermission')->can('destroy', Event::class)->name('permission.delete');
 });
 
 

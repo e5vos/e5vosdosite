@@ -136,7 +136,7 @@ class EventPolicy
             throw new NoE5NException();
         }
         $event = $event ?? Event::findOrFail(request()->eventId);
-        if (!$event->isSignupOpen()) {
+        if (!$event->isSignupOpen() && false) {
             throw new SignupClosedException();
         }
         if (!request()->has('attender')) {
@@ -158,9 +158,8 @@ class EventPolicy
             throw new NoE5NException();
         }
         $event ??= Event::findOrFail(request()->eventId);
-        $event ??= Event::findOrFail(request()->eventId);
         $attender = request()->attender ?? request()->user()->e5code;
-        if (isset($event->signup_type) && !$event->signuppers()->find(strlen($attender) === 13 ? 'e5code' : 'code', $attender)) {
+        if (isset($event->signup_type) && $event->signuppers()->filter(fn (mixed $signupper) => $signupper->getKey() == $attender || $signupper->e5code === $attender)->count() === 0) {
             throw new SignupRequiredException();
         }
         if ($event->slot->slot_type === SlotType::presentation->value) {

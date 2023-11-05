@@ -10,6 +10,8 @@ use App\Helpers\MembershipType;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Exceptions\EventFullException;
 use App\Exceptions\AlreadySignedUpException;
+use App\Models\TeamMemberAttendance;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\Team
@@ -178,6 +180,11 @@ class Team extends Model
 
         $signup->togglePresent();
         $signup->save();
+        // TeamMemberAttendance::upsert(
+        //     $this->members()->select(['id AS user_id', DB::raw('"' . $signup->id . '" AS attendance_id')])->get()->map(fn ($e) => ["user_id" => $e->user_id, "attendance_id" => $e->attendance_id])->toArray(),
+        //     null,
+        //     ['user_id', 'attendance_id']
+        // );
         $event->forget('occupancy');
         return $signup->load('teamMemberAttendances.user');
     }

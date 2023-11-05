@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\E5N;
 
+use App\Exceptions\NotAllowedException;
 use App\Exceptions\ResourceDidNoExistException;
 use App\Http\Controllers\{
     Controller
@@ -207,8 +208,7 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($eventId);
         if (!$force && $event->root_parent !== null) {
-            EventController::unsignup($request, $event->root_parent);
-            return;
+            return EventController::unsignup($request, $event->root_parent);
         }
         $attender = strlen($request->attender) == 13 || is_numeric($request->attender) ? 'user_id' : 'team_code';
         $attenderId = $attender === 'user_id' && !is_numeric($request->attender) ? User::where('e5code', $request->attender)->firstOrFail()->id : $request->attender;
@@ -226,10 +226,10 @@ class EventController extends Controller
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.mypresentations.' . $request->attender);
         Cache::forget('e5n.events.' . $eventId . '.signups');
-        Cache::forget('e5n.events.slot.' . Event::findOrFail($eventId)->slot_id);
+        Cache::forget('e5n.events.slot.' . Event::find($eventId)?->slot_id);
         Cache::forget('e5n.events.' . $eventId);
         $event->forget('occupancy');
-        return response("Signup deleted.", 204);
+        return $event->root_parent === null ? response("Unsignupped.", 204) : null;
     }
 
     /**
@@ -245,6 +245,17 @@ class EventController extends Controller
                 : Team::where('code', $request->attender)->firstOrFail());
         Cache::forget('e5n.events.' . $event->id . '.signups');
         return response($attender->attend($event), 200);
+    }
+
+    public function teamMemberAttend($attendanceId)
+    {
+        $attendance = Attendance::findOrFail($attendanceId);
+        if (!request()->user()->can('attend', $attendance->event)) {
+            throw new NotAllowedException();
+        }
+        $memberAttendances = array_map((fn ($memberAttendance) => get_object_vars($memberAttendance)), json_decode(request()->memberAttendances));
+        $attendance->teamMemberAttendances()->whereIn('user_id', array_column($memberAttendances, 'user_id'))->delete();
+        return response()->json($attendance->teamMemberAttendances()->createMany($memberAttendances), 200);
     }
 
     /**

@@ -59,10 +59,9 @@ Route::controller(UserController::class)->middleware(['auth:sanctum'])->prefix('
     Route::get('/{userId}', 'show')->can('view', User::class)->name('users.show');
     Route::put('/{userId}', 'update')->can('update', User::class)->name('users.update');
     Route::delete('/{userId}', 'destroy')->can('delete', User::class)->name('users.destroy');
-    Route::put('/{userId}/restore', 'restore')->can('restore', User::class)->name('users.restore');
+    // Route::put('/{userId}/restore', 'restore')->can('restore', User::class)->name('users.restore');
 });
 Route::get('/users', [UserController::class, 'index'])->middleware(['auth:sanctum'])->can('viewAny', User::class)->name('users.index');
-// Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
 //routes telated to e5n slots
 Route::controller(SlotController::class)->prefix('/slot')->group(function () {
@@ -98,6 +97,11 @@ Route::controller(EventController::class)->group(function () {
             Route::post('/attend', 'attend')->can('attend', Event::class)->name('event.attend');
         });
     });
+});
+
+//manage attendances
+Route::prefix('/attendance')->middleware(['auth:sanctum'])->controller(EventController::class)->group(function () {
+    Route::post('{attendanceId}/teamMemberAttend', 'teamMemberAttend')->name('attendance.teamMemberAttend');
 });
 
 //routes related to E5N teams

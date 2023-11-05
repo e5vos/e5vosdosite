@@ -108,6 +108,7 @@ const SlotsCreatePage = React.lazy(() => import("pages/admin/slot/create"));
 const SlotsEditPage = React.lazy(
     () => import("pages/admin/slot/[slotid]/edit"),
 );
+const PermissionsPage = React.lazy(() => import("pages/admin/permissions"));
 const adminRoutes = (
     <Route path="admin">
         <Route index element={<AdminsPage />} />
@@ -117,6 +118,9 @@ const adminRoutes = (
             <Route path=":slotid">
                 <Route path="kezel" element={<SlotsEditPage />} />
             </Route>
+        </Route>
+        <Route path="jogosultsagok">
+            <Route index element={<PermissionsPage />} />
         </Route>
     </Route>
 );

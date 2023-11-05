@@ -199,6 +199,19 @@ export const eventAPI = baseAPI
                     { type: "Event", id: "LIST" },
                 ],
             }),
+            eventSearch: builder.query<Event[], string>({
+                // TODO FIX
+                query: (q) => routeSwitcher("event.index", { q }),
+                providesTags: (result) =>
+                    result
+                        ? [
+                              ...result.map(
+                                  ({ id }) => ({ type: "Event", id }) as const,
+                              ),
+                              { type: "Event", id: "SEARCH" },
+                          ]
+                        : [{ type: "Event", id: "SEARCH" }],
+            }),
         }),
     });
 

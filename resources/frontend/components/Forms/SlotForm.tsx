@@ -55,13 +55,9 @@ const SlotForm = ({
     onSubmit,
     submitLabel = locale.submit,
     enableReinitialize = false,
+    resetOnSubmit = false,
     ...rest
-}: {
-    initialValues: SlotFormValues;
-    onSubmit: (values: SlotFormValues) => void;
-    submitLabel?: string;
-    enableReinitialize?: boolean;
-} & CRUDForm) => {
+}: CRUDForm<SlotFormValues>) => {
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
@@ -71,7 +67,11 @@ const SlotForm = ({
             starts_at: Yup.string().required(locale.required),
             ends_at: Yup.string().required(locale.required),
         }),
-        onSubmit: onSubmit as (values: FormikValues) => void,
+        onSubmit: (values) => {
+            const val = onSubmit(values);
+            if (resetOnSubmit) formik.resetForm();
+            return val;
+        },
         enableReinitialize: enableReinitialize,
     });
     return (

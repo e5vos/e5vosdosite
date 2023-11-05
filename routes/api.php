@@ -52,9 +52,10 @@ Route::get('/login', [AuthController::class, 'redirect'])->name('login');
 Route::middleware(['auth:sanctum'])->patch('/e5code', [AuthController::class, 'setE5code'])->name('user.e5code');
 
 Route::controller(UserController::class)->middleware(['auth:sanctum'])->prefix('/user')->group(function () {
-    Route::get('/', function (Request $request) {
+    Route::get('/currentuser', function (Request $request) {
         return (new UserResource($request->user()->load('permissions')))->jsonSerialize();
-    })->name('user');
+    })->name('user.current');
+    Route::get('/')->can('viewAny', User::class)->name('users.index');
     Route::get('/{userId}', 'show')->can('view', User::class)->name('users.show');
     Route::put('/{userId}', 'update')->can('update', User::class)->name('users.update');
     Route::delete('/{userId}', 'destroy')->can('delete', User::class)->name('users.destroy');

@@ -64,7 +64,7 @@ const SlotUpdator = ({ value: slot }: { value: SlotFormValues }) => {
     );
 };
 
-const SlotCRUD: CRUDInterface<Slot> = {
+const SlotCRUD: CRUDInterface<Slot, SlotFormValues> = {
     Creator: SlotCreator,
     Updater: SlotUpdator,
 };

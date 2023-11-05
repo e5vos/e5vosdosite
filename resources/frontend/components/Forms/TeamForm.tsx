@@ -43,13 +43,7 @@ const TeamForm = ({
     enableReinitialize = false,
     resetOnSubmit = false,
     ...rest
-}: {
-    initialValues: TeamFormValues;
-    onSubmit: (values: TeamFormValues) => void;
-    submitLabel?: string;
-    enableReinitialize?: boolean;
-    resetOnSubmit?: boolean;
-} & CRUDForm) => {
+}: CRUDForm<TeamFormValues>) => {
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({

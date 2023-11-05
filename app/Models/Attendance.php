@@ -39,6 +39,11 @@ class Attendance extends Model
         'is_present' => 'boolean',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     /**
      * Attendance.php Boot the model.
      *

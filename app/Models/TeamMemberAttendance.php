@@ -22,7 +22,17 @@ class TeamMemberAttendance extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['user_id', 'team_code', 'attendance_id', 'is_present'];
+    protected $fillable = [
+        'user_id',
+        'team_code',
+        'attendance_id',
+        'is_present'
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 
     protected $primaryKey = ['user_id', 'attendance_id'];
 

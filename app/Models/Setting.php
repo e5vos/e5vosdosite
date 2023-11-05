@@ -22,5 +22,10 @@ class Setting extends Model
         'value',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     protected $primaryKey = 'key';
 }

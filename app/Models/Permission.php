@@ -34,6 +34,11 @@ class Permission extends Model
         'code',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     /**
      * override the find method for composite key
      */

@@ -30,6 +30,11 @@ class TeamMembership extends Model
 
     protected $fillable = ['role'];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     /**
      * Get the user that owns the membership.
      */

@@ -30,6 +30,11 @@ class Team extends Model
 
     protected $fillable = ['code', 'name'];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
     protected $casts = [
         'code' => 'string',
     ];

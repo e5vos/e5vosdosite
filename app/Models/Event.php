@@ -57,6 +57,12 @@ class Event extends Model implements CachableAttributes
         'organiser',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
 
     protected $casts = [
         'starts_at' => 'datetime',

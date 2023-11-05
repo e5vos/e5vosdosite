@@ -57,6 +57,8 @@ class User extends Authenticatable
     protected $hidden = [
         'google_id',
         'e5code',
+        'created_at',
+        'updated_at',
     ];
 
     /**

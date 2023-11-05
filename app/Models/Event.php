@@ -82,18 +82,20 @@ class Event extends Model implements CachableAttributes
     /**
      * Adds where filtering to start_date and end_date
      */
-    public static function current(Builder $query): Builder
+    public static function current(Builder $query, $time = null): Builder
     {
-        return $query->where('start_date', '<=', now())->where('end_date', '>=', now());
+        $time ??= now();
+        return $query->where('starts_at', '<=', $time)->where('ends_at', '>=', $time);
     }
 
     /**
      * Get currently running events
      *
      */
-    public static function currentEvents()
+    public static function currentEvents($time = null)
     {
-        return Event::where(fn ($query) => Event::current($query));
+        $time ??= now();
+        return Event::where(fn ($query) => Event::current($query, $time));
     }
 
     /**

@@ -212,15 +212,24 @@ class User extends Authenticatable
      */
     public function activity()
     {
-        return $this->userActivity->union($this->teamActivity);
+        return $this->userActivity()->union($this->teamActivity()->getQuery());
     }
 
     /**
      * Determine if the user has an attendance in the slot
      */
-    public function isBusy(Slot|int $slot): bool
+    public function isBusyInSlot(Slot|int $slot): bool
     {
         return $this->events()->where('slot_id', $slot->id ?? $slot)->count() > 0;
+    }
+
+    public function isBusy($time = null): bool
+    {
+        $time ??= now();
+        return Attendance::whereIn("event_id", Event::currentEvents($time)->pluck("id")->toArray())
+            ->where("user_id", $this->id)
+            ->orWhereIn("team_code", $this->teamMemberships()->pluck("team_code")->toArray())
+            ->count() > 0;
     }
 
     /**
@@ -239,7 +248,7 @@ class User extends Authenticatable
             $this->signUp(Event::findOrFail($event->root_parent));
             return Attendance::where('user_id', $this->id)->where('event_id', $event->id)->first();
         }
-        if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusy($event->slot)) {
+        if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusyInSlot($event->slot)) {
             throw new StudentBusyException();
         }
         if (

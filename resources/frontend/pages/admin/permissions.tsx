@@ -51,7 +51,7 @@ const PermissionsPage = () => {
         data: selecteduser,
         isLoading,
         error,
-    } = baseAPI.useGetUserQuery(userID);
+    } = baseAPI.useGetUserQuery({ id: userID });
 
     return (
         <div>

@@ -52,23 +52,23 @@ export const isTeacherAdmin = gate((user) => {
     );
 }, "Csak tanár adminok számára elérhető");
 
-export const isScanner = (event: Event) =>
+export const isScanner = (event: Pick<Event, "id">) =>
     gate((user) => {
         return (
             user.permissions?.find(
                 (permission) =>
-                    permission.code === "SCN" &&
+                    permission.code === PermissionCode.scanner &&
                     permission.event_id === event.id,
             ) !== undefined
         );
     }, "Csak scannerek számára elérhető");
 
-export const isOrganiser = (event: Event) =>
+export const isOrganiser = (event: Pick<Event, "id">) =>
     gate((user) => {
         return (
             user.permissions?.find(
                 (permission) =>
-                    permission.code === "ORG" &&
+                    permission.code === PermissionCode.organiser &&
                     permission.event_id === event.id,
             ) !== undefined
         );

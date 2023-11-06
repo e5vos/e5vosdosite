@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Event, User } from "types/models";
+import { Event, User, UserStub } from "types/models";
 
 import adminAPI from "lib/api/adminAPI";
 import eventAPI from "lib/api/eventAPI";
@@ -40,16 +40,22 @@ const PresentationFillDialog = ({
 }) => {
     const [searchString, setSearchString] = useState("");
 
+    const [availableStudents, setAvailableStudents] = useState<UserStub[]>([]);
+
     const [
-        trigger,
+        triggerGetFreeUsersQuery,
         {
-            data: availableStudents,
+            data: availableStudentsAPI,
             isFetching: isStudentListFetching,
             isError: isStudentListError,
         },
     ] = adminAPI.useLazyGetFreeUsersQuery();
 
-    const [triggerEvent, { data: event, isFetching: isEventFetching }] =
+    useEffect(() => {
+        if (availableStudentsAPI) setAvailableStudents(availableStudentsAPI);
+    }, [availableStudentsAPI]);
+
+    const [triggerGetEventQuery, { data: event, isFetching: isEventFetching }] =
         eventAPI.useLazyGetEventQuery();
 
     const [APIsignUp, { isLoading: signupInProgress }] =
@@ -62,8 +68,11 @@ const PresentationFillDialog = ({
                 attender: student.id,
                 event: external_event,
             }).unwrap();
-            trigger({ id: external_event.slot_id });
-            triggerEvent(external_event);
+            setAvailableStudents((state) =>
+                state.filter((s) => s.id !== student.id),
+            );
+            //triggerGetFreeUsersQuery({ id: external_event.slot_id });
+            triggerGetEventQuery(external_event);
         } catch (err) {
             console.error(err);
             alert(locale.errorDuringSignup);
@@ -71,23 +80,23 @@ const PresentationFillDialog = ({
     };
 
     useEffect(() => {
-        if (open && !event) triggerEvent(external_event, true);
+        if (open && !event) triggerGetEventQuery(external_event, true);
         if (
             open &&
             !availableStudents &&
             !isStudentListFetching &&
             !isStudentListError
         )
-            trigger({ id: external_event.slot_id }, true);
+            triggerGetFreeUsersQuery({ id: external_event.slot_id }, true);
     }, [
         open,
-        trigger,
+        triggerGetFreeUsersQuery,
         availableStudents,
         isStudentListFetching,
         isStudentListError,
         external_event.slot_id,
         event,
-        triggerEvent,
+        triggerGetEventQuery,
         external_event.id,
         external_event,
     ]);

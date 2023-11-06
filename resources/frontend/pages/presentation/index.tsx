@@ -182,7 +182,7 @@ const PresentationsPage = () => {
     const selectSlotById = useCallback(
         (id: number) => {
             let newSlot = slots?.findIndex((slot) => slot.id === id);
-            if (newSlot) setcurrentSlot(newSlot);
+            if (newSlot !== undefined) setcurrentSlot(newSlot);
         },
         [slots],
     );

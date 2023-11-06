@@ -132,16 +132,19 @@ class EventPolicy
      */
     public function unsignup(User $user, Event $event = null)
     {
-        if (!Setting::find('e5n.events.signup')?->value) {
-            throw new NoE5NException();
-        }
-        $event = $event ?? Event::findOrFail(request()->eventId);
-        if (!$event->isSignupOpen() && false) {
-            throw new SignupClosedException();
-        }
         if (!request()->has('attender')) {
             abort(400, 'No attender specified');
         }
+
+        if (!Setting::find('e5n.events.signup')?->value) {
+            throw new NoE5NException();
+        }
+
+        $event = $event ?? Event::findOrFail(request()->eventId);
+        if (!$event->isSignupOpen()) {
+            throw new SignupClosedException();
+        }
+
         return request()->attender === $user->e5code || $user->isLeaderOfTeam(request()->attender) || $user->hasPermission(PermissionType::Admin->value);
     }
 

@@ -20,10 +20,15 @@ class PermissionController extends Controller
     public function addPermission(Request $request)
     {
         $requestData = json_decode(request()->permission);
+        if (Permission::where([
+            'user_id' => $requestData->user_id,
+            'event_id' => $requestData->event_id,
+            'code' => $requestData->code,
+        ])->exists()) abort(409, 'Permission already exists');
         $permission = Permission::create([
-            'user_id' => $request->user_id,
-            'event_id' => $request->event_id,
-            'code' => $request->code,
+            'user_id' => $requestData->user_id,
+            'event_id' => $requestData->event_id,
+            'code' => $requestData->code,
         ]);
         return response($permission->jsonSerialize(), 201);
     }

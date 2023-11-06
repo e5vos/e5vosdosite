@@ -42,6 +42,10 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
+        //check for existing team
+        if (Team::where('code', $request->code)->exists()) {
+            abort(409, "Team already exists");
+        }
         $team = Team::create($request->all());
         $team->members()->attach(Auth::user()->id, ['role' => MembershipType::Leader]);
         $team = new TeamResource($team);
@@ -58,6 +62,9 @@ class TeamController extends Controller
     public function update(Request $request, $teamCode)
     {
         $team = Cache::pull('e5n.teams.' . $teamCode) ?? Team::findOrFail($teamCode);
+        if (Cache::get('e5n.teams.' . $request->code)?->exists ?? Team::find($request->code)->exists) {
+            abort(409, "Team already exists");
+        }
         $team->update($request->all());
         $team = new TeamResource($team);
         Cache::forget('e5n.teams.all');

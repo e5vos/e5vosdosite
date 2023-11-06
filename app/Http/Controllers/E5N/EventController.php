@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\{
     Cache,
     DB,
 };
+use App\Helpers\PermissionType;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\SlotResource;
 use App\Http\Resources\UserResource;
@@ -216,7 +217,7 @@ class EventController extends Controller
         if ($attendance === null) {
             throw new ResourceDidNoExistException();
         }
-        if ($attendance->is_present) {
+        if ($attendance->is_present && ($request->user()->hasPermission(PermissionType::Admin->value) || $request->user()->hasPermission(PermissionType::Operator->value))) {
             throw new NotAllowedException();
         }
         if ($event->direct_child !== null) {
@@ -291,7 +292,7 @@ class EventController extends Controller
      */
     public function myPresentations(Request $request)
     {
-        $user = User::findOrFail($request->user()->id)->load('presentations');
+        $user = User::findOrFail($request->user()->id)->load("presentations.location");
         return Cache::rememberForever(
             'e5n.events.mypresentations.' . $user->e5code,
             fn () => EventResource::collection($user->presentations->load("location"))->jsonSerialize()

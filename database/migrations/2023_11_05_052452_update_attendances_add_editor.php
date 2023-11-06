@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            $table->foreignId('editor')->nullable()->constrained('users')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('editor')->nullable()->cascadeOnUpdate()->nullOnDelete();
         });
     }
 

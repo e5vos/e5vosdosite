@@ -21,7 +21,7 @@ class AdminController extends Controller
         if (env('APP_ENV') === 'production' && !$request->user()->hasPermission(PermissionType::Admin->value)) {
             throw new NotAllowedException();
         }
-        DB::table('cache')->truncate();
+        DB::statement("TRUNCATE TABLE cache");
         return response()->json(['message' => 'Cache cleared']);
     }
 

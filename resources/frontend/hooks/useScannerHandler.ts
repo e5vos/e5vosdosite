@@ -49,6 +49,7 @@ const useScannerHandler = ({
                 attendance = await attend({
                     event: event,
                     attender: scanvalue,
+                    present: true,
                 }).unwrap();
             } catch (e) {
                 /* TODO: Handle error

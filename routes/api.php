@@ -30,6 +30,7 @@ use App\Events\{
     Ping
 };
 use App\Http\Resources\{
+    TeamResource,
     UserResource,
 };
 
@@ -58,7 +59,7 @@ Route::controller(UserController::class)->middleware(['auth:sanctum'])->prefix('
         return (new UserResource($request->user()->load('permissions')))->jsonSerialize();
     })->name('user.current');
     Route::get('/currentuser/teams', function (Request $request) {
-        return (new UserResource($request->user()->load('teams')))->jsonSerialize();
+        return (TeamResource::collection($request->user()->teams()->get()))->jsonSerialize();
     })->name('user.myteams');
     Route::get('/', 'show')->name('user.details');
     Route::get('/{userId}', 'show')->can('view', User::class)->name('users.show');

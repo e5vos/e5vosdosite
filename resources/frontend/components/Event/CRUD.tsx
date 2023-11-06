@@ -76,9 +76,10 @@ const locale = Locale({
                     return "Egyéni és csapatos jelentkezés";
             }
         },
+
         undefined: "Nincs megadva",
         notyetset: "Még nincs megadva",
-        success: "Jelentkezés sikeres",
+        success: "sikeres",
     },
     en: {
         create: "Create event",
@@ -118,7 +119,7 @@ const locale = Locale({
         },
         undefined: "Not set",
         notyetset: "Not set yet",
-        success: "Signup successful",
+        success: "successful",
     },
 });
 
@@ -270,22 +271,25 @@ const EventReader = ({
                     <h2 className="mt-1 text-center text-xl lg:text-left">
                         {locale.organiser}: {event.organiser}
                     </h2>
-                    <p className="text-l mt-1 italic text-gray-50">
+                    <p className="text-l mt-1 text-center italic text-gray-50 lg:text-left">
                         {locale.signup_type(event.signup_type)}
                     </p>
-                    {canSignup && (
-                        <div className="mb-5 mt-5 rounded-lg border bg-slate-500 p-2 md:mb-0 md:border-none md:bg-inherit md:p-0">
+                    {user && canSignup && (
+                        <div className="mx-auto mb-5 mt-5 w-full rounded-lg border bg-slate-500 p-2 md:mb-0 md:border-none md:bg-inherit md:p-0 lg:max-w-fit">
                             <h3 className="text-center font-bold">
                                 {locale.signup_CTA}
                             </h3>
-                            <Form.Group className="mt-3 flex w-full flex-row gap-3">
+                            <div className="mt-2 flex w-full flex-row items-center justify-center gap-2">
                                 <Form.Select
                                     ref={attenderSelect}
                                     className="flex-1 "
                                 >
-                                    {event.signup_type !== SignupType.Team && (
-                                        <option>{locale.solo}</option>
-                                    )}
+                                    {event.signup_type !== SignupType.Team &&
+                                        user.e5code && (
+                                            <option value={user.e5code}>
+                                                {locale.solo}
+                                            </option>
+                                        )}
                                     {event.signup_type !==
                                         SignupType.Individual &&
                                         signUpTeams.map((team) => (
@@ -298,16 +302,16 @@ const EventReader = ({
                                         ))}
                                 </Form.Select>
                                 <Button
-                                    className="w-1/4"
+                                    className="w-1/4 lg:min-w-fit"
                                     onClick={handleSignup}
                                 >
                                     {locale.signup_CTA}
                                 </Button>
-                            </Form.Group>
+                            </div>
                             {statusmsg.message !== "" && (
                                 <Card
                                     title={statusmsg.message}
-                                    className={`${
+                                    className={`mt-3 ${
                                         statusmsg.isError
                                             ? "bg-red-500"
                                             : "bg-green-500"

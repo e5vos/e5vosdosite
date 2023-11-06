@@ -1,5 +1,5 @@
 import { Combobox } from "@headlessui/react";
-import React, { FormEventHandler, ReactNode } from "react";
+import React, { FormEventHandler, ReactNode, forwardRef } from "react";
 
 import Locale from "lib/locale";
 
@@ -122,20 +122,22 @@ const Check = ({
     );
 };
 
-const Select = ({
-    children,
-    className,
-    ...rest
-}: HTMLInputProps<HTMLSelectElement>) => {
-    return (
-        <select
-            className={`form-select max-w-sm bg-gray ${className ?? ""}`}
-            {...rest}
-        >
-            {children}
-        </select>
-    );
-};
+const Select = forwardRef(
+    (
+        { children, className, ...rest }: HTMLInputProps<HTMLSelectElement>,
+        ref: React.LegacyRef<HTMLSelectElement> | undefined,
+    ) => {
+        return (
+            <select
+                className={`form-select max-w-sm bg-gray ${className ?? ""}`}
+                {...rest}
+                ref={ref}
+            >
+                {children}
+            </select>
+        );
+    },
+);
 
 const Option = ({ children, ...rest }: HTMLInputProps<HTMLOptionElement>) => {
     return <option {...rest}>{children}</option>;

@@ -37,7 +37,7 @@ export const baseAPI = createApi({
         credentials: "include",
         mode: "cors",
     }),
-    tagTypes: ["User", "Event", "Slot", "EventParticipants"],
+    tagTypes: ["User", "Event", "Slot", "EventParticipants", "Team"],
     endpoints: (builder) => ({
         getCurrentUserData: builder.query<
             RequiredAndOmitFields<User, "permissions", "teams" | "activity">,
@@ -55,7 +55,7 @@ export const baseAPI = createApi({
                 url: routeSwitcher("user.details"),
                 method: "GET",
             }),
-            providesTags: (result) => [{ type: "User", id: result?.id }],
+            providesTags: (result) => [{ type: "User", id: "CURRENT" }],
         }),
         setStudentCode: builder.mutation<User, string>({
             query: (code) => ({

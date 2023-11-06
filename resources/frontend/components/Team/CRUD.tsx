@@ -22,14 +22,13 @@ const locale = Locale({
 export type TeamFormValues = Pick<Team, "name" | "code" | "description">;
 
 const TeamCreator = ({
-    value,
+    value = {},
     ...rest
 }: CRUDFormImpl<Team, Partial<TeamFormValues>>) => {
     const [createTeam] = teamAPI.useCreateTeamMutation();
     const { refetch } = teamAPI.endpoints.getAllTeams.useQuerySubscription();
     const onSubmit = useCallback(
         async (team: TeamFormValues) => {
-            console.log("yay");
             await createTeam(team);
             refetch();
         },

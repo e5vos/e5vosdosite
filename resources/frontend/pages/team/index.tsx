@@ -57,7 +57,7 @@ const QRDialog = ({
 const YourTeamsPage = () => {
     const [shownTeam, setShownTeam] = useState<RequiredFields<
         Team,
-        "attendance" | "members"
+        "activity" | "members"
     > | null>(null);
     const [shownQR, setShownQR] = useState<Team | null>(null);
     const { user } = useUser();
@@ -95,7 +95,7 @@ const YourTeamsPage = () => {
                         <h3 className="mb-4 text-center text-2xl font-bold">
                             {locale.new_team}
                         </h3>
-                        <TeamCRUD.Creator className="mb-5 md:mb-0" />
+                        <TeamCRUD.Creator value={{}} className="mb-5 md:mb-0" />
                     </div>
                     {isFetching ? (
                         <div className="h-full md:grid-cols-2 xl:col-span-3">

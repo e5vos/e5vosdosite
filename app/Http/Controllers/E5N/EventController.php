@@ -279,7 +279,7 @@ class EventController extends Controller
             'e5n.events.' . $eventId . '.signups',
             function () use ($eventId) {
                 $event = Event::findOrFail($eventId)->load('attendances.user:id,name,ejg_class', 'attendances.team.members:id,name,ejg_class', 'attendances.teamMemberAttendances'); // roland to check
-                return UserResource::collection($event->users)->concat(TeamResource::collection($event->teams->with("members")))->jsonSerialize();
+                return UserResource::collection($event->users)->concat(TeamResource::collection($event->teams()->get()->load("members")))->jsonSerialize();
             }
         );
     }

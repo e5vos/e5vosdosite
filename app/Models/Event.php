@@ -138,7 +138,8 @@ class Event extends Model implements CachableAttributes
     public function organisers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'permissions', 'event_id', 'user_id')
-            ->where('permissions.code', PermissionType::Organiser->value);
+            ->where('permissions.code', PermissionType::Organiser->value)
+            ->orWhere('permissions.code', PermissionType::Scanner->value);
     }
 
     /**

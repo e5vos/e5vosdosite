@@ -297,4 +297,10 @@ class EventController extends Controller
             fn () => EventResource::collection($user->presentations->load("location"))->jsonSerialize()
         );
     }
+
+
+    public function organisers(int $eventId)
+    {
+        return UserResource::collection(Event::findOrFail($eventId)->organisers()->withPivot('code')->get(['id', 'name', 'ejg_class']))->jsonSerialize();
+    }
 }

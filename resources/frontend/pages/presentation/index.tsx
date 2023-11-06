@@ -199,29 +199,24 @@ const PresentationsPage = () => {
 
     const [errormsg, setErrormsg] = useState<string>("");
 
-    const cleanupErrormsg = useDelay(() => {
-        setErrormsg("");
-    }, 2500);
+    const cleanupErrormsg = useDelay(setErrormsg, 2500);
 
     useEffect(() => {
-        if (signupError && "status" in signupError) {
-            const message = (signupError.data as any).message;
-            if (!message && message === "") setErrormsg(locale.unknownError);
-            else setErrormsg(message);
-            cleanupErrormsg();
-        }
-    }, [cleanupErrormsg, signupError]);
+        if (!signupError || !("status" in signupError)) return;
+        const message = (signupError.data as any).message;
+        setErrormsg(message);
+    }, [signupError]);
 
     useEffect(() => {
-        if (cancelSignupError && "status" in cancelSignupError) {
-            const message = (cancelSignupError.data as any).message;
-            if (!message && message === "") setErrormsg(locale.unknownError);
-            else setErrormsg(message);
-            cleanupErrormsg();
-        }
+        if (!cancelSignupError || !("status" in cancelSignupError)) return;
+        const message = (cancelSignupError.data as any).message;
+        setErrormsg(message);
     }, [cancelSignupError, cleanupErrormsg]);
 
-    useEffect(() => {});
+    useEffect(() => {
+        if (errormsg) cleanupErrormsg("");
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [errormsg]);
 
     if (!slots || !selectedPresentations || !presentations) return <Loader />;
 

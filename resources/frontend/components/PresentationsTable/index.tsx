@@ -34,14 +34,14 @@ const locale = Locale({
             multislot: {
                 starts: (SlotHref: FC) => (
                     <>
-                        Ez az előadás a<SlotHref />
+                        Ez az előadás a <SlotHref />
                         -ban kezdődik.
                     </>
                 ),
                 continues: (SlotHref: FC) => (
                     <>
-                        Ez az előadás a<SlotHref />
-                        -ban végződik.
+                        Ez az előadás a <SlotHref />
+                        -ban folytatódik.
                     </>
                 ),
             },
@@ -65,7 +65,7 @@ const locale = Locale({
                 ),
                 continues: (SlotHref: FC) => (
                     <>
-                        This presentation ends in <SlotHref />.
+                        This presentation continues in <SlotHref />.
                     </>
                 ),
             },
@@ -128,64 +128,60 @@ const PresentationsTable = ({
                             </td>
                             <td className=" text-center ">
                                 <div className="flex h-full flex-col justify-around">
-                                    <p className="flex-1 px-2 py-0.5">
-                                        {presentation.description}{" "}
+                                    <p className="mr-2 flex-1 px-2 py-0.5">
+                                        {presentation.description}
                                     </p>
-                                    {presentation.direct_child ||
-                                        (presentation.root_parent && (
-                                            <div className="bg-blue-500">
-                                                {presentation.root_parent_slot_id &&
-                                                    locale.presentation.multislot.starts(
-                                                        () => (
-                                                            <span
-                                                                className="text-green-400"
-                                                                onClick={() => {
-                                                                    console.log(
-                                                                        "selecting",
-                                                                        presentation.root_parent_slot_id!,
-                                                                    );
-                                                                    selectSlot(
-                                                                        presentation.root_parent_slot_id!,
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {slotName(
+                                    {(presentation.direct_child ||
+                                        presentation.root_parent) && (
+                                        <div className="bg-blue-500">
+                                            {presentation.root_parent_slot_id &&
+                                                locale.presentation.multislot.starts(
+                                                    () => (
+                                                        <span
+                                                            className="text-green-400"
+                                                            onClick={() => {
+                                                                selectSlot(
                                                                     presentation.root_parent_slot_id!,
-                                                                )}
-                                                            </span>
-                                                        ),
-                                                    )}
-                                                {presentation.direct_child_slot_id &&
-                                                    locale.presentation.multislot.continues(
-                                                        () => (
-                                                            <span
-                                                                className="text-green-400"
-                                                                onClick={() => {
-                                                                    console.log(
-                                                                        "Selecting slot",
-                                                                        presentation.direct_child_slot_id,
-                                                                    );
-                                                                    selectSlot(
-                                                                        presentation.direct_child_slot_id!,
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {slotName(
+                                                                );
+                                                            }}
+                                                        >
+                                                            {slotName(
+                                                                presentation.root_parent_slot_id!,
+                                                            )}
+                                                        </span>
+                                                    ),
+                                                )}
+                                            {presentation.direct_child_slot_id &&
+                                                locale.presentation.multislot.continues(
+                                                    () => (
+                                                        <span
+                                                            className="text-green-400"
+                                                            onClick={() => {
+                                                                selectSlot(
                                                                     presentation.direct_child_slot_id!,
-                                                                )}
-                                                            </span>
-                                                        ),
-                                                    )}
-                                            </div>
-                                        ))}
+                                                                );
+                                                            }}
+                                                        >
+                                                            {slotName(
+                                                                presentation.direct_child_slot_id!,
+                                                            )}
+                                                        </span>
+                                                    ),
+                                                )}
+                                        </div>
+                                    )}
                                 </div>
                             </td>
                             <td className="text-bold text-center text-2xl font-semibold md:text-lg">
-                                <span className="font-bold md:hidden">
-                                    {locale.presentation.location}:{" "}
-                                </span>
-                                {presentation.location?.name ??
-                                    "Ismeretlen hely"}
+                                <div className="flex h-full flex-col justify-around">
+                                    <div className="font-bold md:hidden">
+                                        {locale.presentation.location}
+                                    </div>
+                                    <div>
+                                        {presentation.location?.name ??
+                                            "Ismeretlen hely"}
+                                    </div>
+                                </div>
                             </td>
                             <td
                                 className={

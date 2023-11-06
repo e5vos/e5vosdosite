@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up()
     {
-        DB::statement('ALTER TABLE users ADD CONSTRAINT `users_e5code_format` CHECK(e5code RLIKE "20[0-9]{2}[A-FN][0-9]{2}EJG[0-9]{3}$")');
+        //DB::statement('ALTER TABLE users ADD CONSTRAINT `users_e5code_format` CHECK(e5code RLIKE "20[0-9]{2}[A-FN][0-9]{2}EJG[0-9]{3}$")');
     }
 
     /**
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down()
     {
-        DB::statement('ALTER TABLE users DROP CONSTRAINT `users_e5code_format`');
+        //DB::statement('ALTER TABLE users DROP CONSTRAINT `users_e5code_format`');
     }
 };

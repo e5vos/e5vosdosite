@@ -3,17 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\ResourceDidNoExistException;
-use App\Helpers\PermissionType;
-use Illuminate\Http\Request;
+
 use App\Http\Controllers\{
     Controller
 };
 use App\Models\{
     Permission,
-    Event,
-    User,
 };
-use App\Http\Resources\PermissionResource;
 
 class PermissionController extends Controller
 {
@@ -22,7 +18,7 @@ class PermissionController extends Controller
      */
     public function addPermission()
     {
-        $requestData = request()->permission;
+        $requestData = json_decode(request()->permission);
         $permission = Permission::create([
             'user_id' => $requestData->user_id,
             'event_id' => $requestData->event_id,
@@ -36,7 +32,7 @@ class PermissionController extends Controller
      */
     public function removePermission()
     {
-        $requestData = request()->permission;
+        $requestData = json_decode(request()->permission);
         $permission = Permission::find([
             $requestData->user_id,
             $requestData->event_id,

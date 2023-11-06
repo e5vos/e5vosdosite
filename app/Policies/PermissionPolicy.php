@@ -53,7 +53,7 @@ class PermissionPolicy
      * @param  \App\Models\Permission  $permission
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Permission $permission)
+    public function destroy(User $user, Permission $permission)
     {
         $permission ??= json_decode(request()->permission);
         switch ($permission->code) {
@@ -61,8 +61,14 @@ class PermissionPolicy
                 return $user->hasPermission(PermissionType::Admin->value) || $user->organisesEvent($permission->eventId);
             case PermissionType::Organiser->value:
                 return $user->hasPermission(PermissionType::Admin->value);
-            default:
+            case PermissionType::Admin->value:
+            case PermissionType::Student->value:
+            case PermissionType::Teacher->value:
+            case PermissionType::TeacherAdmin->value:
+            case PermissionType::Operator->value:
                 return false;
+            default:
+                abort(400, 'Invalid permission code');
         }
     }
 }

@@ -252,7 +252,7 @@ class EventController extends Controller
 
     public function teamMemberAttend($attendanceId)
     {
-        $attendance = Attendance::findOrFail($attendanceId);
+        $attendance = Attendance::findOrFail($attendanceId)->load('team');
         if (!request()->user()->can('attend', $attendance->event)) {
             throw new NotAllowedException();
         }
@@ -265,6 +265,8 @@ class EventController extends Controller
                 $absentAttendanceIds[] = $memberAttendance->user_id;
             }
         }
+        $teamMemberAttendances = $attendance->teamMemberAttendances();
+        $attendance->team()->members()->whereNotIn('id', $teamMemberAttendances->get('user_id')->toArray())->get()->each(fn ($member) => $teamMemberAttendances->create(['user_id' => $member->id, 'attendance_id' => $attendanceId]));
         $attendance->teamMemberAttendances()->whereIn('user_id', $presentAttendanceIds)->update(['is_present' => true]);
         $attendance->teamMemberAttendances()->whereIn('user_id', $absentAttendanceIds)->update(['is_present' => false]);
         return response()->json($attendance->teamMemberAttendances, 200);
@@ -294,5 +296,11 @@ class EventController extends Controller
             'e5n.events.mypresentations.' . $user->e5code,
             fn () => EventResource::collection($user->presentations->load("location"))->jsonSerialize()
         );
+    }
+
+
+    public function organisers(int $eventId)
+    {
+        return UserResource::collection(Event::findOrFail($eventId)->organisers()->withPivot('code')->get(['id', 'name', 'ejg_class']))->jsonSerialize();
     }
 }

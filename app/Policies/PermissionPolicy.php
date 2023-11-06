@@ -22,6 +22,16 @@ class PermissionPolicy
     }
 
     /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \App\Models\User  $user
+     */
+    public function viewAny(User $user)
+    {
+        return $user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::TeacherAdmin->value) || $user->organisesEvent(request()->eventId);
+    }
+
+    /**
      * Determine whether the user can create models.
      *
      * @param  \App\Models\User  $user

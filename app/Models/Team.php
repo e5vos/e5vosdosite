@@ -10,6 +10,7 @@ use App\Helpers\MembershipType;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Exceptions\EventFullException;
 use App\Exceptions\AlreadySignedUpException;
+use App\Exceptions\SignupNotRequiredException;
 
 /**
  * App\Models\Team

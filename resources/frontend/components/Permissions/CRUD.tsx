@@ -1,6 +1,5 @@
 import useConfirm, { ConfirmDialogProps } from "hooks/useConfirm";
 import useUser from "hooks/useUser";
-import { useCallback } from "react";
 
 import { CRUDFormImpl, CRUDInterface } from "types/misc";
 import { Permission, PermissionCode, PermissionCodeType } from "types/models";

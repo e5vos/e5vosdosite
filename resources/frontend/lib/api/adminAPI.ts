@@ -68,6 +68,7 @@ export const adminAPI = baseAPI
                     url: routeSwitcher("cacheclear"),
                     method: "POST",
                 }),
+                invalidatesTags: ["Event", "Slot", "EventParticipants", "User"],
             }),
             createPermission: builder.mutation<Permission, Permission>({
                 query: (data) => ({
@@ -75,6 +76,13 @@ export const adminAPI = baseAPI
                     method: "POST",
                     body: data,
                 }),
+                invalidatesTags: (result, error, arg) =>
+                    arg.event_id
+                        ? [
+                              { type: "User", id: arg.user_id },
+                              { type: "Event", id: arg.event_id },
+                          ]
+                        : [{ type: "User", id: arg.user_id }],
             }),
             deletePermission: builder.mutation<void, Permission>({
                 query: (data) => ({
@@ -82,12 +90,13 @@ export const adminAPI = baseAPI
                     method: "DELETE",
                     body: data,
                 }),
-                invalidatesTags: (result, error) => [
-                    { type: "User", id: user_id },
-                    { type: "User", id: "LIST" },
-                    { type: "Event", id: event_id },
-                    { type: "Event", id: "LIST" },
-                ],
+                invalidatesTags: (result, error, arg) =>
+                    arg.event_id
+                        ? [
+                              { type: "User", id: arg.user_id },
+                              { type: "Event", id: arg.event_id },
+                          ]
+                        : [{ type: "User", id: arg.user_id }],
             }),
         }),
     });

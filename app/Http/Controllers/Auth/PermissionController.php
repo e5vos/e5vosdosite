@@ -10,19 +10,20 @@ use App\Http\Controllers\{
 use App\Models\{
     Permission,
 };
+use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
     /**
      *  add an organiser to an event
      */
-    public function addPermission()
+    public function addPermission(Request $request)
     {
         $requestData = json_decode(request()->permission);
         $permission = Permission::create([
-            'user_id' => $requestData->user_id,
-            'event_id' => $requestData->event_id,
-            'code' => $requestData->code,
+            'user_id' => $request->user_id,
+            'event_id' => $request->event_id,
+            'code' => $request->code,
         ]);
         return response($permission->jsonSerialize(), 201);
     }
@@ -30,13 +31,12 @@ class PermissionController extends Controller
     /**
      *  remove a permission
      */
-    public function removePermission()
+    public function removePermission(Request $request)
     {
-        $requestData = json_decode(request()->permission);
         $permission = Permission::find([
-            $requestData->user_id,
-            $requestData->event_id,
-            $requestData->code,
+            $request->user_id,
+            $request->event_id,
+            $request->code,
         ]);
         if ($permission === null) throw new ResourceDidNoExistException();
         $permission->delete();

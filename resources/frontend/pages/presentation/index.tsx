@@ -9,7 +9,6 @@ import { Presentation } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import Locale from "lib/locale";
-import { loginRequired } from "lib/loginrequired";
 
 import PresentationsTable from "components/PresentationsTable";
 import Button from "components/UIKit/Button";
@@ -140,7 +139,6 @@ const PresentationsPage = () => {
                 navigate("/studentcode?next=/eloadas");
                 return;
             }
-            console.log("Signup");
             await signUp({
                 attender: user.e5code,
                 event: presentation,
@@ -260,4 +258,4 @@ const PresentationsPage = () => {
         </div>
     );
 };
-export default loginRequired(PresentationsPage);
+export default PresentationsPage;

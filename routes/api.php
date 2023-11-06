@@ -167,6 +167,7 @@ Route::controller(LocationController::class)->group(function () {
 
 
 Route::any('cacheclear', [AdminController::class, "cacheClear"])->name('cacheclear');
+Route::post('dumpState', [AdminController::class, "dumpState"])->name('debug.dump');
 
 //test websocket broadcast
 Route::post('/ping', function () {

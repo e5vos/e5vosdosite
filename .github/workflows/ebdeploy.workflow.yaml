@@ -96,6 +96,9 @@ jobs:
           envkey_E5VOS_API_URL: "${{vars.E5VOS_API_URL}}"
           envkey_E5VOS_FAKE_API: false
 
+          envkey_DEBUG_API_KEY: "${{secrets.DEBUG_API_KEY}}"
+          envkey_DISCORD_WEBHOOK: "${{secrets.DISCORD_WEBHOOK}}"
+
       - name: Generate Routes
         run: php artisan ziggy:generate --types
 

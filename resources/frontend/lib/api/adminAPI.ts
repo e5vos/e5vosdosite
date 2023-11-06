@@ -1,6 +1,10 @@
+import { dumpState } from "hooks/useStateDump";
+import { url } from "inspector";
+
 import { Permission, Slot, User, UserStub } from "types/models";
 
 import routeSwitcher from "lib/route";
+import { RootState } from "lib/store";
 
 import baseAPI from ".";
 
@@ -97,6 +101,21 @@ export const adminAPI = baseAPI
                               { type: "Event", id: arg.event_id },
                           ]
                         : [{ type: "User", id: arg.user_id }],
+            }),
+            dumpState: builder.mutation<
+                void,
+                { key: string | undefined; dump: Object }
+            >({
+                query: ({ key, dump }) => ({
+                    url: routeSwitcher("debug.dump"),
+                    method: "POST",
+                    params: {
+                        key: key,
+                    },
+                    body: {
+                        dump: JSON.stringify(dump),
+                    },
+                }),
             }),
         }),
     });

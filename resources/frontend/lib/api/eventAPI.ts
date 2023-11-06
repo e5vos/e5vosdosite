@@ -1,6 +1,5 @@
 import { RequiredFields } from "types/misc";
 import {
-    Attendance,
     Attender,
     Event,
     EventStub,
@@ -151,12 +150,16 @@ export const eventAPI = baseAPI.injectEndpoints({
         }),
         teamMemberAttend: builder.mutation<
             TeamMemberAttendance[],
-            TeamMemberAttendance[]
+            { data: TeamMemberAttendance[] }
         >({
-            query: (data) => ({
-                url: routeSwitcher("attendance.teamMemberAttend"),
+            query: ({ data }) => ({
+                url: routeSwitcher("attendance.teamMemberAttend", {
+                    attendanceId: data.length > 0 ? data[0].attendance_id : -1,
+                }),
                 method: "POST",
-                params: data,
+                params: {
+                    memberAttendances: JSON.stringify(data),
+                },
             }),
         }),
         cancelSignUp: builder.mutation<

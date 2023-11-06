@@ -101,7 +101,7 @@ const useScannerHandler = ({
             }
 
             try {
-                await teamMemberAttend(memberAttendances).unwrap();
+                await teamMemberAttend({ data: memberAttendances }).unwrap();
             } catch (e) {
                 /* TODO: Handle error
 

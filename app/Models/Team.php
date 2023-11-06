@@ -184,6 +184,6 @@ class Team extends Model
         //     ['user_id', 'attendance_id']
         // );
         $event->forget('occupancy');
-        return $signup->load('teamMemberAttendances.user');
+        return $signup->load('team', 'teamMemberAttendances.user');
     }
 }

@@ -1,10 +1,14 @@
+import { RequiredFields } from "types/misc";
 import {
     Attendance,
+    Attender,
     Event,
     EventStub,
     Presentation,
     Slot,
+    TeamAttendance,
     TeamMemberAttendance,
+    UserAttendance,
 } from "types/models";
 
 import routeSwitcher from "lib/route";
@@ -49,7 +53,7 @@ export const eventAPI = baseAPI.injectEndpoints({
             query: ({ id }) => routeSwitcher("event.show", { eventId: id }),
             providesTags: (result, error, { id }) => [{ type: "Event", id }],
         }),
-        getEventParticipants: builder.query<Attendance[], Pick<Event, "id">>({
+        getEventParticipants: builder.query<Attender[], Pick<Event, "id">>({
             query: ({ id }) => routeSwitcher("event.participants", id),
             providesTags: (result, error, { id }) => [
                 { type: "EventParticipants", id },
@@ -111,7 +115,8 @@ export const eventAPI = baseAPI.injectEndpoints({
                     : [{ type: "Event", id: "MYLIST" }],
         }),
         signUp: builder.mutation<
-            Attendance,
+            | RequiredFields<TeamAttendance, "team">
+            | RequiredFields<UserAttendance, "user">,
             { event: Pick<Event, "id">; attender: string | number }
         >({
             query: (body) => ({
@@ -125,7 +130,8 @@ export const eventAPI = baseAPI.injectEndpoints({
             },
         }),
         attend: builder.mutation<
-            Attendance,
+            | RequiredFields<TeamAttendance, "team">
+            | RequiredFields<UserAttendance, "user">,
             {
                 event: Pick<Event, "id">;
                 attender: string | number;

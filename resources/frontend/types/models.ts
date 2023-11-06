@@ -32,7 +32,7 @@ export interface User {
     ejg_class: string | null;
     teams?: Team[];
     permissions?: Permission[];
-    activity?: Attendance[];
+    activity?: Attender[];
     img_url?: string;
     email?: string;
 }
@@ -47,47 +47,52 @@ interface BasicAttendance {
     rank: number | null;
     event_id: number;
 }
-export interface UserAttendancePivot extends BasicAttendance {
+export interface UserAttendance extends BasicAttendance {
     user_id: number;
+    user?: User;
 }
-export interface TeamAttendancePivot extends BasicAttendance {
+export interface TeamAttendance extends BasicAttendance {
     team_code: string;
-    member_attendances: TeamMemberAttendance[];
+    team?: Team;
+    team_member_attendances: TeamMemberAttendance[];
 }
 
-export type TeamAttendance = RequiredAndOmitFields<
+export type AttendingTeam = RequiredAndOmitFields<
     Team,
     "members",
     "activity"
 > & {
-    pivot: TeamAttendancePivot;
+    pivot: Omit<TeamAttendance, "team">;
 };
-export type UserAttendance = Omit<User, "activity"> & {
-    pivot: UserAttendancePivot;
+export type AttendingUser = Omit<User, "activity"> & {
+    pivot: Omit<UserAttendance, "user">;
 };
+
+export type Attender = AttendingUser | AttendingTeam;
 
 export type Attendance = UserAttendance | TeamAttendance;
-export const isTeamAttendancePivot = (
-    attendance: any,
-): attendance is TeamAttendancePivot => {
-    return attendance.team_code !== undefined;
-};
-export const isUserAttendancePivot = (
-    attendance: any,
-): attendance is UserAttendancePivot => {
-    return attendance.user_id !== undefined;
-};
-
-export const isUserAttendance = (
-    attendance: any,
-): attendance is UserAttendance => {
-    return isUserAttendancePivot(attendance.pivot);
-};
 
 export const isTeamAttendance = (
     attendance: any,
 ): attendance is TeamAttendance => {
-    return isTeamAttendancePivot(attendance.pivot);
+    return attendance.team_code !== undefined;
+};
+export const isUserAttendance = (
+    attendance: any,
+): attendance is UserAttendance => {
+    return attendance.user_id !== undefined;
+};
+
+export const isAttenderUser = (
+    attendance: any,
+): attendance is AttendingUser => {
+    return isUserAttendance(attendance.pivot);
+};
+
+export const isAttenderTeam = (
+    attendance: any,
+): attendance is AttendingTeam => {
+    return isTeamAttendance(attendance.pivot);
 };
 
 export const TeamMemberRole = {
@@ -115,7 +120,7 @@ export interface Team {
     code: string;
     description: string;
     members?: TeamMember[];
-    activity?: TeamAttendance[];
+    activity?: AttendingTeam[];
 }
 export const SlotType = {
     Presentation: "Előadássáv",
@@ -164,7 +169,7 @@ export interface Event {
     min_team_size?: number | null;
     max_team_size?: number | null;
 
-    attendances?: Attendance[];
+    attendances?: Attender[];
 
     slot?: Slot;
     location?: Location;

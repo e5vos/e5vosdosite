@@ -2,7 +2,7 @@ import useUser from "hooks/useUser";
 import { MouseEventHandler } from "react";
 import { useParams } from "react-router-dom";
 
-import { Attendance, isTeamAttendance, isUserAttendance } from "types/models";
+import { Attender, isAttenderTeam, isAttenderUser } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import { isOperator, isTeacher } from "lib/gates";
@@ -54,13 +54,13 @@ const AttendancePage = () => {
     if (isEventLoading || isParticipantsLoading || !event) return <Loader />;
 
     const toggle =
-        (attending: Attendance): MouseEventHandler<HTMLInputElement> =>
+        (attending: Attender): MouseEventHandler<HTMLInputElement> =>
         async (e) => {
             const target = e.currentTarget;
             e.preventDefault();
 
             const res = await toggleAPI({
-                attender: isTeamAttendance(attending)
+                attender: isAttenderTeam(attending)
                     ? attending.code
                     : attending.id,
                 event: event,
@@ -73,10 +73,10 @@ const AttendancePage = () => {
             }
         };
 
-    const deleteAttendanceAction = async (attending: Attendance) => {
+    const deleteAttendanceAction = async (attending: Attender) => {
         await deleteAttendance({
             attender: String(
-                isUserAttendance(attending) ? attending.id : attending.code,
+                isAttenderUser(attending) ? attending.id : attending.code,
             ),
             event: event,
         }).unwrap();
@@ -101,10 +101,10 @@ const AttendancePage = () => {
                                 }`}
                             >
                                 <span className="col-span-4 mx-4">
-                                    {isUserAttendance(attending)
+                                    {isAttenderUser(attending)
                                         ? reverseNameOrder(attending.name)
                                         : attending.name}{" "}
-                                    {isUserAttendance(attending) &&
+                                    {isAttenderUser(attending) &&
                                         attending.ejg_class}
                                 </span>
                                 <Form.Check

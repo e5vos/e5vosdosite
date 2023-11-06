@@ -11,9 +11,10 @@ import {
 } from "types/models";
 
 import teamAPI from "lib/api/teamAPI";
+import { isAdmin } from "lib/gates";
 import Locale from "lib/locale";
 
-import AttendanceShowcase from "components/AttendanceShowcase";
+import AttenderShowcase from "components/AttendanceShowcase";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
 import Card from "components/UIKit/Card";
@@ -163,20 +164,22 @@ const TeamCard = ({
                 </div>
             )}
             <hr />
-            <span className="hidden md:block">
-                <h2 className="text-center text-lg font-bold">
-                    {cardLocale.activities}
-                </h2>
-                <div>
-                    {team.activity?.map((e) => (
-                        <AttendanceShowcase key={e.pivot.id} attendance={e} />
-                    )) ?? (
-                        <div className="text-center italic">
-                            {cardLocale.noAttendanceYet}
-                        </div>
-                    )}
-                </div>
-            </span>
+            {isAdmin(user) && (
+                <span className="hidden md:block">
+                    <h2 className="text-center text-lg font-bold">
+                        {cardLocale.activities}
+                    </h2>
+                    <div>
+                        {team.activity?.map((e) => (
+                            <AttenderShowcase key={e.pivot.id} attender={e} />
+                        )) ?? (
+                            <div className="text-center italic">
+                                {cardLocale.noAttendanceYet}
+                            </div>
+                        )}
+                    </div>
+                </span>
+            )}
             <hr />
             <h2 className="text-center text-lg font-bold">
                 {cardLocale.members}

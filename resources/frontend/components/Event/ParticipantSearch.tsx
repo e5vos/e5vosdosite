@@ -1,10 +1,10 @@
 import { RequiredFields } from "types/misc";
-import { Attendance, Event, isTeamAttendance } from "types/models";
+import { Attender, Event, isAttenderTeam } from "types/models";
 
 import Form from "components/UIKit/Form";
 
-const displayName = (e: Attendance) => {
-    if (isTeamAttendance(e)) {
+const displayName = (e: Attender) => {
+    if (isAttenderTeam(e)) {
         return e.name;
     } else {
         return `${e.name} - ${e.ejg_class}}`;
@@ -16,7 +16,7 @@ const ParticipantSearch = ({
     onChange,
 }: {
     event: RequiredFields<Event, "attendees">;
-    onChange: (value: Attendance) => any;
+    onChange: (value: Attender) => any;
 }) => {
     return (
         <Form.ComboBox

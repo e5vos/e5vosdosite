@@ -5,22 +5,27 @@ import { useCallback, useEffect, useState } from "react";
 import { QrReader } from "react-qr-reader";
 import { useParams } from "react-router-dom";
 
-import { TeamMember, isUserAttendance } from "types/models";
+import { TeamMember } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import Locale from "lib/locale";
 
 import Error, { HTTPErrorCode } from "components/Error";
-import Button from "components/UIKit/Button";
 import Dialog from "components/UIKit/Dialog";
 import Loader from "components/UIKit/Loader";
 
 const locale = Locale({
     hu: {
         scanner: "QR Olvasó",
+        ispresentq: (name: string) => `${name} jelen van?`,
+        dialogtitle: "Csapattag jelenléte",
+        confirmed: "jelenlét rögzítve",
     },
     en: {
         scanner: "QR Scanner",
+        ispresentq: (name: string) => `Is ${name} present?`,
+        dialogtitle: "Team member presence",
+        confirmed: "presence confirmed",
     },
 });
 
@@ -29,16 +34,11 @@ const useMemberConfigDialog = (selectedMember: TeamMember | null) =>
         ({ handleConfirm, handleCancel }: ConfirmDialogProps) => {
             if (!selectedMember) return <></>;
             return (
-                <Dialog title={"Csapattag jelenléte"} closable={false}>
+                <Dialog title={locale.dialogtitle} closable={false}>
                     <div>
-                        {selectedMember.name} - {selectedMember.ejg_class} jelen
-                        van?
-                    </div>
-                    <div>
-                        <Button onClick={handleConfirm}>Confirm</Button>
-                        <Button variant="danger" onClick={handleCancel}>
-                            Cancel
-                        </Button>
+                        {locale.ispresentq(
+                            `${selectedMember.name} - ${selectedMember.ejg_class}`,
+                        )}
                     </div>
                 </Dialog>
             );
@@ -66,13 +66,7 @@ const Scanner = () => {
     const scan = useScannerHandler({
         event: event ?? { id: -1 },
         onSuccess: (attendance) => {
-            setSuccessMessage(
-                `${attendance.name} - ${
-                    isUserAttendance(attendance)
-                        ? `(${attendance.ejg_class})`
-                        : ""
-                } jelenlét rögzítve`,
-            );
+            setSuccessMessage(`${attendance.name} ${locale.confirmed}`);
             setTimeout(() => setSuccessMessage(null), 2000);
         },
         onError: (error) => {
@@ -87,6 +81,7 @@ const Scanner = () => {
     useEffect(() => {
         (window as any).scan = scan;
     }, [scan]);
+
     const { user } = useUser();
 
     if (error && "status" in error)

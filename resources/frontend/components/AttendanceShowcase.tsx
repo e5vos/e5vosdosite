@@ -1,14 +1,14 @@
 import {
-    Attendance,
-    TeamAttendance,
-    UserAttendance,
-    isTeamAttendance,
+    Attender,
+    AttendingTeam,
+    AttendingUser,
+    isAttenderTeam,
 } from "types/models";
 
-const TeamAttendanceShowcase = ({
-    attendance,
+const TeamAttenderShowcase = ({
+    attender: attendance,
 }: {
-    attendance: TeamAttendance;
+    attender: AttendingTeam;
 }) => {
     return (
         <div>
@@ -20,25 +20,20 @@ const TeamAttendanceShowcase = ({
     );
 };
 
-const UserAttendanceShowcase = ({
-    attendance,
+const UserAttenderShowcase = ({
+    attender: attendance,
 }: {
-    attendance: UserAttendance;
+    attender: AttendingUser;
 }) => {
     return <>This is a user attendance</>;
 };
 
-const AttendanceShowcase = ({
-    attendance,
-    ...rest
-}: {
-    attendance: Attendance;
-}) => {
-    if (isTeamAttendance(attendance)) {
-        return <TeamAttendanceShowcase attendance={attendance} {...rest} />;
+const AttenderShowcase = ({ attender, ...rest }: { attender: Attender }) => {
+    if (isAttenderTeam(attender)) {
+        return <TeamAttenderShowcase attender={attender} {...rest} />;
     } else {
-        return <UserAttendanceShowcase attendance={attendance} {...rest} />;
+        return <UserAttenderShowcase attender={attender} {...rest} />;
     }
 };
 
-export default AttendanceShowcase;
+export default AttenderShowcase;

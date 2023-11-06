@@ -1,12 +1,18 @@
 import { useCallback } from "react";
 
+import { RequiredFields } from "types/misc";
 import {
     Attendance,
+    Attender,
     Event,
     Team,
+    TeamAttendance,
     TeamMember,
     TeamMemberAttendance,
     TeamMemberRole,
+    User,
+    UserAttendance,
+    isAttenderTeam,
     isTeamAttendance,
 } from "types/models";
 
@@ -27,7 +33,7 @@ const useScannerHandler = ({
 }: {
     event: Pick<Event, "id">;
     teamMemberPrompt: (member: TeamMember) => Promise<boolean>;
-    onSuccess?: (attendance: Attendance) => any;
+    onSuccess?: (attendance: User | Team) => any;
     onError?: (error: ScannerError) => any;
 }) => {
     const [getTeam] = teamAPI.useLazyGetTeamQuery();
@@ -36,7 +42,9 @@ const useScannerHandler = ({
 
     return useCallback(
         async (scanvalue: string) => {
-            let attendance: Attendance;
+            let attendance:
+                | RequiredFields<TeamAttendance, "team">
+                | RequiredFields<UserAttendance, "user">;
             try {
                 attendance = await attend({
                     event: event,
@@ -56,7 +64,7 @@ const useScannerHandler = ({
                 return;
             }
             if (!isTeamAttendance(attendance)) {
-                onSuccess?.(attendance);
+                onSuccess?.(attendance.user);
                 return;
             }
 
@@ -86,7 +94,7 @@ const useScannerHandler = ({
             )) {
                 memberAttendances.push({
                     is_present: await teamMemberPrompt(member),
-                    attendance_id: attendance.pivot.id,
+                    attendance_id: attendance.id,
                     user_id: member.id,
                 });
             }
@@ -102,7 +110,7 @@ const useScannerHandler = ({
                 */
                 return;
             }
-            onSuccess?.(attendance);
+            onSuccess?.(attendance.team);
         },
         [
             attend,

@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { CRUDFormImpl } from "types/misc";
-import { Attendance, Event, SignupType, SignupTypeType } from "types/models";
+import { Attender, Event, SignupType, SignupTypeType } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import teamAPI from "lib/api/teamAPI";
@@ -240,7 +240,7 @@ const EventReader = ({
         );
     }, [event?.id, myteams]);
 
-    const setScore = useCallback((p: Attendance, score: number) => {
+    const setScore = useCallback((p: Attender, score: number) => {
         console.log(p, score);
     }, []);
 

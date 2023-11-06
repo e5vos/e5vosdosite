@@ -154,7 +154,7 @@ export const eventAPI = baseAPI.injectEndpoints({
             TeamMemberAttendance[]
         >({
             query: (data) => ({
-                url: routeSwitcher("team.member.attend"),
+                url: routeSwitcher("attendance.teamMemberAttend"),
                 method: "POST",
                 params: data,
             }),

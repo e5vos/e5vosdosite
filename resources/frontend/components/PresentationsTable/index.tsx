@@ -131,7 +131,6 @@ const PresentationsTable = ({
                                     <p className="mr-2 flex-1 px-2 py-0.5">
                                         {presentation.description}
                                     </p>
-                                    f
                                     {(presentation.direct_child ||
                                         presentation.root_parent) && (
                                         <div className="bg-blue-500">
@@ -174,11 +173,15 @@ const PresentationsTable = ({
                                 </div>
                             </td>
                             <td className="text-bold text-center text-2xl font-semibold md:text-lg">
-                                <span className="font-bold md:hidden">
-                                    {locale.presentation.location}
-                                </span>
-                                {presentation.location?.name ??
-                                    "Ismeretlen hely"}
+                                <div className="flex h-full flex-col justify-around">
+                                    <div className="font-bold md:hidden">
+                                        {locale.presentation.location}
+                                    </div>
+                                    <div>
+                                        {presentation.location?.name ??
+                                            "Ismeretlen hely"}
+                                    </div>
+                                </div>
                             </td>
                             <td
                                 className={

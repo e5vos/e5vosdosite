@@ -103,7 +103,7 @@ jobs:
         run: php artisan ziggy:generate --types
 
       - name: Migrate database
-        run: php artisan migrate
+        run: php artisan migrate --force
 
       - name: Build frontend
         run: npm run build

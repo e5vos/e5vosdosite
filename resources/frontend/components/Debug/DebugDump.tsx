@@ -29,20 +29,26 @@ const DebugDump = () => {
 
     return (
         <Dialog open={open} onClose={() => setOpen(false)}>
-            <QRCode value={statestr} className="mx-auto my-4" />
-            <div className="flex flex-row gap-4">
-                <Form.Control onChange={(t) => setKey(t.target.value)} />
-                <Button
-                    onClick={async () => {
-                        await dump({
-                            dump: state,
-                            key: key !== "" ? key : undefined,
-                        });
-                    }}
-                >
-                    Dump
-                </Button>
-            </div>
+            {open && (
+                <div>
+                    <QRCode value={statestr} className="mx-auto my-4" />
+                    <div className="flex flex-row gap-4">
+                        <Form.Control
+                            onChange={(t) => setKey(t.target.value)}
+                        />
+                        <Button
+                            onClick={async () => {
+                                await dump({
+                                    dump: state,
+                                    key: key !== "" ? key : undefined,
+                                });
+                            }}
+                        >
+                            Dump
+                        </Button>
+                    </div>
+                </div>
+            )}
         </Dialog>
     );
 };

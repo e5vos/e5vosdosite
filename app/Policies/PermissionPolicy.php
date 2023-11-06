@@ -16,7 +16,7 @@ class PermissionPolicy
      */
     public function before(User $user)
     {
-        if ($user->hasPermission('OPT')) {
+        if ($user->hasPermission(PermissionType::Operator->value)) {
             return true;
         }
     }

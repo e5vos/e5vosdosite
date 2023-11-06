@@ -37,7 +37,7 @@ export const baseAPI = createApi({
         credentials: "include",
         mode: "cors",
     }),
-    tagTypes: ["User"],
+    tagTypes: ["User", "Event", "Slot", "EventParticipants"],
     endpoints: (builder) => ({
         getCurrentUserData: builder.query<
             RequiredAndOmitFields<User, "permissions", "teams" | "activity">,

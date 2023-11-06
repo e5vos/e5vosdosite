@@ -82,6 +82,12 @@ export const adminAPI = baseAPI
                     method: "DELETE",
                     body: data,
                 }),
+                invalidatesTags: (result, error) => [
+                    { type: "User", id: user_id },
+                    { type: "User", id: "LIST" },
+                    { type: "Event", id: event_id },
+                    { type: "Event", id: "LIST" },
+                ],
             }),
         }),
     });

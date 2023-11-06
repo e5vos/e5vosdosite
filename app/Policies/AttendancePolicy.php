@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\PermissionType;
 use App\Models\Attendance;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -15,7 +16,7 @@ class AttendancePolicy
      */
     public function before(User $user)
     {
-        if ($user->hasPermission('ADM') || $user->hasPermission('OPT')) {
+        if ($user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::Operator->value)) {
             return true;
         }
     }
@@ -28,7 +29,7 @@ class AttendancePolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasPermission('TCH') || $user->hasPermission('TAD');
+        return $user->hasPermission(PermissionType::Teacher->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
     }
 
     /**
@@ -40,7 +41,7 @@ class AttendancePolicy
      */
     public function view(User $user, Attendance $attendance)
     {
-        return $user->organisesEvent($attendance->event_id);
+        return $user->organisesEvent($attendance->event_id) || $user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
     }
 
     /**
@@ -52,7 +53,7 @@ class AttendancePolicy
      */
     public function create(User $user, $eventId)
     {
-        return $user->organisesEvent($eventId);
+        return $user->organisesEvent($eventId) || $user->hasPermission(PermissionType::Admin->value);
     }
 
     /**
@@ -62,7 +63,7 @@ class AttendancePolicy
      */
     public function update()
     {
-        return false;
+        return false; // TODO
     }
 
     /**
@@ -74,7 +75,7 @@ class AttendancePolicy
      */
     public function delete(User $user, Attendance $attendance)
     {
-        return $user->organisesEvent($attendance->event_id);
+        return $user->organisesEvent($attendance->event_id) || $user->hasPermission(PermissionType::Admin->value);
     }
 
     /**
@@ -86,7 +87,7 @@ class AttendancePolicy
      */
     public function restore()
     {
-        return false;
+        return false; // TODO
     }
 
     /**
@@ -98,6 +99,6 @@ class AttendancePolicy
      */
     public function forceDelete()
     {
-        return false;
+        return false; // TODO
     }
 }

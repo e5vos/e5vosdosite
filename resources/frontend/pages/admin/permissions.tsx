@@ -48,10 +48,6 @@ const PermissionView = ({
                 </div>
             </div>
             <hr className="my-5" />
-            <div className="mt-10 text-left">
-                <h2 className="text-lg italic">{locale.new}</h2>
-                <PermissionCRUD.Creator value={{ user_id: user.id }} />
-            </div>
         </div>
     );
 };
@@ -80,6 +76,10 @@ const PermissionsPage = () => {
             {userID !== -1 && isLoading && <Loader />}
             {userID !== -1 && error && <Error code={400} />}
             {selecteduser && <PermissionView user={selecteduser} />}
+            <div className="mt-10 text-left">
+                <h2 className="text-lg italic">{locale.new}</h2>
+                <PermissionCRUD.Creator value={{}} />
+            </div>
         </div>
     );
 };

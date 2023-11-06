@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\PermissionType;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -15,7 +16,7 @@ class TeamPolicy
      */
     public function before(User $user)
     {
-        if ($user->hasPermission('ADM') || $user->hasPermission('OPT')) {
+        if ($user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::Operator->value)) {
             return true;
         }
     }
@@ -28,7 +29,7 @@ class TeamPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasPermission('TCH') || $user->hasPermission('TAD');
+        return $user->hasPermission(PermissionType::Teacher->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
     }
 
     /**
@@ -40,7 +41,7 @@ class TeamPolicy
      */
     public function view(User $user)
     {
-        return $user->hasPermission('TCH') || $user->hasPermission('TAD') || $user->isInTeam(request()->teamCode);
+        return $user->hasPermission(PermissionType::Teacher->value) || $user->hasPermission(PermissionType::TeacherAdmin->value) || $user->isInTeam(request()->teamCode);
     }
 
     /**
@@ -62,7 +63,7 @@ class TeamPolicy
      */
     public function update(User $user)
     {
-        return $user->isLeaderOfTeam(request()->teamCode) || $user->hasPermission('TAD');
+        return $user->isLeaderOfTeam(request()->teamCode) || $user->hasPermission(PermissionType::TeacherAdmin->value);
     }
 
     /**

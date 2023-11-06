@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\PermissionType;
 use App\Models\BonusPoint;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -15,7 +16,7 @@ class BonusPointPolicy
      */
     public function before(User $user)
     {
-        if ($user->hasPermissionTo('ADM') || $user->hasPermissionTo('OPT')) {
+        if ($user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::Operator->value)) {
             return true;
         }
     }

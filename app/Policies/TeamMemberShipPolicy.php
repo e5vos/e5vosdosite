@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\MembershipType;
+use App\Helpers\PermissionType;
 use App\Models\TeamMemberShip;
 use App\Models\User;
 use App\Models\Team;
@@ -18,7 +19,7 @@ class TeamMemberShipPolicy
      */
     public function before(User $user)
     {
-        return $user->hasPermission('ADM') || $user->hasPermission('OPT') ? true : null;
+        return ($user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::Operator->value)) ? true : null;
     }
 
     /**

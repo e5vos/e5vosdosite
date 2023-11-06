@@ -23,8 +23,9 @@ const DebugDump = () => {
     }, []);
 
     useEffect(() => {
+        if (!open) return;
         setStatestr(JSON.stringify(state).substring(0, 2000));
-    }, [state]);
+    }, [open, state]);
 
     return (
         <Dialog open={open} onClose={() => setOpen(false)}>

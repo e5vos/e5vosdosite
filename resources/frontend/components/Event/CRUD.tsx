@@ -230,8 +230,6 @@ const EventReader = ({
         return new Date(event.signup_deadline) > new Date();
     }, [event]);
 
-    console.log("asd", canSignup, event.signup_deadline);
-
     const signUpTeams = useMemo(() => {
         if (!myteams) return [];
         return myteams.filter(

@@ -11,6 +11,7 @@ import eventAPI from "lib/api/eventAPI";
 import Locale from "lib/locale";
 
 import Error, { HTTPErrorCode } from "components/Error";
+import Button from "components/UIKit/Button";
 import Dialog from "components/UIKit/Dialog";
 import Loader from "components/UIKit/Loader";
 
@@ -20,12 +21,16 @@ const locale = Locale({
         ispresentq: (name: string) => `${name} jelen van?`,
         dialogtitle: "Csapattag jelenléte",
         confirmed: "jelenlét rögzítve",
+        yes: "Igen",
+        no: "Nem",
     },
     en: {
         scanner: "QR Scanner",
         ispresentq: (name: string) => `Is ${name} present?`,
         dialogtitle: "Team member presence",
         confirmed: "presence confirmed",
+        yes: "Yes",
+        no: "No",
     },
 });
 
@@ -39,6 +44,22 @@ const useMemberConfigDialog = (selectedMember: TeamMember | null) =>
                         {locale.ispresentq(
                             `${selectedMember.name} - ${selectedMember.ejg_class}`,
                         )}
+                    </div>
+                    <div className="mt-3 w-full">
+                        <Button
+                            variant="success"
+                            onClick={handleConfirm}
+                            className="w-1/2"
+                        >
+                            {locale.yes}
+                        </Button>
+                        <Button
+                            variant="danger"
+                            onClick={handleCancel}
+                            className="w-1/2"
+                        >
+                            {locale.no}
+                        </Button>
                     </div>
                 </Dialog>
             );

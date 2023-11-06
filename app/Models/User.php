@@ -8,8 +8,9 @@ use App\Exceptions\StudentBusyException;
 use App\Helpers\MembershipType;
 use App\Helpers\PermissionType;
 use App\Helpers\SlotType;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,9 +27,14 @@ use Illuminate\Support\Facades\Cache;
  * @property string $ejg_class
  * @property string|null $img_url
  */
-class User extends Authenticable
+class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * The table associated with the model.
+     */
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -50,12 +56,26 @@ class User extends Authenticable
      */
     protected $hidden = [
         'google_id',
+        'e5code',
+        'created_at',
+        'updated_at',
     ];
 
     /**
      * The primary key associated with the table.
      */
     protected $primaryKey = 'id';
+
+    /**
+     * Boot the model.
+     *
+     * Assing global scopes, etc. Order by ejg_class and name
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('order', fn ($builder) => $builder->orderBy('ejg_class')->orderBy('name'));
+    }
 
     /**
      * Get all of the permissions for the User
@@ -73,19 +93,34 @@ class User extends Authenticable
      */
     public function hasPermission(string $code)
     {
-        $permissions = Cache::remember('users.' . $this->id . '.permissions', now()->addMinutes(5), function () {
+        $permissions = $_SESSION['permissions'] ?? Cache::remember('users.' . $this->id . '.permissions', now()->addMinutes(5), function () {
             return $this->permissions()->get()->pluck('code')->toArray();
         });
+        $_SESSION['permissions'] = $permissions;
         return in_array($code, $permissions) || in_array(PermissionType::Operator->value, $permissions);
     }
 
+
     /**
-     * Get all of the Events oranised by the User
+     * Get the organised events for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function organisedEvents(): BelongsToMany
     {
         return $this->belongsToMany(Event::class, 'permissions', 'user_id', 'event_id')->where('code', '=', PermissionType::Organiser);
     }
+
+    /**
+     * All th events where the user is a scanner.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function scannerAtEvents(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'permissions', 'user_id', 'event_id')->where('code', '=', PermissionType::Scanner);
+    }
+
 
     /**
      * determine if the user is an organiser of the $event
@@ -97,6 +132,18 @@ class User extends Authenticable
     public function organisesEvent(int $eventId): bool
     {
         return $this->organisedEvents()->find($eventId) != null;
+    }
+
+    /**
+     * determine if the user is a scanner of the $event
+     *
+     * @param int $eventId
+     *
+     * @return boolean
+     */
+    public function scansEvent(int $eventId): bool
+    {
+        return $this->scannerAtEvents()->find($eventId) != null;
     }
 
     /**
@@ -136,7 +183,7 @@ class User extends Authenticable
      */
     public function events(): BelongsToMany
     {
-        return $this->belongsToMany(Event::class, 'attendances', 'user_id', 'event_id');
+        return $this->belongsToMany(Event::class, 'attendances');
     }
 
     /*
@@ -156,12 +203,59 @@ class User extends Authenticable
         return $this->hasMany(Rating::class);
     }
 
+
+    /**
+     * Get all teamattendances of the user
+     */
+    public function teamSignups(): BelongsToMany
+    {
+        return $this->belongsToMany(Attendance::class, 'team_member_attendances', 'user_id', 'attendance_id');
+    }
+
+    /**
+     * Get all events the user has signed up for WITHOUT a team
+     */
+    public function userActivity(): HasMany
+    {
+        return $this->signups()->with(['event:name,id,location_id']);
+    }
+
+    /**
+     * Get all events the user has signed up for WITH a team
+     */
+    public function teamActivity(): BelongsToMany
+    {
+        return $this->teamSignups()->with([
+            'event:name,id,location_id',
+            'team:name,code',
+            'team.members:id,name,ejg_class',
+            'teamMemberAttendances:user_id,is_present,attendance_id'
+        ]);
+    }
+
+    /**
+     * Get all events the user has signed up for
+     */
+    public function activity()
+    {
+        return $this->userActivity()->union($this->teamActivity()->getQuery());
+    }
+
     /**
      * Determine if the user has an attendance in the slot
      */
-    public function isBusy(Slot|int $slot): bool
+    public function isBusyInSlot(Slot|int $slot): bool
     {
         return $this->events()->where('slot_id', $slot->id ?? $slot)->count() > 0;
+    }
+
+    public function isBusy($time = null): bool
+    {
+        $time ??= now();
+        return Attendance::whereIn("event_id", Event::currentEvents($time)->pluck("id")->toArray())
+            ->where("user_id", $this->id)
+            ->orWhereIn("team_code", $this->teamMemberships()->pluck("team_code")->toArray())
+            ->count() > 0;
     }
 
     /**
@@ -172,7 +266,7 @@ class User extends Authenticable
      * @throws StudentBusyException if user is busy at the event timeslot
      * @throws EventFullException if the event is full
      * @throws AlreadySignedUpException Student is signed up for this event
-     * @return EventSignup the newly created EventSignup object
+     * @return Attendance the newly created EventSignup object
      */
     public function signUp(Event $event, bool $force = false)
     {
@@ -180,7 +274,7 @@ class User extends Authenticable
             $this->signUp(Event::findOrFail($event->root_parent));
             return Attendance::where('user_id', $this->id)->where('event_id', $event->id)->first();
         }
-        if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusy($event->slot)) {
+        if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusyInSlot($event->slot)) {
             throw new StudentBusyException();
         }
         if (
@@ -199,6 +293,7 @@ class User extends Authenticable
         $signup->event()->associate($event);
         $signup->user()->associate($this);
         $signup->save();
+        $event->forget('occupancy');
         return $signup;
     }
 
@@ -207,7 +302,7 @@ class User extends Authenticable
      *
      * @param  Event $event the event to attend
      * @param  bool $force whether to force the signup even if it has a root parent
-     * @return EventSignup the newly created EventSignup object
+     * @return Attendance the newly created Attendance object
      */
     public function attend(Event $event, bool $force = false)
     {
@@ -227,9 +322,13 @@ class User extends Authenticable
         if ($event->direct_child !== null) {
             $this->attend(Event::findOrFail($event->direct_child), true);
         }
-
-        $signup->togglePresent();
+        if (isset(request()->present)) {
+            $signup->is_present = request()->present;
+        } else {
+            $signup->togglePresent();
+        }
         $signup->save();
+        $event->forget('occupancy');
         return $signup;
     }
 

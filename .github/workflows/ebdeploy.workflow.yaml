@@ -18,7 +18,9 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
       - name: Install backend dependencies
-        run: composer install
+        run: |
+          composer install --prefer-dist --no-progress --no-ansi --no-interaction
+          echo "${PWD}/vendor/bin" >> $GITHUB_PATH
       - name: Generate dotenv file
         uses: SpicyPizza/create-envfile@v2.0
         with:
@@ -30,7 +32,7 @@ jobs:
           envkey_APP_URL: "https://${APP_DOMAIN}"
           envkey_VITE_BACKEND: "${APP_URL}"
           envkey_LOG_CHANNEL: stack
-          envkey_LOG_DEPRECATIONS_CHANNEL: null
+          envkey_LOG_DEPRECATIONS_CHANNEL: "null"
           envkey_LOG_LEVEL: error
 
           envkey_DB_CONNECTION: mysql
@@ -54,28 +56,28 @@ jobs:
           envkey_MEMCACHED_HOST: 127.0.0.1
 
           envkey_REDIS_HOST: 127.0.0.1
-          envkey_REDIS_PASSWORD: null
+          envkey_REDIS_PASSWORD: "null"
           envkey_REDIS_PORT: 6379
 
           envkey_MAIL_MAILER: smtp
           envkey_MAIL_HOST: mailhog
           envkey_MAIL_PORT: 1025
-          envkey_MAIL_USERNAME: null
-          envkey_MAIL_PASSWORD: null
-          envkey_MAIL_ENCRYPTION: null
+          envkey_MAIL_USERNAME: "null"
+          envkey_MAIL_PASSWORD: "null"
+          envkey_MAIL_ENCRYPTION: "null"
           envkey_MAIL_FROM_ADDRESS: do@e5vos.hu
           envkey_MAIL_FROM_NAME: "${APP_NAME}"
 
-          envkey_AWS_ACCESS_KEY_ID:
-          envkey_AWS_SECRET_ACCESS_KEY:
+          envkey_AWS_ACCESS_KEY_ID: ""
+          envkey_AWS_SECRET_ACCESS_KEY: ""
           envkey_AWS_DEFAULT_REGION: ${{vars.AWS_REGION}}
-          envkey_AWS_BUCKET:
+          envkey_AWS_BUCKET: ""
           envkey_AWS_USE_PATH_STYLE_ENDPOINT: false
 
-          envkey_PUSHER_APP_ID:
-          envkey_PUSHER_APP_KEY:
-          envkey_PUSHER_APP_SECRET:
-          envkey_PUSHER_HOST:
+          envkey_PUSHER_APP_ID: ""
+          envkey_PUSHER_APP_KEY: ""
+          envkey_PUSHER_APP_SECRET: ""
+          envkey_PUSHER_HOST: ""
           envkey_PUSHER_PORT: 443
           envkey_PUSHER_SCHEME: https
           envkey_PUSHER_APP_CLUSTER: mt1
@@ -93,6 +95,9 @@ jobs:
           envkey_E5VOS_API_TOKEN: "${{secrets.E5VOS_API_TOKEN}}"
           envkey_E5VOS_API_URL: "${{vars.E5VOS_API_URL}}"
           envkey_E5VOS_FAKE_API: false
+
+          envkey_DEBUG_API_KEY: "${{secrets.DEBUG_API_KEY}}"
+          envkey_DISCORD_WEBHOOK: "${{secrets.DISCORD_WEBHOOK}}"
 
       - name: Generate Routes
         run: php artisan ziggy:generate --types

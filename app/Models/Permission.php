@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\PermissionType;
+use App\Helpers\HasCompositeKey;
 
 /**
  * App\Models\Permission
@@ -18,7 +19,7 @@ use App\Helpers\PermissionType;
 
 class Permission extends Model
 {
-    use HasFactory;
+    use HasFactory, HasCompositeKey;
     /**
      * The table associated with the model.
      *
@@ -28,10 +29,17 @@ class Permission extends Model
 
     protected $primaryKey = ['user_id', 'event_id', 'code'];
 
+    public $incrementing = false;
+
     protected $fillable = [
         'user_id',
         'event_id',
         'code',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -44,11 +52,6 @@ class Permission extends Model
             ->where('code', $id[1] ? PermissionType::Organiser->value : $id[2])
             ->limit(1) ?? null;
     }
-
-    public $incrementing = false;
-
-
-
 
     /**
      * Get the user that owns the permission.

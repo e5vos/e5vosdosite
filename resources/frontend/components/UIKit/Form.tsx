@@ -1,7 +1,24 @@
 import { Combobox } from "@headlessui/react";
-import React, { FormEventHandler, ReactNode } from "react";
+import React, { FormEventHandler, ReactNode, forwardRef } from "react";
+
+import Locale from "lib/locale";
 
 import { HTMLInputProps } from "./helpers";
+
+const locale = Locale({
+    hu: {
+        combobox: {
+            continued: "További találatok...",
+            nonematching: "Nincs találat",
+        },
+    },
+    en: {
+        combobox: {
+            continued: "More results...",
+            nonematching: "No results",
+        },
+    },
+});
 
 const Control = ({
     invalid,
@@ -47,7 +64,11 @@ const Label = ({
     ...rest
 }: HTMLInputProps<HTMLSpanElement>) => {
     return (
-        <span className="mr-1 font-bold underline underline-offset-4">
+        <span
+            className={`mr-1 font-bold underline underline-offset-4 ${
+                className ?? ""
+            }`}
+        >
             {children}
         </span>
     );
@@ -59,12 +80,7 @@ const Group = ({
     ...rest
 }: HTMLInputProps<HTMLLabelElement>) => {
     return (
-        <label
-            {...rest}
-            className={`form-group mb-3 flex flex-row items-center justify-center ${
-                className ?? ""
-            }`}
-        >
+        <label {...rest} className={`form-group mb-3 ${className ?? ""}`}>
             {children}
         </label>
     );
@@ -79,7 +95,7 @@ const Form = ({
     HTMLFormElement
 >) => {
     return (
-        <form {...rest} className={`${className}`}>
+        <form {...rest} className={`${className ?? ""}`}>
             {children}
         </form>
     );
@@ -106,17 +122,29 @@ const Check = ({
     );
 };
 
-const Select = ({ children, ...rest }: HTMLInputProps<HTMLSelectElement>) => {
-    return (
-        <select className="bg-gray" {...rest}>
-            {children}
-        </select>
-    );
+const Select = forwardRef(
+    (
+        { children, className, ...rest }: HTMLInputProps<HTMLSelectElement>,
+        ref: React.LegacyRef<HTMLSelectElement> | undefined,
+    ) => {
+        return (
+            <select
+                className={`form-select max-w-sm bg-gray ${className ?? ""}`}
+                {...rest}
+                ref={ref}
+            >
+                {children}
+            </select>
+        );
+    },
+);
+
+const Option = ({ children, ...rest }: HTMLInputProps<HTMLOptionElement>) => {
+    return <option {...rest}>{children}</option>;
 };
 
 const ComboBoxOption = ({
     children,
-    key,
     value,
 }: {
     children: ReactNode;
@@ -124,7 +152,10 @@ const ComboBoxOption = ({
     value: any;
 }) => {
     return (
-        <Combobox.Option key={key} value={value}>
+        <Combobox.Option
+            value={value}
+            className="hover:bg-gray-300 hover:ring-0"
+        >
             {children}
         </Combobox.Option>
     );
@@ -134,36 +165,60 @@ const ComboBox = <T = any,>({
     options,
     filter,
     onChange,
+    onQueryChange,
     renderElement,
+    getElementName,
+    className,
+    initialValue = "",
+    limit = 15,
 }: {
     options: T[];
-    filter: (s: string) => (e: T) => boolean;
+    filter?: (s: string) => (e: T) => boolean;
     onChange?: (e: T | null) => void;
+    onQueryChange?: (s: string) => void;
+    getElementName: (e: T) => string;
     renderElement: (e: T) => ReactNode;
-}) => {
-    const [query, setQuery] = React.useState("");
+    initialValue?: string;
+    limit?: number;
+} & Omit<HTMLInputProps<HTMLInputElement>, "onChange">) => {
+    const [query, setQuery] = React.useState(initialValue);
     const [selected, setSelected] = React.useState<T | null>(null);
-    const filteredOptions = options.filter(filter(query));
+    const filteredOptions = filter ? options.filter(filter(query)) : options;
 
     return (
         <Combobox
             value={selected}
             onChange={(e) => {
+                if (!e) return;
+                setQuery(getElementName(e));
                 setSelected(e);
                 if (onChange) onChange(e);
             }}
         >
             <Combobox.Input
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="border-b-2 border-white bg-transparent text-white focus:border-gray-400"
+                onChange={(e) => {
+                    setQuery(e.target.value);
+                    onQueryChange?.(e.target.value);
+                }}
+                className={`mb-2 mt-0 block w-full border-0 border-b-2 border-gray-200 bg-gray invalid:border-red invalid:text-red focus:border-gray-300 focus:ring-0 ${
+                    className ?? ""
+                }`}
             />
-            <Combobox.Options>
-                {filteredOptions.map((option, index) => (
+            <Combobox.Options className="scrollbar-track-gray- scrollbar-thumb-min-h-5 mb-2 mt-0 block max-h-64 w-full overflow-auto bg-gray scrollbar-thin scrollbar-thumb-gray-50 hover:scrollbar-thumb-gray-300">
+                {filteredOptions.slice(0, limit).map((option, index) => (
                     <ComboBoxOption key={index} value={option}>
                         {renderElement(option)}
                     </ComboBoxOption>
                 ))}
+                {filteredOptions.length > limit && (
+                    <span>{locale.combobox.continued}</span>
+                )}
+                {filteredOptions.length === 0 && (
+                    <span className="text-red-500">
+                        {locale.combobox.nonematching}
+                    </span>
+                )}
             </Combobox.Options>
         </Combobox>
     );
@@ -176,5 +231,6 @@ export default Object.assign(Form, {
     Group,
     Check,
     Select,
+    Option,
     ComboBox,
 });

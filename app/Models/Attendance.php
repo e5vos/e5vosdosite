@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Attendance
  * @property int $id
  * @property int $user_id
- * @property int $team_id
+ * @property int $team_code
  * @property int $event_id
  * @property bool $is_present
  * @property int $rank
@@ -38,6 +39,21 @@ class Attendance extends Model
         'is_present' => 'boolean',
     ];
 
+    protected $hidden = [
+        'created_at',
+    ];
+
+    /**
+     * Attendance.php Boot the model.
+     *
+     * Assing global scopes, etc. Order by updated_at
+
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('order', fn ($builder) => $builder->orderBy('attendances.updated_at', 'desc'));
+    }
 
     /**
      * toggle the presence of the attendee at the event
@@ -77,5 +93,13 @@ class Attendance extends Model
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
+    }
+
+    /**
+     * Get the team member attendances for the attendance.
+     */
+    public function teamMemberAttendances(): HasMany
+    {
+        return $this->hasMany(TeamMemberAttendance::class);
     }
 }

@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 
-import { Attendance, User } from "types/models";
+import { RequiredAndOmitFields, RequiredFields } from "types/misc";
+import { User, UserStub } from "types/models";
 
 import routeSwitcher from "../route";
 import { RootState } from "../store";
@@ -10,7 +11,7 @@ export const baseAPI = createApi({
     reducerPath: "e5nApi",
     baseQuery: fetchBaseQuery({
         fetchFn(input, init?) {
-            if (input instanceof Request && input.url.includes("/-1/")) {
+            if (input instanceof Request && input.url.includes("/-1")) {
                 throw new Error("-1 in URL");
             } else {
                 return fetch(input, init);
@@ -36,11 +37,25 @@ export const baseAPI = createApi({
         credentials: "include",
         mode: "cors",
     }),
-    tagTypes: ["User"],
+    tagTypes: ["User", "Event", "Slot", "EventParticipants", "Team"],
     endpoints: (builder) => ({
-        getUserData: builder.query<User, void>({
-            query: () => routeSwitcher("user"),
+        getCurrentUserData: builder.query<
+            RequiredAndOmitFields<User, "permissions", "teams" | "activity">,
+            void
+        >({
+            // return type depends zoli TODO
+            query: (data) => ({
+                url: routeSwitcher("user.current"),
+                method: "GET",
+            }),
             providesTags: (result) => [{ type: "User", id: result?.id }],
+        }),
+        getCurrentUserDetails: builder.query<User, void>({
+            query: (data) => ({
+                url: routeSwitcher("user.details"),
+                method: "GET",
+            }),
+            providesTags: (result) => [{ type: "User", id: "CURRENT" }],
         }),
         setStudentCode: builder.mutation<User, string>({
             query: (code) => ({
@@ -49,12 +64,20 @@ export const baseAPI = createApi({
                 params: { e5code: code },
             }),
         }),
-        getUserActivity: builder.query<
-            { event: Event; attendance: Attendance }[],
+        userSearch: builder.query<UserStub[], string | number>({
+            query: (q) => ({
+                url: routeSwitcher("users.index"),
+                params: q ? { q } : undefined,
+            }),
+        }),
+        getUser: builder.query<
+            RequiredFields<User, "teams" | "permissions">,
             Pick<User, "id">
         >({
-            query: (user) =>
-                routeSwitcher("user.activity", { userid: user.id }),
+            query: ({ id }) => ({
+                url: routeSwitcher("users.show", { userId: id }),
+            }),
+            providesTags: (result) => [{ type: "User", id: result?.id }],
         }),
     }),
 });

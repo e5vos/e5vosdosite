@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Ramsey\Uuid\Type\Integer;
 
 use App\Models\Event;
 
@@ -45,7 +44,7 @@ class EventResource extends JsonResource
             'organisers' => UserResource::collection($this->whenLoaded('organisers')),
             'users' => UserResource::collection($this->whenLoaded('users')),
             'teams' => TeamResource::collection($this->whenLoaded('teams')),
-            'attendees' => UserResource::collection($this->whenLoaded('attendees')),
+            // 'attendees' => UserResource::collection($this->whenLoaded('attendees')),
 
             "pivot" => $this->whenPivotLoaded($this->pivot?->getTable(), fn () => $this->pivot),
         ];

@@ -1,3 +1,4 @@
+import { RequiredAndOmitFields } from "types/misc";
 import { Location } from "types/models";
 
 import routeSwitcher from "lib/route";
@@ -10,8 +11,8 @@ export const locationAPI = baseAPI
     })
     .injectEndpoints({
         endpoints: (builder) => ({
-            getLocations: builder.query<Location[], void>({
-                query: () => routeSwitcher("locations"),
+            getLocations: builder.query<Omit<Location, "events">[], void>({
+                query: () => routeSwitcher("location.index"),
                 providesTags: (result) =>
                     result
                         ? [
@@ -23,7 +24,20 @@ export const locationAPI = baseAPI
                           ]
                         : [{ type: "Location", id: "LIST" }],
             }),
-            updateLocation: builder.mutation<Location, Location>({
+            getLocation: builder.query<
+                RequiredAndOmitFields<Location, "events", "currentEvent">,
+                number
+            >({
+                query: (id) => routeSwitcher("location.show", { id }),
+                providesTags: (result) =>
+                    result
+                        ? [{ type: "Location", id: result.id }]
+                        : [{ type: "Location", id: "LIST" }],
+            }),
+            updateLocation: builder.mutation<
+                Omit<Location, "currentEvent" | "events">,
+                Omit<Location, "currentEvent" | "events">
+            >({
                 query: (location) => ({
                     url: routeSwitcher("location.update", { id: location.id }),
                     method: "PATCH",

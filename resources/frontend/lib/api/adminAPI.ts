@@ -1,6 +1,10 @@
-import { Slot, User } from "types/models";
+import { dumpState } from "hooks/useStateDump";
+import { url } from "inspector";
+
+import { Permission, Slot, User, UserStub } from "types/models";
 
 import routeSwitcher from "lib/route";
+import { RootState } from "lib/store";
 
 import baseAPI from ".";
 
@@ -10,25 +14,28 @@ export const adminAPI = baseAPI
     })
     .injectEndpoints({
         endpoints: (builder) => ({
-            getUsers: builder.query<User[], void>({
-                query: () => routeSwitcher("users"),
+            getUsers: builder.query<UserStub[], void>({
+                query: () => routeSwitcher("users.index"),
             }),
-            getFreeUsers: builder.query<User[], Pick<Slot, "id">>({
+            getFreeUsers: builder.query<UserStub[], Pick<Slot, "id">>({
                 query: (slot) =>
                     routeSwitcher("slot.free_students", { slotId: slot }),
             }),
-            getNotPresentUsers: builder.query<User[], Pick<Slot, "id">>({
+            getNotPresentUsers: builder.query<UserStub[], Pick<Slot, "id">>({
                 query: (slot) =>
                     routeSwitcher("slot.not_attending_students", {
                         slotId: slot,
                     }),
             }),
-            getPresentUsers: builder.query<User[], Pick<User, "id">>({
+            getPresentUsers: builder.query<UserStub[], Pick<User, "id">>({
                 query: (slot) =>
                     routeSwitcher("slot.attending_students", { slotId: slot }),
             }),
 
-            createSlot: builder.mutation<Slot, Omit<Slot, "id" | "events">>({
+            createSlot: builder.mutation<
+                Omit<Slot, "events">,
+                Omit<Slot, "id" | "events">
+            >({
                 query: (slot) => ({
                     url: routeSwitcher("slot.store"),
                     method: "POST",
@@ -37,14 +44,17 @@ export const adminAPI = baseAPI
                 invalidatesTags: [{ type: "Slot", id: "LIST" }],
             }),
 
-            deleteSlot: builder.mutation<Slot, Pick<Slot, "id">>({
+            deleteSlot: builder.mutation<
+                Omit<Slot, "events">,
+                Pick<Slot, "id">
+            >({
                 query: (slotId) => ({
                     url: routeSwitcher("slot.destroy", { slotId }),
                     method: "DELETE",
                 }),
             }),
 
-            updateSlot: builder.mutation<void, Slot>({
+            updateSlot: builder.mutation<Omit<Slot, "events">, Slot>({
                 query: (slot) => ({
                     url: routeSwitcher("slot.update", { slotId: slot.id }),
                     method: "PUT",
@@ -59,8 +69,52 @@ export const adminAPI = baseAPI
 
             clearCache: builder.mutation<void, void>({
                 query: () => ({
-                    url: routeSwitcher("cache.clear"),
+                    url: routeSwitcher("cacheclear"),
                     method: "POST",
+                }),
+                invalidatesTags: ["Event", "Slot", "EventParticipants", "User"],
+            }),
+            createPermission: builder.mutation<Permission, Permission>({
+                query: (data) => ({
+                    url: routeSwitcher("permission.store"),
+                    method: "POST",
+                    body: data,
+                }),
+                invalidatesTags: (result, error, arg) =>
+                    arg.event_id
+                        ? [
+                              { type: "User", id: arg.user_id },
+                              { type: "Event", id: arg.event_id },
+                          ]
+                        : [{ type: "User", id: arg.user_id }],
+            }),
+            deletePermission: builder.mutation<void, Permission>({
+                query: (data) => ({
+                    url: routeSwitcher("permission.delete"),
+                    method: "DELETE",
+                    body: data,
+                }),
+                invalidatesTags: (result, error, arg) =>
+                    arg.event_id
+                        ? [
+                              { type: "User", id: arg.user_id },
+                              { type: "Event", id: arg.event_id },
+                          ]
+                        : [{ type: "User", id: arg.user_id }],
+            }),
+            dumpState: builder.mutation<
+                void,
+                { key: string | undefined; dump: Object }
+            >({
+                query: ({ key, dump }) => ({
+                    url: routeSwitcher("debug.dump"),
+                    method: "POST",
+                    params: {
+                        key: key,
+                    },
+                    body: {
+                        dump: JSON.stringify(dump),
+                    },
                 }),
             }),
         }),

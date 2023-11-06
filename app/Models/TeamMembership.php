@@ -7,16 +7,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Helpers\MembershipType;
+use App\Helpers\HasCompositeKey;
 
 /**
  * App\Models\TeamMembership
  * @property int $user_id
- * @property int $team_id
+ * @property int $team_code
  * @property string $role
  */
 class TeamMembership extends Model
 {
-    use HasFactory;
+    use HasFactory, HasCompositeKey;
     /**
      * The table associated with the model.
      *
@@ -24,11 +25,16 @@ class TeamMembership extends Model
      */
     protected $table = 'team_memberships';
 
-    protected $primaryKey = ['user_id', 'team_id'];
+    protected $primaryKey = ['user_id', 'team_code'];
 
     public $incrementing = false;
 
     protected $fillable = ['role'];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 
     /**
      * Get the user that owns the membership.

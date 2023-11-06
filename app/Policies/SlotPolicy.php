@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\PermissionType;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -13,7 +14,7 @@ class SlotPolicy
      */
     public function before(User $user)
     {
-        if ($user->hasPermission('ADM') || $user->hasPermission('OPT')) {
+        if ($user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::Operator->value)) {
             return true;
         }
     }
@@ -64,6 +65,6 @@ class SlotPolicy
      */
     public function freeStudents(User $user)
     {
-        return $user->hasPermission('TCH') || $user->hasPermission('TAD');
+        return $user->hasPermission(PermissionType::Teacher->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
     }
 }

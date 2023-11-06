@@ -8,6 +8,7 @@ import { BaseLayout } from "templates";
 import refreshCSRF from "lib/csrf";
 import store, { persistor } from "lib/store";
 
+import { BackendError } from "components/Error";
 import Loader from "components/UIKit/Loader";
 
 // Generic Routes
@@ -17,7 +18,6 @@ const Error = React.lazy(() => import("components/Error"));
 // Misc
 
 const LegalPage = React.lazy(() => import("pages/Legal"));
-const AdminPage = React.lazy(() => import("pages/admin"));
 
 // Teams
 const TeamsPage = React.lazy(() => import("pages/team"));
@@ -26,7 +26,7 @@ const TeamPage = React.lazy(() => import("pages/team/[teamcode]"));
 const teamRoutes = (
     <Route path="csapat">
         <Route index element={<TeamsPage />} />
-        <Route path=":teamid">
+        <Route path=":teamcode">
             <Route index element={<TeamPage />} />
             <Route path="admin" element={<>TeamAdminPage</>} />
         </Route>
@@ -42,9 +42,7 @@ const ManageEventPage = React.lazy(
     () => import("pages/event/[eventid]/manage/index"),
 );
 const EventsPage = React.lazy(() => import("pages/event"));
-const EventPage = React.lazy(
-    () => import("pages/event/[eventid]/manage/index"),
-);
+const EventPage = React.lazy(() => import("pages/event/[eventid]/index"));
 const ScannerPage = React.lazy(
     () => import("pages/event/[eventid]/manage/scanner"),
 );
@@ -68,6 +66,16 @@ const eventRoutes = (
         <Route path="kezel">
             <Route index element={<ManageEventsPage />} />
         </Route>
+    </Route>
+);
+
+// Slots
+
+const SlotsEventsPage = React.lazy(() => import("pages/slot"));
+
+const slotRoutes = (
+    <Route path="sav">
+        <Route index element={<SlotsEventsPage />} />
     </Route>
 );
 
@@ -100,6 +108,7 @@ const SlotsCreatePage = React.lazy(() => import("pages/admin/slot/create"));
 const SlotsEditPage = React.lazy(
     () => import("pages/admin/slot/[slotid]/edit"),
 );
+const PermissionsPage = React.lazy(() => import("pages/admin/permissions"));
 const adminRoutes = (
     <Route path="admin">
         <Route index element={<AdminsPage />} />
@@ -109,6 +118,9 @@ const adminRoutes = (
             <Route path=":slotid">
                 <Route path="kezel" element={<SlotsEditPage />} />
             </Route>
+        </Route>
+        <Route path="jogosultsagok">
+            <Route index element={<PermissionsPage />} />
         </Route>
     </Route>
 );
@@ -146,6 +158,7 @@ function App() {
                                 <Route path="/">
                                     <Route index element={<Home />} />
                                     {teamRoutes}
+                                    {slotRoutes}
                                     {eventRoutes}
                                     {presentationRoutes}
                                     {adminRoutes}
@@ -160,7 +173,13 @@ function App() {
                                     />
                                     <Route
                                         path="*"
-                                        element={<Error code={404} />}
+                                        element={
+                                            window.statusCode ? (
+                                                <BackendError />
+                                            ) : (
+                                                <Error code={404} />
+                                            )
+                                        }
                                     />
                                 </Route>
                             </Routes>

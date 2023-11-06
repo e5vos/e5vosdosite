@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\PermissionType;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
@@ -16,7 +17,7 @@ class SettingPolicy
      */
     public function before(User $user)
     {
-        return $user->hasPermission('OPT') ? Response::allow() : Response::denyAsNotFound();
+        return $user->hasPermission(PermissionType::Operator->value) ? Response::allow() : Response::denyAsNotFound();
     }
     /**
      * Determine whether the user can view any settings.
@@ -31,9 +32,9 @@ class SettingPolicy
      * Determine whether the user can set a setting.
      * @return false
      */
-    public function set()
+    public function set(User $user)
     {
-        return false;
+        return $user->hasPermission(PermissionType::Admin->value);
     }
 
     /**

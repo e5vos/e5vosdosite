@@ -2,7 +2,7 @@ import useUser from "hooks/useUser";
 import { MouseEventHandler } from "react";
 import { useParams } from "react-router-dom";
 
-import { Attendance, isUserAttendance } from "types/models";
+import { Attender, isAttenderTeam, isAttenderUser } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import { isOperator, isTeacher } from "lib/gates";
@@ -30,13 +30,13 @@ const locale = Locale({
 const AttendancePage = () => {
     const { eventid } = useParams<{ eventid: string }>();
     const { data: event, isLoading: isEventLoading } =
-        eventAPI.useGetEventQuery(Number(eventid ?? -1));
+        eventAPI.useGetEventQuery({ id: Number(eventid ?? -1) });
     const {
         data: participantsData,
         isLoading: isParticipantsLoading,
         isFetching: isParticipantsFetching,
         refetch,
-    } = eventAPI.useGetEventParticipantsQuery(Number(eventid ?? -1));
+    } = eventAPI.useGetEventParticipantsQuery({ id: Number(eventid ?? -1) });
 
     const [deleteAttendance] = eventAPI.useCancelSignUpMutation();
     const { user } = useUser();
@@ -49,17 +49,23 @@ const AttendancePage = () => {
                 ),
             ) ?? [];
 
-    const [toggleAPI, { isLoading }] = eventAPI.useToggleAttendanceMutation();
+    const [toggleAPI, { isLoading }] = eventAPI.useAttendMutation();
 
     if (isEventLoading || isParticipantsLoading || !event) return <Loader />;
 
     const toggle =
-        (attending: Attendance): MouseEventHandler<HTMLInputElement> =>
+        (attending: Attender): MouseEventHandler<HTMLInputElement> =>
         async (e) => {
             const target = e.currentTarget;
             e.preventDefault();
 
-            const res = await toggleAPI(attending);
+            const res = await toggleAPI({
+                attender: isAttenderTeam(attending)
+                    ? attending.code
+                    : attending.id,
+                event: event,
+                present: target.checked,
+            });
             if ("error" in res) {
                 alert("Error");
             } else {
@@ -67,14 +73,10 @@ const AttendancePage = () => {
             }
         };
 
-    const score = (attending: Attendance, score: number) => {
-        console.log(attending.name + " is now " + score);
-    };
-
-    const deleteAttendanceAction = async (attending: Attendance) => {
+    const deleteAttendanceAction = async (attending: Attender) => {
         await deleteAttendance({
             attender: String(
-                isUserAttendance(attending) ? attending.id : attending.code,
+                isAttenderUser(attending) ? attending.id : attending.code,
             ),
             event: event,
         }).unwrap();
@@ -99,10 +101,10 @@ const AttendancePage = () => {
                                 }`}
                             >
                                 <span className="col-span-4 mx-4">
-                                    {isUserAttendance(attending)
+                                    {isAttenderUser(attending)
                                         ? reverseNameOrder(attending.name)
                                         : attending.name}{" "}
-                                    {isUserAttendance(attending) &&
+                                    {isAttenderUser(attending) &&
                                         attending.ejg_class}
                                 </span>
                                 <Form.Check

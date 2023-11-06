@@ -16,6 +16,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1.0",
+        "astrotomic/laravel-cachable-attributes": "^0.5.0",
         "beyondcode/laravel-websockets": "^1.13",
         "doctrine/dbal": "^3.5",
         "guzzlehttp/guzzle": "^7.2",
@@ -36,7 +37,8 @@
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^6.1",
         "phpunit/phpunit": "^9.5.10",
-        "spatie/laravel-ignition": "^1.0"
+        "spatie/laravel-ignition": "^1.0",
+        "squizlabs/php_codesniffer": "*"
     },
     "autoload": {
         "psr-4": {

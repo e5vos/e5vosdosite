@@ -129,7 +129,7 @@ const PresentationsTable = ({
                             <td className=" text-center ">
                                 <div className="flex h-full flex-col justify-around">
                                     <p className="flex-1 px-2 py-0.5">
-                                        {presentation.description}
+                                        {presentation.description}{" "}
                                     </p>
                                     {presentation.direct_child ||
                                         (presentation.root_parent && (
@@ -141,8 +141,8 @@ const PresentationsTable = ({
                                                                 className="text-green-400"
                                                                 onClick={() => {
                                                                     console.log(
-                                                                        "Selecting slot",
-                                                                        presentation.root_parent_slot_id,
+                                                                        "selecting",
+                                                                        presentation.root_parent_slot_id!,
                                                                     );
                                                                     selectSlot(
                                                                         presentation.root_parent_slot_id!,

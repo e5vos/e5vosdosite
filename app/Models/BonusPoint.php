@@ -18,4 +18,9 @@ class BonusPoint extends Model
     use HasFactory;
 
     protected $table = 'bonus_points';
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 }

@@ -20,7 +20,8 @@
             "node",
             "vite-plugin-pwa",
             "vite-plugin-pwa/client",
-            "./resources/frontend/js/ziggy.d.ts"
+            "./resources/js/ziggy.d.ts",
+            "./resources/frontend/types/*.ts"
         ]
     },
     "include": ["./resources/frontend"],

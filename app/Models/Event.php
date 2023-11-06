@@ -5,12 +5,13 @@ namespace App\Models;
 use App\Exceptions\NotPresentationException;
 use App\Helpers\PermissionType;
 use App\Helpers\SlotType;
+use Astrotomic\CachableAttributes\CachableAttributes;
+use Astrotomic\CachableAttributes\CachesAttributes;
 use Illuminate\Database\Eloquent\{
     Factories\HasFactory,
     Model,
     Builder,
     SoftDeletes,
-    Casts\Attribute,
     Relations\BelongsTo,
     Relations\HasMany,
 };
@@ -34,13 +35,12 @@ use Illuminate\Support\Collection;
  * @property \Illuminate\Support\Carbon|null $ends_at
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
- * @property int|null root_parent
- * @property int|null direct_child
+ * @property int|null $root_parent
+ * @property int|null $direct_child
  */
-class Event extends Model
+class Event extends Model implements CachableAttributes
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes, CachesAttributes;
 
     protected $table = 'events';
 
@@ -57,6 +57,12 @@ class Event extends Model
         'organiser',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
 
     protected $casts = [
         'starts_at' => 'datetime',
@@ -64,32 +70,32 @@ class Event extends Model
         'signup_deadline' => 'datetime',
     ];
 
-    protected $appends = [
+    protected $cachableAttributes = [
         'occupancy',
     ];
 
-    public function occupancy(): Attribute
+    public function getOccupancyAttribute(): int
     {
-        return Attribute::make(
-            get: fn () => $this->attendanceCount(),
-        )->shouldCache();
+        return $this->rememberForever('occupancy', fn () => $this->attendanceCount());
     }
 
     /**
      * Adds where filtering to start_date and end_date
      */
-    public static function current(Builder $query): Builder
+    public static function current(Builder $query, $time = null): Builder
     {
-        return $query->where('start_date', '<=', now())->where('end_date', '>=', now());
+        $time ??= now();
+        return $query->where('starts_at', '<=', $time)->where('ends_at', '>=', $time);
     }
 
     /**
      * Get currently running events
      *
      */
-    public static function currentEvents()
+    public static function currentEvents($time = null)
     {
-        return Event::where(fn ($query) => Event::current($query));
+        $time ??= now();
+        return Event::where(fn ($query) => Event::current($query, $time));
     }
 
     /**
@@ -97,7 +103,7 @@ class Event extends Model
      *
      * @return int visitor count of an event
      */
-    public function attendanceCount()
+    public function attendanceCount(): int
     {
         return $this->attendances()->count();
     }
@@ -132,7 +138,8 @@ class Event extends Model
     public function organisers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'permissions', 'event_id', 'user_id')
-            ->where('permissions.code', PermissionType::Organiser->value);
+            ->where('permissions.code', PermissionType::Organiser->value)
+            ->orWhere('permissions.code', PermissionType::Scanner->value);
     }
 
     /**

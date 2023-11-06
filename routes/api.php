@@ -8,6 +8,8 @@ use App\Http\Controllers\{
     Auth\AuthController,
     E5N\SlotController,
     E5N\TeamController,
+    LocationController,
+    Misc\UserController,
 };
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\PermissionController;
@@ -15,16 +17,20 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Models\{
     Attendance,
     Event,
+    Location,
+    Permission,
     Slot,
     Setting,
     TeamMembership,
     Team,
+    User,
 };
 use Tightenco\Ziggy\Ziggy;
 use App\Events\{
     Ping
 };
 use App\Http\Resources\{
+    TeamResource,
     UserResource,
 };
 
@@ -42,16 +48,26 @@ use App\Http\Resources\{
 
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
-Route::middleware(['auth:sanctum'])->prefix('/user')->group(function () {
-    Route::get('/', function (Request $request) {
-        return (new UserResource($request->user()->load('permissions')))->jsonSerialize();
-    })->name('user');
-});
 
 Route::get('/ziggy', fn () => response()->json(new Ziggy));
 
 Route::get('/login', [AuthController::class, 'redirect'])->name('login');
 Route::middleware(['auth:sanctum'])->patch('/e5code', [AuthController::class, 'setE5code'])->name('user.e5code');
+
+Route::controller(UserController::class)->middleware(['auth:sanctum'])->prefix('/user')->group(function () {
+    Route::get('/currentuser', function (Request $request) {
+        return (new UserResource($request->user()->load('permissions')))->jsonSerialize();
+    })->name('user.current');
+    Route::get('/currentuser/teams', function (Request $request) {
+        return (TeamResource::collection($request->user()->teams()->get()))->jsonSerialize();
+    })->name('user.myteams');
+    Route::get('/', 'show')->name('user.details');
+    Route::get('/{userId}', 'show')->can('view', User::class)->name('users.show');
+    Route::put('/{userId}', 'update')->can('update', User::class)->name('users.update');
+    Route::delete('/{userId}', 'destroy')->can('delete', User::class)->name('users.destroy');
+    // Route::put('/{userId}/restore', 'restore')->can('restore', User::class)->name('users.restore');
+});
+Route::get('/users', [UserController::class, 'index'])->middleware(['auth:sanctum'])->can('viewAny', User::class)->name('users.index');
 
 //routes telated to e5n slots
 Route::controller(SlotController::class)->prefix('/slot')->group(function () {
@@ -80,13 +96,19 @@ Route::controller(EventController::class)->group(function () {
             Route::put('/', 'update')->can('update', Event::class)->name('event.update');
             Route::delete('/', 'delete')->can('delete', Event::class)->name('event.delete');
             Route::put('/restore', 'restore')->can('restore', Event::class)->name('event.restore');
-            Route::put('/close', 'close_sigup')->can('update', Event::class)->name('event.close_signup');
+            Route::put('/close', 'close_signup')->can('update', Event::class)->name('event.close_signup');
             Route::get('/participants', 'participants')->can('viewAny', Attendance::class)->name('event.participants');
+            Route::get('/organisers', 'organisers')->can('viewAny', Permission::class)->name('event.organisers');
             Route::post('/signup', 'signup')->can('signup', Event::class)->name('event.signup');
             Route::delete('/signup', 'unsignup')->can('unsignup', Event::class)->name('event.unsignup');
             Route::post('/attend', 'attend')->can('attend', Event::class)->name('event.attend');
         });
     });
+});
+
+//manage attendances
+Route::prefix('/attendance')->middleware(['auth:sanctum'])->controller(EventController::class)->group(function () {
+    Route::post('{attendanceId}/teamMemberAttend', 'teamMemberAttend')->name('attendance.teamMemberAttend');
 });
 
 //routes related to E5N teams
@@ -99,22 +121,22 @@ Route::controller(TeamController::class)->middleware(['auth:sanctum'])->group(fu
         Route::put('/', 'update')->can('update', Team::class)->name('team.update');
         Route::put('/restore', 'restore')->can('restore', Team::class)->name('team.restore');
         Route::prefix('/members')->group(function () {
-            Route::post('/', 'invite')->can('create', TeamMembership::class)->name('team.invite');
-            Route::delete('/', 'kick')->can('delete', TeamMembership::class)->name('team.kick');
+            // Route::post('/', 'invite')->can('create', TeamMembership::class)->name('team.invite');
+            // Route::delete('/', 'kick')->can('delete', TeamMembership::class)->name('team.kick');
             Route::put('/', 'promote')->can('update', TeamMemberShip::class)->name('team.promote');
         });
     });
 });
 
+// Routes related to locations
+Route::controller(LocationController::class)->prefix('locations')->group(function () {
+    Route::get('/', 'index')->name('location.index');
+});
+
 //routes related to permissions
-Route::controller(PermissionController::class)->prefix('permissions/{userId}')->middleware(['auth:sanctum'])->group(function () {
-    Route::prefix('/event/{eventId}')->group(function () {
-        Route::post('/', 'addPermission')->can('update', Event::class)->name('permission.add_organiser');
-        Route::delete('/', 'removePermission')->can('update', Event::class)->name('permission.remove_organiser');
-    });
-    Route::prefix('/{code}')->group(function () {
-        //
-    });
+Route::middleware(['auth:sanctum'])->controller(PermissionController::class)->prefix('permissions')->group(function () {
+    Route::post('/', 'addPermission')->can('create', Permission::class)->name('permission.store');
+    Route::delete('/', 'removePermission')->can('destroy', Permission::class)->name('permission.delete');
 });
 
 
@@ -129,7 +151,23 @@ Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingContr
 );
 
 
+// location crud
+Route::controller(LocationController::class)->group(function () {
+    Route::get('/locations', 'index')->name('locations.index');
+    Route::get('/location/{locationId}', 'show')->name('locations.show');
+    Route::get('/location/{locationId}/events', 'events')->name('locations.events');
+    Route::get('/location/{locationId}/current_events', 'currentEvents')->name('locations.current_events');
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::post('/location', 'store')->can('create', Location::class)->name('locations.store');
+        Route::put('/location/{locationId}', 'update')->can('udate', Location::class)->name('locations.update');
+        Route::delete('/location/{locationId}', 'destroy')->can('delete', Location::class)->name('locations.destroy');
+    });
+});
+
+
+
 Route::any('cacheclear', [AdminController::class, "cacheClear"])->name('cacheclear');
+Route::post('dumpState', [AdminController::class, "dumpState"])->name('debug.dump');
 
 //test websocket broadcast
 Route::post('/ping', function () {

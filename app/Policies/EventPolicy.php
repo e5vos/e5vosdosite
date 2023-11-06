@@ -132,16 +132,19 @@ class EventPolicy
      */
     public function unsignup(User $user, Event $event = null)
     {
+        if (!request()->has('attender')) {
+            abort(400, 'No attender specified');
+        }
+
         if (!Setting::find('e5n.events.signup')?->value) {
             throw new NoE5NException();
         }
+
         $event = $event ?? Event::findOrFail(request()->eventId);
         if (!$event->isSignupOpen()) {
             throw new SignupClosedException();
         }
-        if (!request()->has('attender')) {
-            abort(400, 'No attender specified');
-        }
+
         return request()->attender === $user->e5code || $user->isLeaderOfTeam(request()->attender) || $user->hasPermission(PermissionType::Admin->value);
     }
 
@@ -158,15 +161,14 @@ class EventPolicy
             throw new NoE5NException();
         }
         $event ??= Event::findOrFail(request()->eventId);
-        $event ??= Event::findOrFail(request()->eventId);
         $attender = request()->attender ?? request()->user()->e5code;
-        if (isset($event->signup_type) && !$event->signuppers()->find(strlen($attender) === 13 ? 'e5code' : 'code', $attender)) {
+        if (isset($event->signup_type) && $event->signuppers()->filter(fn (mixed $signupper) => $signupper->getKey() == $attender || $signupper->e5code === $attender)->count() === 0) {
             throw new SignupRequiredException();
         }
         if ($event->slot->slot_type === SlotType::presentation->value) {
             return $user->hasPermission(PermissionType::Teacher->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
         } else { // if not a presentation
-            return $user->hasPermission(PermissionType::Admin->value) || ($user->organisesEvent($event->id) && $event->isRunning());
+            return $user->hasPermission(PermissionType::Admin->value) || (($user->organisesEvent($event->id) || $user->scansEvent($event->id)) && $event->isRunning());
         }
     }
 }

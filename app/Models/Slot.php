@@ -28,6 +28,11 @@ class Slot extends Model
         'slot_type',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     /**
      * Get all of the events for the Slot
      */

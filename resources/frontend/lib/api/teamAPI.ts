@@ -1,4 +1,5 @@
-import { Team, TeamMembership, User } from "types/models";
+import { RequiredAndOmitFields, RequiredFields } from "types/misc";
+import { Team, TeamMembership } from "types/models";
 
 import routeSwitcher from "lib/route";
 
@@ -6,52 +7,95 @@ import baseAPI from ".";
 
 export const teamAPI = baseAPI.injectEndpoints({
     endpoints: (builder) => ({
-        getTeams: builder.query<Team[], Pick<User, "id">>({
-            query: (user) => routeSwitcher("teams", { userid: user.id }),
+        getAllTeams: builder.query<Omit<Team, "activity" | "members">[], void>({
+            query: () => routeSwitcher("teams.index"),
+            providesTags: (result) => [{ type: "Team", id: "LIST" }],
         }),
-        getAllTeams: builder.query<Team[], void>({
-            query: () => routeSwitcher("teams"),
+        getMyTeams: builder.query<
+            RequiredFields<Team, "activity" | "members">[],
+            void
+        >({
+            query: (user) => routeSwitcher("user.myteams"),
+            providesTags: (result) => [{ type: "Team", id: "MYTEAMS" }],
         }),
-        getTeam: builder.query<Team, string>({
-            query: (teamcode) => routeSwitcher("team", { team: teamcode }),
+        getTeam: builder.query<
+            RequiredFields<Team, "activity" | "members">,
+            Pick<Team, "code">
+        >({
+            query: ({ code }) => routeSwitcher("team.show", { teamCode: code }),
+            providesTags: (result) => [{ type: "Team", id: result?.code }],
         }),
-        createTeam: builder.mutation<Team, Pick<Team, "name" | "description">>({
+        createTeam: builder.mutation<
+            Omit<Team, "activity" | "members">,
+            Pick<Team, "name" | "code" | "description">
+        >({
             query: (data) => ({
-                url: routeSwitcher("team.create"),
+                url: routeSwitcher("team.store"),
                 method: "POST",
                 params: data,
             }),
+            invalidatesTags: ["Team"],
         }),
-        promote: builder.mutation<void, Pick<TeamMembership, "user" | "team">>({
+        editTeam: builder.mutation<
+            Omit<Team, "activity" | "members">,
+            Pick<Team, "name" | "code" | "description">
+        >({
+            query: (data) => ({
+                url: routeSwitcher("team.edit", { teamCode: data.code }),
+                method: "PUT",
+                params: data,
+            }),
+            invalidatesTags: (res, err, arg) => [
+                { type: "Team", id: arg.code },
+                { type: "Team", id: "LIST" },
+                { type: "Team", id: "MYTEAMS" },
+                { type: "User", id: "CURRENT" },
+            ],
+        }),
+        promote: builder.mutation<
+            RequiredAndOmitFields<Team, "members", "activity">,
+            Pick<TeamMembership, "user_id" | "team_code"> & { promote: boolean }
+        >({
             query: (data) => ({
                 url: routeSwitcher("team.promote", {
-                    user_id: data.team?.code ?? -1,
-                    team_code: data.user?.id ?? -1,
+                    teamCode: data.team_code,
+                }),
+                method: "PUT",
+                params: {
+                    userId: data.user_id,
+                    promote: data.promote,
+                },
+            }),
+            invalidatesTags: (res, err, arg) => [
+                { type: "Team", id: arg.team_code },
+                { type: "Team", id: "LIST" },
+                { type: "Team", id: "MYTEAMS" },
+                { type: "User", id: arg.user_id },
+                { type: "User", id: "CURRENT" },
+                { type: "User", id: "LIST" },
+            ],
+        }),
+        invite: builder.mutation<
+            RequiredAndOmitFields<Team, "members", "activity">,
+            Pick<TeamMembership, "team_code" | "user_id">
+        >({
+            query: (data) => ({
+                url: routeSwitcher("team.invite", {
+                    teamCode: data.team_code,
                 }),
                 method: "POST",
-                params: data,
+                params: {
+                    userId: data.user_id,
+                },
             }),
-        }),
-
-        demote: builder.mutation<void, Pick<TeamMembership, "user" | "team">>({
-            query: (data) => ({
-                url: routeSwitcher("team.demote", {
-                    user_id: data.team?.code ?? -1,
-                    team_code: data.user?.id ?? -1,
-                }),
-                method: "POST",
-                params: data,
-            }),
-        }),
-        leave: builder.mutation<void, Pick<TeamMembership, "user" | "team">>({
-            query: (data) => ({
-                url: routeSwitcher("team.leave", {
-                    user_id: data.team?.code ?? -1,
-                    team_code: data.user?.id ?? -1,
-                }),
-                method: "DELETE",
-                params: data,
-            }),
+            invalidatesTags: (res, err, arg) => [
+                { type: "Team", id: arg.team_code },
+                { type: "Team", id: "LIST" },
+                { type: "Team", id: "MYTEAMS" },
+                { type: "User", id: arg.user_id },
+                { type: "User", id: "CURRENT" },
+                { type: "User", id: "LIST" },
+            ],
         }),
     }),
 });

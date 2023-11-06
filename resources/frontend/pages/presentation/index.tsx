@@ -1,6 +1,7 @@
+import useDelay from "hooks/useDelayed";
 import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
 import useUser from "hooks/useUser";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
@@ -18,7 +19,7 @@ import { Title } from "components/UIKit/Typography";
 
 const locale = Locale({
     hu: {
-        title: "Egyetemi Napok - Előadásjelentkezés",
+        title: "Eötvös Napok - Előadásjelentkezés",
         selectedPresentation: "Általad választott előadás",
         presentationNotYetSelected: "Még nem választottál előadást",
         select: "Választás",
@@ -34,7 +35,7 @@ const locale = Locale({
         ),
     },
     en: {
-        title: "University Days - Presentation signup",
+        title: "E5N - Presentation signup",
         selectedPresentation: "Your selected presentation",
         presentationNotYetSelected: "You have not selected a presentation yet",
         select: "Select",
@@ -97,10 +98,7 @@ const SelectField = ({
 
 const PresentationsPage = () => {
     const [currentSlot, setcurrentSlot] = useState(0);
-    const [errorShown, setErrorShown] = useState(false);
-    const errorShownTimeout = useRef<ReturnType<typeof setTimeout> | null>(
-        null,
-    );
+
     const { data: slots } = useGetPresentationSlotsQuery();
     const {
         data: selectedPresentations,
@@ -139,8 +137,8 @@ const PresentationsPage = () => {
             if (!user.e5code) {
                 alert(locale.noe5code);
                 navigate("/studentcode?next=/eloadas");
+                return;
             }
-            console.log("Signup");
             await signUp({
                 attender: user.e5code,
                 event: presentation,
@@ -157,6 +155,7 @@ const PresentationsPage = () => {
         if (!user.e5code) {
             alert(locale.noe5code);
             navigate("/studentcode?next=/eloadas");
+            return;
         }
         try {
             if (user) {
@@ -181,7 +180,7 @@ const PresentationsPage = () => {
     const selectSlotById = useCallback(
         (id: number) => {
             let newSlot = slots?.findIndex((slot) => slot.id === id);
-            if (newSlot) setcurrentSlot(newSlot);
+            if (newSlot !== undefined) setcurrentSlot(newSlot);
         },
         [slots],
     );
@@ -196,28 +195,25 @@ const PresentationsPage = () => {
         [currentSlot, selectedPresentations, slots],
     );
 
-    const errormsg = useMemo(() => {
-        if (signupError && "status" in signupError) {
-            const message = (signupError.data as any).message;
-            if (!message && message === "") return locale.unknownError;
-            else return message;
-        }
-        if (cancelSignupError && "status" in cancelSignupError) {
-            const message = (cancelSignupError.data as any).message;
-            if (!message && message === "") return locale.unknownError;
-            else return message;
-        }
-    }, [signupError, cancelSignupError]);
+    const [errormsg, setErrormsg] = useState<string>("");
+
+    const cleanupErrormsg = useDelay(setErrormsg, 2500);
 
     useEffect(() => {
-        if (errormsg !== undefined) {
-            setErrorShown(true);
-            if (errorShownTimeout.current)
-                clearTimeout(errorShownTimeout.current);
-            errorShownTimeout.current = setTimeout(() => {
-                setErrorShown(false);
-            }, 3000);
-        }
+        if (!signupError || !("status" in signupError)) return;
+        const message = (signupError.data as any).message;
+        setErrormsg(message);
+    }, [signupError]);
+
+    useEffect(() => {
+        if (!cancelSignupError || !("status" in cancelSignupError)) return;
+        const message = (cancelSignupError.data as any).message;
+        setErrormsg(message);
+    }, [cancelSignupError, cleanupErrormsg]);
+
+    useEffect(() => {
+        if (errormsg) cleanupErrormsg("");
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [errormsg]);
 
     if (!slots || !selectedPresentations || !presentations) return <Loader />;
@@ -226,7 +222,7 @@ const PresentationsPage = () => {
         <div className="mx-5">
             <div className="container mx-auto">
                 <Title>{locale.title}</Title>
-                <ErrorMsgBox errorShown={errorShown} errormsg={errormsg} />
+                <ErrorMsgBox errorShown={errormsg !== ""} errormsg={errormsg} />
                 <div className="mb-4 flex-row items-stretch justify-between  md:flex ">
                     <ButtonGroup>
                         {slots.map((slot, index) => (

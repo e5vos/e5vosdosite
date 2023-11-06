@@ -17,8 +17,19 @@ class Location extends Model
 
     protected $table = 'locations';
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     public function events()
     {
         return $this->hasMany(Event::class);
+    }
+
+    public function currentEvents($time = null)
+    {
+        $time = $time ?? now();
+        return $this->events()->where('starts_at', '<=', $time)->where('ends_at', '>=', $time);
     }
 }

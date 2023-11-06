@@ -10,6 +10,7 @@ use App\Helpers\MembershipType;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Exceptions\EventFullException;
 use App\Exceptions\AlreadySignedUpException;
+use App\Exceptions\SignupNotRequiredException;
 
 /**
  * App\Models\Team
@@ -30,6 +31,11 @@ class Team extends Model
 
     protected $fillable = ['code', 'name'];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
     protected $casts = [
         'code' => 'string',
     ];
@@ -57,6 +63,11 @@ class Team extends Model
     public function signups(): HasMany
     {
         return $this->hasMany(Attendance::class);
+    }
+
+    public function activity(): HasMany
+    {
+        return $this->signups()->with('event:name,id', 'event.location', 'teamMemberAttendances');
     }
 
     /**
@@ -129,6 +140,11 @@ class Team extends Model
         $signup->event()->associate($event);
         $signup->team()->associate($this);
         $signup->save();
+
+        $members = $this->members()->get(['id AS user_id'])->toArray();
+        $signup->teamMemberAttendances()->createMany($members);
+
+        $event->forget('occupancy');
         return $signup;
     }
 
@@ -138,7 +154,7 @@ class Team extends Model
      * @param  Event $event the event to attend
      * @param  bool $force whether to force the signup even if it has a root parent
      * @throws EventFullException if the event is full
-     * @return EventSignup the newly created EventSignup object
+     * @return Attendance the newly created EventSignup object
      */
     public function attend(Event $event, bool $force = false)
     {
@@ -163,6 +179,12 @@ class Team extends Model
 
         $signup->togglePresent();
         $signup->save();
-        return $signup;
+        // TeamMemberAttendance::upsert(
+        //     $this->members()->select(['id AS user_id', DB::raw('"' . $signup->id . '" AS attendance_id')])->get()->map(fn ($e) => ["user_id" => $e->user_id, "attendance_id" => $e->attendance_id])->toArray(),
+        //     null,
+        //     ['user_id', 'attendance_id']
+        // );
+        $event->forget('occupancy');
+        return $signup->load('team', 'teamMemberAttendances.user');
     }
 }

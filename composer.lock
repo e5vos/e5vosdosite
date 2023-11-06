@@ -4,8 +4,87 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aef4b8081e87a2a1776f0036b24b4718",
+    "content-hash": "fdefcda9aa32db300da17f2854f54d7d",
     "packages": [
+        {
+            "name": "astrotomic/laravel-cachable-attributes",
+            "version": "0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Astrotomic/laravel-cachable-attributes.git",
+                "reference": "478dade605c4a924b63daaff8b968424f659d714"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Astrotomic/laravel-cachable-attributes/zipball/478dade605c4a924b63daaff8b968424f659d714",
+                "reference": "478dade605c4a924b63daaff8b968424f659d714",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/cache": "5.8.* || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0",
+                "illuminate/contracts": "5.8.* || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0",
+                "illuminate/database": "5.8.* || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0",
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "illuminate/support": "5.8.* || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0",
+                "orchestra/testbench": "3.8.* || ^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0",
+                "phpunit/phpunit": "^8.3 || ^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Astrotomic\\CachableAttributes\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tom Witkowski",
+                    "email": "gummibeer@astrotomic.info",
+                    "homepage": "https://gummibeer.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Allows to cache attribute accessor values in an easy way.",
+            "homepage": "https://astrotomic.info",
+            "keywords": [
+                "accessor",
+                "attribute",
+                "cache",
+                "eloquent",
+                "getter",
+                "laravel",
+                "model"
+            ],
+            "support": {
+                "email": "dev@astrotomic.info",
+                "issues": "https://github.com/Astrotomic/laravel-cachable-attributes/issues",
+                "source": "https://github.com/Astrotomic/laravel-cachable-attributes"
+            },
+            "funding": [
+                {
+                    "url": "https://forest.astrotomic.info",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/Gummibeer",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/SarahSibert",
+                    "type": "github"
+                },
+                {
+                    "url": "https://issuehunt.io/r/astrotomic",
+                    "type": "issuehunt"
+                }
+            ],
+            "time": "2023-04-25T09:38:23+00:00"
+        },
         {
             "name": "beyondcode/laravel-websockets",
             "version": "1.14.1",
@@ -10498,6 +10577,63 @@
             "time": "2023-01-03T19:28:04+00:00"
         },
         {
+            "name": "squizlabs/php_codesniffer",
+            "version": "3.7.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
+                "reference": "ed8e00df0a83aa96acf703f8c2979ff33341f879"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/ed8e00df0a83aa96acf703f8c2979ff33341f879",
+                "reference": "ed8e00df0a83aa96acf703f8c2979ff33341f879",
+                "shasum": ""
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "ext-tokenizer": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0"
+            },
+            "bin": [
+                "bin/phpcs",
+                "bin/phpcbf"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Greg Sherwood",
+                    "role": "lead"
+                }
+            ],
+            "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
+            "homepage": "https://github.com/squizlabs/PHP_CodeSniffer",
+            "keywords": [
+                "phpcs",
+                "standards",
+                "static analysis"
+            ],
+            "support": {
+                "issues": "https://github.com/squizlabs/PHP_CodeSniffer/issues",
+                "source": "https://github.com/squizlabs/PHP_CodeSniffer",
+                "wiki": "https://github.com/squizlabs/PHP_CodeSniffer/wiki"
+            },
+            "time": "2023-02-22T23:07:41+00:00"
+        },
+        {
             "name": "symfony/yaml",
             "version": "v6.3.3",
             "source": {
@@ -10629,5 +10765,5 @@
         "php": "^8.1.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }

@@ -56,7 +56,7 @@ class SlotController extends Controller
         $slot->delete();
         Cache::forget('e5n.slot.all');
         Cache::forget('e5n.slot.' . $slot->id);
-        return response("", 204);
+        return response()->noContent();
     }
 
     /**

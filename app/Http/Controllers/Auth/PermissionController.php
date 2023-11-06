@@ -3,48 +3,48 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\ResourceDidNoExistException;
-use App\Helpers\PermissionType;
-use Illuminate\Http\Request;
+
 use App\Http\Controllers\{
     Controller
 };
 use App\Models\{
     Permission,
-    Event,
-    User,
 };
-use App\Http\Resources\PermissionResource;
+use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
     /**
      *  add an organiser to an event
-     * @param int $eventId
-     * @param int $userId
      */
-    public function addPermission(int $userId, int $eventId = null, string $code = null)
+    public function addPermission(Request $request)
     {
-        $event = $eventId ? Event::findOrFail($eventId) : null;
-        $user = User::findOrFail($userId);
-        $permission = Permission::firstOrCreate([
-            'user_id' => $user->id,
-            'event_id' => $event->id,
-            'code' => $event ? PermissionType::Organiser->value : (in_array($code, array_column(PermissionType::cases(), 'value')) ? $code : abort(400, 'Invalid permission code.')),
+        $requestData = json_decode(request()->permission);
+        if (Permission::where([
+            'user_id' => $requestData->user_id,
+            'event_id' => $requestData->event_id,
+            'code' => $requestData->code,
+        ])->exists()) abort(409, 'Permission already exists');
+        $permission = Permission::create([
+            'user_id' => $requestData->user_id,
+            'event_id' => $requestData->event_id,
+            'code' => $requestData->code,
         ]);
-        $permission = new PermissionResource($permission);
         return response($permission->jsonSerialize(), 201);
     }
 
     /**
      *  remove a permission
-     * @param int $eventId
-     * @param int $userId
      */
-    public function removePermission(int $userId, int $eventId = null, string $code = null)
+    public function removePermission(Request $request)
     {
-        $permission = Permission::find([$userId, $eventId, $code]);
-        if ($permission->first() === null) throw new ResourceDidNoExistException();
+        $permission = Permission::find([
+            $request->user_id,
+            $request->event_id,
+            $request->code,
+        ]);
+        if ($permission === null) throw new ResourceDidNoExistException();
         $permission->delete();
-        return response('', 204);
+        return response()->noContent();
     }
 }

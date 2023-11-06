@@ -1,23 +1,25 @@
-const { loadConfigFromFile, mergeConfig } = require("vite");
-const { default: tsconfigPaths } = require("vite-tsconfig-paths");
-const svgr = require("vite-plugin-svgr");
+import path from "path";
+import { loadConfigFromFile, mergeConfig } from "vite";
+import svgr from "vite-plugin-svgr";
+import tsconfigPaths from "vite-tsconfig-paths";
 
-const path = require("path");
-
-module.exports = {
+const config = {
     viteFinal: async (config, { configType }) => {
-        const { config: userConfig } = await loadConfigFromFile(
+        const { config: userConfig } = (await loadConfigFromFile(
+            configType,
             path.resolve(__dirname, "../vite.config.ts"),
-        );
+        ))!;
         return mergeConfig(config, {
             ...userConfig,
-            plugins: [tsconfigPaths("../tsconfig.json"), svgr()],
+            plugins: [tsconfigPaths({ root: ".." }), svgr()],
         });
     },
+
     stories: [
-        "../src/**/*.stories.mdx",
-        "../src/**/*.stories.@(js|jsx|ts|tsx)",
+        "../resources/frontend/**/*.stories.mdx",
+        "../resources/frontend/**/*.stories.@(js|jsx|ts|tsx)",
     ],
+
     addons: [
         "@storybook/addon-links",
         "@storybook/addon-essentials",
@@ -33,11 +35,20 @@ module.exports = {
             },
         },
     ],
-    framework: "@storybook/react",
+
+    framework: "@storybook/react-vite",
+
     core: {
-        builder: "@storybook/builder-vite",
+        disableTelemetry: true,
     },
+
     features: {
         storyStoreV7: true,
     },
+
+    docs: {
+        autodocs: true,
+    },
 };
+
+export default config;

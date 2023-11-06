@@ -2,14 +2,23 @@ import useConfirm, { ConfirmDialogProps } from "hooks/useConfirm";
 import useUser from "hooks/useUser";
 
 import { CRUDFormImpl, CRUDInterface } from "types/misc";
-import { Permission, PermissionCode, PermissionCodeType } from "types/models";
+import {
+    Event,
+    Permission,
+    PermissionCode,
+    PermissionCodeType,
+    User,
+} from "types/models";
 
 import adminAPI from "lib/api/adminAPI";
 import eventAPI from "lib/api/eventAPI";
 import { isAdmin, isOrganiser } from "lib/gates";
 import Locale from "lib/locale";
 
-import PermissionForm from "components/Forms/PermissionForm";
+import PermissionForm, {
+    EventPermissionCreateForm,
+    UserPermissionCreateForm,
+} from "components/Forms/PermissionForm";
 import Button from "components/UIKit/Button";
 import Dialog from "components/UIKit/Dialog";
 
@@ -99,6 +108,54 @@ const PermissionFormCreate = ({
             }}
             onSubmit={async (perm) => {
                 await onSubmit(perm);
+            }}
+        />
+    );
+};
+
+export const EventPermissionCreateFormImpl = ({
+    event,
+    onSuccess,
+}: {
+    event: Pick<Event, "id">;
+    onSuccess?: (perm: Permission) => void;
+}) => {
+    const [createPermission] = adminAPI.useCreatePermissionMutation();
+    return (
+        <EventPermissionCreateForm
+            event={event}
+            initialValues={{
+                code: PermissionCode.scanner,
+                event_id: event.id,
+                user_id: -1,
+            }}
+            onSubmit={async (perm) => {
+                await createPermission(perm);
+                if (onSuccess) onSuccess(perm);
+            }}
+        />
+    );
+};
+
+export const UserPermissionCreateFormImpl = ({
+    user,
+    onSuccess,
+}: {
+    user: Pick<User, "id">;
+    onSuccess?: (perm: Permission) => void;
+}) => {
+    const [createPermission] = adminAPI.useCreatePermissionMutation();
+    return (
+        <UserPermissionCreateForm
+            user={user}
+            initialValues={{
+                code: PermissionCode.student,
+                event_id: -1,
+                user_id: user.id,
+            }}
+            onSubmit={async (perm) => {
+                await createPermission(perm);
+                if (onSuccess) onSuccess(perm);
             }}
         />
     );

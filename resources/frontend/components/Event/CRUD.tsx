@@ -15,6 +15,7 @@ import Locale from "lib/locale";
 import { formatDateInput } from "lib/util";
 
 import EventForm from "components/Forms/EventForm";
+import { EventPermissionCreateFormImpl } from "components/Permissions/CRUD";
 import Button from "components/UIKit/Button";
 import ButtonGroup from "components/UIKit/ButtonGroup";
 import Card from "components/UIKit/Card";
@@ -187,6 +188,8 @@ const EventReader = ({
         message: "",
     });
 
+    const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
+
     const cleanupStatusmsg = useDelay(() => {
         setStatusmsg({ isError: false, message: "" });
     }, 2500);
@@ -355,17 +358,31 @@ const EventReader = ({
                             </Button>
                         )}
                         {(isAdmin(user) || isUserOrganiser) && (
-                            <Link
-                                className="w-full"
-                                to={`/esemeny/${event.id}/kezel/jogosultsagok`}
-                            >
+                            <>
+                                <Dialog
+                                    open={isPermissionDialogOpen}
+                                    onClose={() =>
+                                        setIsPermissionDialogOpen(false)
+                                    }
+                                    title={locale.permissions}
+                                >
+                                    <EventPermissionCreateFormImpl
+                                        event={event}
+                                        onSuccess={() =>
+                                            setIsPermissionDialogOpen(false)
+                                        }
+                                    />
+                                </Dialog>
                                 <Button
                                     className="!mb-2 text-white"
                                     variant="info"
+                                    onClick={() =>
+                                        setIsPermissionDialogOpen(true)
+                                    }
                                 >
                                     {locale.permissions}
                                 </Button>
-                            </Link>
+                            </>
                         )}
                         {isEventSignupDateStillRelevant &&
                             (isAdmin(user) || isUserOrganiser) && (

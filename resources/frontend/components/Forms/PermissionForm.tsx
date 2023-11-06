@@ -1,15 +1,17 @@
 import { useFormik } from "formik";
+import useUser from "hooks/useUser";
 import * as Yup from "yup";
 
 import { CRUDForm } from "types/misc";
 import {
-    EventStub,
+    Event,
     Permission,
     PermissionCode,
     PermissionCodeType,
-    UserStub,
+    User,
 } from "types/models";
 
+import { isAdmin } from "lib/gates";
 import Locale from "lib/locale";
 
 import EventSearchCombobox from "components/Event/EventSearch";
@@ -22,7 +24,7 @@ const locale = Locale({
         required: "Kötelező mező",
         threeChars: "Pontosan 3 karakter",
         event: "Esemény",
-        code: "Kód",
+        code: "Jog",
         submit: "Mentés",
         delete: "Törlés",
         user: "Felhasználó",
@@ -49,7 +51,7 @@ const locale = Locale({
         required: "Required",
         threeChars: "Exactly 3 characters",
         event: "Event",
-        code: "Code",
+        code: "Permission",
         submit: "Submit",
         delete: "Delete",
         user: "User",
@@ -132,7 +134,7 @@ const PermissionForm = ({
     );
 };
 
-export const UserPermissionCreate = ({
+export const UserPermissionCreateForm = ({
     user,
     initialValues,
     onSubmit,
@@ -140,7 +142,7 @@ export const UserPermissionCreate = ({
     resetOnSubmit,
     submitLabel = locale.submit,
     ...rest
-}: CRUDForm<Permission> & { user: UserStub }) => {
+}: CRUDForm<Permission> & { user: Pick<User, "id"> }) => {
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
@@ -192,7 +194,8 @@ export const EventPermissionCreateForm = ({
     resetOnSubmit,
     submitLabel = locale.submit,
     ...rest
-}: CRUDForm<Permission> & { event: EventStub }) => {
+}: CRUDForm<Permission> & { event: Pick<Event, "id"> }) => {
+    const { user } = useUser(false);
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
@@ -208,6 +211,9 @@ export const EventPermissionCreateForm = ({
         },
         enableReinitialize: enableReinitialize,
     });
+    const availablePermissions = isAdmin(user)
+        ? [PermissionCode.organiser, PermissionCode.scanner]
+        : [PermissionCode.scanner];
     return (
         <Form onSubmit={formik.handleSubmit}>
             <Form.Group>
@@ -219,10 +225,10 @@ export const EventPermissionCreateForm = ({
             <Form.Group>
                 <Form.Label>{locale.code}</Form.Label>
                 <Form.Select defaultValue={initialValues.code}>
-                    {Object.entries(PermissionCode).map((entry) => {
+                    {availablePermissions.map((entry) => {
                         return (
-                            <option value={entry[1]} key={entry[1]}>
-                                {locale.permissionName(entry[1])}
+                            <option value={entry} key={entry}>
+                                {locale.permissionName(entry)}
                             </option>
                         );
                     })}

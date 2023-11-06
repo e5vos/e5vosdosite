@@ -149,7 +149,7 @@ const EventForm = ({
                         <Form.Control
                             type="number"
                             name="capacity"
-                            value={formik.values.capacity}
+                            value={formik.values.capacity ?? undefined}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             invalid={Boolean(formik.errors.capacity)}

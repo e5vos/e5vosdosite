@@ -64,19 +64,18 @@ class SlotController extends Controller
      */
     public function freeStudents($slotId)
     {
-        return UserResource::collection(User::whereRelation('permissions', 'code', PermissionType::Student->value)->whereDoesntHave('events', function ($query) use ($slotId) {
+        return Cache::remember("freeStudents" . $slotId, 60, fn () => UserResource::collection(User::whereDoesntHave('events', function ($query) use ($slotId) {
             $query->where('slot_id', $slotId);
-        })->get())->jsonSerialize();
+        })->get())->jsonSerialize());
     }
 
     public function nonAttendingStudents($slotId)
     {
-
-        return UserResource::collection(User::whereRelation('permissions', 'code', PermissionType::Student->value)->whereDoesntHave('attendances', function ($query) use ($slotId) {
-            $query->where('is_present', true)->whereHas('event', function ($query) use ($slotId) {
-                $query->where('slot_id', $slotId);
-            });
-        })->get())->jsonSerialize();
+        Cache::remember("notAttendingStudents" . $slotId, 60, fn () => UserResource::collection(User::whereDoesntHave('attendances', function ($query) use ($slotId) {
+            $query->where('is_present', true);
+        })->whereHas('event', function ($query) use ($slotId) {
+            $query->where('slot_id', $slotId);
+        })->get())->jsonSerialize());
     }
     public function AttendingStudents($slotId)
     {

@@ -1,4 +1,4 @@
-import { User } from "types/models";
+import { UserStub } from "types/models";
 
 export const BASE_URL = () =>
     typeof window !== "undefined"
@@ -8,7 +8,7 @@ export function sleep(ms: number) {
     return new Promise((r) => setTimeout(r, ms));
 }
 
-export const sortByEJGClass = (a: User, b: User) => {
+export const sortByEJGClass = (a: UserStub, b: UserStub) => {
     if (a.ejg_class && b.ejg_class) {
         const [AYear, Aclass] = a.ejg_class.split(".");
         const [BYear, Bclass] = b.ejg_class.split(".");

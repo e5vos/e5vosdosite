@@ -4,7 +4,9 @@ import useUser from "hooks/useUser";
 import * as Yup from "yup";
 
 import { CRUDForm } from "types/misc";
+import { SignupType } from "types/models";
 
+import eventAPI from "lib/api/eventAPI";
 import { isAdmin } from "lib/gates";
 import Locale from "lib/locale";
 import { formatDateTimeInput } from "lib/util";
@@ -28,6 +30,19 @@ const locale = Locale({
             location: "Helyszín",
             capacity: "Kapacitás",
             is_competition: "Verseny?",
+            slot: "Sáv",
+            signup_type: "Jelentkezés típusa",
+        },
+        noslot: "Nincs sáv",
+        signup_type: (type: SignupTypeType): string => {
+            switch (type) {
+                case SignupType.Individual:
+                    return "Egyéni jelentkezés";
+                case SignupType.Team:
+                    return "Csapatos jelentkezés";
+                case SignupType.Both:
+                    return "Egyéni és csapatos jelentkezés";
+            }
         },
     },
     en: {
@@ -43,6 +58,19 @@ const locale = Locale({
             location: "Location",
             capacity: "Capacity",
             is_competition: "Is competition?",
+            slot: "Slot",
+            signup_type: "Signup type",
+        },
+        noslot: "No slot",
+        signup_type: (type: SignupTypeType): string => {
+            switch (type) {
+                case SignupType.Individual:
+                    return "Individual signup";
+                case SignupType.Team:
+                    return "Team signup";
+                case SignupType.Both:
+                    return "Individual and team signup";
+            }
         },
     },
 });
@@ -58,6 +86,7 @@ const EventForm = ({
     const { user } = useUser(false);
     const { starts_at, ends_at, signup_deadline, now } =
         useEventDates(initialValues);
+    const { data: slots } = eventAPI.useGetSlotsQuery();
     const formik = useFormik({
         initialValues: {
             ...initialValues,
@@ -68,6 +97,8 @@ const EventForm = ({
                 : "",
             signup_enabled: Boolean(signup_deadline),
             capacity_enabled: Boolean(initialValues.capacity),
+            slot_id: initialValues.slot_id,
+            signup_type: initialValues.signup_type,
         },
         validationSchema: Yup.object({
             name: Yup.string().required(locale.required),
@@ -78,12 +109,24 @@ const EventForm = ({
             signup_enabled: Yup.boolean().required(locale.required),
             organiser: Yup.string().required(locale.required),
             capacity: Yup.number().nullable(),
-            is_competition: Yup.boolean().required(locale.required),
-            capacity_enabled: Yup.boolean().required(locale.required),
+            is_competition: Yup.boolean(),
+            capacity_enabled: Yup.boolean(),
+            slot_id: Yup.number(),
+            signup_type: Yup.string(),
         }),
         onSubmit: (values) => {
             const val = onSubmit({
-                ...values,
+                id: initialValues.id,
+                name: values.name,
+                description: values.description,
+                starts_at: values.starts_at,
+                ends_at: values.ends_at,
+                organiser: values.organiser,
+                location_id: values.location_id,
+                is_competition: values.is_competition,
+                signup_type: values.signup_type,
+                slot_id: values.slot_id !== -1 ? values.slot_id : null,
+
                 signup_deadline: values.signup_enabled
                     ? values.signup_deadline
                     : null,
@@ -197,6 +240,41 @@ const EventForm = ({
                             onBlur={formik.handleBlur}
                         />
                     </div>
+                </Form.Group>
+            )}
+            {isAdmin(user) && (
+                <Form.Group>
+                    <Form.Label>{locale.fields.slot}</Form.Label>
+                    <Form.Select
+                        name="slot_id"
+                        value={formik.values.slot_id ?? "-1"}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                    >
+                        <option value="-1">{locale.noslot}</option>
+                        {slots?.map((slot) => (
+                            <option key={slot.id} value={slot.id}>
+                                {slot.name}
+                            </option>
+                        ))}
+                    </Form.Select>
+                </Form.Group>
+            )}
+            {isAdmin(user) && (
+                <Form.Group>
+                    <Form.Label>{locale.fields.signup_type}</Form.Label>
+                    <Form.Select
+                        name="signup_type"
+                        value={formik.values.signup_type}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                    >
+                        {Object.entries(SignupType).map(([key, value]) => (
+                            <option value={value} key={key}>
+                                {locale.signup_type(value)}
+                            </option>
+                        ))}
+                    </Form.Select>
                 </Form.Group>
             )}
             {isAdmin(user) && (

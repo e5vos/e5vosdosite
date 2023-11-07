@@ -12,7 +12,6 @@ import eventAPI from "lib/api/eventAPI";
 import teamAPI from "lib/api/teamAPI";
 import { isAdmin, isOrganiser, isScanner } from "lib/gates";
 import Locale from "lib/locale";
-import { formatDateTimeInput } from "lib/util";
 
 import EventForm from "components/Forms/EventForm";
 import { EventPermissionCreateFormImpl } from "components/Permissions/CRUD";

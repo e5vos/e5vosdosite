@@ -12,7 +12,7 @@ export const locationAPI = baseAPI
     .injectEndpoints({
         endpoints: (builder) => ({
             getLocations: builder.query<Omit<Location, "events">[], void>({
-                query: () => routeSwitcher("location.index"),
+                query: () => routeSwitcher("locations.index"),
                 providesTags: (res, err, arg) =>
                     res
                         ? [

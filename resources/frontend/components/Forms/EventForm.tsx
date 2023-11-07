@@ -76,103 +76,99 @@ const EventForm = ({
     const initialDates = useEventDates(initialValues);
     return (
         <Form onSubmit={formik.handleSubmit} {...rest}>
-            <Form onSubmit={formik.handleSubmit}>
+            <Form.Group>
+                <Form.Label>{locale.fields.name}</Form.Label>
+                <Form.Control
+                    name="name"
+                    value={formik.values.name}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    invalid={Boolean(formik.errors.name)}
+                />
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>{locale.fields.description}</Form.Label>
+                <Form.Control
+                    name="description"
+                    value={formik.values.description}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    invalid={Boolean(formik.errors.description)}
+                />
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>{locale.fields.starts_at}</Form.Label>
+                <Form.Control
+                    name="starts_at"
+                    type="date"
+                    defaultValue={formatDateInput(
+                        initialDates.starts_at ?? initialDates.now,
+                    )}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    invalid={Boolean(formik.errors.starts_at)}
+                />
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>{locale.fields.ends_at}</Form.Label>
+                <Form.Control
+                    name="ends_at"
+                    type="date"
+                    defaultValue={formatDateInput(
+                        initialDates.ends_at ?? initialDates.now,
+                    )}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    invalid={Boolean(formik.errors.ends_at)}
+                />
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>{locale.fields.organiser}</Form.Label>
+                <Form.Control
+                    name="organiser"
+                    value={formik.values.organiser}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    invalid={Boolean(formik.errors.organiser)}
+                />
+            </Form.Group>
+            {isAdmin(user) && (
                 <Form.Group>
-                    <Form.Label>{locale.fields.name}</Form.Label>
-                    <Form.Control
-                        name="name"
-                        value={formik.values.name}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        invalid={Boolean(formik.errors.name)}
+                    <Form.Label>{locale.fields.location}</Form.Label>
+                    <LocationSearchCombobox
+                        onChange={(e) => formik.setFieldValue("location", e.id)}
                     />
                 </Form.Group>
+            )}
+            {isAdmin(user) && (
                 <Form.Group>
-                    <Form.Label>{locale.fields.description}</Form.Label>
+                    <Form.Label>{locale.fields.capacity}</Form.Label>
                     <Form.Control
-                        name="description"
-                        value={formik.values.description}
+                        type="number"
+                        name="capacity"
+                        value={formik.values.capacity ?? undefined}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        invalid={Boolean(formik.errors.description)}
+                        invalid={Boolean(formik.errors.capacity)}
                     />
                 </Form.Group>
+            )}
+            {isAdmin(user) && (
                 <Form.Group>
-                    <Form.Label>{locale.fields.starts_at}</Form.Label>
-                    <Form.Control
-                        name="starts_at"
-                        type="date"
-                        defaultValue={formatDateInput(
-                            initialDates.starts_at ?? initialDates.now,
-                        )}
+                    <Form.Label>{locale.fields.is_competition}</Form.Label>
+                    <Form.Check
+                        name="is_competition"
+                        checked={formik.values.is_competition}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        invalid={Boolean(formik.errors.starts_at)}
+                        invalid={Boolean(formik.errors.is_competition)}
                     />
                 </Form.Group>
-                <Form.Group>
-                    <Form.Label>{locale.fields.ends_at}</Form.Label>
-                    <Form.Control
-                        name="ends_at"
-                        type="date"
-                        defaultValue={formatDateInput(
-                            initialDates.ends_at ?? initialDates.now,
-                        )}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        invalid={Boolean(formik.errors.ends_at)}
-                    />
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>{locale.fields.organiser}</Form.Label>
-                    <Form.Control
-                        name="organiser"
-                        value={formik.values.organiser}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        invalid={Boolean(formik.errors.organiser)}
-                    />
-                </Form.Group>
-                {isAdmin(user) && (
-                    <Form.Group>
-                        <Form.Label>{locale.fields.location}</Form.Label>
-                        <LocationSearchCombobox
-                            onChange={(e) =>
-                                formik.setFieldValue("location", e.id)
-                            }
-                        />
-                    </Form.Group>
-                )}
-                {isAdmin(user) && (
-                    <Form.Group>
-                        <Form.Label>{locale.fields.capacity}</Form.Label>
-                        <Form.Control
-                            type="number"
-                            name="capacity"
-                            value={formik.values.capacity ?? undefined}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            invalid={Boolean(formik.errors.capacity)}
-                        />
-                    </Form.Group>
-                )}
-                {isAdmin(user) && (
-                    <Form.Group>
-                        <Form.Label>{locale.fields.is_competition}</Form.Label>
-                        <Form.Check
-                            name="is_competition"
-                            checked={formik.values.is_competition}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            invalid={Boolean(formik.errors.is_competition)}
-                        />
-                    </Form.Group>
-                )}
+            )}
 
-                <Form.Group>
-                    <Button type="submit">{locale.submit}</Button>
-                </Form.Group>
-            </Form>
+            <Form.Group>
+                <Button type="submit">{locale.submit}</Button>
+            </Form.Group>
         </Form>
     );
 };

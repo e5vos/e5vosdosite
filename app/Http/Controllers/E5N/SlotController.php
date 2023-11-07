@@ -72,15 +72,15 @@ class SlotController extends Controller
 
     public function nonAttendingStudents($slotId)
     {
-        $missingIds = Slot::findOrFail($slotId)->signups()->where('is_present', '0')->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
+        $missingIds = Slot::findOrFail($slotId)->signups()->where('is_present', false)->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
         return Cache::remember("notAttendingStudents" . $slotId, 60, fn () => UserResource::collection(
             User::whereIn('id', $missingIds)->get()
         )->jsonSerialize());
     }
     public function AttendingStudents($slotId)
     {
-        $attendingIds = Slot::findOrFail($slotId)->signups()->where('is_present', '1')->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
-        return Cache::remember("notAttendingStudents" . $slotId, 60, fn () => UserResource::collection(
+        $attendingIds = Slot::findOrFail($slotId)->signups()->where('is_present', true)->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
+        return Cache::remember("attendingStudents" . $slotId, 60, fn () => UserResource::collection(
             User::whereIn('id', $attendingIds)->get()
         )->jsonSerialize());
     }

@@ -299,6 +299,7 @@ const EventReader = ({
                                 </Form.Select>
                                 <Button
                                     className="w-1/4"
+                                    variant="outline-primary"
                                     onClick={handleSignup}
                                 >
                                     {locale.signup_CTA}

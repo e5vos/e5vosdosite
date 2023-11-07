@@ -30,11 +30,11 @@ const Button = ({
     switch (variant) {
         case "primary":
             buttonclass +=
-                "bg-yellow outline-yellow enabled:hover:bg-yellow-700 disabled:bg-yellow-700 text-black enabled:hover:text-white disabled:text-white ";
+                "bg-blue-400 outline-blue-400 enabled:hover:bg-blue-700 disabled:bg-blue-700 text-white enabled:hover:text-white disabled:text-white ";
             break;
         case "outline-primary":
             buttonclass +=
-                "outline-yellow enabled:hover:bg-yellow disabled:bg-yellow text-white enabled:hover:text-black disabled:text-black";
+                "outline-blue-400 enabled:hover:bg-blue-700 disabled:bg-blue-700 text-white enabled:hover:text-white disabled:text-white";
             break;
         case "secondary":
             buttonclass +=

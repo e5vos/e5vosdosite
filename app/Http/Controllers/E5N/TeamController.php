@@ -63,7 +63,10 @@ class TeamController extends Controller
         if (Cache::get('e5n.teams.' . $request->code)?->exists ?? Team::find($request->code)->exists) {
             abort(409, "Team already exists");
         }
-        $team->update($request->all());
+        foreach ($request->all() as $key => $value) {
+            $team->$key = $value;
+        }
+        $team->save();
         $team = new TeamResource($team);
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.presentations');

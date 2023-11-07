@@ -57,7 +57,10 @@ class UserController extends Controller
     {
         $userId ??= request()->user->id;
         $user = User::find($userId);
-        $user->update(request()->all());
+        foreach (request()->all() as $key => $value) {
+            $user->$key = $value;
+        }
+        $user->save();
         return (new UserResource($user))->jsonSerialize();
     }
 

@@ -83,7 +83,16 @@ const EventForm = ({
         }),
         onSubmit: (values) => {
             const val = onSubmit({
-                ...values,
+                id: values.id,
+                name: values.name,
+                description: values.description,
+                starts_at: values.starts_at,
+                ends_at: values.ends_at,
+                organiser: values.organiser,
+                location_id: values.location_id,
+                is_competition: values.is_competition,
+                signup_type: values.signup_type,
+                slot_id: values.slot_id,
                 signup_deadline: values.signup_enabled
                     ? values.signup_deadline
                     : null,

@@ -42,11 +42,14 @@ const EditEventPage = React.lazy(
     () => import("pages/event/[eventid]/manage/edit"),
 );
 
+const CreateEventPage = React.lazy(() => import("pages/event/create"));
+
 const eventRoutes = (
     <Route path="esemeny">
         <Route index element={<EventsPage />} />
         <Route path=":eventid">
             <Route index element={<EventPage />} />
+            <Route path="uj" element={<CreateEventPage />} />
             <Route path="kezel">
                 <Route path="szerkeszt" element={<EditEventPage />} />
                 <Route path="scanner" element={<ScannerPage />} />

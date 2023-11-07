@@ -20,31 +20,16 @@ const UserSearchCombobox = ({
     onChange: (value: UserStub) => any;
     initialValue?: UserStub;
 }) => {
-    const [apisearch, { data, isFetching }] = baseAPI.useLazyUserSearchQuery();
-    const [options, setOptions] = useState<UserStub[]>();
+    const [search, setSearch] = useState<string>("-1");
+
+    const { data: options } = baseAPI.useUserSearchQuery(search ?? "-1");
 
     const onQueryChange = useDelay((value: string) => {
-        if (
-            options?.some((e) =>
-                elementName(e)
-                    .toLocaleLowerCase()
-                    .includes(value.toLocaleLowerCase()),
-            )
-        ) {
-            if (isFetching) return;
-            if (!data) {
-                apisearch(value);
-            } else {
-                setOptions((state) => state?.filter(filter(value)) ?? data);
-            }
+        if (!value.startsWith(search)) {
+            setSearch(value);
         }
     }, 500);
 
-    useEffect(() => {
-        if (data && !options) setOptions(data);
-    }, [data, options]);
-
-    if (!options) return <Loader />;
     return (
         <div className="max-w-sm">
             <Form.ComboBox

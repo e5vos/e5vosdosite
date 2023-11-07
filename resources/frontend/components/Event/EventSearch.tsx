@@ -17,30 +17,15 @@ const EventSearchCombobox = ({
     onChange: (value: EventStub) => any;
     initialValue?: EventStub;
 }) => {
-    const [apisearch, { data, isFetching }] =
-        eventAPI.useLazyEventSearchQuery();
-    const [options, setOptions] = useState<EventStub[]>();
+    const [search, setSearch] = useState<string>("-1");
+
+    const { data: options } = eventAPI.useEventSearchQuery(search);
 
     const onQueryChange = useDelay((value: string) => {
-        if (
-            options?.some((e) =>
-                e.name
-                    .toLocaleLowerCase()
-                    .includes(value[0].toLocaleLowerCase()),
-            )
-        ) {
-            if (isFetching) return;
-            if (!data) {
-                apisearch(value);
-            } else {
-                setOptions((state) => state?.filter(filter(value)) ?? data);
-            }
+        if (!value.startsWith(search)) {
+            setSearch(value);
         }
     });
-
-    useEffect(() => {
-        if (data && !options) setOptions(data);
-    }, [data, options]);
 
     return (
         <div className="max-w-sm">

@@ -66,8 +66,8 @@ const EventForm = ({
             signup_deadline: signup_deadline
                 ? formatDateTimeInput(signup_deadline)
                 : "",
-            signup_enabled: signup_deadline !== undefined,
-            capacity_enabled: initialValues.capacity !== undefined,
+            signup_enabled: Boolean(signup_deadline),
+            capacity_enabled: Boolean(initialValues.capacity),
         },
         validationSchema: Yup.object({
             name: Yup.string().required(locale.required),
@@ -145,7 +145,7 @@ const EventForm = ({
                     <Form.Control
                         name="ends_at"
                         type="datetime-local"
-                        value={formik.values.ends_at}
+                        value={formik.values.signup_deadline}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         invalid={Boolean(formik.errors.signup_deadline)}

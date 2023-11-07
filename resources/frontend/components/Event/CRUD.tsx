@@ -478,21 +478,9 @@ const EventCreator = ({
                 id: value.id ?? 0,
                 name: value.name ?? "",
                 description: value.description ?? "",
-                starts_at:
-                    value.starts_at ??
-                    formatDateTimeInput(
-                        value.starts_at ? new Date(value.starts_at) : now,
-                    ),
-                ends_at:
-                    value.ends_at ??
-                    formatDateTimeInput(
-                        value.ends_at ? new Date(value.ends_at) : now,
-                    ),
-                signup_deadline: formatDateTimeInput(
-                    value.signup_deadline
-                        ? new Date(value.signup_deadline)
-                        : now,
-                ),
+                starts_at: value.starts_at ?? "",
+                ends_at: value.ends_at ?? "",
+                signup_deadline: value.signup_deadline ?? null,
                 signup_type: value.signup_type ?? "team_user",
                 location_id: value.location_id ?? 0,
                 organiser: value.organiser ?? "",
@@ -512,14 +500,16 @@ const EventUpdater = ({
     ...rest
 }: CRUDFormImpl<Event, EventFormValues>) => {
     const [changeEvent] = eventAPI.useEditEventMutation();
-    const initialDates = useEventDates(value);
-
+    const navigate = useNavigate();
     return (
         <EventForm
             initialValues={{
                 ...value,
             }}
-            onSubmit={changeEvent}
+            onSubmit={async (event) => {
+                await changeEvent(event);
+                navigate(`/esemeny/${event.id}`);
+            }}
             resetOnSubmit={true}
             submitLabel={locale.edit}
             {...rest}

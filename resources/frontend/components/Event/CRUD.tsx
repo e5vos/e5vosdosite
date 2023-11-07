@@ -12,7 +12,7 @@ import eventAPI from "lib/api/eventAPI";
 import teamAPI from "lib/api/teamAPI";
 import { isAdmin, isOrganiser, isScanner } from "lib/gates";
 import Locale from "lib/locale";
-import { formatDateInput } from "lib/util";
+import { formatDateTimeInput } from "lib/util";
 
 import EventForm from "components/Forms/EventForm";
 import { EventPermissionCreateFormImpl } from "components/Permissions/CRUD";
@@ -480,15 +480,15 @@ const EventCreator = ({
                 description: value.description ?? "",
                 starts_at:
                     value.starts_at ??
-                    formatDateInput(
+                    formatDateTimeInput(
                         value.starts_at ? new Date(value.starts_at) : now,
                     ),
                 ends_at:
                     value.ends_at ??
-                    formatDateInput(
+                    formatDateTimeInput(
                         value.ends_at ? new Date(value.ends_at) : now,
                     ),
-                signup_deadline: formatDateInput(
+                signup_deadline: formatDateTimeInput(
                     value.signup_deadline
                         ? new Date(value.signup_deadline)
                         : now,
@@ -518,15 +518,6 @@ const EventUpdater = ({
         <EventForm
             initialValues={{
                 ...value,
-                ends_at: formatDateInput(
-                    initialDates.ends_at ?? initialDates.now,
-                ),
-                starts_at: formatDateInput(
-                    initialDates.starts_at ?? initialDates.now,
-                ),
-                signup_deadline: initialDates.signup_deadline
-                    ? formatDateInput(initialDates.signup_deadline)
-                    : "",
             }}
             onSubmit={changeEvent}
             resetOnSubmit={true}

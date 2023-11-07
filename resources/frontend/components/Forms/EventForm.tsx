@@ -7,7 +7,7 @@ import { CRUDForm } from "types/misc";
 
 import { isAdmin } from "lib/gates";
 import Locale from "lib/locale";
-import { formatDateInput } from "lib/util";
+import { formatDateTimeInput } from "lib/util";
 
 import { EventFormValues } from "components/Event/CRUD";
 import LocationSearchCombobox from "components/Location/LocationSelect";
@@ -23,6 +23,7 @@ const locale = Locale({
             description: "Leírás",
             starts_at: "Kezdés",
             ends_at: "Befejezés",
+            signup_deadline: "Jelentkezési határidő",
             organiser: "Szervező",
             location: "Helyszín",
             capacity: "Kapacitás",
@@ -37,6 +38,7 @@ const locale = Locale({
             description: "Description",
             starts_at: "Starts at",
             ends_at: "Ends at",
+            signup_deadline: "Signup deadline",
             organiser: "Organiser",
             location: "Location",
             capacity: "Capacity",
@@ -54,26 +56,46 @@ const EventForm = ({
     ...rest
 }: CRUDForm<EventFormValues>) => {
     const { user } = useUser(false);
+    const { starts_at, ends_at, signup_deadline, now } =
+        useEventDates(initialValues);
     const formik = useFormik({
-        initialValues: initialValues,
+        initialValues: {
+            ...initialValues,
+            starts_at: formatDateTimeInput(starts_at ?? now),
+            ends_at: formatDateTimeInput(ends_at ?? now),
+            signup_deadline: signup_deadline
+                ? formatDateTimeInput(signup_deadline)
+                : "",
+            signup_enabled: signup_deadline !== undefined,
+            capacity_enabled: initialValues.capacity !== undefined,
+        },
         validationSchema: Yup.object({
             name: Yup.string().required(locale.required),
             description: Yup.string().required(locale.required),
             starts_at: Yup.string().required(locale.required),
             ends_at: Yup.string().required(locale.required),
+            signup_deadline: Yup.string(),
+            signup_enabled: Yup.boolean().required(locale.required),
             organiser: Yup.string().required(locale.required),
             location: Yup.string().required(locale.required),
             capacity: Yup.string().required(locale.required),
             is_competition: Yup.boolean().required(locale.required),
+            capacity_enabled: Yup.boolean().required(locale.required),
         }),
         onSubmit: (values) => {
-            const val = onSubmit(values);
+            const val = onSubmit({
+                ...values,
+                signup_deadline: values.signup_enabled
+                    ? values.signup_deadline
+                    : null,
+                capacity: values.capacity_enabled ? values.capacity : null,
+            });
             if (resetOnSubmit) formik.resetForm();
             return val;
         },
         enableReinitialize: enableReinitialize,
     });
-    const initialDates = useEventDates(initialValues);
+    console.log(initialValues);
     return (
         <Form onSubmit={formik.handleSubmit} {...rest}>
             <Form.Group>
@@ -100,10 +122,8 @@ const EventForm = ({
                 <Form.Label>{locale.fields.starts_at}</Form.Label>
                 <Form.Control
                     name="starts_at"
-                    type="date"
-                    defaultValue={formatDateInput(
-                        initialDates.starts_at ?? initialDates.now,
-                    )}
+                    type="datetime-local"
+                    value={formik.values.starts_at}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     invalid={Boolean(formik.errors.starts_at)}
@@ -113,14 +133,31 @@ const EventForm = ({
                 <Form.Label>{locale.fields.ends_at}</Form.Label>
                 <Form.Control
                     name="ends_at"
-                    type="date"
-                    defaultValue={formatDateInput(
-                        initialDates.ends_at ?? initialDates.now,
-                    )}
+                    type="datetime-local"
+                    value={formik.values.ends_at}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     invalid={Boolean(formik.errors.ends_at)}
                 />
+            </Form.Group>
+            <Form.Group>
+                <Form.Label>{locale.fields.signup_deadline}</Form.Label>
+                <div className="flex w-full flex-row gap-4 align-middle">
+                    <Form.Control
+                        name="ends_at"
+                        type="datetime-local"
+                        value={formik.values.ends_at}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        invalid={Boolean(formik.errors.signup_deadline)}
+                    />
+                    <Form.Check
+                        name="signup_enabled"
+                        checked={formik.values.signup_enabled}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                    />
+                </div>
             </Form.Group>
             <Form.Group>
                 <Form.Label>{locale.fields.organiser}</Form.Label>
@@ -143,14 +180,22 @@ const EventForm = ({
             {isAdmin(user) && (
                 <Form.Group>
                     <Form.Label>{locale.fields.capacity}</Form.Label>
-                    <Form.Control
-                        type="number"
-                        name="capacity"
-                        value={formik.values.capacity ?? undefined}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        invalid={Boolean(formik.errors.capacity)}
-                    />
+                    <div className="flex w-full flex-row gap-4 align-middle">
+                        <Form.Control
+                            type="number"
+                            name="capacity"
+                            value={formik.values.capacity ?? undefined}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            invalid={Boolean(formik.errors.capacity)}
+                        />
+                        <Form.Check
+                            name="capacity_enabled"
+                            checked={formik.values.capacity_enabled}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                        />
+                    </div>
                 </Form.Group>
             )}
             {isAdmin(user) && (

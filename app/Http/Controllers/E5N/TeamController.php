@@ -116,7 +116,7 @@ class TeamController extends Controller
     public function promote(Request $request, $teamCode)
     {
         $team = Team::findOrFail($teamCode)->load('members');
-        $updatableRole = $team->members->where('e5code', request()->userId)->firstOrFail()->pivot->role;
+        $updatableRole = $team->members->where('id', request()->userId)->firstOrFail()->pivot->role;
         $kick = false;
         switch ($updatableRole) {
             case MembershipType::Leader->value:
@@ -132,6 +132,7 @@ class TeamController extends Controller
                     break;
                 } else {
                     $kick = true;
+                    break;
                 }
             case MembershipType::Invited->value:
                 if ($request->promote) {
@@ -139,13 +140,15 @@ class TeamController extends Controller
                     break;
                 } else {
                     $kick = true;
+                    break;
                 }
             default:
                 if ($request->promote) {
                     $updatableRole = MembershipType::Invited->value;
                     break;
                 } else {
-                    abort(409, "User is not in the team");
+                    abort(400, "User is not in the team");
+                    break;
                 }
         }
         if ($kick) {

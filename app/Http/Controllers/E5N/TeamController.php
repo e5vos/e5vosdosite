@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\E5N;
 
-use App\Exceptions\AlreadyInTeamException;
 use App\Exceptions\NotAllowedException;
 use App\Helpers\MembershipType;
 use App\Http\Controllers\{
@@ -50,7 +49,7 @@ class TeamController extends Controller
         $team->members()->attach(Auth::user()->id, ['role' => MembershipType::Leader]);
         $team = new TeamResource($team);
         Cache::forget('e5n.teams.all');
-        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => $team->jsonSerialize());
+        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => new TeamResource($team->load('members', 'activity')));
     }
 
 
@@ -100,7 +99,7 @@ class TeamController extends Controller
         $team->restore();
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.' . $team->code);
-        return Cache::rememberForever('e5n.teams' . $team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
+        return Cache::rememberForever('e5n.teams' . $team->code, fn () => (new TeamResource($team->load('members', 'activity')))->jsonSerialize());
     }
 
 
@@ -113,7 +112,7 @@ class TeamController extends Controller
      */
     public function promote(Request $request, $teamCode)
     {
-        $team = Team::findOrFail($teamCode);
+        $team = Team::findOrFail($teamCode)->load('members');
         $updatableRole = $team->members->where('e5code', request()->userId)->firstOrFail()->pivot->role;
         $kick = false;
         switch ($updatableRole) {
@@ -153,6 +152,9 @@ class TeamController extends Controller
         }
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.' . $team->code);
-        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members')))->jsonSerialize());
+        foreach ($team->members as $member) {
+            Cache::forget($member->id . 'teams');
+        }
+        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members', 'activity')))->jsonSerialize());
     }
 }

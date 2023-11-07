@@ -22,7 +22,6 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\{
     Cache,
-    DB,
 };
 use App\Helpers\PermissionType;
 use App\Http\Resources\EventResource;
@@ -273,6 +272,8 @@ class EventController extends Controller
         $attendance->team()->members()->whereNotIn('id', $teamMemberAttendances->get('user_id')->toArray())->get()->each(fn ($member) => $teamMemberAttendances->create(['user_id' => $member->id, 'attendance_id' => $attendanceId]));
         $attendance->teamMemberAttendances()->whereIn('user_id', $presentAttendanceIds)->update(['is_present' => true]);
         $attendance->teamMemberAttendances()->whereIn('user_id', $absentAttendanceIds)->update(['is_present' => false]);
+
+        Cache::forget('teams.' . $attendance->team->code);
         return response()->json($attendance->teamMemberAttendances, 200);
     }
 
@@ -320,7 +321,11 @@ class EventController extends Controller
         $event->attendances()->where('rank', $request->rank)->update(['rank' => null]);
         $attendance->rank = $request->rank;
         $attendance->save();
+
+        Cache::forget('e5n.teams.' . $attendance->team->code);
         Cache::forget('e5n.events.' . $eventID);
+
+        return response()->noContent();
     }
 
     public function organisers(int $eventId)

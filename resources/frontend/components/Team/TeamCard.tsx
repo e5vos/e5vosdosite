@@ -44,7 +44,7 @@ const cardLocale = Locale({
         activities: "Aktivitás",
         members: "Tagok",
         promote: "Előléptetés",
-        demote: "Kizárás",
+        kick: "Kizárás",
         resign: "Lemondás",
         leave: "Kilépés",
         noAttendanceYet: "Még nincs aktivitás",
@@ -71,7 +71,7 @@ const cardLocale = Locale({
         activities: "Activities",
         members: "Members",
         promote: "Promote",
-        demote: "Demote",
+        kick: "Kick",
         resign: "Resign",
         leave: "Leave",
         noAttendanceYet: "No activity yet",
@@ -219,10 +219,10 @@ const TeamCard = ({
                                     >
                                         {member.id === user.id
                                             ? member.pivot.role ===
-                                              TeamMemberRole.member
+                                              TeamMemberRole.leader
                                                 ? cardLocale.resign
                                                 : cardLocale.leave
-                                            : cardLocale.demote}
+                                            : cardLocale.kick}
                                     </Button>
                                 )}
                             </ButtonGroup>

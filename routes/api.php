@@ -102,6 +102,7 @@ Route::controller(EventController::class)->group(function () {
             Route::post('/signup', 'signup')->can('signup', Event::class)->name('event.signup');
             Route::delete('/signup', 'unsignup')->can('unsignup', Event::class)->name('event.unsignup');
             Route::post('/attend', 'attend')->can('attend', Event::class)->name('event.attend');
+            Route::post('/score', 'score')->can('setScore', Event::class)->name('event.setscore');
         });
     });
 });

@@ -301,6 +301,26 @@ class EventController extends Controller
         );
     }
 
+    public function setScore(Request $request, $eventID)
+    {
+        if (empty($request->attender)) {
+            abort("400", "No attendeder");
+        }
+        $event = Event::findOrFail($eventID);
+        if (is_numeric($request->attender)) {
+            $attendance = $event->attendances()->where('user_id', $request->attender)->findOrFail();
+        } else if (strlen($request->attender) == 13) {
+            $user = User::where('e5code', $request->attender)->firstOrFail();
+            $attendance = $event->attendances()->whereBelongsTo($user)->findOrFail();
+        } else {
+            $attendance = $event->attendances()->Team::where('code', $request->attender)->firstOrFail();
+        }
+
+        $event->attendances()->where('rank', $request->rank)->update(['rank' => null]);
+        $attendance->rank = $request->rank;
+        $attendance->save();
+        Cache::forget('e5n.events.' . $eventID);
+    }
 
     public function organisers(int $eventId)
     {

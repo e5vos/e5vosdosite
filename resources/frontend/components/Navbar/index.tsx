@@ -14,6 +14,7 @@ const locale = Locale({
         events: "Események",
         title: "Eötvös DÖ",
         login: "Bejelentkezés",
+        teams: "Csapatok",
         logout: "Kijelentkezés",
         info: "DÖ Információk",
         noe5code: "Nincs E5 kódod :(",
@@ -23,6 +24,7 @@ const locale = Locale({
         events: "Events",
         title: "Eötvös DÖ",
         login: "Login",
+        teams: "Teams",
         logout: "Logout",
         info: "SU Information",
         noe5code: "You have no E5 code :(",
@@ -60,6 +62,7 @@ const CustomNavbar = () => {
                 <Navbar.Link href="https://info.e5vosdo.hu">
                     {locale.info}
                 </Navbar.Link>
+                <Navbar.Link href="/csapat">{locale.teams}</Navbar.Link>
                 <Navbar.Link href="/esemeny">{locale.events}</Navbar.Link>
                 <Navbar.Link href="/eloadas">
                     {locale.presentationSignup}

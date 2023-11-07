@@ -42,7 +42,7 @@ const Button = ({
             break;
         case "outline-secondary":
             buttonclass +=
-                "bg-gray-600 outline-white enabled:hover:bg-white disabled:bg-white text-white enabled:hover:text-black disabled:text-black";
+                " outline-white enabled:hover:bg-white disabled:bg-white text-white enabled:hover:text-black disabled:text-black";
             break;
         case "danger":
             buttonclass +=

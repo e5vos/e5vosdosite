@@ -15,10 +15,6 @@ import Loader from "components/UIKit/Loader";
 const Home = React.lazy(() => import("pages/Home"));
 const Error = React.lazy(() => import("components/Error"));
 
-// Misc
-
-const LegalPage = React.lazy(() => import("pages/Legal"));
-
 // Teams
 const TeamsPage = React.lazy(() => import("pages/team"));
 const TeamPage = React.lazy(() => import("pages/team/[teamcode]"));
@@ -36,11 +32,6 @@ const teamRoutes = (
 );
 
 // Events
-
-const ManageEventsPage = React.lazy(() => import("pages/event/manage"));
-const ManageEventPage = React.lazy(
-    () => import("pages/event/[eventid]/manage/index"),
-);
 const EventsPage = React.lazy(() => import("pages/event"));
 const EventPage = React.lazy(() => import("pages/event/[eventid]/index"));
 const ScannerPage = React.lazy(
@@ -57,14 +48,9 @@ const eventRoutes = (
         <Route path=":eventid">
             <Route index element={<EventPage />} />
             <Route path="kezel">
-                <Route index element={<ManageEventPage />} />
                 <Route path="szerkeszt" element={<EditEventPage />} />
                 <Route path="scanner" element={<ScannerPage />} />
-                <Route path="admin" element={<>ManageEventAdminPage</>} />
             </Route>
-        </Route>
-        <Route path="kezel">
-            <Route index element={<ManageEventsPage />} />
         </Route>
     </Route>
 );
@@ -166,10 +152,6 @@ function App() {
                                     <Route
                                         path="/privacypolicy"
                                         element={<PrivacyPolicyPage />}
-                                    />
-                                    <Route
-                                        path="/legal"
-                                        element={<LegalPage />}
                                     />
                                     <Route
                                         path="*"

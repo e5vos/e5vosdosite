@@ -329,7 +329,10 @@ const EventReader = ({
                                 className="w-full"
                                 to={`/esemeny/${event.id}/kezel/scanner`}
                             >
-                                <Button variant="primary" className="!mb-2">
+                                <Button
+                                    variant="outline-primary"
+                                    className="!mb-2"
+                                >
                                     {locale.scanner}
                                 </Button>
                             </Link>
@@ -339,7 +342,10 @@ const EventReader = ({
                                 className="w-full"
                                 to={`/esemeny/${event.id}/kezel/szerkeszt`}
                             >
-                                <Button className="!mb-2" variant="secondary">
+                                <Button
+                                    className="!mb-2"
+                                    variant="outline-secondary"
+                                >
                                     {locale.edit}
                                 </Button>
                             </Link>
@@ -347,7 +353,7 @@ const EventReader = ({
                         {isAdmin(user) && (
                             <Button
                                 className="!mb-2 !rounded-md text-white"
-                                variant="danger"
+                                variant="outline-danger"
                                 onClick={async () => {
                                     if (!(await confirmDelete())) return;
                                     await deleteEvent(event);
@@ -374,8 +380,8 @@ const EventReader = ({
                                     />
                                 </Dialog>
                                 <Button
-                                    className="!mb-2 text-white"
-                                    variant="info"
+                                    className="!mb-2 !rounded-md text-white"
+                                    variant="outline-info"
                                     onClick={() =>
                                         setIsPermissionDialogOpen(true)
                                     }
@@ -388,7 +394,7 @@ const EventReader = ({
                             (isAdmin(user) || isUserOrganiser) && (
                                 <Button
                                     className="!mb-2 !rounded-md text-white"
-                                    variant="warning"
+                                    variant="outline-warning"
                                     onClick={async () => {
                                         if (!(await confirmCloseSignup()))
                                             return;
@@ -401,36 +407,48 @@ const EventReader = ({
                     </ButtonGroup>
                 </div>
                 <div className="col-span-2 !mt-0 sm:mt-2">
-                    <Card title={locale.score} className="!bg-red-500">
+                    <Card
+                        title={locale.score}
+                        className="border-2 border-dashed border-red-500"
+                    >
                         {Array(scoreLength)
                             .fill(0)
                             .map((_, i) => (
-                                <div key={i}>
-                                    <span>{i + 1}.</span>
-                                    {isAdmin(user) &&
-                                    isUserOrganiser &&
-                                    participants ? (
-                                        <ParticipantSearch
-                                            event={{
-                                                ...event,
-                                                attendees: participants,
-                                            }}
-                                            onChange={(p) => setScore(p, i + 1)}
-                                        />
-                                    ) : (
-                                        <span>
-                                            {participants?.find(
-                                                (p) => p.pivot.rank === i,
-                                            )?.name ?? locale.notyetset}
-                                        </span>
-                                    )}
+                                <div
+                                    className="mb-2 flex h-10 items-center overflow-hidden rounded-md border-2"
+                                    key={i}
+                                >
+                                    <div className="w-10 text-center">
+                                        {i + 1}.
+                                    </div>
+                                    <div className="w-full">
+                                        {isAdmin(user) &&
+                                        isUserOrganiser &&
+                                        participants ? (
+                                            <ParticipantSearch
+                                                event={{
+                                                    ...event,
+                                                    attendees: participants,
+                                                }}
+                                                onChange={(p) =>
+                                                    setScore(p, i + 1)
+                                                }
+                                            />
+                                        ) : (
+                                            <div className="w-full bg-gray p-2">
+                                                {participants?.find(
+                                                    (p) => p.pivot.rank === i,
+                                                )?.name ?? locale.notyetset}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             ))}
                     </Card>
-                    <Card title={locale.description} className="!bg-slate-500">
+                    <Card title={locale.description}>
                         <p>{event.description}</p>
                     </Card>
-                    <Card title={locale.times} className="!bg-slate-500">
+                    <Card title={locale.times}>
                         <p>
                             <strong>{locale.starts_at}</strong>:{" "}
                             {starts_at?.toLocaleString("hu-HU")}
@@ -445,7 +463,7 @@ const EventReader = ({
                                 locale.undefined}
                         </p>
                     </Card>
-                    <Card title={locale.location} className="!bg-slate-500">
+                    <Card title={locale.location}>
                         {event.location?.name ?? locale.unknown}
                     </Card>
                 </div>

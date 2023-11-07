@@ -76,7 +76,7 @@ class SlotController extends Controller
     public function nonAttendingStudents($slotId)
     {
         return Cache::remember("nonAttendingStudents" . $slotId, 60, function () use ($slotId) {
-            return Slot::findOrFail($slotId)->signups()->join('users', 'users.id', '=', 'attendances.user_id')->where('attendances.is_present', false)->distinct()->get(['users.id', 'users.name', 'users.ejg_class', 'attendances.is_present'])->toArray();
+            return Slot::findOrFail($slotId)->signups()->join('users', 'users.id', '=', 'attendances.user_id')->where('attendances.is_present', false)->distinct()->get(['users.id', 'users.name', 'users.ejg_class'])->toArray();
         });
     }
     public function AttendingStudents($slotId)

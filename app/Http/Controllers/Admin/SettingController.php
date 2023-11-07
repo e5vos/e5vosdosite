@@ -41,7 +41,7 @@ class SettingController extends Controller
     {
         $setting = Setting::where('key', $key)->firstOrFail();
         $setting->update(['value' => $value]);
-        return (new SettingResource($setting))->jsonSerialize();
+        return response((new SettingResource($setting))->jsonSerialize(), 200);
     }
 
     /**
@@ -55,7 +55,7 @@ class SettingController extends Controller
     {
         $setting = Setting::where('key', $key)->firstOrFail();
         $setting->update(['value' => !$setting->value]);
-        return (new SettingResource($setting))->jsonSerialize();
+        return response((new SettingResource($setting))->jsonSerialize(), 200);
     }
 
     /**

@@ -22,7 +22,6 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\{
     Cache,
-    DB,
 };
 use App\Helpers\PermissionType;
 use App\Http\Resources\EventResource;
@@ -66,23 +65,26 @@ class EventController extends Controller
     public function store(Request $request)
     {
         $slot = Slot::find($request->slot_id);
-        if (!isset($request->signup_type)) {
-            $request->signup_deadline = null;
-            $request->capacity = null;
+        $newData = $request->all();
+        if (!isset($newData["signup_type"])) {
+            $newData["signup_deadline"] = null;
+            $newData["capacity"] = null;
         } else {
-            $request->signup_deadline = $request->signup_deadline ?? $slot->starts_at;
+            $newData["signup_deadline"] = $newData["signup_deadline"] ?? $slot->starts_at;
         }
-        if ($request->starts_at < $slot->starts_at) {
-            $request->starts_at = $slot->starts_at;
+        if ($newData["starts_at"] < $slot->starts_at) {
+            $newData["starts_at"] = $slot->starts_at;
         }
-        if ($request->ends_at > $slot->ends_at) {
-            $request->ends_at = $slot->ends_at;
+        if ($newData["ends_at"] > $slot->ends_at) {
+            $newData["ends_at"] = $slot->ends_at;
         }
-        $event = Event::create($request->all());
+        $event = Event::create($newData);
         $event = new EventResource($event);
         Cache::forget('e5n.events.all');
-        Cache::forget('e5n.events.presentations');
-        return Cache::rememberForever('e5n.events.' . $event->id, fn () => $event->jsonSerialize());
+        if ($slot->slot_type == SlotType::presentation->value) {
+            Cache::forget('e5n.events.presentations');
+        }
+        return Cache::rememberForever('e5n.events.' . $event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
     }
 
     /**
@@ -105,23 +107,29 @@ class EventController extends Controller
     public function update(Request $request, $eventId)
     {
         $slot = Slot::find($request->slot_id);
-        if (!isset($request->signup_type)) {
-            $request->signup_deadline = null;
-            $request->capacity = null;
+        $newData = $request->all();
+        if (!isset($newData["signup_type"])) {
+            $newData["signup_deadline"] = null;
+            $newData["capacity"] = null;
         } else {
-            $request->signup_deadline = $request->signup_deadline ?? $slot->starts_at;
+            $newData["signup_deadline"] = $newData["signup_deadline"] ?? $slot->starts_at;
         }
-        if ($request->starts_at < $slot->starts_at) {
-            $request->starts_at = $slot->starts_at;
+        if ($newData["starts_at"] < $slot->starts_at) {
+            $newData["starts_at"] = $slot->starts_at;
         }
-        if ($request->ends_at > $slot->ends_at) {
-            $request->ends_at = $slot->ends_at;
+        if ($newData["ends_at"] > $slot->ends_at) {
+            $newData["ends_at"] = $slot->ends_at;
         }
-        $event  = Event::findOrFail($eventId)->update($request->all());
+        $event = Event::findOrFail($eventId);
+        foreach ($newData as $key => $value) {
+            $event->$key = $value;
+        }
+        $event->save();
+        // dd($event, $newData);
         $event = new EventResource($event);
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forever('e5n.events.' . $eventId, $event->jsonSerialize());
+        Cache::forever('e5n.events.' . $eventId, (new EventResource($event->load('slot', 'location')))->jsonSerialize());
         return Cache::get('e5n.events.' . $eventId);
     }
 
@@ -153,7 +161,7 @@ class EventController extends Controller
         $event = new EventResource($event);
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forever('e5n.events.' . $event->id, $event->jsonSerialize());
+        Cache::forever('e5n.events.' . $event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
         return Cache::get('e5n.events.' . $event->id);
     }
 
@@ -169,7 +177,7 @@ class EventController extends Controller
         $event = new EventResource($event);
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forever('e5n.events.' . $event->id, $event->jsonSerialize());
+        Cache::forever('e5n.events.' . $event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
         return Cache::get('e5n.events.' . $event->id);
     }
 
@@ -270,6 +278,8 @@ class EventController extends Controller
         $attendance->team()->members()->whereNotIn('id', $teamMemberAttendances->get('user_id')->toArray())->get()->each(fn ($member) => $teamMemberAttendances->create(['user_id' => $member->id, 'attendance_id' => $attendanceId]));
         $attendance->teamMemberAttendances()->whereIn('user_id', $presentAttendanceIds)->update(['is_present' => true]);
         $attendance->teamMemberAttendances()->whereIn('user_id', $absentAttendanceIds)->update(['is_present' => false]);
+
+        Cache::forget('teams.' . $attendance->team->code);
         return response()->json($attendance->teamMemberAttendances, 200);
     }
 
@@ -299,6 +309,30 @@ class EventController extends Controller
         );
     }
 
+    public function setScore(Request $request, $eventID)
+    {
+        if (empty($request->attender)) {
+            abort("400", "No attendeder");
+        }
+        $event = Event::findOrFail($eventID);
+        if (is_numeric($request->attender)) {
+            $attendance = $event->attendances()->where('user_id', $request->attender)->findOrFail();
+        } else if (strlen($request->attender) == 13) {
+            $user = User::where('e5code', $request->attender)->firstOrFail();
+            $attendance = $event->attendances()->whereBelongsTo($user)->findOrFail();
+        } else {
+            $attendance = $event->attendances()->Team::where('code', $request->attender)->firstOrFail();
+        }
+
+        $event->attendances()->where('rank', $request->rank)->update(['rank' => null]);
+        $attendance->rank = $request->rank;
+        $attendance->save();
+
+        Cache::forget('e5n.teams.' . $attendance->team->code);
+        Cache::forget('e5n.events.' . $eventID);
+
+        return response()->noContent();
+    }
 
     public function organisers(int $eventId)
     {

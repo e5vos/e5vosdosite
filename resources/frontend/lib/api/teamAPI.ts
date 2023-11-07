@@ -85,31 +85,6 @@ export const teamAPI = baseAPI.injectEndpoints({
                           { type: "User", id: "LIST" },
                       ],
         }),
-        invite: builder.mutation<
-            RequiredAndOmitFields<Team, "members", "activity">,
-            Pick<TeamMembership, "team_code" | "user_id">
-        >({
-            query: (data) => ({
-                url: routeSwitcher("team.invite", {
-                    teamCode: data.team_code,
-                }),
-                method: "POST",
-                body: {
-                    userId: data.user_id,
-                },
-            }),
-            invalidatesTags: (res, err, arg) =>
-                err
-                    ? []
-                    : [
-                          { type: "Team", id: arg.team_code },
-                          { type: "Team", id: "LIST" },
-                          { type: "Team", id: "MYTEAMS" },
-                          { type: "User", id: arg.user_id },
-                          { type: "User", id: "CURRENT" },
-                          { type: "User", id: "LIST" },
-                      ],
-        }),
     }),
 });
 

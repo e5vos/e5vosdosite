@@ -40,7 +40,10 @@ class SlotController extends Controller
     public function update(Request $request, $slotId)
     {
         $slot = (Slot::find($slotId) ?? abort(404));
-        $slot->update($request->all());
+        foreach ($request->all() as $key => $value) {
+            $slot->$key = $value;
+        }
+        $slot->save();
         $slot = new SlotResource($slot);
         Cache::forget('e5n.slot.all');
         Cache::forever('e5n.slot.' . $slot->id, $slot->jsonSerialize());
@@ -64,10 +67,10 @@ class SlotController extends Controller
      */
     public function freeStudents($slotId)
     {
-        $occupiedIds = Slot::findOrFail($slotId)->signups()->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
-        return Cache::remember("freeStudents" . $slotId, 60, fn () => UserResource::collection(
-            User::whereNotIn('id', $occupiedIds)->get()
-        )->jsonSerialize());
+        return Cache::remember("freeStudents" . $slotId, 60, function () use ($slotId) {
+            $occupiedIds = Slot::findOrFail($slotId)->signups()->groupBy('user_id')->whereNotNull('user_id')->pluck('user_id')->toArray();
+            return UserResource::collection(User::whereNotIn('id', $occupiedIds)->get())->jsonSerialize(); // not optimal
+        });
     }
 
     public function nonAttendingStudents($slotId)
@@ -79,7 +82,7 @@ class SlotController extends Controller
     public function AttendingStudents($slotId)
     {
         return Cache::remember("attendingStudents" . $slotId, 60, function () use ($slotId) {
-            return Slot::findOrFail($slotId)->signups()->join('users', 'users.id', '=', 'attendances.user_id')->where('attendances.is_present', true)->distinct()->get(['users.id', 'users.name', 'users.ejg_class', 'attendances.is_present'])->toArray();
+            return Slot::findOrFail($slotId)->signups()->where('attendances.is_present', true)->join('users', 'users.id', '=', 'attendances.user_id')->distinct()->get(['users.id', 'users.name', 'users.ejg_class'])->toArray()->jsonSerialize();
         });
     }
 }

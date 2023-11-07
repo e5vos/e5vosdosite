@@ -12,11 +12,11 @@ export const locationAPI = baseAPI
     .injectEndpoints({
         endpoints: (builder) => ({
             getLocations: builder.query<Omit<Location, "events">[], void>({
-                query: () => routeSwitcher("location.index"),
-                providesTags: (result) =>
-                    result
+                query: () => routeSwitcher("locations.index"),
+                providesTags: (res, err, arg) =>
+                    res
                         ? [
-                              ...result.map(
+                              ...res.map(
                                   ({ id }) =>
                                       ({ type: "Location", id }) as const,
                               ),
@@ -29,9 +29,9 @@ export const locationAPI = baseAPI
                 number
             >({
                 query: (id) => routeSwitcher("location.show", { id }),
-                providesTags: (result) =>
-                    result
-                        ? [{ type: "Location", id: result.id }]
+                providesTags: (res) =>
+                    res
+                        ? [{ type: "Location", id: res.id }]
                         : [{ type: "Location", id: "LIST" }],
             }),
             updateLocation: builder.mutation<
@@ -41,12 +41,15 @@ export const locationAPI = baseAPI
                 query: (location) => ({
                     url: routeSwitcher("location.update", { id: location.id }),
                     method: "PATCH",
-                    params: location,
+                    body: location,
                 }),
-                invalidatesTags: (result) => [
-                    { type: "Location", id: result?.id },
-                    { type: "Location", id: "LIST" },
-                ],
+                invalidatesTags: (res, err, arg) =>
+                    err
+                        ? []
+                        : [
+                              { type: "Location", id: res?.id },
+                              { type: "Location", id: "LIST" },
+                          ],
             }),
         }),
     });

@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Misc;
 use App\Helpers\PermissionType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\TeamResource;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
+
 
 class UserController extends Controller
 {
@@ -54,7 +57,10 @@ class UserController extends Controller
     {
         $userId ??= request()->user->id;
         $user = User::find($userId);
-        $user->update(request()->all());
+        foreach (request()->all() as $key => $value) {
+            $user->$key = $value;
+        }
+        $user->save();
         return (new UserResource($user))->jsonSerialize();
     }
 
@@ -85,6 +91,13 @@ class UserController extends Controller
         $userId ??= request()->user->id;
         $user = User::withTrashed()->find($userId);
         $user->restore();
-        return (new UserResource($user))->jsonSerialize();
+        return response((new UserResource($user))->jsonSerialize(), 200);
+    }
+
+    public function myTeams()
+    {
+        return Cache::remember(request()->user()->id . 'teams', 60, function () {
+            return (TeamResource::collection(request()->user()->teams()->with('members', 'activity')->get()))->jsonSerialize();
+        });
     }
 }

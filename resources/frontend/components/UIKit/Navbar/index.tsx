@@ -3,6 +3,8 @@ import { ReactComponent as Donci } from "assets/donci.svg";
 import useIsMobile from "hooks/useIsMobile";
 import { ReactNode } from "react";
 
+import Locale from "lib/locale";
+
 import { ReactComponent as Caret } from "./assets/caret.svg";
 import { ReactComponent as MobileMenu } from "./assets/mobileMenu.svg";
 
@@ -111,16 +113,24 @@ const Navbar = ({
     children: ReactNode;
     brand: ReactNode;
 }) => {
+    const locale = Locale({
+        hu: {
+            openMenu: "Főmenü megnyitása",
+        },
+        en: {
+            openMenu: "Open main menu",
+        },
+    });
     const isMobile = useIsMobile();
     return (
-        <nav className="mb-2 rounded border-gray-200 bg-gray-400 px-2 py-2 text-white">
+        <nav className="mb-2 rounded border-gray-200 bg-gray-700 px-2 py-2 text-white">
             <Menu as="div" className="">
                 {({ open }) => (
                     <div>
                         <div className="container mx-auto flex flex-wrap items-center justify-between">
                             <>{brand}</>
                             {import.meta.env.DEV && (
-                                <div className="text-4xl font-bold text-red-300">
+                                <div className="rounded-lg bg-red-500 px-4 text-2xl font-bold text-gray-700">
                                     DEV MODE
                                 </div>
                             )}
@@ -130,7 +140,7 @@ const Navbar = ({
                                 aria-expanded="false"
                             >
                                 <span className="sr-only">
-                                    Főmenü megnyitása
+                                    {locale.openMenu}
                                 </span>
                                 <MobileMenu fill="white" className="h-10" />
                             </Menu.Button>

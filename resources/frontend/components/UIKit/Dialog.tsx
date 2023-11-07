@@ -52,9 +52,12 @@ const Dialog = ({
             onClose={closable ? onClose! : noop}
             className="relative z-50"
         >
-            <div className="fixed inset-0 bg-gray-500/50" aria-hidden="true" />
+            <div
+                className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm"
+                aria-hidden="true"
+            />
             <div className="fixed inset-0 flex items-center justify-center p-4">
-                <DialogHeadless.Panel className="mx-auto flex max-h-[95%] min-w-[200px] max-w-[95%] flex-col gap-4 rounded-3xl border-8 border-gray-800/50 bg-gray-100 p-3 shadow-2xl  shadow-gray-800">
+                <DialogHeadless.Panel className="mx-auto flex max-h-[95%] min-w-[200px] max-w-[95%] flex-col gap-4 rounded-3xl border-8 border-gray-700 bg-gray-600 p-3 shadow-xl  shadow-gray-800">
                     <div className="overflow-auto">
                         {isLoading ? (
                             <Loader />
@@ -77,8 +80,12 @@ const Dialog = ({
                         )}
                     </div>
                     {closable !== false && (
-                        <div className="mx-auto text-center">
-                            <Button onClick={onClose} variant="danger">
+                        <div className="mx-auto w-full text-center">
+                            <Button
+                                onClick={onClose}
+                                className="!w-full rounded-lg"
+                                variant="danger"
+                            >
                                 {locale.close}
                             </Button>
                         </div>

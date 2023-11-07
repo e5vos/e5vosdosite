@@ -182,6 +182,14 @@ class Event extends Model implements CachableAttributes
         return $this->users()->withPivot('is_present', 'rank')->get()->merge($this->teams()->withPivot('is_present', 'rank')->get());
     }
 
+    /**
+     * Get all of the signuppers who scored in the Event
+     */
+    public function scored(): Collection
+    {
+        return $this->signuppers()->whereIsNotNull('rank')->orderBy('rank', 'asc');
+    }
+
 
     public function fillUp()
     {

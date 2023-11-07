@@ -36,9 +36,9 @@ class EventResource extends JsonResource
             'occupancy' => $this->occupancy,
 
             'root_parent' => $this->root_parent,
-            'root_parent_slot_id' => Event::find($this->root_parent)?->slot_id,
+            'root_parent_slot_id' => isset($this->root_parent) ? Event::find($this->root_parent)?->slot_id : null,
             'direct_child' => $this->direct_child,
-            'direct_child_slot_id' => Event::find($this->direct_child)?->slot_id,
+            'direct_child_slot_id' => isset($this->direct_child) ? Event::find($this->direct_child)?->slot_id : null,
 
             'attendances' => AttendanceResource::collection($this->whenLoaded('attendances')),
             'organisers' => UserResource::collection($this->whenLoaded('organisers')),

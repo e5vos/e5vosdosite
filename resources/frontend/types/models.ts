@@ -203,6 +203,15 @@ export interface Presentation extends Event {
     slot_id: number;
 }
 
+export interface Rating {
+    user_id: number;
+    event_id: number;
+    rating: number;
+
+    author?: UserStub;
+    event?: EventStub;
+}
+
 export const isTeamCode = (code: string): boolean =>
     code.match(/^[a-zA-Z]{1,10}$/) !== null;
 

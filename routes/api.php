@@ -58,9 +58,7 @@ Route::controller(UserController::class)->middleware(['auth:sanctum'])->prefix('
     Route::get('/currentuser', function (Request $request) {
         return (new UserResource($request->user()->load('permissions')))->jsonSerialize();
     })->name('user.current');
-    Route::get('/currentuser/teams', function (Request $request) {
-        return (TeamResource::collection($request->user()->teams()->get()))->jsonSerialize();
-    })->name('user.myteams');
+    Route::get('/currentuser/teams', 'myTeams')->name('user.myteams');
     Route::get('/', 'show')->name('user.details');
     Route::get('/{userId}', 'show')->can('view', User::class)->name('users.show');
     Route::put('/{userId}', 'update')->can('update', User::class)->name('users.update');
@@ -102,6 +100,7 @@ Route::controller(EventController::class)->group(function () {
             Route::post('/signup', 'signup')->can('signup', Event::class)->name('event.signup');
             Route::delete('/signup', 'unsignup')->can('unsignup', Event::class)->name('event.unsignup');
             Route::post('/attend', 'attend')->can('attend', Event::class)->name('event.attend');
+            Route::post('/score', 'score')->can('setScore', Event::class)->name('event.setscore');
         });
     });
 });

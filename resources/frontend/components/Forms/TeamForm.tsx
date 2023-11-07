@@ -57,7 +57,11 @@ const TeamForm = ({
             description: Yup.string(),
         }),
         onSubmit: (values) => {
-            const val = onSubmit(values);
+            const val = onSubmit({
+                name: values.name,
+                code: values.code,
+                description: values.description,
+            });
             if (resetOnSubmit) formik.resetForm();
             return val;
         },
@@ -96,7 +100,9 @@ const TeamForm = ({
                 />
             </Form.Group>
             <Form.Group className="w-full text-center">
-                <Button type="submit">{submitLabel}</Button>
+                <Button className="w-full" type="submit">
+                    {submitLabel}
+                </Button>
             </Form.Group>
         </Form>
     );

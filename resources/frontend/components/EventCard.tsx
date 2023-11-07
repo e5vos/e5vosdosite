@@ -22,18 +22,18 @@ const EventCard = ({
     const navigate = useNavigate();
     return (
         <div
-            className={`mb-3 flex flex-col justify-between rounded-lg bg-gray-100 p-2 ${
+            className={`mb-3 flex flex-col justify-between rounded-lg bg-gray-600 p-2 ${
                 className ?? ""
             }`}
         >
             <div>
-                <h3 className="px-2 text-lg font-bold">{event.name}</h3>
+                <h3 className="px-2 text-2xl font-bold">{event.name}</h3>
                 <h4 className="px-2 text-sm">{event.organiser}</h4>
                 <p className="mt-2 px-2">{event.description}</p>
             </div>
             <div>
                 <div className="flew-row mb-1 mt-2 flex w-full justify-between">
-                    <div className="rounded-full bg-slate-700 px-3">
+                    <div className="rounded-full bg-gray-400 px-3">
                         {event.location?.name ?? "Ismeretlen"}
                     </div>
                     <div className=" flex overflow-hidden rounded-full bg-slate-200">
@@ -46,7 +46,7 @@ const EventCard = ({
                 <ButtonGroup className="mt-1 w-full">
                     <Button
                         variant="info"
-                        onClick={() => navigate(`${event.id}`)}
+                        onClick={() => navigate(`/esemeny/${event.id}`)}
                         className="text-white"
                     >
                         {locale}

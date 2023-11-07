@@ -12,7 +12,6 @@ import eventAPI from "lib/api/eventAPI";
 import teamAPI from "lib/api/teamAPI";
 import { isAdmin, isOrganiser, isScanner } from "lib/gates";
 import Locale from "lib/locale";
-import { formatDateInput } from "lib/util";
 
 import EventForm from "components/Forms/EventForm";
 import { EventPermissionCreateFormImpl } from "components/Permissions/CRUD";
@@ -276,14 +275,14 @@ const EventReader = ({
                         {locale.signup_type(event.signup_type)}
                     </p>
                     {user && canSignup && (
-                        <div className="mx-auto mb-5 mt-5 w-full rounded-lg border bg-slate-500 p-2 md:mb-0 md:border-none md:bg-inherit md:p-0 lg:max-w-fit">
+                        <div className="mt-2 w-full rounded-lg  bg-gray-600 p-2 md:mb-0 ">
                             <h3 className="text-center font-bold">
-                                {locale.signup_CTA}
+                                {locale.singup}
                             </h3>
-                            <div className="mt-2 flex w-full flex-row items-center justify-center gap-2">
+                            <div className="mt-2 flex w-full flex-row items-center justify-center rounded-lg border-2">
                                 <Form.Select
                                     ref={attenderSelect}
-                                    className="flex-1 "
+                                    className=" !max-w-none flex-1 !rounded-l-lg"
                                 >
                                     {event.signup_type !== SignupType.Team &&
                                         user.e5code && (
@@ -303,7 +302,7 @@ const EventReader = ({
                                         ))}
                                 </Form.Select>
                                 <Button
-                                    className="w-1/4 lg:min-w-fit"
+                                    className="min-w-fit !rounded-l-none !rounded-r-lg "
                                     onClick={handleSignup}
                                 >
                                     {locale.signup_CTA}
@@ -312,7 +311,7 @@ const EventReader = ({
                             {statusmsg.message !== "" && (
                                 <Card
                                     title={statusmsg.message}
-                                    className={`mt-3 ${
+                                    className={`mt-2 ${
                                         statusmsg.isError
                                             ? "bg-red-500"
                                             : "bg-green-500"
@@ -329,7 +328,10 @@ const EventReader = ({
                                 className="w-full"
                                 to={`/esemeny/${event.id}/kezel/scanner`}
                             >
-                                <Button variant="primary" className="!mb-2">
+                                <Button
+                                    variant="outline-primary"
+                                    className="!mb-2"
+                                >
                                     {locale.scanner}
                                 </Button>
                             </Link>
@@ -339,7 +341,10 @@ const EventReader = ({
                                 className="w-full"
                                 to={`/esemeny/${event.id}/kezel/szerkeszt`}
                             >
-                                <Button className="!mb-2" variant="secondary">
+                                <Button
+                                    className="!mb-2"
+                                    variant="outline-secondary"
+                                >
                                     {locale.edit}
                                 </Button>
                             </Link>
@@ -347,7 +352,7 @@ const EventReader = ({
                         {isAdmin(user) && (
                             <Button
                                 className="!mb-2 !rounded-md text-white"
-                                variant="danger"
+                                variant="outline-danger"
                                 onClick={async () => {
                                     if (!(await confirmDelete())) return;
                                     await deleteEvent(event);
@@ -374,8 +379,8 @@ const EventReader = ({
                                     />
                                 </Dialog>
                                 <Button
-                                    className="!mb-2 text-white"
-                                    variant="info"
+                                    className="!mb-2 !rounded-md text-white"
+                                    variant="outline-info"
                                     onClick={() =>
                                         setIsPermissionDialogOpen(true)
                                     }
@@ -388,7 +393,7 @@ const EventReader = ({
                             (isAdmin(user) || isUserOrganiser) && (
                                 <Button
                                     className="!mb-2 !rounded-md text-white"
-                                    variant="warning"
+                                    variant="outline-warning"
                                     onClick={async () => {
                                         if (!(await confirmCloseSignup()))
                                             return;
@@ -401,36 +406,48 @@ const EventReader = ({
                     </ButtonGroup>
                 </div>
                 <div className="col-span-2 !mt-0 sm:mt-2">
-                    <Card title={locale.score} className="!bg-red-500">
+                    <Card
+                        title={locale.score}
+                        className="border-2 border-dashed border-red-500"
+                    >
                         {Array(scoreLength)
                             .fill(0)
                             .map((_, i) => (
-                                <div key={i}>
-                                    <span>{i + 1}.</span>
-                                    {isAdmin(user) &&
-                                    isUserOrganiser &&
-                                    participants ? (
-                                        <ParticipantSearch
-                                            event={{
-                                                ...event,
-                                                attendees: participants,
-                                            }}
-                                            onChange={(p) => setScore(p, i + 1)}
-                                        />
-                                    ) : (
-                                        <span>
-                                            {participants?.find(
-                                                (p) => p.pivot.rank === i,
-                                            )?.name ?? locale.notyetset}
-                                        </span>
-                                    )}
+                                <div
+                                    className="min-h-10 mb-2 flex items-center overflow-hidden rounded-md border-2"
+                                    key={i}
+                                >
+                                    <div className="w-10 text-center">
+                                        {i + 1}.
+                                    </div>
+                                    <div className="w-full">
+                                        {isAdmin(user) &&
+                                        isUserOrganiser &&
+                                        participants ? (
+                                            <ParticipantSearch
+                                                event={{
+                                                    ...event,
+                                                    attendees: participants,
+                                                }}
+                                                onChange={(p) =>
+                                                    setScore(p, i + 1)
+                                                }
+                                            />
+                                        ) : (
+                                            <div className="w-full bg-gray p-2">
+                                                {participants?.find(
+                                                    (p) => p.pivot.rank === i,
+                                                )?.name ?? locale.notyetset}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             ))}
                     </Card>
-                    <Card title={locale.description} className="!bg-slate-500">
+                    <Card title={locale.description}>
                         <p>{event.description}</p>
                     </Card>
-                    <Card title={locale.times} className="!bg-slate-500">
+                    <Card title={locale.times}>
                         <p>
                             <strong>{locale.starts_at}</strong>:{" "}
                             {starts_at?.toLocaleString("hu-HU")}
@@ -445,7 +462,7 @@ const EventReader = ({
                                 locale.undefined}
                         </p>
                     </Card>
-                    <Card title={locale.location} className="!bg-slate-500">
+                    <Card title={locale.location}>
                         {event.location?.name ?? locale.unknown}
                     </Card>
                 </div>
@@ -478,21 +495,9 @@ const EventCreator = ({
                 id: value.id ?? 0,
                 name: value.name ?? "",
                 description: value.description ?? "",
-                starts_at:
-                    value.starts_at ??
-                    formatDateInput(
-                        value.starts_at ? new Date(value.starts_at) : now,
-                    ),
-                ends_at:
-                    value.ends_at ??
-                    formatDateInput(
-                        value.ends_at ? new Date(value.ends_at) : now,
-                    ),
-                signup_deadline: formatDateInput(
-                    value.signup_deadline
-                        ? new Date(value.signup_deadline)
-                        : now,
-                ),
+                starts_at: value.starts_at ?? "",
+                ends_at: value.ends_at ?? "",
+                signup_deadline: value.signup_deadline ?? null,
                 signup_type: value.signup_type ?? "team_user",
                 location_id: value.location_id ?? 0,
                 organiser: value.organiser ?? "",
@@ -512,23 +517,28 @@ const EventUpdater = ({
     ...rest
 }: CRUDFormImpl<Event, EventFormValues>) => {
     const [changeEvent] = eventAPI.useEditEventMutation();
-    const initialDates = useEventDates(value);
-
+    const navigate = useNavigate();
     return (
         <EventForm
             initialValues={{
-                ...value,
-                ends_at: formatDateInput(
-                    initialDates.ends_at ?? initialDates.now,
-                ),
-                starts_at: formatDateInput(
-                    initialDates.starts_at ?? initialDates.now,
-                ),
-                signup_deadline: initialDates.signup_deadline
-                    ? formatDateInput(initialDates.signup_deadline)
-                    : "",
+                id: value.id,
+                name: value.name,
+                description: value.description,
+                starts_at: value.starts_at,
+                ends_at: value.ends_at,
+                signup_deadline: value.signup_deadline,
+                signup_type: value.signup_type,
+                location_id: value.location_id,
+                organiser: value.organiser,
+                capacity: value.capacity,
+                is_competition: value.is_competition,
+                slot_id: value.slot_id,
             }}
-            onSubmit={changeEvent}
+            onSubmit={async (event) => {
+                console.log(event);
+                await changeEvent(event);
+                navigate(`/esemeny/${event.id}`);
+            }}
             resetOnSubmit={true}
             submitLabel={locale.edit}
             {...rest}

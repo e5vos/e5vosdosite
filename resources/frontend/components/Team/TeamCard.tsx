@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { RequiredFields } from "types/misc";
 import {
@@ -87,21 +87,12 @@ const TeamCard = ({
 }) => {
     const [promote] = teamAPI.usePromoteMutation();
 
-    const [invite] = teamAPI.useInviteMutation();
     const [selectedUser, setSelectedUser] = useState<UserStub | null>(null);
 
     const currentUsersMembership = useMemo(
         () => team.members?.find((member) => member.id === user?.id),
         [team, user],
     );
-
-    const inviteSelected = useCallback(async () => {
-        if (!selectedUser) return;
-        await invite({
-            user_id: selectedUser.id,
-            team_code: team.code,
-        });
-    }, [invite, selectedUser, team.code]);
 
     const moreThanOneLeader = useMemo(
         () =>
@@ -244,7 +235,14 @@ const TeamCard = ({
                     <UserSearchCombobox onChange={setSelectedUser} />
                     <Button
                         className="col-span-1 mt-3 md:mt-0"
-                        onClick={inviteSelected}
+                        onClick={async () => {
+                            if (!selectedUser) return;
+                            await promote({
+                                user_id: selectedUser.id,
+                                team_code: team.code,
+                                promote: true,
+                            });
+                        }}
                     >
                         {cardLocale.invite.send}
                     </Button>

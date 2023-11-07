@@ -93,7 +93,7 @@ const PresentationsTable = ({
 }) => {
     return (
         <table className="flex w-full table-auto border-separate border-spacing-x-0.5 border-spacing-y-1 flex-col text-sm md:table md:border-spacing-y-2 md:text-lg">
-            <thead className="hidden border-separate bg-gray-300 text-white md:table-header-group ">
+            <thead className="hidden border-separate bg-gray-500 text-white md:table-header-group ">
                 <tr className="shadow-md">
                     <th className="rounded-l-lg py-1">
                         {locale.presentation.title}
@@ -118,7 +118,7 @@ const PresentationsTable = ({
                     presentations.map((presentation, index) => (
                         <tr
                             key={index}
-                            className="mb-5 flex flex-col rounded bg-gray-400 shadow-md md:table-row md:rounded-none"
+                            className="mb-5 flex flex-col rounded bg-gray-600 shadow-md md:table-row md:rounded-none"
                         >
                             <td className="rounded-l-lg border-hidden px-2 py-0.5  text-center text-4xl font-bold md:text-lg">
                                 {presentation.name}

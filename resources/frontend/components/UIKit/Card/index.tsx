@@ -23,7 +23,7 @@ const Card = ({
     subtitleClassName?: string;
 }) => (
     <div
-        className={`mb-3 flex flex-col justify-between rounded-lg bg-gray-100 p-2 ${
+        className={`mb-3 flex flex-col justify-between rounded-lg bg-gray-600 p-2 ${
             className ?? ""
         }`}
         {...rest}
@@ -31,7 +31,7 @@ const Card = ({
         {title && (
             <div>
                 <h3
-                    className={`px-2 text-center font-bold ${
+                    className={`px-2 text-center text-xl font-bold ${
                         titleClassName ?? ""
                     }`}
                 >
@@ -39,9 +39,8 @@ const Card = ({
                 </h3>
                 {subtitle && (
                     <>
-                        <hr />
                         <h4
-                            className={`px-2 text-center ${
+                            className={`px-2 text-center text-sm ${
                                 subtitleClassName ?? ""
                             }`}
                         >
@@ -51,7 +50,7 @@ const Card = ({
                 )}
             </div>
         )}
-        <div className="my-2 px-2">{children}</div>
+        {children && <div className="my-2 px-2">{children}</div>}
         {buttonGroup}
     </div>
 );

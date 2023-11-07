@@ -119,7 +119,8 @@ class EventController extends Controller
         if ($request->ends_at > $slot->ends_at) {
             $request->ends_at = $slot->ends_at;
         }
-        $event  = Event::findOrFail($eventId)->update($request->all());
+        $event = Event::findOrFail($eventId);
+        $event->update($request->all());
         $event = new EventResource($event);
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');

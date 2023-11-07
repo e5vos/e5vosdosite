@@ -58,9 +58,7 @@ Route::controller(UserController::class)->middleware(['auth:sanctum'])->prefix('
     Route::get('/currentuser', function (Request $request) {
         return (new UserResource($request->user()->load('permissions')))->jsonSerialize();
     })->name('user.current');
-    Route::get('/currentuser/teams', function (Request $request) {
-        return (TeamResource::collection($request->user()->teams()->get()))->jsonSerialize();
-    })->name('user.myteams');
+    Route::get('/currentuser/teams', 'myTeams')->name('user.myteams');
     Route::get('/', 'show')->name('user.details');
     Route::get('/{userId}', 'show')->can('view', User::class)->name('users.show');
     Route::put('/{userId}', 'update')->can('update', User::class)->name('users.update');

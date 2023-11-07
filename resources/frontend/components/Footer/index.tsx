@@ -20,12 +20,12 @@ const locale = Locale({
 
 const Footer = () => {
     return (
-        <div className="flex justify-between bg-gray-600 px-8 py-3 align-middle">
-            <div className="flex w-full justify-start gap-2 text-center align-middle">
+        <div className="flex flex-col justify-between bg-gray-600 px-8 py-3 align-middle md:flex-row">
+            <div className=" flex w-full flex-col items-center justify-start text-center md:flex-row md:gap-2">
                 <Donci fill="white" className="w-10 hover:animate-wiggle" />
-                <p className="my-auto">{locale.title}</p>
+                <p className="md:my-auto">{locale.title}</p>
             </div>
-            <div className="mt-2 flex w-full justify-end gap-2">
+            <div className="flex w-full justify-evenly gap-2 md:mt-2 md:justify-end">
                 <Link to="/privacypolicy">{locale.privacypolicy}</Link>
                 <Link to="mailto:dev.do@e5vos.hu">{locale.contact}</Link>
                 <Link to="https://github.com/difcsi/e5vosdosite">

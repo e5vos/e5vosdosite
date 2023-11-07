@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * App\Models\Slot
@@ -39,5 +39,13 @@ class Slot extends Model
     public function events(): HasMany
     {
         return $this->hasMany(Event::class);
+    }
+
+    /**
+     * Get all of the signups for the Slot
+     */
+    public function signups(): HasManyThrough
+    {
+        return $this->hasManyThrough(Attendance::class, Event::class);
     }
 }

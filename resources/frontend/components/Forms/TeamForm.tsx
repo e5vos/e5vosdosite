@@ -57,7 +57,11 @@ const TeamForm = ({
             description: Yup.string(),
         }),
         onSubmit: (values) => {
-            const val = onSubmit(values);
+            const val = onSubmit({
+                name: values.name,
+                code: values.code,
+                description: values.description,
+            });
             if (resetOnSubmit) formik.resetForm();
             return val;
         },

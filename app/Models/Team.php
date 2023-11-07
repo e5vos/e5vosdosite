@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Exceptions\EventFullException;
 use App\Exceptions\AlreadySignedUpException;
 use App\Exceptions\SignupNotRequiredException;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * App\Models\Team
@@ -108,6 +109,8 @@ class Team extends Model
         $teamMember->user()->associate($user);
         $teamMember->role = $role;
         $teamMember->save();
+
+        Cache::forget('e5n.teams.' . $this->code);
         return $teamMember;
     }
 
@@ -144,6 +147,7 @@ class Team extends Model
         $members = $this->members()->get(['id AS user_id'])->toArray();
         $signup->teamMemberAttendances()->createMany($members);
 
+        Cache::forget('e5n.teams.' . $this->code);
         $event->forget('occupancy');
         return $signup;
     }
@@ -179,11 +183,8 @@ class Team extends Model
 
         $signup->togglePresent();
         $signup->save();
-        // TeamMemberAttendance::upsert(
-        //     $this->members()->select(['id AS user_id', DB::raw('"' . $signup->id . '" AS attendance_id')])->get()->map(fn ($e) => ["user_id" => $e->user_id, "attendance_id" => $e->attendance_id])->toArray(),
-        //     null,
-        //     ['user_id', 'attendance_id']
-        // );
+
+        Cache::forget('e5n.teams.' . $this->code);
         $event->forget('occupancy');
         return $signup->load('team', 'teamMemberAttendances.user');
     }

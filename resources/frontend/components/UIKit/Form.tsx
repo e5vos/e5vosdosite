@@ -1,5 +1,6 @@
 import { Combobox } from "@headlessui/react";
 import React, { FormEventHandler, ReactNode, forwardRef } from "react";
+import { useEffect } from "react";
 
 import Locale from "lib/locale";
 
@@ -184,6 +185,10 @@ const ComboBox = <T = any,>({
     const [query, setQuery] = React.useState(initialValue);
     const [selected, setSelected] = React.useState<T | null>(null);
     const filteredOptions = filter ? options.filter(filter(query)) : options;
+
+    useEffect(() => {
+        if (filteredOptions.length === 1) setSelected(filteredOptions[0]);
+    }, [filteredOptions]);
 
     return (
         <Combobox

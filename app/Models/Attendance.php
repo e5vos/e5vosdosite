@@ -49,11 +49,11 @@ class Attendance extends Model
      * Assing global scopes, etc. Order by updated_at
 
      */
-    protected static function boot()
-    {
-        parent::boot();
-        static::addGlobalScope('order', fn ($builder) => $builder->orderBy('attendances.updated_at', 'desc'));
-    }
+    // protected static function boot()
+    // {
+    //     parent::boot();
+    //     static::addGlobalScope('order', fn ($builder) => $builder->orderBy('attendances.updated_at', 'desc'));
+    // }
 
     /**
      * toggle the presence of the attendee at the event

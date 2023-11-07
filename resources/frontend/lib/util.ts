@@ -41,13 +41,16 @@ export const getInitials = (s: string) => {
     return names.map((name) => name[0]).join("");
 };
 
-export const formatDateInput = (date: Date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
+export const formatDateTimeInput = (date: Date) => {
+    const ten = (i: number) => (i < 10 ? `0${i}` : i.toString());
 
-    const monthStr = month < 10 ? `0${month}` : month;
-    const dayStr = day < 10 ? `0${day}` : day;
+    const YYYY = date.getFullYear();
+    const MM = ten(date.getMonth() + 1);
+    const DD = ten(date.getDate());
 
-    return `${year}-${monthStr}-${dayStr}`;
+    const HH = ten(date.getHours());
+    const mm = ten(date.getMinutes());
+    const ss = ten(date.getSeconds());
+
+    return `${YYYY}-${MM}-${DD}T${HH}:${mm}:${ss}`;
 };

@@ -6,7 +6,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { CRUDFormImpl } from "types/misc";
-import { Attender, Event, SignupType, SignupTypeType } from "types/models";
+import {
+    Attender,
+    Event,
+    SignupType,
+    SignupTypeType,
+    isAttenderTeam,
+} from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import teamAPI from "lib/api/teamAPI";
@@ -195,6 +201,7 @@ const EventReader = ({
 
     const [deleteEvent] = eventAPI.useDeleteEventMutation();
     const [closeSignup] = eventAPI.useCloseSignUpMutation();
+    const [setScoreAPI] = eventAPI.useSetScoreMutation();
 
     const deleteDialogTemplate = useDeleteDialogTemplate(event);
     const closeSignupDialogTemplate = useCloseSignupDialogTemplate(event);
@@ -240,9 +247,16 @@ const EventReader = ({
         );
     }, [event?.id, myteams]);
 
-    const setScore = useCallback((p: Attender, score: number) => {
-        console.log(p, score);
-    }, []);
+    const setScore = useCallback(
+        async (p: Attender, score: number) => {
+            await setScoreAPI({
+                event: event,
+                attender: isAttenderTeam(p) ? p.code : p.id,
+                rank: score,
+            });
+        },
+        [event, setScoreAPI],
+    );
 
     useEffect(() => {
         if (event && isUserOrganiser) triggerParticipants(event);
@@ -356,7 +370,7 @@ const EventReader = ({
                                 onClick={async () => {
                                     if (!(await confirmDelete())) return;
                                     await deleteEvent(event);
-                                    navigate("/esemenyek");
+                                    navigate("/esemeny");
                                 }}
                             >
                                 {locale.delete}
@@ -405,67 +419,70 @@ const EventReader = ({
                             )}
                     </ButtonGroup>
                 </div>
-                <div className="col-span-2 !mt-0 sm:mt-2">
-                    <Card
-                        title={locale.score}
-                        className="border-2 border-dashed border-red-500"
-                    >
-                        {Array(scoreLength)
-                            .fill(0)
-                            .map((_, i) => (
-                                <div
-                                    className="mb-2 flex h-10 items-center overflow-hidden rounded-md border-2"
-                                    key={i}
-                                >
-                                    <div className="w-10 text-center">
-                                        {i + 1}.
+                {event.is_competition && (
+                    <div className="col-span-2 !mt-0 sm:mt-2">
+                        <Card
+                            title={locale.score}
+                            className="border-2 border-dashed border-red-500"
+                        >
+                            {Array(scoreLength)
+                                .fill(0)
+                                .map((_, i) => (
+                                    <div
+                                        className="mb-2 flex h-10 items-center overflow-hidden rounded-md border-2"
+                                        key={i}
+                                    >
+                                        <div className="w-10 text-center">
+                                            {i + 1}.
+                                        </div>
+                                        <div className="w-full">
+                                            {(isAdmin(user) ||
+                                                isUserOrganiser) &&
+                                            participants ? (
+                                                <ParticipantSearch
+                                                    event={{
+                                                        ...event,
+                                                        attendees: participants,
+                                                    }}
+                                                    onChange={(p) =>
+                                                        setScore(p, i + 1)
+                                                    }
+                                                />
+                                            ) : (
+                                                <div className="w-full bg-gray p-2">
+                                                    {participants?.find(
+                                                        (p) =>
+                                                            p.pivot.rank === i,
+                                                    )?.name ?? locale.notyetset}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="w-full">
-                                        {isAdmin(user) &&
-                                        isUserOrganiser &&
-                                        participants ? (
-                                            <ParticipantSearch
-                                                event={{
-                                                    ...event,
-                                                    attendees: participants,
-                                                }}
-                                                onChange={(p) =>
-                                                    setScore(p, i + 1)
-                                                }
-                                            />
-                                        ) : (
-                                            <div className="w-full bg-gray p-2">
-                                                {participants?.find(
-                                                    (p) => p.pivot.rank === i,
-                                                )?.name ?? locale.notyetset}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                    </Card>
-                    <Card title={locale.description}>
-                        <p>{event.description}</p>
-                    </Card>
-                    <Card title={locale.times}>
-                        <p>
-                            <strong>{locale.starts_at}</strong>:{" "}
-                            {starts_at?.toLocaleString("hu-HU")}
-                        </p>
-                        <p>
-                            <strong>{locale.ends_at}</strong>:{" "}
-                            {ends_at?.toLocaleString("hu-HU")}
-                        </p>
-                        <p>
-                            <strong>{locale.signup_deadline}</strong>:{" "}
-                            {signup_deadline?.toLocaleString("hu-HU") ??
-                                locale.undefined}
-                        </p>
-                    </Card>
-                    <Card title={locale.location}>
-                        {event.location?.name ?? locale.unknown}
-                    </Card>
-                </div>
+                                ))}
+                        </Card>
+                        <Card title={locale.description}>
+                            <p>{event.description}</p>
+                        </Card>
+                        <Card title={locale.times}>
+                            <p>
+                                <strong>{locale.starts_at}</strong>:{" "}
+                                {starts_at?.toLocaleString("hu-HU")}
+                            </p>
+                            <p>
+                                <strong>{locale.ends_at}</strong>:{" "}
+                                {ends_at?.toLocaleString("hu-HU")}
+                            </p>
+                            <p>
+                                <strong>{locale.signup_deadline}</strong>:{" "}
+                                {signup_deadline?.toLocaleString("hu-HU") ??
+                                    locale.undefined}
+                            </p>
+                        </Card>
+                        <Card title={locale.location}>
+                            {event.location?.name ?? locale.unknown}
+                        </Card>
+                    </div>
+                )}
             </div>
         </div>
     );

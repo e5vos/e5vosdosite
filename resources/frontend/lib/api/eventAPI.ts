@@ -238,7 +238,7 @@ export const eventAPI = baseAPI.injectEndpoints({
                       ]
                     : [{ type: "Event", id: "SEARCH" }],
         }),
-        score: builder.mutation<
+        setScore: builder.mutation<
             void,
             {
                 event: Pick<Event, "id">;
@@ -258,7 +258,7 @@ export const eventAPI = baseAPI.injectEndpoints({
             invalidatesTags: (res, err, arg) =>
                 err ? [] : [{ type: "Event", id: arg.event.id }],
         }),
-        rate: builder.mutation<
+        setRating: builder.mutation<
             Rating,
             { event: Pick<Event, "id">; rating: number }
         >({

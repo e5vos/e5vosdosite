@@ -73,6 +73,12 @@ const YourTeamsPage = () => {
     }, [shownTeam]);
 
     useEffect(() => {
+        if (!isFetching) return;
+        setShownTeam(null);
+        setShownQR(null);
+    }, [isFetching]);
+
+    useEffect(() => {
         setShownTeam(null);
     }, [shownQR]);
 

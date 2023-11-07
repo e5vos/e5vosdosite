@@ -1,13 +1,33 @@
 import useUser from "hooks/useUser";
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { isTeacher } from "lib/gates";
+import Locale from "lib/locale";
 import { useSelector } from "lib/store";
 
 import LoginForm from "components/Login";
 import Button from "components/UIKit/Button";
 import Loader from "components/UIKit/Loader";
+
+const locale = Locale({
+    hu: {
+        title: "Bejelentkezés",
+        alreadyLoggedIn: "Már be vagy jelentkezve",
+        presentationSignup: "Előadásjelentkezés",
+        presentationAttendance: "Előadás Jelenlétí Ívek",
+        legal: "A bejelentkezés gombra kattintva elfogadod az",
+        legalLink: "adatkezelési nyilatkozatotunkat",
+    },
+    en: {
+        title: "Login",
+        alreadyLoggedIn: "You are already logged in",
+        presentationSignup: "Presentation signup",
+        presentationAttendance: "Presentation Attendance Sheets",
+        legal: "By clicking the login button you accept our",
+        legalLink: "privacy policy",
+    },
+});
 
 const LoginRecoveryPanel = () => {
     const { user } = useUser();
@@ -22,14 +42,14 @@ const LoginRecoveryPanel = () => {
     if (!user) return <Loader />;
     return (
         <div>
-            <div>Már be vagy jelentkezve</div>
+            <div>{locale.alreadyLoggedIn}</div>
             {isTeacher(user) ? (
                 <Button onClick={() => navigate("/eloadas/kezel")}>
-                    Előadás Jelenlétí Ívek
+                    {locale.presentationAttendance}
                 </Button>
             ) : (
                 <Button onClick={() => navigate("/eloadas")}>
-                    Előadásjelentkezés
+                    {locale.presentationSignup}
                 </Button>
             )}
         </div>
@@ -41,8 +61,14 @@ const LoginPage = () => {
 
     return (
         <div className="mx-auto text-center">
-            <h1 className="mb-10 text-4xl font-bold ">Bejelentkezés</h1>
+            <h1 className="mb-8 text-4xl font-bold ">{locale.title}</h1>
             {user ? <LoginRecoveryPanel /> : <LoginForm />}
+            <div className="mt-4 text-sm italic text-gray-500">
+                {locale.legal}{" "}
+                <Link to="/privacypolicy" target="_blank" className="underline">
+                    {locale.legalLink}
+                </Link>
+            </div>
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Event, User, UserStub } from "types/models";
+import { Event, UserStub } from "types/models";
 
 import adminAPI from "lib/api/adminAPI";
 import eventAPI from "lib/api/eventAPI";
@@ -40,7 +40,7 @@ const PresentationFillDialog = ({
 }) => {
     const [searchString, setSearchString] = useState("");
 
-    const [availableStudents, setAvailableStudents] = useState<UserStub[]>([]);
+    const [availableStudents, setAvailableStudents] = useState<UserStub[]>();
 
     const [
         triggerGetFreeUsersQuery,
@@ -61,15 +61,15 @@ const PresentationFillDialog = ({
     const [APIsignUp, { isLoading: signupInProgress }] =
         eventAPI.useSignUpMutation();
 
-    const signUp = async (student: User) => {
+    const signUp = async (student: Pick<UserStub, "id">) => {
         try {
             console.log(student);
             await APIsignUp({
                 attender: student.id,
                 event: external_event,
             }).unwrap();
-            setAvailableStudents((state) =>
-                state.filter((s) => s.id !== student.id),
+            setAvailableStudents(
+                (state) => state?.filter((s) => s.id !== student.id),
             );
             //triggerGetFreeUsersQuery({ id: external_event.slot_id });
             triggerGetEventQuery(external_event);
@@ -130,7 +130,7 @@ const PresentationFillDialog = ({
                         </Form.Group>
                     </div>
 
-                    <div className="scroller h-[500px]  overflow-auto">
+                    <div className="scroller h-full min-h-[200px]  overflow-auto">
                         <ul className="mx-3">
                             {!availableStudents ? (
                                 <Loader />
@@ -170,11 +170,6 @@ const PresentationFillDialog = ({
                     </div>
                 </div>
             )}
-            <div className="mx-auto text-center">
-                <Button onClick={onClose} variant="danger">
-                    {locale.close}
-                </Button>
-            </div>
         </Dialog>
     );
 };

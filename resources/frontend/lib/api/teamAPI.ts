@@ -35,7 +35,10 @@ export const teamAPI = baseAPI.injectEndpoints({
                 method: "POST",
                 body: data,
             }),
-            invalidatesTags: [{ type: "Team", id: "LIST" }],
+            invalidatesTags: [
+                { type: "Team", id: "LIST" },
+                { type: "Team", id: "MYTEAMS" },
+            ],
         }),
         editTeam: builder.mutation<
             Omit<Team, "activity" | "members">,

@@ -522,9 +522,21 @@ const EventUpdater = ({
     return (
         <EventForm
             initialValues={{
-                ...value,
+                id: value.id,
+                name: value.name,
+                description: value.description,
+                starts_at: value.starts_at,
+                ends_at: value.ends_at,
+                signup_deadline: value.signup_deadline,
+                signup_type: value.signup_type,
+                location_id: value.location_id,
+                organiser: value.organiser,
+                capacity: value.capacity,
+                is_competition: value.is_competition,
+                slot_id: value.slot_id,
             }}
             onSubmit={async (event) => {
+                console.log(event);
                 await changeEvent(event);
                 navigate(`/esemeny/${event.id}`);
             }}

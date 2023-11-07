@@ -172,7 +172,9 @@ const EventForm = ({
                 <Form.Group>
                     <Form.Label>{locale.fields.location}</Form.Label>
                     <LocationSearchCombobox
-                        onChange={(e) => formik.setFieldValue("location", e.id)}
+                        onChange={(e) =>
+                            formik.setFieldValue("location_id", e.id)
+                        }
                     />
                 </Form.Group>
             )}

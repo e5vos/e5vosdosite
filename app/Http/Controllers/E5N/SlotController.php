@@ -64,25 +64,24 @@ class SlotController extends Controller
      */
     public function freeStudents($slotId)
     {
-        return Cache::remember("freeStudents" . $slotId, 60, fn () => UserResource::collection(User::whereDoesntHave('events', function ($query) use ($slotId) {
-            $query->where('slot_id', $slotId);
-        })->get())->jsonSerialize());
+        $occupiedIds = Slot::findOrFail($slotId)->signups()->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
+        return Cache::remember("freeStudents" . $slotId, 60, fn () => UserResource::collection(
+            User::whereNotIn('id', $occupiedIds)->get()
+        )->jsonSerialize());
     }
 
     public function nonAttendingStudents($slotId)
     {
-        Cache::remember("notAttendingStudents" . $slotId, 60, fn () => UserResource::collection(User::whereDoesntHave('attendances', function ($query) use ($slotId) {
-            $query->where('is_present', true);
-        })->whereHas('event', function ($query) use ($slotId) {
-            $query->where('slot_id', $slotId);
-        })->get())->jsonSerialize());
+        $missingIds = Slot::findOrFail($slotId)->signups()->where('is_present', '0')->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
+        return Cache::remember("notAttendingStudents" . $slotId, 60, fn () => UserResource::collection(
+            User::whereIn('id', $missingIds)->get()
+        )->jsonSerialize());
     }
     public function AttendingStudents($slotId)
     {
-        return UserResource::collection(User::whereRelation('permissions', 'code', PermissionType::Student->value)->whereHas('attendances', function ($query) use ($slotId) {
-            $query->where('is_present', true)->whereHas('event', function ($query) use ($slotId) {
-                $query->where('slot_id', $slotId);
-            });
-        })->get())->jsonSerialize();
+        $attendingIds = Slot::findOrFail($slotId)->signups()->where('is_present', '1')->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
+        return Cache::remember("notAttendingStudents" . $slotId, 60, fn () => UserResource::collection(
+            User::whereIn('id', $attendingIds)->get()
+        )->jsonSerialize());
     }
 }

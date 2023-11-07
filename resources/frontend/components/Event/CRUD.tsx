@@ -420,7 +420,7 @@ const EventReader = ({
                     </ButtonGroup>
                 </div>
                 <div className="col-span-2 !mt-0 sm:mt-2">
-                    {event.is_competition && (
+                    {Boolean(event.is_competition) && (
                         <Card
                             title={locale.score}
                             className="border-2 border-dashed border-red-500"

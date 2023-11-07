@@ -72,16 +72,14 @@ class SlotController extends Controller
 
     public function nonAttendingStudents($slotId)
     {
-        $missingIds = Slot::findOrFail($slotId)->signups()->where('is_present', false)->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
-        return Cache::remember("notAttendingStudents" . $slotId, 60, fn () => UserResource::collection(
-            User::whereIn('id', $missingIds)->get()
-        )->jsonSerialize());
+        return Cache::remember("nonAttendingStudents" . $slotId, 60, function () use ($slotId) {
+            return Slot::findOrFail($slotId)->signups()->join('users', 'users.id', '=', 'attendances.user_id')->where('attendances.is_present', false)->distinct()->get(['users.id', 'users.name', 'users.ejg_class', 'attendances.is_present'])->toArray();
+        });
     }
     public function AttendingStudents($slotId)
     {
-        $attendingIds = Slot::findOrFail($slotId)->signups()->where('is_present', true)->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
-        return Cache::remember("attendingStudents" . $slotId, 60, fn () => UserResource::collection(
-            User::whereIn('id', $attendingIds)->get()
-        )->jsonSerialize());
+        return Cache::remember("attendingStudents" . $slotId, 60, function () use ($slotId) {
+            return Slot::findOrFail($slotId)->signups()->join('users', 'users.id', '=', 'attendances.user_id')->where('attendances.is_present', true)->distinct()->get(['users.id', 'users.name', 'users.ejg_class', 'attendances.is_present'])->toArray();
+        });
     }
 }

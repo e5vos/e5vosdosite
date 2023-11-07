@@ -46,11 +46,11 @@ const Button = ({
             break;
         case "danger":
             buttonclass +=
-                "bg-red-500 outline-red-500 enabled:hover:bg-red-700 disabled:bg-red-700 text-black enabled:hover:text-white disabled:text-white";
+                "bg-red-500 outline-red-500 enabled:hover:bg-red-700 disabled:bg-red-700 text-white enabled:hover:text-white disabled:text-white";
             break;
         case "outline-danger":
             buttonclass +=
-                "outline-red enabled:hover:bg-red disabled:bg-red text-white enabled:hover:text-black disabled:text-black";
+                "outline-red enabled:hover:bg-red disabled:bg-red text-white enabled:hover:text-white disabled:text-white";
             break;
         case "success":
             buttonclass +=
@@ -74,7 +74,7 @@ const Button = ({
             break;
         case "outline-info":
             buttonclass +=
-                "outline-blue-600 enabled:hover:bg-blue-600 disabled:bg-blue text-white enabled:hover:text-black disabled:text-black";
+                "outline-blue-600 enabled:hover:bg-blue-600 disabled:bg-blue text-white enabled:hover:text-white disabled:text-white";
             break;
         default:
     }

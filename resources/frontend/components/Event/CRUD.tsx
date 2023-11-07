@@ -289,14 +289,14 @@ const EventReader = ({
                         {locale.signup_type(event.signup_type)}
                     </p>
                     {user && canSignup && (
-                        <div className="mx-auto mb-5 mt-5 w-full rounded-lg border bg-slate-500 p-2 md:mb-0 md:border-none md:bg-inherit md:p-0 lg:max-w-fit">
+                        <div className="mt-2 w-full rounded-lg  bg-gray-600 p-2 md:mb-0 ">
                             <h3 className="text-center font-bold">
-                                {locale.signup_CTA}
+                                {locale.singup}
                             </h3>
-                            <div className="mt-2 flex w-full flex-row items-center justify-center gap-2">
+                            <div className="mt-2 flex w-full flex-row items-center justify-center rounded-lg border-2">
                                 <Form.Select
                                     ref={attenderSelect}
-                                    className="flex-1 "
+                                    className=" !max-w-none flex-1 !rounded-l-lg"
                                 >
                                     {event.signup_type !== SignupType.Team &&
                                         user.e5code && (
@@ -316,7 +316,7 @@ const EventReader = ({
                                         ))}
                                 </Form.Select>
                                 <Button
-                                    className="w-1/4 lg:min-w-fit"
+                                    className="min-w-fit !rounded-l-none !rounded-r-lg "
                                     onClick={handleSignup}
                                 >
                                     {locale.signup_CTA}
@@ -325,7 +325,7 @@ const EventReader = ({
                             {statusmsg.message !== "" && (
                                 <Card
                                     title={statusmsg.message}
-                                    className={`mt-3 ${
+                                    className={`mt-2 ${
                                         statusmsg.isError
                                             ? "bg-red-500"
                                             : "bg-green-500"
@@ -419,8 +419,8 @@ const EventReader = ({
                             )}
                     </ButtonGroup>
                 </div>
-                {event.is_competition && (
-                    <div className="col-span-2 !mt-0 sm:mt-2">
+                <div className="col-span-2 !mt-0 sm:mt-2">
+                    {event.is_competition && (
                         <Card
                             title={locale.score}
                             className="border-2 border-dashed border-red-500"
@@ -429,7 +429,7 @@ const EventReader = ({
                                 .fill(0)
                                 .map((_, i) => (
                                     <div
-                                        className="mb-2 flex h-10 items-center overflow-hidden rounded-md border-2"
+                                        className="min-h-10 mb-2 flex items-center overflow-hidden rounded-md border-2"
                                         key={i}
                                     >
                                         <div className="w-10 text-center">
@@ -460,29 +460,29 @@ const EventReader = ({
                                     </div>
                                 ))}
                         </Card>
-                        <Card title={locale.description}>
-                            <p>{event.description}</p>
-                        </Card>
-                        <Card title={locale.times}>
-                            <p>
-                                <strong>{locale.starts_at}</strong>:{" "}
-                                {starts_at?.toLocaleString("hu-HU")}
-                            </p>
-                            <p>
-                                <strong>{locale.ends_at}</strong>:{" "}
-                                {ends_at?.toLocaleString("hu-HU")}
-                            </p>
-                            <p>
-                                <strong>{locale.signup_deadline}</strong>:{" "}
-                                {signup_deadline?.toLocaleString("hu-HU") ??
-                                    locale.undefined}
-                            </p>
-                        </Card>
-                        <Card title={locale.location}>
-                            {event.location?.name ?? locale.unknown}
-                        </Card>
-                    </div>
-                )}
+                    )}
+                    <Card title={locale.description}>
+                        <p>{event.description}</p>
+                    </Card>
+                    <Card title={locale.times}>
+                        <p>
+                            <strong>{locale.starts_at}</strong>:{" "}
+                            {starts_at?.toLocaleString("hu-HU")}
+                        </p>
+                        <p>
+                            <strong>{locale.ends_at}</strong>:{" "}
+                            {ends_at?.toLocaleString("hu-HU")}
+                        </p>
+                        <p>
+                            <strong>{locale.signup_deadline}</strong>:{" "}
+                            {signup_deadline?.toLocaleString("hu-HU") ??
+                                locale.undefined}
+                        </p>
+                    </Card>
+                    <Card title={locale.location}>
+                        {event.location?.name ?? locale.unknown}
+                    </Card>
+                </div>
             </div>
         </div>
     );

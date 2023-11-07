@@ -100,7 +100,9 @@ const TeamForm = ({
                 />
             </Form.Group>
             <Form.Group className="w-full text-center">
-                <Button type="submit">{submitLabel}</Button>
+                <Button className="w-full" type="submit">
+                    {submitLabel}
+                </Button>
             </Form.Group>
         </Form>
     );

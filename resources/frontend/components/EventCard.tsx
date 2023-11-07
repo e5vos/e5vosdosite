@@ -46,7 +46,7 @@ const EventCard = ({
                 <ButtonGroup className="mt-1 w-full">
                     <Button
                         variant="info"
-                        onClick={() => navigate(`${event.id}`)}
+                        onClick={() => navigate(`/esemeny/${event.id}`)}
                         className="text-white"
                     >
                         {locale}

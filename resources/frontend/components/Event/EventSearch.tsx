@@ -37,6 +37,7 @@ const EventSearchCombobox = ({
                     if (!e) return;
                     onChange(e);
                 }}
+                className="!mb-0 !border-b-0"
                 getElementName={(e) => e.name}
                 renderElement={(e) => <span>{e.name}</span>}
                 filter={filter}

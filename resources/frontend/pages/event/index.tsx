@@ -1,5 +1,6 @@
 import useUser from "hooks/useUser";
 import { useMemo, useState } from "react";
+import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 import eventAPI from "lib/api/eventAPI";
@@ -49,22 +50,33 @@ const EventsPage = () => {
         <div className="mx-5">
             <div className="container mx-auto">
                 <h1 className="max-w-f pb-4 text-center text-4xl font-bold">
-                    {locale.title}{" "}
-                    {isAdmin(user) && (
-                        <Link
-                            to="/esemeny/uj"
-                            className="my-auto align-middle text-sm"
-                        >
-                            <Button variant="primary">{locale.create}</Button>
-                        </Link>
-                    )}
+                    {locale.title}
                 </h1>
             </div>
-            <div className="mx-auto my-3 w-fit rounded-lg bg-gray-100 p-2 text-center">
-                <Form.Group>
-                    <Form.Label className="!mr-3">{locale.search}</Form.Label>
-                    <Form.Control onChange={handleSearchChange} />
+            <div className="mx-auto my-3 flex w-full gap-2 text-center">
+                <Form.Group className="!mb-0 flex w-full gap-2 rounded-lg bg-gray-600 pl-4">
+                    <Form.Label className=" flex items-center gap-2 no-underline">
+                        <FaSearch />
+                        {locale.search}
+                    </Form.Label>
+                    <Form.Control
+                        className="!mb-0 !w-full rounded-r-md !border-0 !bg-gray"
+                        onChange={handleSearchChange}
+                    />
                 </Form.Group>
+                {isAdmin(user) && (
+                    <Link
+                        to="/esemeny/uj"
+                        className="!m-0 my-auto !p-0 align-middle text-sm"
+                    >
+                        <Button
+                            className="!rounded-lg !outline-none"
+                            variant="primary"
+                        >
+                            {locale.create}
+                        </Button>
+                    </Link>
+                )}
             </div>
 
             {isEventsFetching ? (

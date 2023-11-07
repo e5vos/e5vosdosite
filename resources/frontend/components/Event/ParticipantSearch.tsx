@@ -21,6 +21,7 @@ const ParticipantSearch = ({
     return (
         <Form.ComboBox
             options={event.attendees}
+            className="!mb-0 !border-b-0"
             getElementName={(e) => e.name}
             renderElement={(e) => <span>{displayName(e)}</span>}
             filter={(s) => (e) =>

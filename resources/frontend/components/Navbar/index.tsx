@@ -11,16 +11,20 @@ import Navbar from "components/UIKit/Navbar";
 const locale = Locale({
     hu: {
         presentationSignup: "Előadásjelentkezés",
-        homepage: "Főoldal",
+        events: "Események",
+        title: "Eötvös DÖ",
         login: "Bejelentkezés",
+        teams: "Csapatok",
         logout: "Kijelentkezés",
         info: "DÖ Információk",
         noe5code: "Nincs E5 kódod :(",
     },
     en: {
         presentationSignup: "Presentation signup",
-        homepage: "Homepage",
+        events: "Events",
+        title: "Eötvös DÖ",
         login: "Login",
+        teams: "Teams",
         logout: "Logout",
         info: "SU Information",
         noe5code: "You have no E5 code :(",
@@ -51,13 +55,15 @@ const CustomNavbar = () => {
             <Navbar
                 brand={
                     <Navbar.Brand onClick={() => setShowCode(true)}>
-                        {user ? user.name : locale.homepage}
+                        {user ? user.name : locale.title}
                     </Navbar.Brand>
                 }
             >
                 <Navbar.Link href="https://info.e5vosdo.hu">
                     {locale.info}
                 </Navbar.Link>
+                <Navbar.Link href="/csapat">{locale.teams}</Navbar.Link>
+                <Navbar.Link href="/esemeny">{locale.events}</Navbar.Link>
                 <Navbar.Link href="/eloadas">
                     {locale.presentationSignup}
                 </Navbar.Link>

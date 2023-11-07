@@ -49,7 +49,10 @@ export const eventAPI = baseAPI.injectEndpoints({
                 }
             },
         }),
-        getEvent: builder.query<EventStub, Pick<Event, "id">>({
+        getEvent: builder.query<
+            RequiredFields<Event, "slot" | "location">,
+            Pick<Event, "id">
+        >({
             query: ({ id }) => routeSwitcher("event.show", { eventId: id }),
             providesTags: (result, error, { id }) => [{ type: "Event", id }],
         }),

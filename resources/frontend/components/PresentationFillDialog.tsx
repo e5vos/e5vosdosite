@@ -130,7 +130,7 @@ const PresentationFillDialog = ({
                         </Form.Group>
                     </div>
 
-                    <div className="scroller h-[500px]  overflow-auto">
+                    <div className="scroller h-full min-h-[500px]  overflow-auto">
                         <ul className="mx-3">
                             {!availableStudents ? (
                                 <Loader />
@@ -170,11 +170,6 @@ const PresentationFillDialog = ({
                     </div>
                 </div>
             )}
-            <div className="mx-auto text-center">
-                <Button onClick={onClose} variant="danger">
-                    {locale.close}
-                </Button>
-            </div>
         </Dialog>
     );
 };

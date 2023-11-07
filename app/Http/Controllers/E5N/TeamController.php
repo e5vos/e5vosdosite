@@ -63,7 +63,10 @@ class TeamController extends Controller
         if (Cache::get('e5n.teams.' . $request->code)?->exists ?? Team::find($request->code)->exists) {
             abort(409, "Team already exists");
         }
-        $team->update($request->all());
+        foreach ($request->all() as $key => $value) {
+            $team->$key = $value;
+        }
+        $team->save();
         $team = new TeamResource($team);
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.presentations');
@@ -113,7 +116,7 @@ class TeamController extends Controller
     public function promote(Request $request, $teamCode)
     {
         $team = Team::findOrFail($teamCode)->load('members');
-        $updatableRole = $team->members->where('e5code', request()->userId)->firstOrFail()->pivot->role;
+        $updatableRole = $team->members->where('id', request()->userId)->firstOrFail()->pivot->role;
         $kick = false;
         switch ($updatableRole) {
             case MembershipType::Leader->value:
@@ -129,6 +132,7 @@ class TeamController extends Controller
                     break;
                 } else {
                     $kick = true;
+                    break;
                 }
             case MembershipType::Invited->value:
                 if ($request->promote) {
@@ -136,13 +140,15 @@ class TeamController extends Controller
                     break;
                 } else {
                     $kick = true;
+                    break;
                 }
             default:
                 if ($request->promote) {
                     $updatableRole = MembershipType::Invited->value;
                     break;
                 } else {
-                    abort(409, "User is not in the team");
+                    abort(400, "User is not in the team");
+                    break;
                 }
         }
         if ($kick) {

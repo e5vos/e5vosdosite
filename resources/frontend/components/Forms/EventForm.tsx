@@ -4,7 +4,7 @@ import useUser from "hooks/useUser";
 import * as Yup from "yup";
 
 import { CRUDForm } from "types/misc";
-import { SignupType } from "types/models";
+import { SignupType, SignupTypeType } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import { isAdmin } from "lib/gates";

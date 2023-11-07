@@ -56,7 +56,10 @@ class LocationController extends Controller
     public function update(Request $request, int $locationId)
     {
         $location = Location::findOrFail($locationId);
-        $location->update($request->all());
+        foreach ($request->all() as $key => $value) {
+            $location->$key = $value;
+        }
+        $location->save();
         Cache::forget('locations.all');
         Cache::forget("locations.{$location->id}");
         Cache::forget("locations.{$location->id}.events");

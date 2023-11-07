@@ -40,7 +40,10 @@ class SlotController extends Controller
     public function update(Request $request, $slotId)
     {
         $slot = (Slot::find($slotId) ?? abort(404));
-        $slot->update($request->all());
+        foreach ($request->all() as $key => $value) {
+            $slot->$key = $value;
+        }
+        $slot->save();
         $slot = new SlotResource($slot);
         Cache::forget('e5n.slot.all');
         Cache::forever('e5n.slot.' . $slot->id, $slot->jsonSerialize());

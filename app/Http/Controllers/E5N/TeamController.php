@@ -116,7 +116,7 @@ class TeamController extends Controller
     public function promote(Request $request, $teamCode)
     {
         $team = Team::findOrFail($teamCode)->load('members');
-        $updatableRole = $team->members->where('id', request()->userId)->firstOrFail()->pivot->role;
+        $updatableRole = $team->members->where('id', request()->userId)->first()?->pivot->role;
         $kick = false;
         switch ($updatableRole) {
             case MembershipType::Leader->value:
@@ -154,7 +154,14 @@ class TeamController extends Controller
         if ($kick) {
             TeamMembership::where('team_code', $teamCode)->where('user_id', request()->userId)->delete();
         } else {
-            TeamMembership::updateOrCreate(['team_code' => $teamCode, 'user_id' => request()->userId], ['role' => $updatableRole]);
+            // dd(['team_code' => $teamCode, 'user_id' => request()->userId], ['role' => $updatableRole]);
+            $membership = TeamMembership::where('team_code', $teamCode)->where('user_id', request()->userId)->first();
+            if ($membership) {
+                $membership->role = $updatableRole;
+                $membership->save();
+            } else {
+                TeamMembership::create(['team_code' => $teamCode, 'user_id' => request()->userId, 'role' => $updatableRole]);
+            }
         }
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.' . $team->code);

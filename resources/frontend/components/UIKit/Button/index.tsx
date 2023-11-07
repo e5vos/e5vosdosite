@@ -46,7 +46,7 @@ const Button = ({
             break;
         case "danger":
             buttonclass +=
-                "bg-red-500 outline-red-500 enabled:hover:bg-red-700 disabled:bg-red-700 text-black enabled:hover:text-white disabled:text-white";
+                "bg-red-500 outline-red-500 enabled:hover:bg-red-700 disabled:bg-red-700 text-white enabled:hover:text-white disabled:text-white";
             break;
         case "outline-danger":
             buttonclass +=

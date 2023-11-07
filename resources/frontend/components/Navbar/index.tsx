@@ -42,14 +42,17 @@ const CustomNavbar = () => {
                     onClose={() => setShowCode(false)}
                     open={showCode}
                 >
-                    <span className="w-full text-center">
-                        {user.e5code ?? locale.noe5code}
-                    </span>
                     {user.e5code ? (
-                        <QRCode className="max-w-full" value={user.e5code} />
+                        <QRCode
+                            className="mb-2 mt-2 max-w-full"
+                            value={user.e5code}
+                        />
                     ) : (
                         <Donci className="mx-auto animate-pulse fill-red" />
                     )}
+                    <span className=" mt-2 w-full rounded-full bg-gray px-3 py-1 text-center">
+                        {user.e5code ?? locale.noe5code}
+                    </span>
                 </Dialog>
             )}
             <Navbar

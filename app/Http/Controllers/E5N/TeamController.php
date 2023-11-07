@@ -50,7 +50,6 @@ class TeamController extends Controller
         $team->members()->attach(Auth::user()->id, ['role' => MembershipType::Leader]);
         $team = new TeamResource($team);
         Cache::forget('e5n.teams.all');
-        Cache::forget('e5n.teams.presentations');
         return Cache::rememberForever('e5n.teams.' . $team->code, fn () => $team->jsonSerialize());
     }
 

@@ -64,24 +64,24 @@ class SlotController extends Controller
      */
     public function freeStudents($slotId)
     {
-        $occupiedIds = Slot::findOrFail($slotId)->signups()->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
-        return Cache::remember("freeStudents" . $slotId, 60, fn () => UserResource::collection(
-            User::whereNotIn('id', $occupiedIds)->get()
-        )->jsonSerialize());
+        return Cache::remember("freeStudents" . $slotId, 60, function () use ($slotId) {
+            $occupiedIds = Slot::findOrFail($slotId)->signups()->whereNotNull('user_id')->pluck('user_id')->toArray();
+            return UserResource::collection(User::whereNotIn('id', $occupiedIds)->get())->jsonSerialize(); // not optimal
+        });
     }
 
     public function nonAttendingStudents($slotId)
     {
-        $missingIds = Slot::findOrFail($slotId)->signups()->where('is_present', false)->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
-        return Cache::remember("notAttendingStudents" . $slotId, 60, fn () => UserResource::collection(
-            User::whereIn('id', $missingIds)->get()
-        )->jsonSerialize());
+        return Cache::remember("notAttendingStudents" . $slotId, 60, function () use ($slotId) {
+            $missingIds = Slot::findOrFail($slotId)->signups()->where('is_present', false)->whereNotNull('user_id')->pluck('user_id')->toArray();
+            return UserResource::collection(User::whereIn('id', $missingIds)->get())->jsonSerialize();  // not optimal
+        });
     }
     public function AttendingStudents($slotId)
     {
-        $attendingIds = Slot::findOrFail($slotId)->signups()->where('is_present', true)->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
-        return Cache::remember("attendingStudents" . $slotId, 60, fn () => UserResource::collection(
-            User::whereIn('id', $attendingIds)->get()
-        )->jsonSerialize());
+        return Cache::remember("attendingStudents" . $slotId, 60, function () use ($slotId) {
+            $attendingIds = Slot::findOrFail($slotId)->signups()->where('is_present', true)->whereNotNull('user_id')->pluck('user_id')->toArray();
+            return UserResource::collection(User::whereIn('id', $attendingIds)->get())->jsonSerialize();  // not optimal
+        });
     }
 }

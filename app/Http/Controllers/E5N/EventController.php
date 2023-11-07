@@ -81,7 +81,9 @@ class EventController extends Controller
         $event = Event::create($request->all());
         $event = new EventResource($event);
         Cache::forget('e5n.events.all');
-        Cache::forget('e5n.events.presentations');
+        if ($slot->slot_type == SlotType::presentation->value) {
+            Cache::forget('e5n.events.presentations');
+        }
         return Cache::rememberForever('e5n.events.' . $event->id, fn () => $event->jsonSerialize());
     }
 

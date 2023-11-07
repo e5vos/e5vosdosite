@@ -415,7 +415,7 @@ const EventReader = ({
                             .fill(0)
                             .map((_, i) => (
                                 <div
-                                    className="mb-2 flex h-10 items-center overflow-hidden rounded-md border-2"
+                                    className="min-h-10 mb-2 flex items-center overflow-hidden rounded-md border-2"
                                     key={i}
                                 >
                                     <div className="w-10 text-center">

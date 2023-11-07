@@ -30,11 +30,11 @@ const Button = ({
     switch (variant) {
         case "primary":
             buttonclass +=
-                "bg-yellow outline-yellow enabled:hover:bg-yellow-700 disabled:bg-yellow-700 text-black enabled:hover:text-white disabled:text-white ";
+                "bg-blue-400 outline-blue-400 enabled:hover:bg-blue-700 disabled:bg-blue-700 text-white enabled:hover:text-white disabled:text-white ";
             break;
         case "outline-primary":
             buttonclass +=
-                "outline-yellow enabled:hover:bg-yellow disabled:bg-yellow text-white enabled:hover:text-black disabled:text-black";
+                "outline-blue-400 enabled:hover:bg-blue-400 disabled:bg-blue-700 text-white";
             break;
         case "secondary":
             buttonclass +=
@@ -42,7 +42,7 @@ const Button = ({
             break;
         case "outline-secondary":
             buttonclass +=
-                "bg-gray-600 outline-white enabled:hover:bg-white disabled:bg-white text-white enabled:hover:text-black disabled:text-black";
+                " outline-white enabled:hover:bg-white disabled:bg-white text-white enabled:hover:text-black disabled:text-black";
             break;
         case "danger":
             buttonclass +=
@@ -70,11 +70,11 @@ const Button = ({
             break;
         case "info":
             buttonclass +=
-                "bg-blue outline-blue enabled:hover:bg-blue-700 disabled:bg-blue-700 text-black enabled:hover:text-white disabled:text-white";
+                "bg-blue-600 outline-blue-600 enabled:hover:bg-blue-700 disabled:bg-blue-700 text-white enabled:hover:text-white disabled:text-white";
             break;
         case "outline-info":
             buttonclass +=
-                "outline-blue enabled:hover:bg-blue disabled:bg-blue text-white enabled:hover:text-black disabled:text-black";
+                "outline-blue-600 enabled:hover:bg-blue-600 disabled:bg-blue text-white enabled:hover:text-black disabled:text-black";
             break;
         default:
     }

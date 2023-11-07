@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const locale = {
     title: "A Budapest V. kerületi Eötvös József Gimnázium Diákönkormányzat honlapjának Adatkezelési Tájékoztatója",
-    date: "2023 október",
+    date: "(2023. november)",
     laws: {
         title: "Az adatkezelésre vonatkozó főbb jogszabályok",
         array: [
@@ -15,7 +15,7 @@ const locale = {
     participants: {
         title: "Az adatkezelés résztvevői",
         handler: {
-            title: "Az adatkezelő",
+            title: "Az Adatkezelő",
             headers: {
                 name: "Név",
                 address: "Székhely",
@@ -28,7 +28,7 @@ const locale = {
             values: {
                 name: "Budapest V. kerületi Eötvös József Gimnázium",
                 address: "1053 Budapest, Reáltanoda utca 7.",
-                phone: "327-72-91",
+                phone: "+36 1 327 72 91",
                 email: "dev.do@e5vos.hu",
                 website: "https://e5vosdo.hu",
                 activity_location:
@@ -45,7 +45,7 @@ const locale = {
                 "Az adatfeldolgozó az a személy, aki az Adatkezelő megbízásából vagy rendelkezése alapján személyes adatokat kezel, műveleteket hajt végre. Az adatfeldolgozó továbbá megfelelő garanciákat nyújt az adatkezelés jogszerűségének és az Érintett jogai védelmének biztosítására alkalmas műszaki és szervezési intézkedések végrehajtására. A jelen tájékoztató tárgyába tartozó adatkezelésből történő adatfeldolgozást is az Adatkezelő végzi.",
         },
         owner: {
-            title: "Az érintett",
+            title: "Az Érintett",
             description:
                 "Az Érintett egy bármely információ (jelen esetben bizonyos személyes adatok) alapján azonosítható személy. A jelen tájékoztató tárgyába tartozó Érintett az, aki rendelkezik a Budapest V. kerületi Eötvös József Gimnázium (a továbbiakban: Intézmény) által a vele valamilyen jogállásban lévő személyeknek (tanárok, diákok) biztosított egyedei „e5vos.hu” domain névvel végződő elektronikus levelezőcímmel.",
         },
@@ -105,7 +105,7 @@ const locale = {
         },
         access: {
             title: "Az adatok megismerésére jogosultak",
-            intro: "",
+            intro: "Az Adatkezelőn és az Érintetten az 5.2 pontban kifejtett módon kívül az Érintett személyes adataihoz az Intézmény",
             accessors: [
                 "Diákönkormányzata,",
                 "valamilyen jogállásban lévő tanára, illetve",
@@ -161,7 +161,7 @@ const locale = {
         cookie: {
             title: "Cookie-k (Sütik) használata",
             description:
-                "A sütik (cookie-k) valójában kis, adatot tároló fájlok, amiket a látogató böngészője menedzsel. A látogató a saját böngészőjében engedélyezheti vagy letilthatja a sütik használatát, törölheti a korábban elhelyezett sütiket.",
+                "A sütik (cookie-k) valójában kis, adatot tároló fájlok, amiket az Érintett böngészője menedzsel. Az Érintett a saját böngészőjében engedélyezheti vagy letilthatja a sütik használatát, törölheti a korábban elhelyezett sütiket.",
             cookiesIntro: "Az oldalunk a következő sütiket használja:",
             cookiesHeader: {
                 name: "Név",
@@ -197,6 +197,21 @@ const locale = {
             "adathordozhatósághoz való joggal, és",
             "tiltakozáshoz való joggal.",
         ],
+        information: {
+            title: "Előzetes tájékoztatáshoz való jog (GDPR 12-14. és 34-35. cikk és Infotv. 16. és 25/G. és 25/J. § alapján)",
+            intro: "Az előzetes tájékozódáshoz való jog érvényesülése érdekében az Adatkezelő az általa végzett adatkezelési műveletek megkezdését megelőzően tájékoztatja az Érintettet az adatkezeléssel összefüggő tényekről. Az adatkezelési tájékoztatónak tömör, átlátható, érthető és könnyen hozzáférhető formában, világosan és közérthetően megfogalmazva kell lennie. A tájékoztató tartalmazza többek között",
+            contentsList: [
+                "az adatkezelő elérhetőségeit,",
+                "az adatkezelés jogalapját és célját,",
+                "a kezelt személyes adatok megőrzésének időtartamát, ezen időtartam meghatározásának szempontjait,",
+                "a kezelt személyes adatok továbbítása vagy tervezett továbbítása esetén az adattovábbítás címzettjeinek köreit,",
+                "a kezelt személyes adatok gyűjtésének forrásait,",
+                "az automatizált döntéshozatal és a profilalkotás esetleges tényét,",
+                "az érintettet e törvény alapján megillető jogok, valamint azok érvényesítése módjának ismertetését, és",
+                "az adatkezelés körülményeivel összefüggő minden további érdemi tényeket.",
+            ],
+            outro: "Az Adatkezelő az adatkezelés módjának változtatásáról is tájékoztatja az Érintettet. Ha az Adatkezelő magas kockázatú adatkezelést végez (például hatásvizsgálatot készít vagy adatvédelmi incidenst okoz), írásban tájékoztatja a körülményekről, vagy kikéri az Érintett véleményét. Erre az Adatkezelő csak abban az esetben van kötelezve, ha előtte nem hárította el teljesen a problémát, vagy mentette meg az adatokat eredeti formájukban, és a Hatóság sem kötelezte az Érintett tájékoztatására.",
+        },
         access: {
             title: "Hozzáféréshez való jog (GDPR 15. cikk és Infotv. 17. § alapján)",
             description:
@@ -325,7 +340,7 @@ const locale = {
         },
     },
     timescope: {
-        title: "Az Adatkelezési Tájékoztató hatálya",
+        title: "Az Adatkelezési Tájékoztató időbeli hatálya",
         description:
             "Jelen tájékoztatót az Adatkezelő az adattörléskor, de legkésőbb a következő tanév első tanítási napját megelőző 15 nap előtt felülvizsgálja, és ha kell, módosítja. Az tájékoztató módosítása esetén a régi változatot le kell cserélni a módosított változatra a módosítást követő 15 napon belül. A tájékoztató közzététele mellett az Adatkezelő feltünteti a hatályos változat érvényességének kezdeti időpontját.",
     },
@@ -651,6 +666,20 @@ const PrivacyPolicyPage = () => {
                             <li key={e}>{e}</li>
                         ))}
                     </ol>
+                </div>
+                <div className="my-2">
+                    <h3 className="font-bold">
+                        5.1 {locale.ownersRights.information.title}
+                    </h3>
+                    <p>{locale.ownersRights.information.intro}</p>
+                    <ol className="ml-16 list-lower-latin">
+                        {locale.ownersRights.information.contentsList.map(
+                            (e) => (
+                                <li key={e}>{e}</li>
+                            ),
+                        )}
+                    </ol>
+                    <p>{locale.ownersRights.information.outro}</p>
                 </div>
                 <div className="my-2">
                     <h3 className=" font-bold">

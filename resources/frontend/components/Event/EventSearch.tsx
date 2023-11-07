@@ -1,11 +1,14 @@
 import useDelay from "hooks/useDelayed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { EventStub } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 
 import Form from "components/UIKit/Form";
+
+const filter = (s: string) => (e: EventStub) =>
+    e.name.toLocaleLowerCase().startsWith(s.toLocaleLowerCase());
 
 const EventSearchCombobox = ({
     onChange,
@@ -14,8 +17,9 @@ const EventSearchCombobox = ({
     onChange: (value: EventStub) => any;
     initialValue?: EventStub;
 }) => {
-    const [search, setSearch] = useState("");
-    const { data: options } = eventAPI.useEventSearchQuery(search);
+    const [apisearch, { data, isFetching }] =
+        eventAPI.useLazyEventSearchQuery();
+    const [options, setOptions] = useState<EventStub[]>();
 
     const onQueryChange = useDelay((value: string) => {
         if (
@@ -25,9 +29,18 @@ const EventSearchCombobox = ({
                     .includes(value[0].toLocaleLowerCase()),
             )
         ) {
-            setSearch(value[0]);
+            if (isFetching) return;
+            if (!data) {
+                apisearch(value);
+            } else {
+                setOptions((state) => state?.filter(filter(value)) ?? data);
+            }
         }
     });
+
+    useEffect(() => {
+        if (data && !options) setOptions(data);
+    }, [data, options]);
 
     return (
         <div className="max-w-sm">
@@ -41,9 +54,7 @@ const EventSearchCombobox = ({
                 }}
                 getElementName={(e) => e.name}
                 renderElement={(e) => <span>{e.name}</span>}
-                filter={(s) => (e) =>
-                    e.name.toLocaleLowerCase().startsWith(s.toLocaleLowerCase())
-                }
+                filter={filter}
             />
         </div>
     );

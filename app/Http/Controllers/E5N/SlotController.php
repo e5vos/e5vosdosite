@@ -65,23 +65,21 @@ class SlotController extends Controller
     public function freeStudents($slotId)
     {
         return Cache::remember("freeStudents" . $slotId, 60, function () use ($slotId) {
-            $occupiedIds = Slot::findOrFail($slotId)->signups()->whereNotNull('user_id')->pluck('user_id')->toArray();
+            $occupiedIds = Slot::findOrFail($slotId)->signups()->groupBy('user_id')->whereNotNull('user_id')->pluck('user_id')->toArray();
             return UserResource::collection(User::whereNotIn('id', $occupiedIds)->get())->jsonSerialize(); // not optimal
         });
     }
 
     public function nonAttendingStudents($slotId)
     {
-        return Cache::remember("notAttendingStudents" . $slotId, 60, function () use ($slotId) {
-            $missingIds = Slot::findOrFail($slotId)->signups()->where('is_present', false)->whereNotNull('user_id')->pluck('user_id')->toArray();
-            return UserResource::collection(User::whereIn('id', $missingIds)->get())->jsonSerialize();  // not optimal
+        return Cache::remember("attendingStudents" . $slotId, 60, function () use ($slotId) {
+            return Slot::findOrFail($slotId)->signups()->where('attendances.is_present', false)->join('users', 'users.id', '=', 'attendances.user_id')->distinct()->get(['users.id', 'users.name', 'users.ejg_class'])->toArray()->jsonSerialize();
         });
     }
     public function AttendingStudents($slotId)
     {
         return Cache::remember("attendingStudents" . $slotId, 60, function () use ($slotId) {
-            $attendingIds = Slot::findOrFail($slotId)->signups()->where('is_present', true)->whereNotNull('user_id')->pluck('user_id')->toArray();
-            return UserResource::collection(User::whereIn('id', $attendingIds)->get())->jsonSerialize();  // not optimal
+            return Slot::findOrFail($slotId)->signups()->where('attendances.is_present', true)->join('users', 'users.id', '=', 'attendances.user_id')->distinct()->get(['users.id', 'users.name', 'users.ejg_class'])->toArray()->jsonSerialize();
         });
     }
 }

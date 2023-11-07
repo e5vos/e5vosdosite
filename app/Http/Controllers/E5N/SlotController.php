@@ -68,10 +68,6 @@ class SlotController extends Controller
         return Cache::remember("freeStudents" . $slotId, 60, fn () => UserResource::collection(
             User::whereNotIn('id', $occupiedIds)->get()
         )->jsonSerialize());
-        $occupiedIds = Slot::findOrFail($slotId)->signups()->pluck('user_id')->filter(fn ($id) => $id !== null)->toArray();
-        return Cache::remember("freeStudents" . $slotId, 60, fn () => UserResource::collection(
-            User::whereNotIn('id', $occupiedIds)->get()
-        )->jsonSerialize());
     }
 
     public function nonAttendingStudents($slotId)

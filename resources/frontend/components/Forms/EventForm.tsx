@@ -77,8 +77,7 @@ const EventForm = ({
             signup_deadline: Yup.string(),
             signup_enabled: Yup.boolean().required(locale.required),
             organiser: Yup.string().required(locale.required),
-            location: Yup.string().required(locale.required),
-            capacity: Yup.string().required(locale.required),
+            capacity: Yup.number().nullable(),
             is_competition: Yup.boolean().required(locale.required),
             capacity_enabled: Yup.boolean().required(locale.required),
         }),
@@ -95,7 +94,7 @@ const EventForm = ({
         },
         enableReinitialize: enableReinitialize,
     });
-    console.log(initialValues);
+    console.log(formik.errors);
     return (
         <Form onSubmit={formik.handleSubmit} {...rest}>
             <Form.Group>
@@ -199,15 +198,19 @@ const EventForm = ({
                 </Form.Group>
             )}
             {isAdmin(user) && (
-                <Form.Group>
-                    <Form.Label>{locale.fields.is_competition}</Form.Label>
-                    <Form.Check
-                        name="is_competition"
-                        checked={formik.values.is_competition}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        invalid={Boolean(formik.errors.is_competition)}
-                    />
+                <Form.Group className="">
+                    <div className="flex flex-row gap-3 align-middle">
+                        <Form.Label className="h-full">
+                            {locale.fields.is_competition}
+                        </Form.Label>
+                        <Form.Check
+                            name="is_competition"
+                            checked={formik.values.is_competition}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            invalid={Boolean(formik.errors.is_competition)}
+                        />
+                    </div>
                 </Form.Group>
             )}
 

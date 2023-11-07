@@ -13,10 +13,10 @@ export const locationAPI = baseAPI
         endpoints: (builder) => ({
             getLocations: builder.query<Omit<Location, "events">[], void>({
                 query: () => routeSwitcher("location.index"),
-                providesTags: (result) =>
-                    result
+                providesTags: (res, err, arg) =>
+                    res
                         ? [
-                              ...result.map(
+                              ...res.map(
                                   ({ id }) =>
                                       ({ type: "Location", id }) as const,
                               ),
@@ -29,9 +29,9 @@ export const locationAPI = baseAPI
                 number
             >({
                 query: (id) => routeSwitcher("location.show", { id }),
-                providesTags: (result) =>
-                    result
-                        ? [{ type: "Location", id: result.id }]
+                providesTags: (res) =>
+                    res
+                        ? [{ type: "Location", id: res.id }]
                         : [{ type: "Location", id: "LIST" }],
             }),
             updateLocation: builder.mutation<
@@ -43,10 +43,13 @@ export const locationAPI = baseAPI
                     method: "PATCH",
                     params: location,
                 }),
-                invalidatesTags: (result) => [
-                    { type: "Location", id: result?.id },
-                    { type: "Location", id: "LIST" },
-                ],
+                invalidatesTags: (res, err, arg) =>
+                    err
+                        ? []
+                        : [
+                              { type: "Location", id: res?.id },
+                              { type: "Location", id: "LIST" },
+                          ],
             }),
         }),
     });

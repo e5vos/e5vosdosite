@@ -55,7 +55,10 @@ export const baseAPI = createApi({
                 url: routeSwitcher("user.details"),
                 method: "GET",
             }),
-            providesTags: (result) => [{ type: "User", id: "CURRENT" }],
+            providesTags: (result) => [
+                { type: "User", id: "CURRENT" },
+                { type: "User", id: result?.id },
+            ],
         }),
         setStudentCode: builder.mutation<User, string>({
             query: (code) => ({
@@ -63,12 +66,21 @@ export const baseAPI = createApi({
                 method: "PATCH",
                 params: { e5code: code },
             }),
+            invalidatesTags: (res, err, arg) =>
+                err
+                    ? []
+                    : [
+                          { type: "User", id: "LIST" },
+                          { type: "User", id: res?.id },
+                      ],
         }),
         userSearch: builder.query<UserStub[], string | number>({
             query: (q) => ({
                 url: routeSwitcher("users.index"),
                 params: q ? { q } : undefined,
             }),
+            providesTags: (res) =>
+                res?.map((u) => ({ type: "User", id: u.id })) ?? [],
         }),
         getUser: builder.query<
             RequiredFields<User, "teams" | "permissions">,

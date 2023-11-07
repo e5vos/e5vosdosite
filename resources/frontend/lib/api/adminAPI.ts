@@ -1,10 +1,6 @@
-import { dumpState } from "hooks/useStateDump";
-import { url } from "inspector";
-
 import { Permission, Slot, User, UserStub } from "types/models";
 
 import routeSwitcher from "lib/route";
-import { RootState } from "lib/store";
 
 import baseAPI from ".";
 
@@ -41,7 +37,8 @@ export const adminAPI = baseAPI
                     method: "POST",
                     params: slot,
                 }),
-                invalidatesTags: [{ type: "Slot", id: "LIST" }],
+                invalidatesTags: (res, err, arg) =>
+                    err ? [] : [{ type: "Slot", id: "LIST" }],
             }),
 
             deleteSlot: builder.mutation<
@@ -60,11 +57,14 @@ export const adminAPI = baseAPI
                     method: "PUT",
                     params: slot,
                 }),
-                invalidatesTags: (result, error, { id }) => [
-                    { type: "Slot", id },
-                    { type: "Slot", id: "LIST" },
-                    { type: "Event", id: `LIST${id}` },
-                ],
+                invalidatesTags: (res, err, { id }) =>
+                    err
+                        ? []
+                        : [
+                              { type: "Slot", id },
+                              { type: "Slot", id: "LIST" },
+                              { type: "Event", id: `LIST${id}` },
+                          ],
             }),
 
             clearCache: builder.mutation<void, void>({
@@ -80,8 +80,10 @@ export const adminAPI = baseAPI
                     method: "POST",
                     body: data,
                 }),
-                invalidatesTags: (result, error, arg) =>
-                    arg.event_id
+                invalidatesTags: (res, err, arg) =>
+                    err
+                        ? []
+                        : arg.event_id
                         ? [
                               { type: "User", id: arg.user_id },
                               { type: "Event", id: arg.event_id },
@@ -94,8 +96,10 @@ export const adminAPI = baseAPI
                     method: "DELETE",
                     body: data,
                 }),
-                invalidatesTags: (result, error, arg) =>
-                    arg.event_id
+                invalidatesTags: (res, err, arg) =>
+                    err
+                        ? []
+                        : arg.event_id
                         ? [
                               { type: "User", id: arg.user_id },
                               { type: "Event", id: arg.event_id },

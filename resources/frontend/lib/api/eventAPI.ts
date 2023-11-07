@@ -4,6 +4,7 @@ import {
     Event,
     EventStub,
     Presentation,
+    Rating,
     Slot,
     TeamAttendance,
     TeamMemberAttendance,
@@ -123,10 +124,15 @@ export const eventAPI = baseAPI.injectEndpoints({
                 method: "POST",
                 params: { attender: body.attender },
             }),
-            invalidatesTags: (result) => {
-                return [];
-                //return [{ type: "Event", id: result?.pivot.event_id } as const];
-            },
+            invalidatesTags: (res, err, arg) =>
+                err
+                    ? []
+                    : [
+                          {
+                              type: "EventParticipants",
+                              id: arg.event.id,
+                          },
+                      ],
         }),
         attend: builder.mutation<
             | RequiredFields<TeamAttendance, "team">
@@ -147,6 +153,8 @@ export const eventAPI = baseAPI.injectEndpoints({
                     toogle: body.present,
                 },
             }),
+            invalidatesTags: (res, err, arg) =>
+                err ? [] : [{ type: "EventParticipants", id: arg.event.id }],
         }),
         teamMemberAttend: builder.mutation<
             TeamMemberAttendance[],
@@ -161,6 +169,7 @@ export const eventAPI = baseAPI.injectEndpoints({
                     memberAttendances: JSON.stringify(data),
                 },
             }),
+            invalidatesTags: (res, err, arg) => (err ? [] : []),
         }),
         cancelSignUp: builder.mutation<
             void,
@@ -171,6 +180,8 @@ export const eventAPI = baseAPI.injectEndpoints({
                 method: "DELETE",
                 params: { attender: body.attender },
             }),
+            invalidatesTags: (res, err, arg) =>
+                err ? [] : [{ type: "EventParticipants", id: arg.event.id }],
         }),
 
         deleteEvent: builder.mutation<void, Pick<Event, "id">>({
@@ -178,7 +189,8 @@ export const eventAPI = baseAPI.injectEndpoints({
                 url: routeSwitcher("event.delete", { id }),
                 method: "DELETE",
             }),
-            invalidatesTags: (result) => [{ type: "Event", id: "LIST" }],
+            invalidatesTags: (res, err, arg) =>
+                err ? [] : [{ type: "Event", id: "LIST" }],
         }),
 
         closeSignUp: builder.mutation<EventStub, Pick<Event, "id">>({
@@ -186,7 +198,13 @@ export const eventAPI = baseAPI.injectEndpoints({
                 url: routeSwitcher("event.close_signup", { id }),
                 method: "PUT",
             }),
-            invalidatesTags: (result) => [{ type: "Event", id: "LIST" }],
+            invalidatesTags: (res, err, arg) =>
+                err
+                    ? []
+                    : [
+                          { type: "Event", id: "LIST" },
+                          { type: "Event", id: arg.id },
+                      ],
         }),
 
         updateEvent: builder.mutation<EventStub, Omit<Event, "occupancy">>({
@@ -195,11 +213,14 @@ export const eventAPI = baseAPI.injectEndpoints({
                 method: "PATCH",
                 params: event,
             }),
-            invalidatesTags: (result) => [
-                { type: "Event", id: result?.id },
-                { type: "Event", id: `LIST${result?.slot_id}` },
-                { type: "Event", id: "LIST" },
-            ],
+            invalidatesTags: (res, err) =>
+                err
+                    ? []
+                    : [
+                          { type: "Event", id: res?.id },
+                          { type: "Event", id: `LIST${res?.slot_id}` },
+                          { type: "Event", id: "LIST" },
+                      ],
         }),
 
         eventSearch: builder.query<EventStub[], string>({
@@ -213,6 +234,41 @@ export const eventAPI = baseAPI.injectEndpoints({
                           { type: "Event", id: "SEARCH" },
                       ]
                     : [{ type: "Event", id: "SEARCH" }],
+        }),
+        score: builder.mutation<
+            void,
+            {
+                event: Pick<Event, "id">;
+                attender: string | number;
+                rank: number;
+            }
+        >({
+            query: ({ event, attender, rank }) => ({
+                url: routeSwitcher("event.score", {
+                    eventId: event.id,
+                }),
+                params: {
+                    attender: attender,
+                    rank: rank,
+                },
+            }),
+            invalidatesTags: (res, err, arg) =>
+                err ? [] : [{ type: "Event", id: arg.event.id }],
+        }),
+        rate: builder.mutation<
+            Rating,
+            { event: Pick<Event, "id">; rating: number }
+        >({
+            query: ({ event, rating }) => ({
+                url: routeSwitcher("event.rate", {
+                    eventId: event.id,
+                }),
+                params: {
+                    rating: rating,
+                },
+            }),
+            invalidatesTags: (res, err, arg) =>
+                err ? [] : [{ type: "Event", id: arg.event.id }],
         }),
     }),
 });

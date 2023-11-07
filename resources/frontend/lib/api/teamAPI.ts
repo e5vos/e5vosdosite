@@ -23,7 +23,8 @@ export const teamAPI = baseAPI.injectEndpoints({
             Pick<Team, "code">
         >({
             query: ({ code }) => routeSwitcher("team.show", { teamCode: code }),
-            providesTags: (result) => [{ type: "Team", id: result?.code }],
+            providesTags: (result) =>
+                result ? [{ type: "Team", id: result?.code }] : [],
         }),
         createTeam: builder.mutation<
             Omit<Team, "activity" | "members">,
@@ -34,7 +35,7 @@ export const teamAPI = baseAPI.injectEndpoints({
                 method: "POST",
                 params: data,
             }),
-            invalidatesTags: ["Team"],
+            invalidatesTags: [{ type: "Team", id: "LIST" }],
         }),
         editTeam: builder.mutation<
             Omit<Team, "activity" | "members">,
@@ -45,12 +46,15 @@ export const teamAPI = baseAPI.injectEndpoints({
                 method: "PUT",
                 params: data,
             }),
-            invalidatesTags: (res, err, arg) => [
-                { type: "Team", id: arg.code },
-                { type: "Team", id: "LIST" },
-                { type: "Team", id: "MYTEAMS" },
-                { type: "User", id: "CURRENT" },
-            ],
+            invalidatesTags: (res, err, arg) =>
+                err
+                    ? []
+                    : [
+                          { type: "Team", id: arg.code },
+                          { type: "Team", id: "LIST" },
+                          { type: "Team", id: "MYTEAMS" },
+                          { type: "User", id: "CURRENT" },
+                      ],
         }),
         promote: builder.mutation<
             RequiredAndOmitFields<Team, "members", "activity">,
@@ -66,14 +70,17 @@ export const teamAPI = baseAPI.injectEndpoints({
                     promote: data.promote,
                 },
             }),
-            invalidatesTags: (res, err, arg) => [
-                { type: "Team", id: arg.team_code },
-                { type: "Team", id: "LIST" },
-                { type: "Team", id: "MYTEAMS" },
-                { type: "User", id: arg.user_id },
-                { type: "User", id: "CURRENT" },
-                { type: "User", id: "LIST" },
-            ],
+            invalidatesTags: (res, err, arg) =>
+                err
+                    ? []
+                    : [
+                          { type: "Team", id: arg.team_code },
+                          { type: "Team", id: "LIST" },
+                          { type: "Team", id: "MYTEAMS" },
+                          { type: "User", id: arg.user_id },
+                          { type: "User", id: "CURRENT" },
+                          { type: "User", id: "LIST" },
+                      ],
         }),
         invite: builder.mutation<
             RequiredAndOmitFields<Team, "members", "activity">,
@@ -88,14 +95,17 @@ export const teamAPI = baseAPI.injectEndpoints({
                     userId: data.user_id,
                 },
             }),
-            invalidatesTags: (res, err, arg) => [
-                { type: "Team", id: arg.team_code },
-                { type: "Team", id: "LIST" },
-                { type: "Team", id: "MYTEAMS" },
-                { type: "User", id: arg.user_id },
-                { type: "User", id: "CURRENT" },
-                { type: "User", id: "LIST" },
-            ],
+            invalidatesTags: (res, err, arg) =>
+                err
+                    ? []
+                    : [
+                          { type: "Team", id: arg.team_code },
+                          { type: "Team", id: "LIST" },
+                          { type: "Team", id: "MYTEAMS" },
+                          { type: "User", id: arg.user_id },
+                          { type: "User", id: "CURRENT" },
+                          { type: "User", id: "LIST" },
+                      ],
         }),
     }),
 });

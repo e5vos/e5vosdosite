@@ -86,7 +86,7 @@ export const eventAPI = baseAPI.injectEndpoints({
             query: (event) => ({
                 url: routeSwitcher("events"),
                 method: "POST",
-                params: event,
+                body: event,
             }),
             invalidatesTags: (result) => [
                 { type: "Event", id: `LIST${result?.slot_id}` },
@@ -97,7 +97,7 @@ export const eventAPI = baseAPI.injectEndpoints({
             query: (event) => ({
                 url: routeSwitcher("event.update", { id: event.id }),
                 method: "PUT",
-                params: event,
+                body: event,
             }),
             invalidatesTags: (result) => [
                 { type: "Event", id: result?.id },
@@ -125,7 +125,7 @@ export const eventAPI = baseAPI.injectEndpoints({
             query: (body) => ({
                 url: routeSwitcher("event.signup", { id: body.event.id }),
                 method: "POST",
-                params: { attender: body.attender },
+                body: { attender: body.attender },
             }),
             invalidatesTags: (res, err, arg) =>
                 err
@@ -151,7 +151,7 @@ export const eventAPI = baseAPI.injectEndpoints({
                     eventId: body.event.id,
                 }),
                 method: "POST",
-                params: {
+                body: {
                     attender: body.attender,
                     toogle: body.present,
                 },
@@ -168,7 +168,7 @@ export const eventAPI = baseAPI.injectEndpoints({
                     attendanceId: data.length > 0 ? data[0].attendance_id : -1,
                 }),
                 method: "POST",
-                params: {
+                body: {
                     memberAttendances: JSON.stringify(data),
                 },
             }),
@@ -181,7 +181,7 @@ export const eventAPI = baseAPI.injectEndpoints({
             query: (body) => ({
                 url: routeSwitcher("event.signup", { id: body.event.id }),
                 method: "DELETE",
-                params: { attender: body.attender },
+                body: { attender: body.attender },
             }),
             invalidatesTags: (res, err, arg) =>
                 err ? [] : [{ type: "EventParticipants", id: arg.event.id }],
@@ -214,7 +214,7 @@ export const eventAPI = baseAPI.injectEndpoints({
             query: (event) => ({
                 url: routeSwitcher("event.update", { id: event.id }),
                 method: "PUT",
-                params: event,
+                body: event,
             }),
             invalidatesTags: (res, err) =>
                 err
@@ -250,7 +250,7 @@ export const eventAPI = baseAPI.injectEndpoints({
                 url: routeSwitcher("event.score", {
                     eventId: event.id,
                 }),
-                params: {
+                body: {
                     attender: attender,
                     rank: rank,
                 },
@@ -266,7 +266,7 @@ export const eventAPI = baseAPI.injectEndpoints({
                 url: routeSwitcher("event.rate", {
                     eventId: event.id,
                 }),
-                params: {
+                body: {
                     rating: rating,
                 },
             }),

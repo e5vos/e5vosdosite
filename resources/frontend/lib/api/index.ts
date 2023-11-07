@@ -64,7 +64,7 @@ export const baseAPI = createApi({
             query: (code) => ({
                 url: routeSwitcher("user.e5code"),
                 method: "PATCH",
-                params: { e5code: code },
+                body: { e5code: code },
             }),
             invalidatesTags: (res, err, arg) =>
                 err

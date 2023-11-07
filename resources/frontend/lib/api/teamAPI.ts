@@ -33,7 +33,7 @@ export const teamAPI = baseAPI.injectEndpoints({
             query: (data) => ({
                 url: routeSwitcher("team.store"),
                 method: "POST",
-                params: data,
+                body: data,
             }),
             invalidatesTags: [{ type: "Team", id: "LIST" }],
         }),
@@ -44,7 +44,7 @@ export const teamAPI = baseAPI.injectEndpoints({
             query: (data) => ({
                 url: routeSwitcher("team.edit", { teamCode: data.code }),
                 method: "PUT",
-                params: data,
+                body: data,
             }),
             invalidatesTags: (res, err, arg) =>
                 err
@@ -65,7 +65,7 @@ export const teamAPI = baseAPI.injectEndpoints({
                     teamCode: data.team_code,
                 }),
                 method: "PUT",
-                params: {
+                body: {
                     userId: data.user_id,
                     promote: data.promote,
                 },
@@ -91,7 +91,7 @@ export const teamAPI = baseAPI.injectEndpoints({
                     teamCode: data.team_code,
                 }),
                 method: "POST",
-                params: {
+                body: {
                     userId: data.user_id,
                 },
             }),

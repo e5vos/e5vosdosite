@@ -35,7 +35,7 @@ export const adminAPI = baseAPI
                 query: (slot) => ({
                     url: routeSwitcher("slot.store"),
                     method: "POST",
-                    params: slot,
+                    body: slot,
                 }),
                 invalidatesTags: (res, err, arg) =>
                     err ? [] : [{ type: "Slot", id: "LIST" }],
@@ -55,7 +55,7 @@ export const adminAPI = baseAPI
                 query: (slot) => ({
                     url: routeSwitcher("slot.update", { slotId: slot.id }),
                     method: "PUT",
-                    params: slot,
+                    body: slot,
                 }),
                 invalidatesTags: (res, err, { id }) =>
                     err
@@ -113,10 +113,8 @@ export const adminAPI = baseAPI
                 query: ({ key, dump }) => ({
                     url: routeSwitcher("debug.dump"),
                     method: "POST",
-                    params: {
-                        key: key,
-                    },
                     body: {
+                        key: key,
                         dump: JSON.stringify(dump),
                     },
                 }),

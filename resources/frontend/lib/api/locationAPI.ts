@@ -41,7 +41,7 @@ export const locationAPI = baseAPI
                 query: (location) => ({
                     url: routeSwitcher("location.update", { id: location.id }),
                     method: "PATCH",
-                    params: location,
+                    body: location,
                 }),
                 invalidatesTags: (res, err, arg) =>
                     err

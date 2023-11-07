@@ -154,13 +154,18 @@ class TeamController extends Controller
         if ($kick) {
             TeamMembership::where('team_code', $teamCode)->where('user_id', request()->userId)->delete();
         } else {
-            // dd(['team_code' => $teamCode, 'user_id' => request()->userId], ['role' => $updatableRole]);
             $membership = TeamMembership::where('team_code', $teamCode)->where('user_id', request()->userId)->first();
             if ($membership) {
                 $membership->role = $updatableRole;
                 $membership->save();
             } else {
-                TeamMembership::create(['team_code' => $teamCode, 'user_id' => request()->userId, 'role' => $updatableRole]);
+                $membership = new TeamMembership();
+                $membership->team_code = $teamCode;
+                $membership->user_id = request()->userId;
+                $membership->role = $updatableRole;
+                $membership->save();
+
+                // TeamMembership::create(['team_code' => $teamCode, 'user_id' => request()->userId, 'role' => $updatableRole]);
             }
         }
         Cache::forget('e5n.teams.all');

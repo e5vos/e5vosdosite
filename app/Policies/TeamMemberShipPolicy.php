@@ -58,15 +58,16 @@ class TeamMemberShipPolicy
             abort(400, 'Missing parameters');
         }
         $team = Cache::rememberForever('e5n.teams' . request()->teamCode, fn () => Team::find(request()->teamCode)->load('members'));
-        if (!$team->members->pluck('e5code')->contains((request()->userId))) {
-            return false;
-        }
-        $updatableRole = $team->members->where('e5code', request()->userId)->firstOrFail()->pivot->role;
+        // if (!$team->members->pluck('id')->contains((request()->userId))) {
+        //     return false;
+        // }
+        $updatableRole = $team->members->where('e5code', request()->userId)->first()?->pivot->role;
         $otherLeaderExists = $team->members->where('id', '!=', request()->userId)->firstWhere('pivot.role', MembershipType::Leader->value) !== null;
         $isLeader = $user->isLeaderOfTeam($team->code);
         if (request()->promote) {
             return ($updatableRole === MembershipType::Member->value && $isLeader)
-                || ($updatableRole === MembershipType::Invited->value && $user->id === request()->userId);
+                || ($updatableRole === MembershipType::Invited->value && $user->id === request()->userId)
+                || ($updatableRole == null &&  $isLeader);
         } else {
             return ($user->id === request()->userId
                 && ($updatableRole !== MembershipType::Leader->value || $otherLeaderExists)

@@ -32,12 +32,10 @@ class UserPolicy
 
     /**
      * Determine whether the user can view any models.
-     *
-     * @param User $user
      */
-    public function viewAny(User $user)
+    public function viewAny()
     {
-        return $user->hasPermission(PermissionType::Teacher->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
+        return true;
     }
 
     /**

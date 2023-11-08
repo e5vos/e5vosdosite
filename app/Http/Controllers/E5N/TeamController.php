@@ -49,7 +49,7 @@ class TeamController extends Controller
         $team->members()->attach(Auth::user()->id, ['role' => MembershipType::Leader]);
         $team = new TeamResource($team);
         Cache::forget('e5n.teams.all');
-        Cache::forget(Auth::user()->id . 'teams');
+        Cache::forget('user.' . Auth::user()->id . '.teams');
         return Cache::rememberForever('e5n.teams.' . $team->code, fn () => new TeamResource($team->load('members', 'activity')));
     }
 
@@ -154,7 +154,7 @@ class TeamController extends Controller
         }
         if ($kick) {
             TeamMembership::where('team_code', $teamCode)->where('user_id', request()->userId)->delete();
-            Cache::forget(request()->userId . 'teams');
+            Cache::forget("user." . request()->userId . '.teams');
         } else {
             $membership = TeamMembership::where('team_code', $teamCode)->where('user_id', request()->userId)->first();
             if ($membership) {
@@ -174,7 +174,7 @@ class TeamController extends Controller
         Cache::forget('e5n.teams.' . $team->code);
         $team = $team->refresh();
         foreach ($team->members as $member) {
-            Cache::forget($member->id . 'teams');
+            Cache::forget("user." . $member->id . '.teams');
         }
         return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members', 'activity')))->jsonSerialize());
     }

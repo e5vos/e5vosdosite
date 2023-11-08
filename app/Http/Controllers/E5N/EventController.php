@@ -15,6 +15,7 @@ use App\Models\{
     User,
     Team,
     Slot,
+    TeamMembership,
 };
 
 use App\Helpers\SlotType;
@@ -125,12 +126,10 @@ class EventController extends Controller
             $event->$key = $value;
         }
         $event->save();
-        // dd($event, $newData);
-        $event = new EventResource($event);
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forever('e5n.events.' . $eventId, (new EventResource($event->load('slot', 'location')))->jsonSerialize());
-        return Cache::get('e5n.events.' . $eventId);
+        Cache::forget('e5n.events.' . $eventId);
+        return Cache::rememberForever('e5n.events.' . $eventId, (new EventResource($event->load('slot', 'location')))->jsonSerialize());
     }
 
     /**
@@ -161,8 +160,8 @@ class EventController extends Controller
         $event = new EventResource($event);
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forever('e5n.events.' . $event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
-        return Cache::get('e5n.events.' . $event->id);
+        Cache::forget('e5n.events.' . $event->id);
+        return Cache::rememberForever('e5n.events.' . $event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
     }
 
     /**
@@ -174,11 +173,10 @@ class EventController extends Controller
         $event = Event::findOrFail($eventId);
         $event->signup_deadline = now()->format('Y-m-d H:i:s');
         $event->save();
-        $event = new EventResource($event);
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forever('e5n.events.' . $event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
-        return Cache::get('e5n.events.' . $event->id);
+        Cache::forget('e5n.events.' . $event->id);
+        return Cache::rememberForever('e5n.events.' . $event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
     }
 
     /**
@@ -265,19 +263,16 @@ class EventController extends Controller
         if (!request()->user()->can('attend', $attendance->event)) {
             throw new NotAllowedException();
         }
-        $presentAttendanceIds = [];
-        $absentAttendanceIds = [];
-        foreach (json_decode(request()->memberAttendances) as $memberAttendance) {
-            if ($memberAttendance->is_present) {
-                $presentAttendanceIds[] = $memberAttendance->user_id;
-            } else {
-                $absentAttendanceIds[] = $memberAttendance->user_id;
-            }
-        }
-        $teamMemberAttendances = $attendance->teamMemberAttendances();
-        $attendance->team()->members()->whereNotIn('id', $teamMemberAttendances->get('user_id')->toArray())->get()->each(fn ($member) => $teamMemberAttendances->create(['user_id' => $member->id, 'attendance_id' => $attendanceId]));
-        $attendance->teamMemberAttendances()->whereIn('user_id', $presentAttendanceIds)->update(['is_present' => true]);
-        $attendance->teamMemberAttendances()->whereIn('user_id', $absentAttendanceIds)->update(['is_present' => false]);
+        $memberAttendances = json_decode(request()->memberAttendances, true);
+        $attendance->teamMemberAttendances()->upsert(
+            collect($memberAttendances)->map(fn ($memberAttendance) => [
+                'user_id' => $memberAttendance['user_id'],
+                'is_present' => $memberAttendance['is_present'],
+                'attendance_id' => $attendanceId,
+            ])->toArray(),
+            ['user_id', 'attendance_id'],
+            ['is_present']
+        );
 
         Cache::forget('teams.' . $attendance->team->code);
         return response()->json($attendance->teamMemberAttendances, 200);

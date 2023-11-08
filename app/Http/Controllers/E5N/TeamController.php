@@ -103,7 +103,7 @@ class TeamController extends Controller
         $team->restore();
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.' . $team->code);
-        return Cache::rememberForever('e5n.teams' . $team->code, fn () => (new TeamResource($team->load('members', 'activity')))->jsonSerialize());
+        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members', 'activity')))->jsonSerialize());
     }
 
 
@@ -154,6 +154,7 @@ class TeamController extends Controller
         }
         if ($kick) {
             TeamMembership::where('team_code', $teamCode)->where('user_id', request()->userId)->delete();
+            Cache::forget(request()->userId . 'teams');
         } else {
             $membership = TeamMembership::where('team_code', $teamCode)->where('user_id', request()->userId)->first();
             if ($membership) {

@@ -38,6 +38,7 @@ const DebugDump = () => {
                         />
                         <Button
                             onClick={async () => {
+                                console.log("dumping", state);
                                 await dump({
                                     dump: state,
                                     key: key !== "" ? key : undefined,

@@ -26,13 +26,11 @@ const TeamCreator = ({
     ...rest
 }: CRUDFormImpl<Team, Partial<TeamFormValues>>) => {
     const [createTeam] = teamAPI.useCreateTeamMutation();
-    const { refetch } = teamAPI.endpoints.getAllTeams.useQuerySubscription();
     const onSubmit = useCallback(
         async (team: TeamFormValues) => {
             await createTeam(team);
-            refetch();
         },
-        [createTeam, refetch],
+        [createTeam],
     );
     return (
         <TeamForm

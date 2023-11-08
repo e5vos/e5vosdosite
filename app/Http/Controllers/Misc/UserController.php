@@ -20,6 +20,9 @@ class UserController extends Controller
      */
     public function index()
     {
+        if (request()->q == '-1') {
+            return response('[]', 200);
+        }
         return response()->json(UserResource::collection(User::where('name', 'like', '%' . request()->q . '%')->select('id', 'name', 'ejg_class')->get()));
     }
 

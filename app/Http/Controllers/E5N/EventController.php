@@ -260,10 +260,15 @@ class EventController extends Controller
     public function teamMemberAttend($attendanceId)
     {
         $attendance = Attendance::findOrFail($attendanceId)->load('team');
-        if (!request()->user()->can('attend', $attendance->event)) {
-            throw new NotAllowedException();
-        }
+        $event = $attendance->event;
         $memberAttendances = json_decode(request()->memberAttendances, true);
+        $attendingCount = sizeof(array_filter($memberAttendances, fn ($memberAttendance) => $memberAttendance['is_present']));
+        if ($event->min_team_size && $event->min_team_size > $attendingCount) {
+            throw new NotAllowedException("too few");
+        }
+        if ($event->max_team_size && $event->max_team_size < $attendingCount) {
+            throw new NotAllowedException("too much");
+        }
         $attendance->teamMemberAttendances()->upsert(
             collect($memberAttendances)->map(fn ($memberAttendance) => [
                 'user_id' => $memberAttendance['user_id'],

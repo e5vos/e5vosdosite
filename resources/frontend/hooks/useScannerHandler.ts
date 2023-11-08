@@ -1,3 +1,4 @@
+import { on } from "events";
 import { useCallback } from "react";
 
 import { RequiredFields } from "types/misc";
@@ -23,7 +24,9 @@ export type ScannerError =
     | "NoE5N"
     | "SignupRequired"
     | "PermissionDenied"
-    | "TeamEmpty";
+    | "TooFewAttendees"
+    | "TooManyAttendees"
+    | "Unknown";
 
 const useScannerHandler = ({
     event,
@@ -51,17 +54,16 @@ const useScannerHandler = ({
                     attender: scanvalue,
                     present: true,
                 }).unwrap();
-            } catch (e) {
-                /* TODO: Handle error
-                
-                
-                403: Permission denied
-                409: (Conflict): Already signed up & is present
-                ERROR FORMAT
-                /* {
-                   message: "Hungarian error message"
-                } */
-
+            } catch (e: any) {
+                onError?.(
+                    e.message === "Az E5vös Napok még nem kezdődtek el"
+                        ? "NoE5N"
+                        : e.message === "Erre az eseményre jeletkezni kell."
+                        ? "SignupRequired"
+                        : e.message === "Ejnyebejnye, nem te vagy a főnök."
+                        ? "PermissionDenied"
+                        : "Unknown",
+                );
                 return;
             }
             if (!isTeamAttendance(attendance)) {
@@ -69,23 +71,10 @@ const useScannerHandler = ({
                 return;
             }
 
-            let team: Team;
+            let team: RequiredFields<Team, "activity" | "members">;
             try {
                 team = await getTeam({ code: scanvalue }).unwrap();
             } catch (e) {
-                /*
-                 404: Team not found (noop)
-                 403: Permission denied (low priority)
-                    you can only get team info if:
-                        - you are a member of the team
-                        - you are a SCN of an event that the team is signed up for 
-                 
-                 */
-                return;
-            }
-
-            if (team.members === undefined || team.members.length === 0) {
-                onError?.("TeamEmpty");
                 return;
             }
             let memberAttendances: TeamMemberAttendance[] = [];
@@ -102,13 +91,12 @@ const useScannerHandler = ({
 
             try {
                 await teamMemberAttend({ data: memberAttendances }).unwrap();
-            } catch (e) {
-                /* TODO: Handle error
-
-                    403: Permission denied
-                    attendance_id must belong to an event that the submitting user is SCN of.
-                    
-                */
+            } catch (e: any) {
+                onError?.(
+                    e.message === "too many"
+                        ? "TooManyAttendees"
+                        : "TooFewAttendees",
+                );
                 return;
             }
             onSuccess?.(attendance.team);

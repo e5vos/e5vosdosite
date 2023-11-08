@@ -11,6 +11,7 @@ import {
     Event,
     SignupType,
     SignupTypeType,
+    TeamMemberRole,
     isAttenderTeam,
 } from "types/models";
 
@@ -243,7 +244,7 @@ const EventReader = ({
         if (!myteams) return [];
         return myteams.filter(
             (team) =>
-                !team.activity?.some((a) => a.pivot.event_id === event?.id),
+                !team.activity?.some((a) => a.pivot.event_id === event?.id) && team.members.find((m) => m.id === user?.id)?.pivot.role === TeamMemberRole.leader,
         );
     }, [event?.id, myteams]);
 

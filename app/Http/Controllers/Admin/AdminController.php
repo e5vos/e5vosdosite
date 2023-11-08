@@ -34,6 +34,6 @@ class AdminController extends Controller
             "username" => "DoSys",
             'content' => '```json' . (strlen($request->dump) > 1900 ? substr($request->dump, 0, 1900) : $request->dump) . '```',
         ]);
-        return response()->send();
+        return response()->noContent();
     }
 }

@@ -121,7 +121,7 @@ const YourTeamsPage = () => {
                                     className={
                                         currentUserMember(team)?.pivot.role ===
                                         TeamMemberRole.invited
-                                            ? "!h-fit !gap-4 bg-green-200 "
+                                            ? "!h-fit !gap-4 bg-yellow-700 "
                                             : "!h-fit !gap-4"
                                     }
                                     buttonBar={

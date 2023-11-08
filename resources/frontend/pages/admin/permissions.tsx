@@ -68,6 +68,7 @@ const PermissionsPage = () => {
             </div>
             <div>
                 <UserSearchCombobox
+                    className="!rounded-r-lg"
                     onChange={(u) => {
                         setUserID(u.id);
                     }}

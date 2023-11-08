@@ -54,7 +54,7 @@ const Button = ({
             break;
         case "success":
             buttonclass +=
-                "bg-green outline-green enabled:hover:bg-green-700 disabled:bg-green-700 text-black enabled:hover:text-white disabled:text-white";
+                "bg-green outline-green enabled:hover:bg-green-700 disabled:bg-green-700 text-white enabled:hover:text-white disabled:text-white";
             break;
         case "outline-success":
             buttonclass +=

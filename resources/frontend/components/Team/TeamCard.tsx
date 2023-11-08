@@ -117,13 +117,14 @@ const TeamCard = ({
         <Card
             title={team.name}
             subtitle={team.code}
-            className="mx-auto max-w-4xl"
-            titleClassName="text-2xl"
+            className="!mx-0
+ max-w-4xl md:!mx-auto"
+            titleClassName="text-3xl"
         >
             {team.description}
             {currentUsersMembership?.pivot.role === TeamMemberRole.invited && (
                 <div className="mb-3">
-                    <h3 className="text-center text-xl font-bold text-yellow-500">
+                    <h3 className="mb-2 text-center text-xl font-bold text-yellow-500">
                         {cardLocale.invite.pending}
                     </h3>
                     <ButtonGroup className="w-full">
@@ -154,9 +155,8 @@ const TeamCard = ({
                     </ButtonGroup>
                 </div>
             )}
-            <hr />
             {isAdmin(user) && (
-                <span className="hidden md:block">
+                <span className="mt-2 hidden md:block">
                     <h2 className="text-center text-lg font-bold">
                         {cardLocale.activities}
                     </h2>
@@ -171,17 +171,16 @@ const TeamCard = ({
                     </div>
                 </span>
             )}
-            <hr />
-            <h2 className="text-center text-lg font-bold">
+            <h2 className="mt-2 text-center text-lg font-bold">
                 {cardLocale.members}
             </h2>
             <div>
                 {team.members?.map((member) => (
                     <div
                         key={member.id}
-                        className="mb-4 border-8 border-gray-300 px-3 sm:mb-4 sm:grid sm:grid-cols-2 sm:border-none sm:px-0"
+                        className="mb-2 items-center rounded-lg bg-gray p-2 md:grid md:grid-cols-2 lg:grid-cols-3"
                     >
-                        <div className="py-2 text-center sm:mr-5 sm:text-left">
+                        <div className="grid-col-span py-2 text-center sm:mr-5 sm:text-left">
                             <span className="font-semibold">
                                 {member.name} ({member.ejg_class})
                             </span>{" "}
@@ -231,10 +230,10 @@ const TeamCard = ({
                 ))}
             </div>
             {currentUsersMembership?.pivot.role === TeamMemberRole.leader && (
-                <div className="mt-6 grid-cols-3 gap-6 md:grid">
+                <div className="mt-2 flex w-full rounded-lg bg-gray">
                     <UserSearchCombobox onChange={setSelectedUser} />
                     <Button
-                        className="col-span-1 mt-3 md:mt-0"
+                        className="!w-full rounded-l-none rounded-r-lg !outline-none"
                         onClick={async () => {
                             if (!selectedUser) return;
                             await promote({

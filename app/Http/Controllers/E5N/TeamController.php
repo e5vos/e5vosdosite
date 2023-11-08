@@ -49,6 +49,7 @@ class TeamController extends Controller
         $team->members()->attach(Auth::user()->id, ['role' => MembershipType::Leader]);
         $team = new TeamResource($team);
         Cache::forget('e5n.teams.all');
+        Cache::forget(Auth::user()->id . 'teams');
         return Cache::rememberForever('e5n.teams.' . $team->code, fn () => new TeamResource($team->load('members', 'activity')));
     }
 
@@ -69,7 +70,7 @@ class TeamController extends Controller
         $team->save();
         $team = new TeamResource($team);
         Cache::forget('e5n.teams.all');
-        Cache::forget('e5n.teams.presentations');
+        Cache::forget('e5n.teams.' . $teamCode);
         return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team))->jsonSerialize());
     }
 
@@ -170,6 +171,7 @@ class TeamController extends Controller
         }
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.' . $team->code);
+        $team = $team->refresh();
         foreach ($team->members as $member) {
             Cache::forget($member->id . 'teams');
         }

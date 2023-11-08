@@ -63,9 +63,9 @@ class TeamMemberShipPolicy
         // if (!$team->members->pluck('id')->contains((request()->userId))) {
         //     return false;
         // }
-        $updatableRole = $team->members->where('id', request()->userId)->first()?->pivot->role;
-        $otherLeaderExists = $team->members->where('id', '!=', request()->userId)->firstWhere('pivot.role', MembershipType::Leader->value) !== null;
-        $isLeader = $user->isLeaderOfTeam($team->code);
+        $updatableRole = $team['members']->where('id', request()->userId)->first()?->pivot->role;
+        $otherLeaderExists = $team['members']->where('id', '!=', request()->userId)->firstWhere('pivot.role', MembershipType::Leader->value) !== null;
+        $isLeader = $user->isLeaderOfTeam($team['code']);
         if (request()->promote) {
             return ($updatableRole === MembershipType::Member->value && $isLeader)
                 || ($updatableRole === MembershipType::Invited->value && $user->id === request()->userId)

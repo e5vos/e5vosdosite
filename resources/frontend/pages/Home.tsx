@@ -69,7 +69,7 @@ const Home = () => {
                                 {locale.teams}
                             </Button>
                         </Link>
-                        <Link to="/esemenyek">
+                        <Link to="/esemeny">
                             <Button
                                 className="!w-full"
                                 variant="outline-primary"

@@ -11,7 +11,7 @@ import Loader from "components/UIKit/Loader";
 const elementName = (e: UserStub) => `${e.name} - ${e.ejg_class}`;
 
 const filter = (s: String) => (e: UserStub) =>
-    elementName(e).toLocaleLowerCase().startsWith(s.toLowerCase());
+    elementName(e).toLocaleLowerCase().includes(s.toLocaleLowerCase());
 
 const UserSearchCombobox = ({
     onChange,

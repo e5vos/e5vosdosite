@@ -19,7 +19,9 @@ class TeamMemberShipPolicy
      */
     public function before(User $user)
     {
-        return ($user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::Operator->value)) ? true : null;
+        if ($user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::Operator->value)) {
+            return true;
+        }
     }
 
     /**
@@ -57,11 +59,11 @@ class TeamMemberShipPolicy
         if (!request()->has('userId') || !request()->has('promote')) {
             abort(400, 'Missing parameters');
         }
-        $team = Cache::rememberForever('e5n.teams' . request()->teamCode, fn () => Team::find(request()->teamCode)->load('members'));
+        $team = Cache::rememberForever('e5n.teams' . request()->teamCode, fn () => Team::find(request()->teamCode)->load('members', 'activity'));
         // if (!$team->members->pluck('id')->contains((request()->userId))) {
         //     return false;
         // }
-        $updatableRole = $team->members->where('e5code', request()->userId)->first()?->pivot->role;
+        $updatableRole = $team->members->where('id', request()->userId)->first()?->pivot->role;
         $otherLeaderExists = $team->members->where('id', '!=', request()->userId)->firstWhere('pivot.role', MembershipType::Leader->value) !== null;
         $isLeader = $user->isLeaderOfTeam($team->code);
         if (request()->promote) {

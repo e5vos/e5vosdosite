@@ -99,7 +99,7 @@ class UserController extends Controller
 
     public function myTeams()
     {
-        return Cache::remember(request()->user()->id . 'teams', 60, function () {
+        return Cache::remember("user." . request()->user()->id . '.teams', 60, function () {
             return (TeamResource::collection(request()->user()->teams()->with('members', 'activity')->get()))->jsonSerialize();
         });
     }

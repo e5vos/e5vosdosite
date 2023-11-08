@@ -19,7 +19,9 @@ class TeamMemberShipPolicy
      */
     public function before(User $user)
     {
-        return ($user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::Operator->value)) ? true : null;
+        if ($user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::Operator->value)) {
+            return true;
+        }
     }
 
     /**

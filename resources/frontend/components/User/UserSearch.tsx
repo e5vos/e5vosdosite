@@ -16,9 +16,11 @@ const filter = (s: String) => (e: UserStub) =>
 const UserSearchCombobox = ({
     onChange,
     initialValue,
+    className,
 }: {
     onChange: (value: UserStub) => any;
     initialValue?: UserStub;
+    className?: string;
 }) => {
     const [search, setSearch] = useState<string>("-1");
 
@@ -30,8 +32,9 @@ const UserSearchCombobox = ({
         }
     }, 500);
 
+    if (className === undefined) className = "";
     return (
-        <div className="max-w-sm">
+        <div className="w-full">
             <Form.ComboBox
                 options={options ?? []}
                 initialValue={initialValue ? elementName(initialValue) : ""}
@@ -41,6 +44,7 @@ const UserSearchCombobox = ({
                     if (!e) return;
                     onChange(e);
                 }}
+                className={"rounded-l-lg !border-b-0 " + className}
                 renderElement={(e) => (
                     <span className="mt-3">{elementName(e)}</span>
                 )}

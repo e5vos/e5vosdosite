@@ -73,6 +73,9 @@ const locale = Locale({
         solo: "Egyéni jelentkezés",
         singup: "Jelentkezés az eseményre",
         signup_CTA: "Jelentkezz!",
+        unsignup_CTA: "Jelentkezés törlése",
+        applicants: "Jelentkezők",
+        participants: "Résztvevők",
         signup_type: (type: SignupTypeType): string => {
             switch (type) {
                 case SignupType.Individual:
@@ -87,6 +90,7 @@ const locale = Locale({
         undefined: "Nincs megadva",
         notyetset: "Még nincs megadva",
         success: "sikeres",
+        cancelled: "sikeresen törölve",
     },
     en: {
         create: "Create event",
@@ -114,6 +118,8 @@ const locale = Locale({
         solo: "Solo signup",
         singup: "Sign up for the event",
         signup_CTA: "Sign up!",
+        applicants: "Applicants",
+        participants: "Participants",
         signup_type: (type: SignupTypeType) => {
             switch (type) {
                 case SignupType.Individual:
@@ -127,6 +133,8 @@ const locale = Locale({
         undefined: "Not set",
         notyetset: "Not set yet",
         success: "successful",
+        cancelled: "successfully cancelled",
+        unsignup_CTA: "Cancel signup",
     },
 });
 
@@ -187,7 +195,8 @@ const EventReader = ({
 
     const navigate = useNavigate();
 
-    const [signup, { isLoading, isSuccess }] = eventAPI.useSignUpMutation();
+    const [signup] = eventAPI.useSignUpMutation();
+    const [cancelSiguup] = eventAPI.useCancelSignUpMutation();
 
     const [statusmsg, setStatusmsg] = useState({
         isError: false,
@@ -235,6 +244,24 @@ const EventReader = ({
         cleanupStatusmsg();
     };
 
+    const handleCancelSignup = async () => {
+        if (!event || !attenderSelect.current?.value) return;
+        try {
+            await cancelSiguup({
+                attender: attenderSelect.current.value,
+                event,
+            }).unwrap();
+            setStatusmsg({
+                isError: false,
+                message: locale.singup + " " + locale.cancelled,
+            });
+        } catch (e: any) {
+            const message = (e.data as any).message;
+            setStatusmsg({ isError: true, message: message });
+        }
+        cleanupStatusmsg();
+    };
+
     const canSignup = useMemo(() => {
         if (!event.signup_deadline) return true;
         return new Date(event.signup_deadline) > new Date();
@@ -244,10 +271,11 @@ const EventReader = ({
         if (!myteams) return [];
         return myteams.filter(
             (team) =>
-                !team.activity?.some((a) => a.pivot.event_id === event?.id) && team.members.find((m) => m.id === user?.id)?.pivot.role === TeamMemberRole.leader
-                ,
+                !team.activity?.some((a) => a.pivot.event_id === event?.id) &&
+                team.members.find((m) => m.id === user?.id)?.pivot.role ===
+                    TeamMemberRole.leader,
         );
-    }, [event?.id, myteams]);
+    }, [event?.id, myteams, user?.id]);
 
     const setScore = useCallback(
         async (p: Attender, score: number) => {
@@ -322,6 +350,13 @@ const EventReader = ({
                                     onClick={handleSignup}
                                 >
                                     {locale.signup_CTA}
+                                </Button>
+                                <Button
+                                    variant="danger"
+                                    className="min-w-fit !rounded-l-none !rounded-r-lg "
+                                    onClick={handleCancelSignup}
+                                >
+                                    {locale.unsignup_CTA}
                                 </Button>
                             </div>
                             {statusmsg.message !== "" && (
@@ -484,6 +519,28 @@ const EventReader = ({
                     <Card title={locale.location}>
                         {event.location?.name ?? locale.unknown}
                     </Card>
+                    {isAdmin(user) && isUserOrganiser && participants && (
+                        <Card title={locale.applicants}>
+                            {participants.map((p) => (
+                                <div key={isAttenderTeam(p) ? p.code : p.id}>
+                                    {p.name}
+                                </div>
+                            ))}
+                        </Card>
+                    )}
+                    {isAdmin(user) && isUserOrganiser && participants && (
+                        <Card title={locale.participants}>
+                            {participants
+                                .filter((p) => p.pivot.is_present)
+                                .map((p) => (
+                                    <div
+                                        key={isAttenderTeam(p) ? p.code : p.id}
+                                    >
+                                        {p.name}
+                                    </div>
+                                ))}
+                        </Card>
+                    )}
                 </div>
             </div>
         </div>

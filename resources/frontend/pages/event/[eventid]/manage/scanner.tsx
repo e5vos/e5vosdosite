@@ -12,7 +12,9 @@ import Locale from "lib/locale";
 
 import Error, { HTTPErrorCode } from "components/Error";
 import Button from "components/UIKit/Button";
+import Card from "components/UIKit/Card";
 import Dialog from "components/UIKit/Dialog";
+import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
 
 const locale = Locale({
@@ -23,6 +25,8 @@ const locale = Locale({
         confirmed: "jelenlét rögzítve",
         yes: "Igen",
         no: "Nem",
+        code: "Kód",
+        submit: "Beküldés",
     },
     en: {
         scanner: "QR Scanner",
@@ -31,6 +35,8 @@ const locale = Locale({
         confirmed: "presence confirmed",
         yes: "Yes",
         no: "No",
+        code: "Code",
+        submit: "Submit",
     },
 });
 
@@ -73,6 +79,8 @@ const Scanner = () => {
         id: Number(eventid),
     });
 
+    const [code, setCode] = useState<string | null>(null);
+
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -110,7 +118,7 @@ const Scanner = () => {
     if (!event || !user) return <Loader />;
 
     return (
-        <div className="container mx-auto">
+        <div className="container mx-auto ">
             <div className="text-center">
                 <h1 className=" text-4xl font-bold">
                     {event.name} - {locale.scanner}
@@ -119,17 +127,43 @@ const Scanner = () => {
                     {user.name} - {user?.ejg_class}
                 </h3>
             </div>
-            <div>{errorMessage ?? successMessage}</div>
+            {(errorMessage || successMessage) && (
+                <Card
+                    title={errorMessage ?? successMessage ?? ""}
+                    className={`mt-2 ${
+                        errorMessage ? "bg-red-500" : "bg-green-500"
+                    }`}
+                />
+            )}
             <MemberConfirmDialog />
+
+            <Form className="mx-auto max-w-lg">
+                <Form.Group>
+                    <Form.Label>{locale.code}</Form.Label>
+                    <Form.Control onChange={(t) => setCode(t.target.value)} />
+                    <Button
+                        onClick={async () => {
+                            if (code) {
+                                await scan(code);
+                                setSelectedMember(null);
+                                setCode(null);
+                            }
+                        }}
+                    >
+                        {locale.submit}
+                    </Button>
+                </Form.Group>
+            </Form>
             <QrReader
                 onResult={async (result, error) => {
                     if (result) {
                         await scan(result.getText());
                         setSelectedMember(null);
+                        setCode(null);
                     }
                 }}
                 constraints={{ facingMode: "environment" }}
-                className="mx-auto max-h-[1/2] max-w-4xl hover:opacity-75"
+                className="mx-auto max-h-[1/3] max-w-4xl hover:opacity-75"
             />
         </div>
     );

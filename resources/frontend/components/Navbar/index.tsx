@@ -2,6 +2,7 @@ import { ReactComponent as Donci } from "assets/donci.svg";
 import useUser from "hooks/useUser";
 import { useState } from "react";
 import QRCode from "react-qr-code";
+import { useLocation } from "react-router-dom";
 
 import Locale from "lib/locale";
 
@@ -34,6 +35,7 @@ const locale = Locale({
 const CustomNavbar = () => {
     const { user } = useUser(false);
     const [showCode, setShowCode] = useState(false);
+    const location = useLocation();
     return (
         <>
             {user && (
@@ -71,7 +73,9 @@ const CustomNavbar = () => {
                     {locale.presentationSignup}
                 </Navbar.Link>
                 {!user && (
-                    <Navbar.Link href="/login">{locale.login}</Navbar.Link>
+                    <Navbar.Link href={`/login?next=${location.pathname}`}>
+                        {locale.login}
+                    </Navbar.Link>
                 )}
                 {user && (
                     <Navbar.Link href="/logout">{locale.logout}</Navbar.Link>

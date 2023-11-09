@@ -101,11 +101,11 @@ const YourTeamsPage = () => {
             <div>
                 <Title>{locale.your_teams}</Title>
                 <div className="gap-5 md:grid md:grid-cols-3 xl:grid-cols-4">
-                    <div className="w-full rounded-lg bg-gray-600 px-6 py-4">
+                    <div className="mb-2 w-full rounded-lg bg-gray-600 px-6 py-4">
                         <h3 className="mb-4 text-center text-2xl font-bold">
                             {locale.new_team}
                         </h3>
-                        <TeamCRUD.Creator value={{}} className="mb-5 md:mb-0" />
+                        <TeamCRUD.Creator value={{}} />
                     </div>
                     {isFetching ? (
                         <div className="h-full md:grid-cols-2 xl:col-span-3">
@@ -121,7 +121,7 @@ const YourTeamsPage = () => {
                                     className={
                                         currentUserMember(team)?.pivot.role ===
                                         TeamMemberRole.invited
-                                            ? "!h-fit !gap-4 bg-green-200 "
+                                            ? "!h-fit !gap-4 bg-yellow-700 "
                                             : "!h-fit !gap-4"
                                     }
                                     buttonBar={

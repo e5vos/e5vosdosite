@@ -87,8 +87,8 @@ const PermissionForm = ({
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
-            event_id: Yup.number().required(locale.required),
-            user_id: Yup.number().required(locale.required),
+            event_id: Yup.number(),
+            user_id: Yup.number(),
             code: Yup.string()
                 .length(3, locale.threeChars)
                 .required(locale.required),

@@ -318,7 +318,7 @@ class User extends Authenticatable
             }
             $signup = new Attendance();
             $signup->event()->associate($event);
-            $signup->team()->associate($this);
+            $signup->user()->associate($this);
         }
         if ($event->direct_child !== null) {
             $this->attend(Event::findOrFail($event->direct_child), true);

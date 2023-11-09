@@ -1,5 +1,5 @@
 import useConfirm, { ConfirmDialogProps } from "hooks/useConfirm";
-import useScannerHandler from "hooks/useScannerHandler";
+import useScannerHandler, { ScannerError } from "hooks/useScannerHandler";
 import useUser from "hooks/useUser";
 import { useCallback, useEffect, useState } from "react";
 import { QrReader } from "react-qr-reader";
@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { TeamMember } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
+import { isOrganiser, isScanner } from "lib/gates";
 import Locale from "lib/locale";
 
 import Error, { HTTPErrorCode } from "components/Error";
@@ -27,6 +28,22 @@ const locale = Locale({
         no: "Nem",
         code: "Kód",
         submit: "Beküldés",
+        error: (error: ScannerError): string => {
+            switch (error) {
+                case "NoE5N":
+                    return "Az E5N mód ki van kapcsolva";
+                case "PermissionDenied":
+                    return "Hozzáférés megtagadva";
+                case "SignupRequired":
+                    return "Az eseményre jelentkezni kellett volna";
+                case "TooFewAttendees":
+                    return "Nincs elég csapattag";
+                case "TooManyAttendees":
+                    return "Túl sok csapattag";
+                case "Unknown":
+                    return "Ismeretlen hiba";
+            }
+        },
     },
     en: {
         scanner: "QR Scanner",
@@ -37,6 +54,22 @@ const locale = Locale({
         no: "No",
         code: "Code",
         submit: "Submit",
+        error: (error: ScannerError): string => {
+            switch (error) {
+                case "NoE5N":
+                    return "E5N mode is disabled";
+                case "PermissionDenied":
+                    return "Permission denied";
+                case "SignupRequired":
+                    return "You had to sign up for the event";
+                case "TooFewAttendees":
+                    return "Not enough team members";
+                case "TooManyAttendees":
+                    return "Too many team members";
+                case "Unknown":
+                    return "Unknown error";
+            }
+        },
     },
 });
 
@@ -116,7 +149,8 @@ const Scanner = () => {
     if (error && "status" in error)
         return <Error code={error.status as HTTPErrorCode} />;
     if (!event || !user) return <Loader />;
-
+    if (!isScanner(event)(user) && !isOrganiser(event)(user))
+        return <Error code={403} />;
     return (
         <div className="container mx-auto ">
             <div className="text-center">
@@ -137,7 +171,17 @@ const Scanner = () => {
             )}
             <MemberConfirmDialog />
 
-            <Form className="mx-auto max-w-lg">
+            <Form
+                className="mx-auto max-w-lg"
+                onSubmit={async (e) => {
+                    if (code) {
+                        await scan(code);
+                        setSelectedMember(null);
+                        setCode(null);
+                    }
+                    e.preventDefault();
+                }}
+            >
                 <Form.Group>
                     <Form.Label>{locale.code}</Form.Label>
                     <Form.Control onChange={(t) => setCode(t.target.value)} />

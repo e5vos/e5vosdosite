@@ -292,8 +292,9 @@ const EventReader = ({
         if (event && isUserOrganiser) triggerParticipants(event);
     }, [event, isUserOrganiser, triggerParticipants]);
 
-    const isEventSignupDateStillRelevant = signup_deadline
-        ? now < signup_deadline
+    const isEventSignupRelevant = signup_deadline
+        ? now < signup_deadline &&
+          (event.capacity ? event.capacity > event.occupancy : true)
         : false;
 
     return (
@@ -440,7 +441,7 @@ const EventReader = ({
                                 </Button>
                             </>
                         )}
-                        {isEventSignupDateStillRelevant &&
+                        {isEventSignupRelevant &&
                             (isAdmin(user) || isUserOrganiser) && (
                                 <Button
                                     className="!mb-2 !rounded-md text-white"

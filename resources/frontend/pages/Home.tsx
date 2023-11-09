@@ -85,7 +85,7 @@ const Home = () => {
                                 {locale.eventsBySlot}
                             </Button>
                         </Link>
-                        <Link to="/eloadasok">
+                        <Link to="/eloadas">
                             <Button className="!w-full" variant="outline-info">
                                 {locale.presentationSignup}
                             </Button>

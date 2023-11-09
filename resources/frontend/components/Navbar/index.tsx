@@ -4,6 +4,7 @@ import { useState } from "react";
 import QRCode from "react-qr-code";
 import { useLocation } from "react-router-dom";
 
+import { isTeacher } from "lib/gates";
 import Locale from "lib/locale";
 
 import Dialog from "components/UIKit/Dialog";
@@ -19,6 +20,7 @@ const locale = Locale({
         logout: "Kijelentkezés",
         info: "DÖ Információk",
         noe5code: "Nincs E5 kódod :(",
+        presentations_teacher: "Előadások - Tanári",
     },
     en: {
         presentationSignup: "Presentation signup",
@@ -29,6 +31,7 @@ const locale = Locale({
         logout: "Logout",
         info: "SU Information",
         noe5code: "You have no E5 code :(",
+        presentations_teacher: "Presentations - Teacher's Page",
     },
 });
 
@@ -69,6 +72,11 @@ const CustomNavbar = () => {
                 </Navbar.Link>
                 <Navbar.Link href="/csapat">{locale.teams}</Navbar.Link>
                 <Navbar.Link href="/esemeny">{locale.events}</Navbar.Link>
+                {isTeacher(user) && (
+                    <Navbar.Link href="/eloadas/kezel">
+                        {locale.presentations_teacher}
+                    </Navbar.Link>
+                )}
                 <Navbar.Link href="/eloadas">
                     {locale.presentationSignup}
                 </Navbar.Link>

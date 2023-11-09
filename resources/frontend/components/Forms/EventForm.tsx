@@ -91,13 +91,14 @@ const EventForm = ({
     const formik = useFormik({
         initialValues: {
             ...initialValues,
+            is_competition: initialValues.is_competition ? "on" : "",
             starts_at: formatDateTimeInput(starts_at ?? now),
             ends_at: formatDateTimeInput(ends_at ?? now),
             signup_deadline: signup_deadline
                 ? formatDateTimeInput(signup_deadline)
                 : "",
-            signup_enabled: Boolean(signup_deadline),
-            capacity_enabled: Boolean(initialValues.capacity),
+            signup_enabled: signup_deadline ? "on" : "",
+            capacity_enabled: initialValues.capacity ? "on" : "",
             slot_id: initialValues.slot_id,
             signup_type: initialValues.signup_type,
         },
@@ -107,10 +108,8 @@ const EventForm = ({
             starts_at: Yup.string().required(locale.required),
             ends_at: Yup.string().required(locale.required),
             signup_deadline: Yup.string(),
-            signup_enabled: Yup.boolean().required(locale.required),
             organiser: Yup.string().required(locale.required),
             capacity: Yup.number().nullable(),
-            is_competition: Yup.boolean(),
             capacity_enabled: Yup.boolean(),
             slot_id: Yup.number(),
             signup_type: Yup.string(),
@@ -124,14 +123,16 @@ const EventForm = ({
                 ends_at: values.ends_at,
                 organiser: values.organiser,
                 location_id: values.location_id,
-                is_competition: values.is_competition,
+                is_competition: values.is_competition === "on",
                 signup_type: values.signup_type,
                 slot_id: values.slot_id !== -1 ? values.slot_id : null,
 
-                signup_deadline: values.signup_enabled
-                    ? values.signup_deadline
-                    : null,
-                capacity: values.capacity_enabled ? values.capacity : null,
+                signup_deadline:
+                    values.signup_enabled === "on"
+                        ? values.signup_deadline
+                        : null,
+                capacity:
+                    values.capacity_enabled === "on" ? values.capacity : null,
             });
             if (resetOnSubmit) formik.resetForm();
             return val;
@@ -196,7 +197,7 @@ const EventForm = ({
                     />
                     <Form.Check
                         name="signup_enabled"
-                        checked={formik.values.signup_enabled}
+                        value={formik.values.signup_enabled}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                     />
@@ -237,7 +238,7 @@ const EventForm = ({
                         />
                         <Form.Check
                             name="capacity_enabled"
-                            checked={formik.values.capacity_enabled}
+                            value={formik.values.capacity_enabled}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                         />
@@ -287,7 +288,7 @@ const EventForm = ({
                         </Form.Label>
                         <Form.Check
                             name="is_competition"
-                            checked={formik.values.is_competition}
+                            value={formik.values.is_competition}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             invalid={Boolean(formik.errors.is_competition)}

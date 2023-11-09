@@ -86,13 +86,6 @@ const PermissionForm = ({
 }: CRUDForm<Permission>) => {
     const formik = useFormik({
         initialValues: initialValues,
-        validationSchema: Yup.object({
-            event_id: Yup.number(),
-            user_id: Yup.number(),
-            code: Yup.string()
-                .length(3, locale.threeChars)
-                .required(locale.required),
-        }),
         onSubmit: (values) => {
             const val = onSubmit(values);
             if (resetOnSubmit) formik.resetForm();
@@ -119,18 +112,17 @@ const PermissionForm = ({
             <Form.Group>
                 <Form.Label>{locale.code}</Form.Label>
                 <Form.Select
-                    value={initialValues.code}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
                     name="code"
+                    defaultValue={initialValues.code}
+                    onChange={(e) => {
+                        formik.setFieldValue("code", e.target.value);
+                    }}
                 >
-                    {Object.entries(PermissionCode).map((entry) => {
-                        return (
-                            <option value={entry[1]} key={entry[1]}>
-                                {locale.permissionName(entry[1])}
-                            </option>
-                        );
-                    })}
+                    {Object.entries(PermissionCode).map((entry) => (
+                        <option value={entry[1]} key={entry[1]}>
+                            {locale.permissionName(entry[1])}
+                        </option>
+                    ))}
                 </Form.Select>
             </Form.Group>
             <Form.Group>
@@ -151,12 +143,6 @@ export const UserPermissionCreateForm = ({
 }: CRUDForm<Permission> & { user: Pick<User, "id"> }) => {
     const formik = useFormik({
         initialValues: initialValues,
-        validationSchema: Yup.object({
-            event_id: Yup.number().required(locale.required),
-            code: Yup.string()
-                .length(3, locale.threeChars)
-                .required(locale.required),
-        }),
         onSubmit: (values) => {
             const val = onSubmit({ ...values, user_id: user.id });
             if (resetOnSubmit) formik.resetForm();
@@ -175,7 +161,13 @@ export const UserPermissionCreateForm = ({
             </Form.Group>
             <Form.Group>
                 <Form.Label>{locale.code}</Form.Label>
-                <Form.Select defaultValue={initialValues.code}>
+                <Form.Select
+                    name="code"
+                    defaultValue={initialValues.code}
+                    onChange={(e) =>
+                        formik.setFieldValue("code", e.target.value)
+                    }
+                >
                     {Object.entries(PermissionCode).map((entry) => {
                         return (
                             <option value={entry[1]} key={entry[1]}>
@@ -204,12 +196,7 @@ export const EventPermissionCreateForm = ({
     const { user } = useUser(false);
     const formik = useFormik({
         initialValues: initialValues,
-        validationSchema: Yup.object({
-            code: Yup.string()
-                .length(3, locale.threeChars)
-                .required(locale.required),
-            user_id: Yup.number().required(locale.required),
-        }),
+
         onSubmit: (values) => {
             const val = onSubmit({ ...values, event_id: event.id });
             if (resetOnSubmit) formik.resetForm();
@@ -230,7 +217,13 @@ export const EventPermissionCreateForm = ({
             </Form.Group>
             <Form.Group>
                 <Form.Label>{locale.code}</Form.Label>
-                <Form.Select defaultValue={initialValues.code}>
+                <Form.Select
+                    name="code"
+                    defaultValue={initialValues.code}
+                    onChange={(e) =>
+                        formik.setFieldValue("code", e.target.value)
+                    }
+                >
                     {availablePermissions.map((entry) => {
                         return (
                             <option value={entry} key={entry}>

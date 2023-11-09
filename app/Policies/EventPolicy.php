@@ -162,7 +162,7 @@ class EventPolicy
         }
         $event ??= Event::findOrFail(request()->eventId);
         $attender = request()->attender ?? request()->user()->e5code;
-        if (isset($event->signup_type) && $event->signuppers()->filter(fn (mixed $signupper) => $signupper->getKey() == $attender || $signupper->e5code === $attender)->count() === 0) {
+        if (isset($event->signup_deadline) && $event->signuppers()->filter(fn (mixed $signupper) => $signupper->getKey() == $attender || $signupper->e5code === $attender)->count() === 0) {
             throw new SignupRequiredException();
         }
         if ($event->slot->slot_type === SlotType::presentation->value) {

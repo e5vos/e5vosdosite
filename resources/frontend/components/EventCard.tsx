@@ -1,7 +1,9 @@
+import useUser from "hooks/useUser";
 import { useNavigate } from "react-router-dom";
 
 import { Event } from "types/models";
 
+import { isAdmin, isTeacherAdmin } from "lib/gates";
 import Locale from "lib/locale";
 
 import Button from "./UIKit/Button";
@@ -19,6 +21,7 @@ const EventCard = ({
     event: Event;
     className?: string;
 }) => {
+    const user = useUser(false);
     const navigate = useNavigate();
     return (
         <div
@@ -36,12 +39,14 @@ const EventCard = ({
                     <div className="rounded-full bg-gray-400 px-3">
                         {event.location?.name ?? "Ismeretlen"}
                     </div>
-                    <div className=" flex overflow-hidden rounded-full bg-slate-200">
-                        <p className="bg-red-400 pl-3 pr-2">
-                            {event.slot_id ?? "-"}
-                        </p>
-                        <p className="bg-blue-400 pl-2 pr-3">{event.id}</p>
-                    </div>
+                    {(isAdmin(user) || isTeacherAdmin(user)) && (
+                        <div className=" flex overflow-hidden rounded-full bg-slate-200">
+                            <p className="bg-red-400 pl-3 pr-2">
+                                {event.slot_id ?? "-"}
+                            </p>
+                            <p className="bg-blue-400 pl-2 pr-3">{event.id}</p>
+                        </div>
+                    )}
                 </div>
                 <ButtonGroup className="mt-1 w-full">
                     <Button

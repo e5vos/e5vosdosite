@@ -109,6 +109,7 @@ const PermissionFormCreate = ({
             onSubmit={async (perm) => {
                 await onSubmit(perm);
             }}
+            resetOnSubmit={true}
         />
     );
 };

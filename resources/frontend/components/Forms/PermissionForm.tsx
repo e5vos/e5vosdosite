@@ -106,6 +106,7 @@ const PermissionForm = ({
             <Form.Group>
                 <Form.Label>{locale.user}</Form.Label>
                 <UserSearchCombobox
+                    className="!rounded-r-lg"
                     onChange={(u) => formik.setFieldValue("user_id", u.id)}
                 />
             </Form.Group>

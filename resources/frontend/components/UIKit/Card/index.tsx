@@ -50,7 +50,7 @@ const Card = ({
                 )}
             </div>
         )}
-        {children && <div className="my-2 px-2">{children}</div>}
+        {children && <div className="my-2">{children}</div>}
         {buttonGroup}
     </div>
 );

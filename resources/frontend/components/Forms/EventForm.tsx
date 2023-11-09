@@ -4,7 +4,7 @@ import useUser from "hooks/useUser";
 import * as Yup from "yup";
 
 import { CRUDForm } from "types/misc";
-import { SignupType, SignupTypeType } from "types/models";
+import { Location, SignupType, SignupTypeType } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
 import { isAdmin } from "lib/gates";
@@ -81,8 +81,9 @@ const EventForm = ({
     submitLabel = locale.submit,
     enableReinitialize = false,
     resetOnSubmit = false,
+    initialLocation,
     ...rest
-}: CRUDForm<EventFormValues>) => {
+}: CRUDForm<EventFormValues> & { initialLocation?: Location }) => {
     const { user } = useUser(false);
     const { starts_at, ends_at, signup_deadline, now } =
         useEventDates(initialValues);
@@ -137,7 +138,7 @@ const EventForm = ({
         },
         enableReinitialize: enableReinitialize,
     });
-    console.log(formik.errors);
+
     return (
         <Form onSubmit={formik.handleSubmit} {...rest}>
             <Form.Group>
@@ -215,6 +216,7 @@ const EventForm = ({
                 <Form.Group>
                     <Form.Label>{locale.fields.location}</Form.Label>
                     <LocationSearchCombobox
+                        initialValue={initialLocation ?? undefined}
                         onChange={(e) =>
                             formik.setFieldValue("location_id", e.id)
                         }

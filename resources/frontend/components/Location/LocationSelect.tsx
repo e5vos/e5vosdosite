@@ -31,9 +31,7 @@ const LocationSearchCombobox = ({
                     <span className="mt-3">{elementName(e)}</span>
                 )}
                 filter={(s) => (e) =>
-                    elementName(e)
-                        .toLocaleLowerCase()
-                        .startsWith(s.toLowerCase())
+                    elementName(e).toLocaleLowerCase().includes(s.toLowerCase())
                 }
             />
         </div>

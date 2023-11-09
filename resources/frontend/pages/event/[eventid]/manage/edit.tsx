@@ -49,7 +49,7 @@ const EditEventPage = () => {
     return (
         <div className="container mx-auto">
             <h1 className="text-center text-4xl font-bold">{locale.title}</h1>
-            <EventCRUD.Updater value={event} />
+            <EventCRUD.Updater value={event} initialLocation={event.location} />
         </div>
     );
 };

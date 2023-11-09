@@ -118,7 +118,12 @@ const PermissionForm = ({
             </Form.Group>
             <Form.Group>
                 <Form.Label>{locale.code}</Form.Label>
-                <Form.Select defaultValue={initialValues.code}>
+                <Form.Select
+                    value={initialValues.code}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    name="code"
+                >
                     {Object.entries(PermissionCode).map((entry) => {
                         return (
                             <option value={entry[1]} key={entry[1]}>

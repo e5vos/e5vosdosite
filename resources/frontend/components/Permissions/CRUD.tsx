@@ -134,6 +134,7 @@ export const EventPermissionCreateFormImpl = ({
                 await createPermission(perm);
                 if (onSuccess) onSuccess(perm);
             }}
+            resetOnSubmit={true}
         />
     );
 };

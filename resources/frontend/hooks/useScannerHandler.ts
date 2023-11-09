@@ -51,7 +51,8 @@ const useScannerHandler = ({
                     present: true,
                 }).unwrap();
             } catch (e: any) {
-                onError?.(e.message as string);
+                console.log(e.data.message);
+                onError?.(e.data.message as string);
                 return;
             }
             if (!isTeamAttendance(attendance)) {
@@ -80,7 +81,7 @@ const useScannerHandler = ({
             try {
                 await teamMemberAttend({ data: memberAttendances }).unwrap();
             } catch (e: any) {
-                onError?.(e.message as string);
+                onError?.(e.data.message as string);
                 return;
             }
             onSuccess?.(attendance.team);

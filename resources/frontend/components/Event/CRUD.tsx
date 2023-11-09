@@ -9,6 +9,7 @@ import { CRUDFormImpl } from "types/misc";
 import {
     Attender,
     Event,
+    Location,
     SignupType,
     SignupTypeType,
     TeamMemberRole,
@@ -591,8 +592,9 @@ const EventCreator = ({
 };
 const EventUpdater = ({
     value,
+    initialLocation,
     ...rest
-}: CRUDFormImpl<Event, EventFormValues>) => {
+}: CRUDFormImpl<Event, EventFormValues> & { initialLocation?: Location }) => {
     const [changeEvent] = eventAPI.useEditEventMutation();
     const navigate = useNavigate();
     return (
@@ -611,6 +613,7 @@ const EventUpdater = ({
                 is_competition: value.is_competition,
                 slot_id: value.slot_id,
             }}
+            initialLocation={initialLocation}
             onSubmit={async (event) => {
                 console.log(event);
                 await changeEvent(event);

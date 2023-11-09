@@ -130,7 +130,14 @@ class EventController extends Controller
         }
         $event->save();
         Cache::forget('e5n.events.all');
-        Cache::forget('e5n.events.presentations');
+
+        if (isset($slot)) {
+            Cache::forget('e5n.events.slot.' . $slot->id);
+            if ($slot->slot_type == SlotType::presentation->value) {
+                Cache::forget('e5n.events.presentations');
+            }
+        }
+
         Cache::forget('e5n.events.' . $eventId);
         return Cache::rememberForever('e5n.events.' . $eventId, (new EventResource($event->load('slot', 'location')))->jsonSerialize());
     }
@@ -142,11 +149,15 @@ class EventController extends Controller
      */
     public function delete($eventId)
     {
-        $event = Event::findOrFail($eventId);
-        Cache::forget('e5n.events.slot.' . $event->slot_id);
+        $event = Event::findOrFail($eventId)->load('slot');
+        if (isset($event->slot)) {
+            Cache::forget('e5n.events.slot.' . $event->slot->id);
+            if ($event->slot_type == SlotType::presentation->value) {
+                Cache::forget('e5n.events.presentations');
+            }
+        }
         $event->delete();
         Cache::forget('e5n.events.all');
-        Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.' . $eventId);
         return response()->noContent();
     }

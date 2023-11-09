@@ -1,10 +1,7 @@
-import { on } from "events";
 import { useCallback } from "react";
 
 import { RequiredFields } from "types/misc";
 import {
-    Attendance,
-    Attender,
     Event,
     Team,
     TeamAttendance,
@@ -13,7 +10,6 @@ import {
     TeamMemberRole,
     User,
     UserAttendance,
-    isAttenderTeam,
     isTeamAttendance,
 } from "types/models";
 
@@ -37,7 +33,7 @@ const useScannerHandler = ({
     event: Pick<Event, "id">;
     teamMemberPrompt: (member: TeamMember) => Promise<boolean>;
     onSuccess?: (attendance: User | Team) => any;
-    onError?: (error: ScannerError) => any;
+    onError?: (error: string) => any;
 }) => {
     const [getTeam] = teamAPI.useLazyGetTeamQuery();
     const [attend] = eventAPI.useAttendMutation();
@@ -55,15 +51,8 @@ const useScannerHandler = ({
                     present: true,
                 }).unwrap();
             } catch (e: any) {
-                onError?.(
-                    e.message === "Az E5vös Napok még nem kezdődtek el"
-                        ? "NoE5N"
-                        : e.message === "Erre az eseményre jeletkezni kell."
-                        ? "SignupRequired"
-                        : e.message === "Ejnyebejnye, nem te vagy a főnök."
-                        ? "PermissionDenied"
-                        : "Unknown",
-                );
+                console.log(e.data.message);
+                onError?.(e.data.message as string);
                 return;
             }
             if (!isTeamAttendance(attendance)) {
@@ -92,11 +81,7 @@ const useScannerHandler = ({
             try {
                 await teamMemberAttend({ data: memberAttendances }).unwrap();
             } catch (e: any) {
-                onError?.(
-                    e.message === "too many"
-                        ? "TooManyAttendees"
-                        : "TooFewAttendees",
-                );
+                onError?.(e.data.message as string);
                 return;
             }
             onSuccess?.(attendance.team);

@@ -160,7 +160,7 @@ class EventPolicy
         if (!Setting::find('e5n')?->value) {
             throw new NoE5NException();
         }
-        $event ??= Event::findOrFail(request()->eventId);
+        $event ??= Event::findOrFail(request()->eventId)->load('slot');
         $attender = request()->attender ?? request()->user()->e5code;
         if ($event->signup_deadline == null && $event->signuppers()->filter(fn (mixed $signupper) => $signupper->getKey() == $attender || $signupper->e5code === $attender)->count() === 0) {
             throw new SignupRequiredException();
@@ -169,7 +169,7 @@ class EventPolicy
         if ($event->signup_type != null && str_contains($event->signup_type, $attenderType)) {
             throw new WrongSignupTypeException();
         }
-        if ($event->slot->slot_type === SlotType::presentation->value) {
+        if ($event->slot?->slot_type === SlotType::presentation->value) {
             return $user->hasPermission(PermissionType::Teacher->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
         } else { // if not a presentation
             if (!$event->isRunning()) {

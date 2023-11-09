@@ -87,8 +87,8 @@ const PermissionForm = ({
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object({
-            event_id: Yup.number().required(locale.required),
-            user_id: Yup.number().required(locale.required),
+            event_id: Yup.number(),
+            user_id: Yup.number(),
             code: Yup.string()
                 .length(3, locale.threeChars)
                 .required(locale.required),
@@ -118,7 +118,12 @@ const PermissionForm = ({
             </Form.Group>
             <Form.Group>
                 <Form.Label>{locale.code}</Form.Label>
-                <Form.Select defaultValue={initialValues.code}>
+                <Form.Select
+                    value={initialValues.code}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    name="code"
+                >
                     {Object.entries(PermissionCode).map((entry) => {
                         return (
                             <option value={entry[1]} key={entry[1]}>

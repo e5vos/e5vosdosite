@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { TeamMember } from "types/models";
 
 import eventAPI from "lib/api/eventAPI";
+import { isScanner } from "lib/gates";
 import Locale from "lib/locale";
 
 import Error, { HTTPErrorCode } from "components/Error";
@@ -131,7 +132,7 @@ const Scanner = () => {
             setTimeout(() => setSuccessMessage(null), 2000);
         },
         onError: (error) => {
-            setErrorMessage(locale.error(error));
+            setErrorMessage(error);
             setTimeout(() => setErrorMessage(null), 2000);
         },
         teamMemberPrompt: async (member) => {
@@ -148,7 +149,7 @@ const Scanner = () => {
     if (error && "status" in error)
         return <Error code={error.status as HTTPErrorCode} />;
     if (!event || !user) return <Loader />;
-
+    if (!isScanner(event)(user)) return <Error code={403} />;
     return (
         <div className="container mx-auto ">
             <div className="text-center">
@@ -169,7 +170,17 @@ const Scanner = () => {
             )}
             <MemberConfirmDialog />
 
-            <Form className="mx-auto max-w-lg">
+            <Form
+                className="mx-auto max-w-lg"
+                onSubmit={async (e) => {
+                    if (code) {
+                        await scan(code);
+                        setSelectedMember(null);
+                        setCode(null);
+                    }
+                    e.preventDefault();
+                }}
+            >
                 <Form.Group>
                     <Form.Label>{locale.code}</Form.Label>
                     <Form.Control onChange={(t) => setCode(t.target.value)} />

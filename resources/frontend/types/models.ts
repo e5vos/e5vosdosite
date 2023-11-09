@@ -2,7 +2,7 @@ import { RequiredAndOmitFields, RequiredFields } from "./misc";
 
 export const PermissionCode = {
     organiser: "ORG",
-    scanner: " SCN",
+    scanner: "SCN",
     admin: "ADM",
     teacher: "TCH",
     student: "STD",

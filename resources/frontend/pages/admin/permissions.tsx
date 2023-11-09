@@ -79,7 +79,7 @@ const PermissionsPage = () => {
             {selecteduser && <PermissionView user={selecteduser} />}
             <div className="mt-10 text-left">
                 <h2 className="text-lg italic">{locale.new}</h2>
-                <PermissionCRUD.Creator value={{}} />
+                <PermissionCRUD.Creator resetOnSubmit={true} value={{}} />
             </div>
         </div>
     );

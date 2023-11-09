@@ -172,7 +172,10 @@ class EventPolicy
         if ($event->slot->slot_type === SlotType::presentation->value) {
             return $user->hasPermission(PermissionType::Teacher->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
         } else { // if not a presentation
-            return $user->hasPermission(PermissionType::Admin->value) || (($user->organisesEvent($event->id) || $user->scansEvent($event->id)) && $event->isRunning());
+            if (!$event->isRunning()) {
+                throw new SignupClosedException;
+            }
+            return $user->hasPermission(PermissionType::Admin->value) || $user->organisesEvent($event->id) || $user->scansEvent($event->id);
         }
     }
 }

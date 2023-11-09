@@ -1,5 +1,5 @@
 import useConfirm, { ConfirmDialogProps } from "hooks/useConfirm";
-import useScannerHandler from "hooks/useScannerHandler";
+import useScannerHandler, { ScannerError } from "hooks/useScannerHandler";
 import useUser from "hooks/useUser";
 import { useCallback, useEffect, useState } from "react";
 import { QrReader } from "react-qr-reader";
@@ -27,6 +27,22 @@ const locale = Locale({
         no: "Nem",
         code: "Kód",
         submit: "Beküldés",
+        error: (error: ScannerError): string => {
+            switch (error) {
+                case "NoE5N":
+                    return "Az E5N mód ki van kapcsolva";
+                case "PermissionDenied":
+                    return "Hozzáférés megtagadva";
+                case "SignupRequired":
+                    return "Az eseményre jelentkezni kellett volna";
+                case "TooFewAttendees":
+                    return "Nincs elég csapattag";
+                case "TooManyAttendees":
+                    return "Túl sok csapattag";
+                case "Unknown":
+                    return "Ismeretlen hiba";
+            }
+        },
     },
     en: {
         scanner: "QR Scanner",
@@ -37,6 +53,22 @@ const locale = Locale({
         no: "No",
         code: "Code",
         submit: "Submit",
+        error: (error: ScannerError): string => {
+            switch (error) {
+                case "NoE5N":
+                    return "E5N mode is disabled";
+                case "PermissionDenied":
+                    return "Permission denied";
+                case "SignupRequired":
+                    return "You had to sign up for the event";
+                case "TooFewAttendees":
+                    return "Not enough team members";
+                case "TooManyAttendees":
+                    return "Too many team members";
+                case "Unknown":
+                    return "Unknown error";
+            }
+        },
     },
 });
 
@@ -99,7 +131,7 @@ const Scanner = () => {
             setTimeout(() => setSuccessMessage(null), 2000);
         },
         onError: (error) => {
-            setErrorMessage(error);
+            setErrorMessage(locale.error(error));
             setTimeout(() => setErrorMessage(null), 2000);
         },
         teamMemberPrompt: async (member) => {

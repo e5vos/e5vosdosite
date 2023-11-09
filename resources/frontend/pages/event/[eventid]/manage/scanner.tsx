@@ -132,6 +132,7 @@ const Scanner = () => {
             setTimeout(() => setSuccessMessage(null), 2000);
         },
         onError: (error) => {
+            console.log("error", error);
             setErrorMessage(error);
             setTimeout(() => setErrorMessage(null), 2000);
         },

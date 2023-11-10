@@ -84,7 +84,7 @@ export const eventAPI = baseAPI.injectEndpoints({
             Omit<Event, "id" | "occupancy" | "">
         >({
             query: (event) => ({
-                url: routeSwitcher("events"),
+                url: routeSwitcher("events.store"),
                 method: "POST",
                 body: event,
             }),

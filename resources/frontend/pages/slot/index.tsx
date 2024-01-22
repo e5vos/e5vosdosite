@@ -14,11 +14,11 @@ import Loader from "components/UIKit/Loader";
 
 const locale = Locale({
     hu: {
-        title: "E5N - Programok",
+        title: "PP - Programok",
         create: "Program hozzadása",
     },
     en: {
-        title: "E5N - Events",
+        title: "PP - Events",
         create: "Create event",
     },
 });

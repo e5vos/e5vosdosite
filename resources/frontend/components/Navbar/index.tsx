@@ -67,6 +67,7 @@ const CustomNavbar = () => {
                     </Navbar.Brand>
                 }
             >
+                {/*
                 <Navbar.Link href="https://info.e5vosdo.hu">
                     {locale.info}
                 </Navbar.Link>
@@ -77,6 +78,7 @@ const CustomNavbar = () => {
                         {locale.presentations_teacher}
                     </Navbar.Link>
                 )}
+                */}
                 <Navbar.Link href="/eloadas">
                     {locale.presentationSignup}
                 </Navbar.Link>

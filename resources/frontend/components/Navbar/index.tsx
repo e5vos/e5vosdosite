@@ -73,12 +73,13 @@ const CustomNavbar = () => {
                 </Navbar.Link>
                 <Navbar.Link href="/csapat">{locale.teams}</Navbar.Link>
                 <Navbar.Link href="/esemeny">{locale.events}</Navbar.Link>
+            */}
                 {isTeacher(user) && (
                     <Navbar.Link href="/eloadas/kezel">
                         {locale.presentations_teacher}
                     </Navbar.Link>
                 )}
-                */}
+
                 <Navbar.Link href="/eloadas">
                     {locale.presentationSignup}
                 </Navbar.Link>

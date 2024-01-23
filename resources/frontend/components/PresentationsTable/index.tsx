@@ -99,8 +99,10 @@ const PresentationsTable = ({
                         {locale.presentation.title}
                     </th>
                     <th className="py-1">{locale.presentation.organiser}</th>
+                    {/*
                     <th className="py-1">{locale.presentation.description}</th>
                     <th>{locale.presentation.location}</th>
+                    */}
                     <th className="rounded-r-lg py-1 md:min-w-fit">
                         {locale.presentation.freeCapacity}
                     </th>
@@ -118,7 +120,7 @@ const PresentationsTable = ({
                     presentations.map((presentation, index) => (
                         <tr
                             key={index}
-                            className="mb-5 flex flex-col rounded bg-gray-600 shadow-md md:table-row md:rounded-none"
+                            className="mb-5 flex flex-col rounded-lg bg-gray-600 shadow-md md:table-row md:rounded-none"
                         >
                             <td className="rounded-l-lg border-hidden px-2 py-0.5  text-center text-4xl font-bold md:text-lg">
                                 {presentation.name}
@@ -126,6 +128,7 @@ const PresentationsTable = ({
                             <td className="px-2 py-0.5 text-center underline ">
                                 {presentation.organiser}
                             </td>
+                            {/*
                             <td className=" text-center ">
                                 <div className="flex h-full flex-col justify-around">
                                     <p className="mr-2 flex-1 px-2 py-0.5">
@@ -172,6 +175,8 @@ const PresentationsTable = ({
                                     )}
                                 </div>
                             </td>
+                            */}
+                            {/*
                             <td className="text-bold text-center text-2xl font-semibold md:text-lg">
                                 <div className="flex h-full flex-col justify-around">
                                     <div className="font-bold md:hidden">
@@ -183,9 +188,10 @@ const PresentationsTable = ({
                                     </div>
                                 </div>
                             </td>
+                                        */}
                             <td
                                 className={
-                                    "m-4 whitespace-normal rounded-l-lg rounded-r-lg border-hidden  px-2 py-2 text-center text-black md:h-24 md:rounded-l-none md:py-0 " +
+                                    "m-0 mt-2 md:m-4 whitespace-normal rounded-l-lg rounded-r-lg border-hidden  px-2 py-2 text-center text-black md:h-24 md:rounded-l-none md:py-0 " +
                                     getColor(
                                         presentation.capacity
                                             ? presentation.capacity -

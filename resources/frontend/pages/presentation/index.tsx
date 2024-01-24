@@ -72,15 +72,15 @@ const SelectField = ({
                     {selectedPresentation?.name ??
                         locale.presentationNotYetSelected}
                 </div>
-                {selectedPresentation && (
-                    <div className="mt-2 rounded-lg bg-goldenrod p-3 ">
-                        <div className="text-lg">
-                            <IoLocationSharp className="inline-block text-xl" />
-                            {selectedPresentation.location?.name ??
-                                locale.unknownLocation}
-                        </div>
-                    </div>
-                )}
+                {/*{selectedPresentation && (*/}
+                {/*    <div className="mt-2 rounded-lg bg-goldenrod p-3 ">*/}
+                {/*        <div className="text-lg">*/}
+                {/*            <IoLocationSharp className="inline-block text-xl" />*/}
+                {/*            {selectedPresentation.location?.name ??*/}
+                {/*                locale.unknownLocation}*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*)}*/}
             </div>
             <Button
                 variant="danger"

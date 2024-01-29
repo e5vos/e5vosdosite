@@ -2,7 +2,8 @@
 
 namespace App\Policies;
 
-use App\Exceptions\NoE5NException;
+use App\Exceptions\AttendanceRegisterDisabledException;
+use App\Exceptions\SignupDisabledException;
 use App\Exceptions\SignupClosedException;
 use App\Exceptions\SignupRequiredException;
 use App\Exceptions\WrongSignupTypeException;
@@ -25,9 +26,7 @@ class EventPolicy
      */
     public function before(User $user)
     {
-        if ($user->hasPermission(PermissionType::Operator->value)) {
-            return true;
-        }
+        return $user->hasPermission(PermissionType::Operator->value) ? true : null;
     }
 
     /**
@@ -96,15 +95,19 @@ class EventPolicy
 
     /**
      * Determine if the user can attend the event.
+     *
      * @param User $user
-     * @param Event $event
+     * @param \App\Models\Event|null $event
      *
      * @return bool
+     * @throws \App\Exceptions\SignupDisabledException
+     * @throws \App\Exceptions\SignupClosedException
+     * @throws \App\Exceptions\WrongSignupTypeException
      */
     public function signup(User $user, Event $event = null)
     {
         if (!Setting::find('e5n.events.signup')?->value) {
-            throw new NoE5NException();
+            throw new SignupDisabledException();
         }
         $event ??= Event::findOrFail(request()->eventId);
         $attenderCode = request()->attender ?? $user->e5code ?? null;
@@ -125,10 +128,13 @@ class EventPolicy
 
     /**
      * Determine if the user can cancel the signup for the event.
+     *
      * @param User $user
-     * @param Event $event
+     * @param \App\Models\Event|null $event
      *
      * @return bool
+     * @throws \App\Exceptions\SignupDisabledException
+     * @throws \App\Exceptions\SignupClosedException
      */
     public function unsignup(User $user, Event $event = null)
     {
@@ -137,7 +143,7 @@ class EventPolicy
         }
 
         if (!Setting::find('e5n.events.signup')?->value) {
-            throw new NoE5NException();
+            throw new SignupDisabledException();
         }
 
         $event = $event ?? Event::findOrFail(request()->eventId);
@@ -150,15 +156,20 @@ class EventPolicy
 
     /**
      * Determine if the user can attend the event.
+     *
      * @param User $user
-     * @param Event $event
+     * @param \App\Models\Event|null $event
      *
      * @return bool
+     * @throws \App\Exceptions\AttendanceRegisterDisabledException
+     * @throws \App\Exceptions\SignupClosedException
+     * @throws \App\Exceptions\SignupRequiredException
+     * @throws \App\Exceptions\WrongSignupTypeException
      */
     public function attend(User $user, Event $event = null)
     {
         if (!Setting::find('e5n')?->value) {
-            throw new NoE5NException();
+            throw new AttendanceRegisterDisabledException();
         }
         $event ??= Event::findOrFail(request()->eventId)->load('slot');
         $attender = request()->attender ?? request()->user()->e5code;

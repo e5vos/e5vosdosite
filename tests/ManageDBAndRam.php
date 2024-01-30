@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
@@ -10,17 +9,18 @@ trait ManageDBAndRam
 {
     /**
      * If true, setup has run at least once.
-     * @var boolean
+     *
+     * @var bool
      */
     protected static $setUpHasRunOnce = false;
+
     /**
      * After the first run of setUp "migrate:fresh --seed"
-     * @return void
      */
     public function setUp(): void
     {
         parent::setUp();
-        if (!static::$setUpHasRunOnce) {
+        if (! static::$setUpHasRunOnce) {
             Artisan::call('migrate:fresh');
             Artisan::call(
                 'db:seed',
@@ -33,7 +33,6 @@ trait ManageDBAndRam
 
     /**
      * After each test rollback the database
-     * @return void
      */
     public function tearDown(): void
     {
@@ -41,8 +40,8 @@ trait ManageDBAndRam
         $refl = new \ReflectionObject($this);
         foreach ($refl->getProperties() as $prop) {
             if (
-                !$prop->isStatic()
-                && 0 !== strpos($prop->getDeclaringClass()->getName(), 'PHPUnit_')
+                ! $prop->isStatic()
+                && strpos($prop->getDeclaringClass()->getName(), 'PHPUnit_') !== 0
                 && $prop->getType()?->allowsNull() !== false
             ) {
                 $prop->setAccessible(true);

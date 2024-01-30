@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use App\Helpers\PermissionType;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use App\Helpers\PermissionType;
 
 class LocationPolicy
 {
@@ -13,7 +13,6 @@ class LocationPolicy
     /**
      * Check if the user has permission for all actions.
      *
-     * @param  \App\Models\User  $user
      * @return bool|null
      */
     public function before(User $user)

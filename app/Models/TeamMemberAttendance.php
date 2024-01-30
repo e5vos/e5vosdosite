@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Helpers\HasCompositeKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Helpers\HasCompositeKey;
 
 /**
  * App\Models\TeamMemberAttendance
+ *
  * @property int $user_id
  * @property string $team_code
  * @property int $attendance_id
@@ -16,7 +17,7 @@ use App\Helpers\HasCompositeKey;
  */
 class TeamMemberAttendance extends Model
 {
-    use HasFactory, HasCompositeKey;
+    use HasCompositeKey, HasFactory;
 
     protected $table = 'team_member_attendances';
 
@@ -26,7 +27,7 @@ class TeamMemberAttendance extends Model
         'user_id',
         'team_code',
         'attendance_id',
-        'is_present'
+        'is_present',
     ];
 
     protected $hidden = [
@@ -41,14 +42,14 @@ class TeamMemberAttendance extends Model
      */
     public function togglePresent(): void
     {
-        $this->is_present = !$this->is_present;
+        $this->is_present = ! $this->is_present;
         $this->save();
     }
 
     /**
      * Get the user that owns the TeamMemberAttendance
      */
-    public function user(): BelongsTo | null
+    public function user(): ?BelongsTo
     {
         return $this->belongsTo(User::class);
     }

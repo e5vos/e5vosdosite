@@ -4,8 +4,6 @@ namespace Tests\Feature;
 
 use App\Helpers\PermissionType;
 use App\Models\Permission;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 

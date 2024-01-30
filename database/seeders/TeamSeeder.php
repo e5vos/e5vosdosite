@@ -5,13 +5,10 @@ namespace Database\Seeders;
 use App\Models\Team;
 use App\Models\TeamMembership;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Helpers\MembershipType;
 
 class TeamSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -29,7 +26,7 @@ class TeamSeeder extends Seeder
                         fn ($attributes, Team $team) => [
                             'user_id' => $users->shuffle()
                                 ->filter(
-                                    fn ($user) => !array_search($user->id, $team->members->toArray())
+                                    fn ($user) => ! array_search($user->id, $team->members->toArray())
                                 )->first()->id,
                         ]
                     ),

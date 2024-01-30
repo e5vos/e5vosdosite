@@ -20,7 +20,6 @@ class EventPolicy
     /**
      * Grant all permissions to admin users.
      *
-     * @param User $user
      * @return bool
      */
     public function before(User $user)
@@ -33,16 +32,14 @@ class EventPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Event  $event
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Event $event = null)
+    public function update(User $user, ?Event $event = null)
     {
         $eventId = $event->id ?? request()->eventId;
+
         return $user->hasPermission(PermissionType::Admin->value) || $user->organisesEvent($eventId);
     }
-
 
     /**
      * Determine if the user can view the model.
@@ -63,13 +60,12 @@ class EventPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Event  $event
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Event $event = null)
+    public function delete(User $user, ?Event $event = null)
     {
         $eventId = $event->id ?? request()->eventId;
+
         return $user->hasPermission(PermissionType::Admin->value) || $user->organisesEvent($eventId);
     }
 
@@ -96,20 +92,18 @@ class EventPolicy
 
     /**
      * Determine if the user can attend the event.
-     * @param User $user
-     * @param Event $event
      *
      * @return bool
      */
-    public function signup(User $user, Event $event = null)
+    public function signup(User $user, ?Event $event = null)
     {
-        if (!Setting::find('e5n.events.signup')?->value) {
+        if (! Setting::find('e5n.events.signup')?->value) {
             throw new NoE5NException();
         }
         $event ??= Event::findOrFail(request()->eventId);
         $attenderCode = request()->attender ?? $user->e5code ?? null;
         $attenderType = strlen($attenderCode) === 13 ? 'user' : 'team';
-        if (!$event->isSignupOpen()) {
+        if (! $event->isSignupOpen()) {
             throw new SignupClosedException();
         }
         if ($event->signup_type !== 'team_user' && $event->signup_type !== $attenderType) {
@@ -120,28 +114,27 @@ class EventPolicy
         } else { // if team
             $isAttender = $user->isLeaderOfTeam($attenderCode);
         }
+
         return $isAttender || $user->hasPermission(PermissionType::Admin->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
     }
 
     /**
      * Determine if the user can cancel the signup for the event.
-     * @param User $user
-     * @param Event $event
      *
      * @return bool
      */
-    public function unsignup(User $user, Event $event = null)
+    public function unsignup(User $user, ?Event $event = null)
     {
-        if (!request()->has('attender')) {
+        if (! request()->has('attender')) {
             abort(400, 'No attender specified');
         }
 
-        if (!Setting::find('e5n.events.signup')?->value) {
+        if (! Setting::find('e5n.events.signup')?->value) {
             throw new NoE5NException();
         }
 
         $event = $event ?? Event::findOrFail(request()->eventId);
-        if (!$event->isSignupOpen()) {
+        if (! $event->isSignupOpen()) {
             throw new SignupClosedException();
         }
 
@@ -150,14 +143,12 @@ class EventPolicy
 
     /**
      * Determine if the user can attend the event.
-     * @param User $user
-     * @param Event $event
      *
      * @return bool
      */
-    public function attend(User $user, Event $event = null)
+    public function attend(User $user, ?Event $event = null)
     {
-        if (!Setting::find('e5n')?->value) {
+        if (! Setting::find('e5n')?->value) {
             throw new NoE5NException();
         }
         $event ??= Event::findOrFail(request()->eventId)->load('slot');
@@ -172,9 +163,10 @@ class EventPolicy
         if ($event->slot?->slot_type === SlotType::presentation->value) {
             return $user->hasPermission(PermissionType::Teacher->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);
         } else { // if not a presentation
-            if (!$event->isRunning()) {
+            if (! $event->isRunning()) {
                 throw new SignupClosedException;
             }
+
             return $user->hasPermission(PermissionType::Admin->value) || $user->organisesEvent($event->id) || $user->scansEvent($event->id);
         }
     }

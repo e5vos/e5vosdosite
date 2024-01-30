@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Auth;
 
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use App\Models\User;
+use Laravel\Socialite\Facades\Socialite;
+use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
@@ -19,8 +18,6 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(400);
     }
 
-
-
     /**
      * test if redirect link is returned.
      */
@@ -31,7 +28,7 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
-            'url'
+            'url',
         ]);
         $this->assertStringContainsString('https://accounts.google.com/o/oauth2/auth', $response->json('url'));
     }

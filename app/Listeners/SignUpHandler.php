@@ -19,7 +19,6 @@ class SignUpHandler
     /**
      * Handle the event.
      *
-     * @param  \App\Events\EventSignup  $event
      * @return void
      */
     public function handle(EventSignup $event)

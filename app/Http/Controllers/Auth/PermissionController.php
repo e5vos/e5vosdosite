@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\ResourceDidNoExistException;
-
 use App\Http\Controllers\{
     Controller
 };
@@ -23,12 +22,15 @@ class PermissionController extends Controller
             'user_id' => $request->user_id,
             'event_id' => $request->event_id,
             'code' => $request->code,
-        ])->exists()) abort(409, 'Permission already exists');
+        ])->exists()) {
+            abort(409, 'Permission already exists');
+        }
         $permission = Permission::create([
             'user_id' => $request->user_id,
             'event_id' => $request->event_id,
             'code' => $request->code,
         ]);
+
         return response($permission->jsonSerialize(), 201);
     }
 
@@ -42,8 +44,11 @@ class PermissionController extends Controller
             $request->event_id,
             $request->code,
         ]);
-        if ($permission === null) throw new ResourceDidNoExistException();
+        if ($permission === null) {
+            throw new ResourceDidNoExistException();
+        }
         $permission->delete();
+
         return response()->noContent();
     }
 }

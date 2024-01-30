@@ -7,19 +7,18 @@ use App\Helpers\PermissionType;
 use App\Helpers\SlotType;
 use Astrotomic\CachableAttributes\CachableAttributes;
 use Astrotomic\CachableAttributes\CachesAttributes;
-use Illuminate\Database\Eloquent\{
-    Factories\HasFactory,
-    Model,
-    Builder,
-    SoftDeletes,
-    Relations\BelongsTo,
-    Relations\HasMany,
-};
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
 /**
  * App\Models\Event
+ *
  * @property int $id
  * @property int $slot_id
  * @property string $name
@@ -40,7 +39,7 @@ use Illuminate\Support\Collection;
  */
 class Event extends Model implements CachableAttributes
 {
-    use HasFactory, SoftDeletes, CachesAttributes;
+    use CachesAttributes, HasFactory, SoftDeletes;
 
     protected $table = 'events';
 
@@ -63,7 +62,6 @@ class Event extends Model implements CachableAttributes
         'deleted_at',
     ];
 
-
     protected $casts = [
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
@@ -85,16 +83,17 @@ class Event extends Model implements CachableAttributes
     public static function current(Builder $query, $time = null): Builder
     {
         $time ??= now();
+
         return $query->where('starts_at', '<=', $time)->where('ends_at', '>=', $time);
     }
 
     /**
      * Get currently running events
-     *
      */
     public static function currentEvents($time = null)
     {
         $time ??= now();
+
         return Event::where(fn ($query) => Event::current($query, $time));
     }
 
@@ -190,10 +189,9 @@ class Event extends Model implements CachableAttributes
         return $this->signuppers()->whereIsNotNull('rank')->orderBy('rank', 'asc');
     }
 
-
     public function fillUp()
     {
-        if (!$this->slot()->where('slot_type', '!=', SlotType::presentation->value)->get()) {
+        if (! $this->slot()->where('slot_type', '!=', SlotType::presentation->value)->get()) {
             throw new NotPresentationException();
         }
         $availalbeStudents = User::whereDoesntHave('events', function ($query) {
@@ -206,7 +204,7 @@ class Event extends Model implements CachableAttributes
 
     public function addOrganiser(User $user)
     {
-        if (!$this->organisers()->get()->contains($user)) {
+        if (! $this->organisers()->get()->contains($user)) {
             $user->permissions()->create([
                 'event_id' => $this->id,
                 'permission' => PermissionType::Organiser,
@@ -218,7 +216,6 @@ class Event extends Model implements CachableAttributes
     {
         $this->permissions()->where('users_id', $user->id)->delete();
     }
-
 
     /**
      * return if the even signup is open

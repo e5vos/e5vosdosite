@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Helpers\PermissionType;
-use App\Models\BonusPoint;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

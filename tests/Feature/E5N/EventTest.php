@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Event;
+use App\Models\Permission;
 use App\Models\Slot;
 use App\Models\User;
-use App\Models\Permission;
 use Tests\TestCase;
 
 class EventTest extends TestCase
@@ -16,9 +16,9 @@ class EventTest extends TestCase
     public function test_events_can_be_created()
     {
         $event = Event::factory()->count(1)->make()->toArray()[0];
-        $event["slot_id"] = Slot::first()->get()[0]->id;
-        $event["occupancy"] = null;
-        unset($event["occupancy"]);
+        $event['slot_id'] = Slot::first()->get()[0]->id;
+        $event['occupancy'] = null;
+        unset($event['occupancy']);
         $user = User::first();
         Permission::where('user_id', $user->id)->delete();
         $response = $this->actingAs($user)->post('/api/events', $event);
@@ -40,7 +40,7 @@ class EventTest extends TestCase
      */
     public function test_events_can_be_requested_for_a_slot()
     {
-        $response = $this->get('/api/events/' . Slot::first()->id);
+        $response = $this->get('/api/events/'.Slot::first()->id);
         $response->assertStatus(200);
     }
 
@@ -51,7 +51,7 @@ class EventTest extends TestCase
     {
         $event = Event::inRandomOrder()->first();
 
-        $response = $this->get('/api/event/' . $event->id);
+        $response = $this->get('/api/event/'.$event->id);
         $response->assertStatus(200);
     }
 
@@ -65,11 +65,11 @@ class EventTest extends TestCase
         $user = User::first();
         Permission::where('user_id', $user->id)->delete();
 
-        $response = $this->actingAs($user)->put('/api/event/' . $event->id, $eventData);
+        $response = $this->actingAs($user)->put('/api/event/'.$event->id, $eventData);
         $response->assertStatus(403);
 
         Permission::create(['code' => 'ORG', 'user_id' => $user->id, 'event_id' => $event->id]);
-        $response = $this->actingAs($user)->put('/api/event/' . $event->id, $eventData);
+        $response = $this->actingAs($user)->put('/api/event/'.$event->id, $eventData);
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('events', [
@@ -88,16 +88,15 @@ class EventTest extends TestCase
         $user = User::first();
         Permission::where('user_id', $user->id)->delete();
 
-        $response = $this->actingAs($user)->delete('/api/event/' . $event->id);
+        $response = $this->actingAs($user)->delete('/api/event/'.$event->id);
         $response->assertStatus(403);
 
         Permission::create(['code' => 'ADM', 'user_id' => $user->id]);
-        $response = $this->actingAs($user)->delete('/api/event/' . $event->id);
+        $response = $this->actingAs($user)->delete('/api/event/'.$event->id);
         $response->assertStatus(200);
 
         $this->assertEquals(null, Event::find($event->id));
     }
-
 
     /**
      * A test to check if events can be restored.
@@ -109,20 +108,21 @@ class EventTest extends TestCase
         $user = User::first();
         Permission::where('user_id', $user->id)->delete();
 
-        $response = $this->actingAs($user)->put('/api/event/' . $event->id . '/restore');
+        $response = $this->actingAs($user)->put('/api/event/'.$event->id.'/restore');
         $response->assertStatus(403);
 
         Permission::create(['code' => 'ADM', 'user_id' => $user->id]);
-        $response = $this->actingAs($user)->put('/api/event/' . $event->id . '/restore');
+        $response = $this->actingAs($user)->put('/api/event/'.$event->id.'/restore');
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('events', [
-            'id' => $event->id
+            'id' => $event->id,
         ]);
     }
 
     /**
      * A test to check if signup for an event can be closed.
+     *
      * @return void
      */
     public function test_signup_for_an_event_can_be_closed()
@@ -133,11 +133,11 @@ class EventTest extends TestCase
         $user = User::first();
         Permission::where('user_id', $user->id)->delete();
 
-        $response = $this->actingAs($user)->put('/api/event/' . $event->id . '/close');
+        $response = $this->actingAs($user)->put('/api/event/'.$event->id.'/close');
         $response->assertStatus(403);
 
         Permission::create(['code' => 'ORG', 'user_id' => $user->id, 'event_id' => $event->id]);
-        $response = $this->actingAs($user)->put('/api/event/' . $event->id . '/close');
+        $response = $this->actingAs($user)->put('/api/event/'.$event->id.'/close');
         $response->assertStatus(200);
 
         //assert that the event is closed

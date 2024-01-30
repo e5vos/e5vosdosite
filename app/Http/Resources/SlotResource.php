@@ -23,7 +23,7 @@ class SlotResource extends JsonResource
 
             'events' => EventResource::collection($this->whenLoaded('events')),
 
-            "pivot" => $this->whenPivotLoaded($this->pivot?->getTable(), fn () => $this->pivot),
+            'pivot' => $this->whenPivotLoaded($this->pivot?->getTable(), fn () => $this->pivot),
         ];
     }
 }

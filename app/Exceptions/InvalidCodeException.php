@@ -9,7 +9,7 @@ class InvalidCodeException extends Exception
     public function render()
     {
         return response()->json([
-            'message' => 'Hibás e5vös kód.',
+            'message' => 'Érvénytelen EJG diákkód.',
         ], 400);
     }
 }

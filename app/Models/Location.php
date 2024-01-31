@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\Location
+ *
  * @property int $id
  * @property string $name
  * @property string $floor
@@ -30,6 +31,7 @@ class Location extends Model
     public function currentEvents($time = null)
     {
         $time = $time ?? now();
+
         return $this->events()->where('starts_at', '<=', $time)->where('ends_at', '>=', $time);
     }
 }

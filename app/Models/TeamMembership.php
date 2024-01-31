@@ -3,21 +3,23 @@
 namespace App\Models;
 
 use App\Exceptions\NotAllowedException;
+use App\Helpers\HasCompositeKey;
+use App\Helpers\MembershipType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Helpers\MembershipType;
-use App\Helpers\HasCompositeKey;
 
 /**
  * App\Models\TeamMembership
+ *
  * @property int $user_id
  * @property int $team_code
  * @property string $role
  */
 class TeamMembership extends Model
 {
-    use HasFactory, HasCompositeKey;
+    use HasCompositeKey, HasFactory;
+
     /**
      * The table associated with the model.
      *
@@ -43,6 +45,7 @@ class TeamMembership extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     /**
      * Get the team that has the membership.
      */
@@ -54,13 +57,11 @@ class TeamMembership extends Model
     /**
      * Demote other membership
      *
-     * @param TeamMembership $other
      * @throws \Exception if the current membership can't demote this user
-     * @return void
      */
     public function demote(TeamMembership $other): void
     {
-        if (!$this->canDemote($other)) {
+        if (! $this->canDemote($other)) {
             throw new NotAllowedException("You can't demote this user");
         }
         switch ($other->role) {

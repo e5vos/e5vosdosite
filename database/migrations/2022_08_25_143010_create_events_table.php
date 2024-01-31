@@ -1,10 +1,10 @@
 <?php
 
+use App\Models\Location;
+use App\Models\Slot;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Slot;
-use App\Models\Location;
 
 return new class extends Migration
 {

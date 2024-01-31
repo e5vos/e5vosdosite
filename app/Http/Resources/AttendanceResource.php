@@ -15,16 +15,16 @@ class AttendanceResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "id" => $this->id,
-            "user_id" => $this->user_id,
-            "user" => new UserResource($this->whenLoaded('user')),
-            "team_code" => $this->team_code,
-            "team" => new TeamResource($this->whenLoaded('team')),
-            "event_id" => $this->event_id,
-            "event" => new EventResource($this->whenLoaded('event')),
-            "rank" => $this->rank,
-            "is_present" => $this->is_present,
-            "pivot" => $this->whenPivotLoaded($this->pivot?->getTable(), fn () => $this->pivot),
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'user' => new UserResource($this->whenLoaded('user')),
+            'team_code' => $this->team_code,
+            'team' => new TeamResource($this->whenLoaded('team')),
+            'event_id' => $this->event_id,
+            'event' => new EventResource($this->whenLoaded('event')),
+            'rank' => $this->rank,
+            'is_present' => $this->is_present,
+            'pivot' => $this->whenPivotLoaded($this->pivot?->getTable(), fn () => $this->pivot),
         ];
     }
 }

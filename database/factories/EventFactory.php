@@ -20,6 +20,7 @@ class EventFactory extends Factory
     public function definition()
     {
         $startsAt = fake()->dateTimeBetween('now', '+3 days');
+
         return [
             'name' => fake()->word(),
             'description' => fake()->paragraph(),
@@ -27,7 +28,7 @@ class EventFactory extends Factory
             'ends_at' => fake()->dateTimeBetween($startsAt, '+3 days'),
             'organiser' => fake()->word(),
             'signup_deadline' => fake()->dateTimeBetween('-3 days', $startsAt),
-            'capacity' =>  fake()->boolean() ? null : rand(1, 30),
+            'capacity' => fake()->boolean() ? null : rand(1, 30),
             'slot_id' => null,
             'img_url' => rand(0, 10) > 7 ? fake()->imageUrl() : null,
             'signup_type' => fake()->randomElement(['team', 'user', 'team_user', null]),

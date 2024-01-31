@@ -14,6 +14,6 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-       return "https://e5vosdo.hu/api/login";
+        return 'https://e5vosdo.hu/api/login';
     }
 }

@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Attendance
+ *
  * @property int $id
  * @property int $user_id
  * @property int $team_code
@@ -47,7 +48,6 @@ class Attendance extends Model
      * Attendance.php Boot the model.
      *
      * Assing global scopes, etc. Order by updated_at
-
      */
     // protected static function boot()
     // {
@@ -60,7 +60,7 @@ class Attendance extends Model
      */
     public function togglePresent(): void
     {
-        $this->is_present = !$this->is_present;
+        $this->is_present = ! $this->is_present;
         $this->save();
     }
 
@@ -71,6 +71,7 @@ class Attendance extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     /**
      * Get team that owns the attendance if attendance is team attendance
      */

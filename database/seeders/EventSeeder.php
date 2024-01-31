@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Location;
 use App\Models\Event;
+use App\Models\Location;
 use App\Models\Slot;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 
@@ -39,15 +38,17 @@ class EventSeeder extends Seeder
                     $event->save();
                 }
             );
-        $numbers = array();
-        while(sizeof($numbers) < 15) {
-            $num = rand(0,99);
-            if (!in_array($num, $numbers, true))array_push($numbers, $num);
+        $numbers = [];
+        while (count($numbers) < 15) {
+            $num = rand(0, 99);
+            if (! in_array($num, $numbers, true)) {
+                array_push($numbers, $num);
+            }
         }
-        for ($i = 0; $i < 13; $i+=3){
-            Event::findOrFail($numbers[$i])->update(["direct_child"=>$numbers[$i+1]]);
-            Event::findOrFail($numbers[$i+1])->update(["direct_child"=>$numbers[$i+2], "root_parent"=>$numbers[$i]]);
-            Event::findOrFail($numbers[$i+2])->update(["root_parent"=>$numbers[$i]]);
+        for ($i = 0; $i < 13; $i += 3) {
+            Event::findOrFail($numbers[$i])->update(['direct_child' => $numbers[$i + 1]]);
+            Event::findOrFail($numbers[$i + 1])->update(['direct_child' => $numbers[$i + 2], 'root_parent' => $numbers[$i]]);
+            Event::findOrFail($numbers[$i + 2])->update(['root_parent' => $numbers[$i]]);
         }
     }
 }

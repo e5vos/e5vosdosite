@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
+use App\Helpers\PermissionType;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use App\Helpers\PermissionType;
 
 class UserPolicy
 {
@@ -12,8 +12,6 @@ class UserPolicy
 
     /**
      * Grant all permissions to admin users.
-     *
-     * @param User $user
      */
     public function before(User $user)
     {
@@ -48,12 +46,11 @@ class UserPolicy
 
     /**
      * Determine whether the user can update the model.
-     *
-     * @param User $user
      */
     public function update(User $user, User $model)
     {
         $modelId = $model?->id ?? request()->userId;
+
         return $user->id === $modelId;
     }
 

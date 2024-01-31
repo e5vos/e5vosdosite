@@ -2,24 +2,23 @@
 
 namespace App\Models;
 
+use App\Helpers\HasCompositeKey;
+use App\Helpers\PermissionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Helpers\PermissionType;
-use App\Helpers\HasCompositeKey;
 
 /**
  * App\Models\Permission
+ *
  * @property int $user_id
  * @property int|null $event_id
  * @property int $code
  */
-
-
-
 class Permission extends Model
 {
-    use HasFactory, HasCompositeKey;
+    use HasCompositeKey, HasFactory;
+
     /**
      * The table associated with the model.
      *
@@ -60,6 +59,7 @@ class Permission extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     /**
      * Get the event that has the permission.
      */

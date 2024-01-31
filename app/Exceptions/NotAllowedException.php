@@ -9,7 +9,7 @@ class NotAllowedException extends Exception
     public function __construct($message = null)
     {
         parent::__construct();
-        $this->message = mb_convert_encoding($message, "UTF-8", "auto");
+        $this->message = mb_convert_encoding($message, 'UTF-8', 'auto');
     }
 
     /**

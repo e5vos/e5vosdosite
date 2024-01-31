@@ -9,6 +9,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class SlotPolicy
 {
     use HandlesAuthorization;
+
     /**
      * Grand access to admins
      */
@@ -18,6 +19,7 @@ class SlotPolicy
             return true;
         }
     }
+
     /**
      * Determine whether the user can view any models.
      *
@@ -60,7 +62,7 @@ class SlotPolicy
 
     /**
      * Determine whether the user can see free students.
-     * @param User $user
+     *
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function freeStudents(User $user)

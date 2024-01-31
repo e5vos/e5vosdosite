@@ -1,39 +1,31 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Broadcast;
-use App\Http\Controllers\{
-    E5N\EventController,
-    Auth\AuthController,
-    E5N\SlotController,
-    E5N\TeamController,
-    LocationController,
-    Misc\UserController,
-};
-use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Auth\PermissionController;
-use App\Http\Controllers\Admin\AdminController;
-use App\Models\{
-    Attendance,
-    Event,
-    Location,
-    Permission,
-    Slot,
-    Setting,
-    TeamMembership,
-    Team,
-    User,
-};
-use Tightenco\Ziggy\Ziggy;
 use App\Events\{
     Ping
 };
-use App\Http\Resources\{
-    TeamResource,
-    UserResource,
-};
-
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\PermissionController;
+use App\Http\Controllers\E5N\EventController;
+use App\Http\Controllers\E5N\SlotController;
+use App\Http\Controllers\E5N\TeamController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\Misc\UserController;
+use App\Http\Resources\UserResource;
+use App\Models\Attendance;
+use App\Models\Event;
+use App\Models\Location;
+use App\Models\Permission;
+use App\Models\Setting;
+use App\Models\Slot;
+use App\Models\Team;
+use App\Models\TeamMembership;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Route;
+use Tightenco\Ziggy\Ziggy;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +39,6 @@ use App\Http\Resources\{
 */
 
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
-
 
 Route::get('/ziggy', fn () => response()->json(new Ziggy));
 
@@ -138,7 +129,6 @@ Route::middleware(['auth:sanctum'])->controller(PermissionController::class)->pr
     Route::delete('/', 'removePermission')->can('destroy', Permission::class)->name('permission.delete');
 });
 
-
 //setting routes
 Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingController::class)->group(
     function () {
@@ -148,7 +138,6 @@ Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingContr
         Route::delete('/{key}', 'destroy')->can('delete', Setting::class)->name('setting.destroy');
     }
 );
-
 
 // location crud
 Route::controller(LocationController::class)->group(function () {
@@ -163,16 +152,13 @@ Route::controller(LocationController::class)->group(function () {
     });
 });
 
-
-
-Route::any('cacheclear', [AdminController::class, "cacheClear"])->name('cacheclear');
-Route::post('dumpState', [AdminController::class, "dumpState"])->name('debug.dump');
+Route::any('cacheclear', [AdminController::class, 'cacheClear'])->name('cacheclear');
+Route::post('dumpState', [AdminController::class, 'dumpState'])->name('debug.dump');
 
 //test websocket broadcast
 Route::post('/ping', function () {
     Ping::dispatch();
 });
-
 
 //if anything else that starts with /api/ is requested, return 404
 Route::any('/{any}', function () {

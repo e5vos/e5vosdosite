@@ -3,10 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Permission;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Setting;
+use App\Models\User;
+use Tests\TestCase;
 
 class SettingTest extends TestCase
 {
@@ -45,7 +44,9 @@ class SettingTest extends TestCase
 
     /**
      * Test if settings can be deleted by operators.
+     *
      * @return void
+     *
      * @throws \Exception
      */
     public function testSettingsCanBeDeletedByOperator()
@@ -60,6 +61,7 @@ class SettingTest extends TestCase
 
     /**
      * Test if settings can be created by operators.
+     *
      * @return void
      */
     public function testSettingsCanBeCreatedByOperator()

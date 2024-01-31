@@ -15,13 +15,13 @@ class TeamResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "code" => $this->code,
-            "name" => $this->name,
+            'code' => $this->code,
+            'name' => $this->name,
 
-            "members" => UserResource::collection($this->whenLoaded('members')),
-            "events" => EventResource::collection($this->whenLoaded('events')),
+            'members' => UserResource::collection($this->whenLoaded('members')),
+            'events' => EventResource::collection($this->whenLoaded('events')),
 
-            "pivot" => $this->whenPivotLoaded($this->pivot?->getTable(), fn () => $this->pivot),
+            'pivot' => $this->whenPivotLoaded($this->pivot?->getTable(), fn () => $this->pivot),
         ];
     }
 }

@@ -8,24 +8,18 @@ use App\Http\Controllers\{
     Controller
 };
 use App\Http\Resources\TeamResource;
-use App\Models\{
-    Team,
-    TeamMembership,
-    User
-};
-
+use App\Models\Team;
+use App\Models\TeamMembership;
+use App\Models\User;
 use Illuminate\Http\Request;
-
-use Illuminate\Support\Facades\{
-    Auth,
-    Cache
-};
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class TeamController extends Controller
 {
-
     /**
      * Display a listing of teams.
+     *
      * @return \Illuminate\Http\Response
      */
     public function index()
@@ -36,33 +30,31 @@ class TeamController extends Controller
     /**
      * create a team
      *
-     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         //check for existing team
         if (Team::where('code', $request->code)->exists()) {
-            abort(409, "Team already exists");
+            abort(409, 'Team already exists');
         }
         $team = Team::create($request->all());
         $team->members()->attach(Auth::user()->id, ['role' => MembershipType::Leader]);
         $team = new TeamResource($team);
         Cache::forget('e5n.teams.all');
-        Cache::forget('user.' . Auth::user()->id . '.teams');
-        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => new TeamResource($team->load('members', 'activity')));
+        Cache::forget('user.'.Auth::user()->id.'.teams');
+
+        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => new TeamResource($team->load('members', 'activity')));
     }
-
-
 
     /**
      * update a team
      */
     public function update(Request $request, $teamCode)
     {
-        $team = Cache::pull('e5n.teams.' . $teamCode) ?? Team::findOrFail($teamCode);
-        if (Cache::get('e5n.teams.' . $request->code)?->exists ?? Team::find($request->code)->exists) {
-            abort(409, "Team already exists");
+        $team = Cache::pull('e5n.teams.'.$teamCode) ?? Team::findOrFail($teamCode);
+        if (Cache::get('e5n.teams.'.$request->code)?->exists ?? Team::find($request->code)->exists) {
+            abort(409, 'Team already exists');
         }
         foreach ($request->all() as $key => $value) {
             $team->$key = $value;
@@ -70,8 +62,9 @@ class TeamController extends Controller
         $team->save();
         $team = new TeamResource($team);
         Cache::forget('e5n.teams.all');
-        Cache::forget('e5n.teams.' . $teamCode);
-        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team))->jsonSerialize());
+        Cache::forget('e5n.teams.'.$teamCode);
+
+        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => (new TeamResource($team))->jsonSerialize());
     }
 
     /**
@@ -79,7 +72,7 @@ class TeamController extends Controller
      */
     public function show($teamCode)
     {
-        return Cache::rememberForever('e5n.teams.' . $teamCode, fn () => (new TeamResource(Team::findOrFail($teamCode)->load('members', 'activity')))->jsonSerialize());
+        return Cache::rememberForever('e5n.teams.'.$teamCode, fn () => (new TeamResource(Team::findOrFail($teamCode)->load('members', 'activity')))->jsonSerialize());
     }
 
     /**
@@ -90,7 +83,8 @@ class TeamController extends Controller
         $team = Team::where('code', $teamCode)->firstOrFail();
         $team->delete();
         Cache::forget('e5n.teams.all');
-        Cache::forget('e5n.teams.' . $teamCode);
+        Cache::forget('e5n.teams.'.$teamCode);
+
         return response()->noContent();
     }
 
@@ -102,15 +96,14 @@ class TeamController extends Controller
         $team = Team::withTrashed()->where('code', $teamCode)->firstOrFail();
         $team->restore();
         Cache::forget('e5n.teams.all');
-        Cache::forget('e5n.teams.' . $team->code);
-        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members', 'activity')))->jsonSerialize());
-    }
+        Cache::forget('e5n.teams.'.$team->code);
 
+        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => (new TeamResource($team->load('members', 'activity')))->jsonSerialize());
+    }
 
     /**
      * Promote, demote, kick or invite a user to a team
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  string  $teamCode
      * @return \Illuminate\Http\Response
      */
@@ -148,13 +141,13 @@ class TeamController extends Controller
                     $updatableRole = MembershipType::Invited->value;
                     break;
                 } else {
-                    abort(400, "User is not in the team");
+                    abort(400, 'User is not in the team');
                     break;
                 }
         }
         if ($kick) {
             TeamMembership::where('team_code', $teamCode)->where('user_id', request()->userId)->delete();
-            Cache::forget("user." . request()->userId . '.teams');
+            Cache::forget('user.'.request()->userId.'.teams');
         } else {
             $membership = TeamMembership::where('team_code', $teamCode)->where('user_id', request()->userId)->first();
             if ($membership) {
@@ -171,11 +164,12 @@ class TeamController extends Controller
             }
         }
         Cache::forget('e5n.teams.all');
-        Cache::forget('e5n.teams.' . $team->code);
+        Cache::forget('e5n.teams.'.$team->code);
         $team = $team->refresh();
         foreach ($team->members as $member) {
-            Cache::forget("user." . $member->id . '.teams');
+            Cache::forget('user.'.$member->id.'.teams');
         }
-        return Cache::rememberForever('e5n.teams.' . $team->code, fn () => (new TeamResource($team->load('members', 'activity')))->jsonSerialize());
+
+        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => (new TeamResource($team->load('members', 'activity')))->jsonSerialize());
     }
 }

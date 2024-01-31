@@ -4,80 +4,76 @@ namespace App\Http\Controllers\E5N;
 
 use App\Exceptions\NotAllowedException;
 use App\Exceptions\ResourceDidNoExistException;
+use App\Helpers\PermissionType;
+use App\Helpers\SlotType;
 use App\Http\Controllers\{
     Controller
 };
-
-
-use App\Models\{
-    Attendance,
-    Event,
-    User,
-    Team,
-    Slot,
-    TeamMembership,
-};
-
-use App\Helpers\SlotType;
+use App\Http\Resources\EventResource;
+use App\Http\Resources\SlotResource;
+use App\Http\Resources\TeamResource;
+use App\Http\Resources\UserResource;
+use App\Models\Attendance;
+use App\Models\Event;
+use App\Models\Slot;
+use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\{
     Cache,
 };
-use App\Helpers\PermissionType;
-use App\Http\Resources\EventResource;
-use App\Http\Resources\SlotResource;
-use App\Http\Resources\UserResource;
-use App\Http\Resources\TeamResource;
 
 class EventController extends Controller
 {
-
     /**
      * return event list
+     *
      * @return \Illuminate\Http\Response
      */
-    public function index(int $slotId = null)
+    public function index(?int $slotId = null)
     {
         if (isset($slotId)) {
             if (isset(request()->q)) {
                 return response()->json(EventResource::collection(
                     Event::with('slot', 'location')
                         ->where('slot_id', $slotId)
-                        ->where('name', 'like', '%' . request()->q . '%')
+                        ->where('name', 'like', '%'.request()->q.'%')
                         ->get()->load('slot', 'location')
                 ));
             }
-            return Cache::rememberForever('e5n.events.slot.' . $slotId, fn () => EventResource::collection(Event::with('slot', 'location')->where('slot_id', $slotId)->get())->jsonSerialize());
+
+            return Cache::rememberForever('e5n.events.slot.'.$slotId, fn () => EventResource::collection(Event::with('slot', 'location')->where('slot_id', $slotId)->get())->jsonSerialize());
         }
         if (isset(request()->q)) {
             return response()->json(EventResource::collection(
-                Event::where('name', 'like', '%' . request()->q . '%')
+                Event::where('name', 'like', '%'.request()->q.'%')
                     ->get()->load('slot', 'location')
             ));
         }
+
         return Cache::rememberForever('e5n.events.all', fn () => EventResource::collection(Event::all()->load('slot', 'location'))->jsonSerialize());
     }
 
     /**
      * Create an event.
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $slot = Slot::find($request->slot_id);
         $newData = $request->all();
-        if (!isset($newData["signup_type"])) {
-            $newData["signup_deadline"] = null;
-            $newData["capacity"] = null;
+        if (! isset($newData['signup_type'])) {
+            $newData['signup_deadline'] = null;
+            $newData['capacity'] = null;
         } else {
-            $newData["signup_deadline"] = $newData["signup_deadline"] ?? $slot->starts_at;
+            $newData['signup_deadline'] = $newData['signup_deadline'] ?? $slot->starts_at;
         }
-        if ($newData["starts_at"] < $slot->starts_at) {
-            $newData["starts_at"] = $slot->starts_at;
+        if ($newData['starts_at'] < $slot->starts_at) {
+            $newData['starts_at'] = $slot->starts_at;
         }
-        if ($newData["ends_at"] > $slot->ends_at) {
-            $newData["ends_at"] = $slot->ends_at;
+        if ($newData['ends_at'] > $slot->ends_at) {
+            $newData['ends_at'] = $slot->ends_at;
         }
         $event = Event::create($newData);
         $event = new EventResource($event);
@@ -85,17 +81,20 @@ class EventController extends Controller
         if ($slot->slot_type == SlotType::presentation->value) {
             Cache::forget('e5n.events.presentations');
         }
-        return Cache::rememberForever('e5n.events.' . $event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
+
+        return Cache::rememberForever('e5n.events.'.$event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
     }
 
     /**
      * return specific event
+     *
      * @return \Illuminate\Http\Response
      */
     public function show(int $id)
     {
-        return Cache::rememberForever('e5n.events.' . $id, function () use ($id) {
+        return Cache::rememberForever('e5n.events.'.$id, function () use ($id) {
             $data = new EventResource(Event::findOrFail($id)->load('slot', 'location'));
+
             return $data->jsonSerialize();
         });
     }
@@ -109,17 +108,17 @@ class EventController extends Controller
     {
         $slot = Slot::find($request->slot_id);
         $newData = $request->all();
-        if (!isset($newData["signup_type"])) {
-            $newData["signup_deadline"] = null;
-            $newData["capacity"] = null;
+        if (! isset($newData['signup_type'])) {
+            $newData['signup_deadline'] = null;
+            $newData['capacity'] = null;
         } else {
-            $newData["signup_deadline"] = $newData["signup_deadline"] ?? $slot->starts_at;
+            $newData['signup_deadline'] = $newData['signup_deadline'] ?? $slot->starts_at;
         }
-        if ($newData["starts_at"] < $slot->starts_at) {
-            $newData["starts_at"] = $slot->starts_at;
+        if ($newData['starts_at'] < $slot->starts_at) {
+            $newData['starts_at'] = $slot->starts_at;
         }
-        if ($newData["ends_at"] > $slot->ends_at) {
-            $newData["ends_at"] = $slot->ends_at;
+        if ($newData['ends_at'] > $slot->ends_at) {
+            $newData['ends_at'] = $slot->ends_at;
         }
         $event = Event::findOrFail($eventId);
         foreach ($newData as $key => $value) {
@@ -128,8 +127,9 @@ class EventController extends Controller
         $event->save();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forget('e5n.events.' . $eventId);
-        return Cache::rememberForever('e5n.events.' . $eventId, (new EventResource($event->load('slot', 'location')))->jsonSerialize());
+        Cache::forget('e5n.events.'.$eventId);
+
+        return Cache::rememberForever('e5n.events.'.$eventId, (new EventResource($event->load('slot', 'location')))->jsonSerialize());
     }
 
     /**
@@ -140,11 +140,12 @@ class EventController extends Controller
     public function delete($eventId)
     {
         $event = Event::findOrFail($eventId);
-        Cache::forget('e5n.events.slot.' . $event->slot_id);
+        Cache::forget('e5n.events.slot.'.$event->slot_id);
         $event->delete();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forget('e5n.events.' . $eventId);
+        Cache::forget('e5n.events.'.$eventId);
+
         return response()->noContent();
     }
 
@@ -160,12 +161,14 @@ class EventController extends Controller
         $event = new EventResource($event);
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forget('e5n.events.' . $event->id);
-        return Cache::rememberForever('e5n.events.' . $event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
+        Cache::forget('e5n.events.'.$event->id);
+
+        return Cache::rememberForever('e5n.events.'.$event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
     }
 
     /**
      * close signup of event
+     *
      * @return \Illuminate\Http\Response
      */
     public function close_signup($eventId)
@@ -175,12 +178,14 @@ class EventController extends Controller
         $event->save();
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forget('e5n.events.' . $event->id);
-        return Cache::rememberForever('e5n.events.' . $event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
+        Cache::forget('e5n.events.'.$event->id);
+
+        return Cache::rememberForever('e5n.events.'.$event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
     }
 
     /**
      * return all presentations
+     *
      * @return \Illuminate\Http\Response
      */
     public function presentations()
@@ -194,17 +199,18 @@ class EventController extends Controller
     public function signup(Request $request, $eventId)
     {
         $event = Event::findOrFail($eventId);
-        if (!is_numeric($request->attender)) {
+        if (! is_numeric($request->attender)) {
             $attender = strlen($request->attender) == 13 ? User::where('e5code', $request->attender)->firstOrFail() : Team::where('code', $request->attender)->firstOrFail();
         } else {
             $attender = User::findOrFail($request->attender);
         }
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forget('e5n.events.mypresentations.' . ($attender->e5code ?? $attender->code));
-        Cache::forget('e5n.events.' . $event->id . '.signups');
-        Cache::forget('e5n.events.slot.' . $event->slot_id);
-        Cache::forget('e5n.events.' . $event->id);
+        Cache::forget('e5n.events.mypresentations.'.($attender->e5code ?? $attender->code));
+        Cache::forget('e5n.events.'.$event->id.'.signups');
+        Cache::forget('e5n.events.slot.'.$event->slot_id);
+        Cache::forget('e5n.events.'.$event->id);
+
         return response($attender->signUp($event), 201);
     }
 
@@ -214,11 +220,11 @@ class EventController extends Controller
     public function unsignup(Request $request, $eventId, $force = false)
     {
         $event = Event::findOrFail($eventId);
-        if (!$force && $event->root_parent !== null) {
+        if (! $force && $event->root_parent !== null) {
             return EventController::unsignup($request, $event->root_parent);
         }
         $attender = strlen($request->attender) == 13 || is_numeric($request->attender) ? 'user_id' : 'team_code';
-        $attenderId = $attender === 'user_id' && !is_numeric($request->attender) ? User::where('e5code', $request->attender)->firstOrFail()->id : $request->attender;
+        $attenderId = $attender === 'user_id' && ! is_numeric($request->attender) ? User::where('e5code', $request->attender)->firstOrFail()->id : $request->attender;
         $attendance = Attendance::where('event_id', $eventId)->where($attender, $attenderId)->first();
         if ($attendance === null) {
             throw new ResourceDidNoExistException();
@@ -234,11 +240,12 @@ class EventController extends Controller
 
         Cache::forget('e5n.events.all');
         Cache::forget('e5n.events.presentations');
-        Cache::forget('e5n.events.mypresentations.' . $request->attender);
-        Cache::forget('e5n.events.' . $eventId . '.signups');
-        Cache::forget('e5n.events.slot.' . Event::find($eventId)?->slot_id);
-        Cache::forget('e5n.events.' . $eventId);
+        Cache::forget('e5n.events.mypresentations.'.$request->attender);
+        Cache::forget('e5n.events.'.$eventId.'.signups');
+        Cache::forget('e5n.events.slot.'.Event::find($eventId)?->slot_id);
+        Cache::forget('e5n.events.'.$eventId);
         $event->forget('occupancy');
+
         return $event->root_parent === null ? response()->noContent() : null;
     }
 
@@ -253,7 +260,8 @@ class EventController extends Controller
             : (strlen($request->attender) == 13
                 ? User::where('e5code', $request->attender)->firstOrFail()
                 : Team::where('code', $request->attender)->firstOrFail());
-        Cache::forget('e5n.events.' . $event->id . '.signups');
+        Cache::forget('e5n.events.'.$event->id.'.signups');
+
         return response($attender->attend($event), 200);
     }
 
@@ -262,12 +270,12 @@ class EventController extends Controller
         $attendance = Attendance::findOrFail($attendanceId)->load('team');
         $event = $attendance->event;
         $memberAttendances = json_decode(request()->memberAttendances, true);
-        $attendingCount = sizeof(array_filter($memberAttendances, fn ($memberAttendance) => $memberAttendance['is_present']));
+        $attendingCount = count(array_filter($memberAttendances, fn ($memberAttendance) => $memberAttendance['is_present']));
         if ($event->min_team_size && $event->min_team_size > $attendingCount) {
-            throw new NotAllowedException("too few");
+            throw new NotAllowedException('too few');
         }
         if ($event->max_team_size && $event->max_team_size < $attendingCount) {
-            throw new NotAllowedException("too much");
+            throw new NotAllowedException('too much');
         }
         $attendance->teamMemberAttendances()->upsert(
             collect($memberAttendances)->map(fn ($memberAttendance) => [
@@ -279,7 +287,8 @@ class EventController extends Controller
             ['is_present']
         );
 
-        Cache::forget('teams.' . $attendance->team->code);
+        Cache::forget('teams.'.$attendance->team->code);
+
         return response()->json($attendance->teamMemberAttendances, 200);
     }
 
@@ -289,10 +298,11 @@ class EventController extends Controller
     public function participants($eventId)
     {
         return Cache::rememberForever(
-            'e5n.events.' . $eventId . '.signups',
+            'e5n.events.'.$eventId.'.signups',
             function () use ($eventId) {
                 $event = Event::findOrFail($eventId)->load('attendances.user:id,name,ejg_class', 'attendances.team.members:id,name,ejg_class', 'attendances.teamMemberAttendances'); // roland to check
-                return UserResource::collection($event->users)->concat(TeamResource::collection($event->teams()->get()->load("members")))->jsonSerialize();
+
+                return UserResource::collection($event->users)->concat(TeamResource::collection($event->teams()->get()->load('members')))->jsonSerialize();
             }
         );
     }
@@ -302,22 +312,23 @@ class EventController extends Controller
      */
     public function myPresentations(Request $request)
     {
-        $user = User::findOrFail($request->user()->id)->load("presentations.location");
+        $user = User::findOrFail($request->user()->id)->load('presentations.location');
+
         return Cache::rememberForever(
-            'e5n.events.mypresentations.' . $user->e5code,
-            fn () => EventResource::collection($user->presentations->load("location"))->jsonSerialize()
+            'e5n.events.mypresentations.'.$user->e5code,
+            fn () => EventResource::collection($user->presentations->load('location'))->jsonSerialize()
         );
     }
 
     public function setScore(Request $request, $eventID)
     {
         if (empty($request->attender)) {
-            abort("400", "No attendeder");
+            abort('400', 'No attendeder');
         }
         $event = Event::findOrFail($eventID);
         if (is_numeric($request->attender)) {
             $attendance = $event->attendances()->where('user_id', $request->attender)->findOrFail();
-        } else if (strlen($request->attender) == 13) {
+        } elseif (strlen($request->attender) == 13) {
             $user = User::where('e5code', $request->attender)->firstOrFail();
             $attendance = $event->attendances()->whereBelongsTo($user)->findOrFail();
         } else {
@@ -328,8 +339,8 @@ class EventController extends Controller
         $attendance->rank = $request->rank;
         $attendance->save();
 
-        Cache::forget('e5n.teams.' . $attendance->team->code);
-        Cache::forget('e5n.events.' . $eventID);
+        Cache::forget('e5n.teams.'.$attendance->team->code);
+        Cache::forget('e5n.events.'.$eventID);
 
         return response()->noContent();
     }

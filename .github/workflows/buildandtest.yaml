@@ -28,6 +28,10 @@ jobs:
           prettier: true
           prettier_extensions: "css,html,js,json,jsx,md,sass,scss,ts,tsx,vue,yaml,yml"
       - name: Run backend linters
-        run: /vendor/bin/pint --dirty --test
+        run: vendor/bin/pint --dirty --test
       - name: Build frontend
         run: npm run build
+      - name: Run backend tests
+        run: php artisan test
+      - name: Run frontend tests
+        run: npm run test

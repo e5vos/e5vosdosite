@@ -28,7 +28,7 @@ const locale = Locale({
         presentation: {
             title: "Előadás címe",
             organiser: "Előadó",
-            description: "Előadás leírása",
+            description: "Mikor van még?",
             location: "Előadás helye",
             freeCapacity: "Szabad helyek",
             multislot: {
@@ -54,7 +54,7 @@ const locale = Locale({
         presentation: {
             title: "Presentation title",
             organiser: "Organiser",
-            description: "Presentation description",
+            description: "Alternatives",
             location: "Presentation location",
             freeCapacity: "Free capacity",
             multislot: {
@@ -100,7 +100,7 @@ const PresentationsTable = ({
                     </th>
                     <th className="py-1">{locale.presentation.organiser}</th>
                     <th className="py-1">{locale.presentation.description}</th>
-                    <th>{locale.presentation.location}</th>
+                    {/*<th>{locale.presentation.location}</th>*/}
                     <th className="rounded-r-lg py-1 md:min-w-fit">
                         {locale.presentation.freeCapacity}
                     </th>
@@ -172,17 +172,17 @@ const PresentationsTable = ({
                                     )}
                                 </div>
                             </td>
-                            <td className="text-bold text-center text-2xl font-semibold md:text-lg">
-                                <div className="flex h-full flex-col justify-around">
-                                    <div className="font-bold md:hidden">
-                                        {locale.presentation.location}
-                                    </div>
-                                    <div>
-                                        {presentation.location?.name ??
-                                            "Ismeretlen hely"}
-                                    </div>
-                                </div>
-                            </td>
+                            {/*<td className="text-bold text-center text-2xl font-semibold md:text-lg">*/}
+                            {/*    <div className="flex h-full flex-col justify-around">*/}
+                            {/*        <div className="font-bold md:hidden">*/}
+                            {/*            {locale.presentation.location}*/}
+                            {/*        </div>*/}
+                            {/*        <div>*/}
+                            {/*            {presentation.location?.name ??*/}
+                            {/*                "Ismeretlen hely"}*/}
+                            {/*        </div>*/}
+                            {/*    </div>*/}
+                            {/*</td>*/}
                             <td
                                 className={
                                     "m-4 whitespace-normal rounded-l-lg rounded-r-lg border-hidden  px-2 py-2 text-center text-black md:h-24 md:rounded-l-none md:py-0 " +

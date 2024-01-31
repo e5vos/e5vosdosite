@@ -19,7 +19,7 @@ import { Title } from "components/UIKit/Typography";
 
 const locale = Locale({
     hu: {
-        title: "Eötvös Napok - Előadásjelentkezés",
+        title: "PályaProgram - Előadásjelentkezés",
         selectedPresentation: "Általad választott előadás",
         presentationNotYetSelected: "Még nem választottál előadást",
         select: "Választás",
@@ -35,7 +35,7 @@ const locale = Locale({
         ),
     },
     en: {
-        title: "E5N - Presentation signup",
+        title: "PályaProgram - Presentation signup",
         selectedPresentation: "Your selected presentation",
         presentationNotYetSelected: "You have not selected a presentation yet",
         select: "Select",
@@ -72,15 +72,15 @@ const SelectField = ({
                     {selectedPresentation?.name ??
                         locale.presentationNotYetSelected}
                 </div>
-                {selectedPresentation && (
-                    <div className="mt-2 rounded-lg bg-goldenrod p-3 ">
-                        <div className="text-lg">
-                            <IoLocationSharp className="inline-block text-xl" />
-                            {selectedPresentation.location?.name ??
-                                locale.unknownLocation}
-                        </div>
-                    </div>
-                )}
+                {/*{selectedPresentation && (*/}
+                {/*    <div className="mt-2 rounded-lg bg-goldenrod p-3 ">*/}
+                {/*        <div className="text-lg">*/}
+                {/*            <IoLocationSharp className="inline-block text-xl" />*/}
+                {/*            {selectedPresentation.location?.name ??*/}
+                {/*                locale.unknownLocation}*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*)}*/}
             </div>
             <Button
                 variant="danger"

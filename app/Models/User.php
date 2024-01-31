@@ -318,8 +318,7 @@ class User extends Authenticatable
         }
         $signup->save();
         $event->forget('occupancy');
-
-        return $signup;
+        return $signup->load('user');
     }
 
     /**

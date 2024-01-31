@@ -10,7 +10,7 @@ const locale = Locale({
     hu: {
         title: "Kezdőlap",
         subtitle:
-            "Üdvözlünk az Eötvös Napok koordinálásáért felelős rendszerben. Itt jelentkezhetsz előadásokra és eseményekre, és gyűjthetsz pontokat a csapatoddal.",
+            "Üdvözlünk az PályaProgram koordinálásáért felelős rendszerben. Itt jelentkezhetsz előadásokra.",
         login: "Bejelentkezés",
         events: "Események",
         eventsBySlot: "Események időpont szerint",
@@ -21,7 +21,7 @@ const locale = Locale({
     en: {
         title: "Home",
         subtitle:
-            "Welcome to the system responsible for coordinating the Eötvös Days. Here you can sign up for presentations and events, and collect points with your team.",
+            "Welcome to the system responsible for coordinating the PályaProgram. Here you can sign up for presentations.",
         login: "Login",
         events: "Events",
         eventsBySlot: "Events by slot",
@@ -53,6 +53,7 @@ const Home = () => {
                                 </Link>
                             </>
                         )}
+                        {/*
                         <Link to="https://info.e5vosdo.hu">
                             <Button
                                 className="!w-full"
@@ -85,6 +86,7 @@ const Home = () => {
                                 {locale.eventsBySlot}
                             </Button>
                         </Link>
+                        */}
                         <Link to="/eloadas">
                             <Button className="!w-full" variant="outline-info">
                                 {locale.presentationSignup}

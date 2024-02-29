@@ -22,7 +22,7 @@ const locale = Locale({
   en: {
     title: "Home",
     subtitle: `Welcome to the system responsible for coordinating the ${
-      import.meta.env.VITE_EVENT_HU_SHORT
+      import.meta.env.VITE_EVENT_EN
     }. Here you can sign up for presentations and events, and collect points with your team, if the system is configured that way.`,
     login: "Login",
     events: "Events",

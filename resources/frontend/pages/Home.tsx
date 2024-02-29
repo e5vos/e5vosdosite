@@ -11,7 +11,7 @@ const locale = Locale({
     title: "Kezdőlap",
     subtitle: `Üdvözlünk az ${
       import.meta.env.VITE_EVENT_HU
-    } koordinálásáért felelős rendszerben. Itt jelentkezhetsz előadásokra és eseményekre, és gyűjthetsz pontokat a csapatoddal, amennyiben a program azt lehetővé teszi.`,
+    } koordinálásáért felelős rendszerben. Itt tudsz előadásokra jelentkezni.`,
     login: "Bejelentkezés",
     events: "Események",
     eventsBySlot: "Események időpont szerint",
@@ -23,7 +23,7 @@ const locale = Locale({
     title: "Home",
     subtitle: `Welcome to the system responsible for coordinating the ${
       import.meta.env.VITE_EVENT_EN
-    }. Here you can sign up for presentations and events, and collect points with your team, if the system is configured that way.`,
+    }. Here you can sign up for presentations.`,
     login: "Login",
     events: "Events",
     eventsBySlot: "Events by slot",
@@ -57,6 +57,7 @@ const Home = () => {
                 {locale.suInformation}
               </Button>
             </Link>
+            {/*
             <Link to="/csapat">
               <Button className="!w-full" variant="outline-warning">
                 {locale.teams}
@@ -72,6 +73,7 @@ const Home = () => {
                 {locale.eventsBySlot}
               </Button>
             </Link>
+            */}
             <Link to="/eloadas">
               <Button className="!w-full" variant="outline-info">
                 {locale.presentationSignup}

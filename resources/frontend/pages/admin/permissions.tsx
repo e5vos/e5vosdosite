@@ -1,35 +1,35 @@
-import { useState } from "react";
+import { useState } from 'react'
 
-import { RequiredFields } from "types/misc";
-import { User } from "types/models";
+import { RequiredFields } from 'types/misc'
+import { User } from 'types/models'
 
-import baseAPI from "lib/api";
-import { isAdmin } from "lib/gates";
-import Locale from "lib/locale";
+import baseAPI from 'lib/api'
+import { isAdmin } from 'lib/gates'
+import Locale from 'lib/locale'
 
-import Error from "components/Error";
-import { gated } from "components/Gate";
-import PermissionCRUD from "components/Permissions/CRUD";
-import Loader from "components/UIKit/Loader";
-import UserSearchCombobox from "components/User/UserSearch";
+import Error from 'components/Error'
+import { gated } from 'components/Gate'
+import PermissionCRUD from 'components/Permissions/CRUD'
+import Loader from 'components/UIKit/Loader'
+import UserSearchCombobox from 'components/User/UserSearch'
 
 const locale = Locale({
     hu: {
-        title: "Jogosultságok",
-        userspermissions: "jogosultságai",
-        new: "Új jogosultság",
+        title: 'Jogosultságok',
+        userspermissions: 'jogosultságai',
+        new: 'Új jogosultság',
     },
     en: {
-        title: "Permissions",
-        userspermissions: "permissions",
-        new: "New permission",
+        title: 'Permissions',
+        userspermissions: 'permissions',
+        new: 'New permission',
     },
-});
+})
 
 const PermissionView = ({
     user,
 }: {
-    user: RequiredFields<User, "permissions">;
+    user: RequiredFields<User, 'permissions'>
 }) => {
     return (
         <div className="mx-auto max-w-lg">
@@ -49,17 +49,17 @@ const PermissionView = ({
             </div>
             <hr className="my-5" />
         </div>
-    );
-};
+    )
+}
 
 const PermissionsPage = () => {
-    const [userID, setUserID] = useState(-1);
+    const [userID, setUserID] = useState(-1)
 
     const {
         data: selecteduser,
         isLoading,
         error,
-    } = baseAPI.useGetUserQuery({ id: userID });
+    } = baseAPI.useGetUserQuery({ id: userID })
 
     return (
         <div className="mx-auto max-w-lg text-center">
@@ -70,7 +70,7 @@ const PermissionsPage = () => {
                 <UserSearchCombobox
                     className="!rounded-r-lg"
                     onChange={(u) => {
-                        setUserID(u.id);
+                        setUserID(u.id)
                     }}
                 />
             </div>
@@ -82,7 +82,7 @@ const PermissionsPage = () => {
                 <PermissionCRUD.Creator resetOnSubmit={true} value={{}} />
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default gated(PermissionsPage, isAdmin);
+export default gated(PermissionsPage, isAdmin)

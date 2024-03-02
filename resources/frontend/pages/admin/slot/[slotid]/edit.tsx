@@ -1,59 +1,59 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
-import { Slot } from "types/models";
+import { Slot } from 'types/models'
 
-import eventAPI from "lib/api/eventAPI";
-import { isAdmin } from "lib/gates";
-import Locale from "lib/locale";
+import eventAPI from 'lib/api/eventAPI'
+import { isAdmin } from 'lib/gates'
+import Locale from 'lib/locale'
 
-import { gated } from "components/Gate";
-import SlotCRUD from "components/Slot/CRUD";
-import Loader from "components/UIKit/Loader";
+import { gated } from 'components/Gate'
+import SlotCRUD from 'components/Slot/CRUD'
+import Loader from 'components/UIKit/Loader'
 
 const locale = Locale({
     hu: {
-        title: "Sáv szerkesztése",
+        title: 'Sáv szerkesztése',
         slot: {
-            name: "Sáv neve",
-            slot_type: "Sáv típusa",
-            starts_at: "Sáv kezdete",
-            ends_at: "Sáv vége",
+            name: 'Sáv neve',
+            slot_type: 'Sáv típusa',
+            starts_at: 'Sáv kezdete',
+            ends_at: 'Sáv vége',
         },
-        submit: "Frissítés",
-        required: "Kötelező mező",
+        submit: 'Frissítés',
+        required: 'Kötelező mező',
     },
     en: {
-        title: "Edit slot",
+        title: 'Edit slot',
         slot: {
-            name: "Slot name",
-            slot_type: "Slot type",
-            starts_at: "Slot start",
-            ends_at: "Slot end",
+            name: 'Slot name',
+            slot_type: 'Slot type',
+            starts_at: 'Slot start',
+            ends_at: 'Slot end',
         },
-        submit: "Update",
-        required: "Required",
+        submit: 'Update',
+        required: 'Required',
     },
-});
+})
 const EditSlotPage = () => {
-    const { slotid } = useParams();
-    const { data: slots } = eventAPI.useGetSlotsQuery();
+    const { slotid } = useParams()
+    const { data: slots } = eventAPI.useGetSlotsQuery()
     const [initialValues, setInitialValue] = useState<Slot>({
         id: -1,
-        name: "",
-        slot_type: "Előadássáv",
-        starts_at: "",
-        ends_at: "",
-    });
+        name: '',
+        slot_type: 'Előadássáv',
+        starts_at: '',
+        ends_at: '',
+    })
 
     useEffect(() => {
-        const slotIdAsNum = Number(slotid);
-        const slot = slots?.find((slot) => slot.id === slotIdAsNum);
-        if (!slot) return;
-        setInitialValue(slot);
-    }, [slotid, slots]);
+        const slotIdAsNum = Number(slotid)
+        const slot = slots?.find((slot) => slot.id === slotIdAsNum)
+        if (!slot) return
+        setInitialValue(slot)
+    }, [slotid, slots])
 
-    if (initialValues.name === "") return <Loader />;
+    if (initialValues.name === '') return <Loader />
     return (
         <div>
             <div className="mx-auto max-w-4xl">
@@ -65,7 +65,7 @@ const EditSlotPage = () => {
                 <SlotCRUD.Updater value={initialValues} />
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default gated(EditSlotPage, isAdmin);
+export default gated(EditSlotPage, isAdmin)

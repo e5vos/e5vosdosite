@@ -1,4 +1,4 @@
 interface Window {
-    statusCode: number | undefined;
-    message: string | undefined;
+    statusCode: number | undefined
+    message: string | undefined
 }

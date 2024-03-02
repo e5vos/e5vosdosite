@@ -1,21 +1,21 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-import { DefaultLocale, LocaleLanguages } from "lib/locale";
+import { DefaultLocale, LocaleLanguages } from 'lib/locale'
 
 const initialState: {
-    language: LocaleLanguages;
+    language: LocaleLanguages
 } = {
     language: DefaultLocale,
-};
+}
 
 export const settingsSlice = createSlice({
-    name: "settings",
+    name: 'settings',
     initialState: initialState,
     reducers: {
         setLanguage: (state, action: PayloadAction<LocaleLanguages>) => {
-            state.language = action.payload;
+            state.language = action.payload
         },
     },
-});
+})
 
-export default settingsSlice.reducer;
+export default settingsSlice.reducer

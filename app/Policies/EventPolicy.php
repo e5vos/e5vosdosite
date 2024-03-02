@@ -3,8 +3,8 @@
 namespace App\Policies;
 
 use App\Exceptions\AttendanceRegisterDisabledException;
-use App\Exceptions\SignupDisabledException;
 use App\Exceptions\SignupClosedException;
+use App\Exceptions\SignupDisabledException;
 use App\Exceptions\SignupRequiredException;
 use App\Exceptions\WrongSignupTypeException;
 use App\Helpers\PermissionType;
@@ -92,17 +92,16 @@ class EventPolicy
     /**
      * Determine if the user can attend the event.
      *
-     * @param User $user
-     * @param \App\Models\Event|null $event
      *
      * @return bool
+     *
      * @throws \App\Exceptions\SignupDisabledException
      * @throws \App\Exceptions\SignupClosedException
      * @throws \App\Exceptions\WrongSignupTypeException
      */
     public function signup(User $user, ?Event $event = null)
     {
-        if (!Setting::find('e5n.events.signup')?->value) {
+        if (! Setting::find('e5n.events.signup')?->value) {
             throw new SignupDisabledException();
         }
         $event ??= Event::findOrFail(request()->eventId);
@@ -126,10 +125,9 @@ class EventPolicy
     /**
      * Determine if the user can cancel the signup for the event.
      *
-     * @param User $user
-     * @param \App\Models\Event|null $event
      *
      * @return bool
+     *
      * @throws \App\Exceptions\SignupDisabledException
      * @throws \App\Exceptions\SignupClosedException
      */
@@ -139,7 +137,7 @@ class EventPolicy
             abort(400, 'No attender specified');
         }
 
-        if (!Setting::find('e5n.events.signup')?->value) {
+        if (! Setting::find('e5n.events.signup')?->value) {
             throw new SignupDisabledException();
         }
 
@@ -154,10 +152,9 @@ class EventPolicy
     /**
      * Determine if the user can attend the event.
      *
-     * @param User $user
-     * @param \App\Models\Event|null $event
      *
      * @return bool
+     *
      * @throws \App\Exceptions\AttendanceRegisterDisabledException
      * @throws \App\Exceptions\SignupClosedException
      * @throws \App\Exceptions\SignupRequiredException
@@ -165,7 +162,7 @@ class EventPolicy
      */
     public function attend(User $user, ?Event $event = null)
     {
-        if (!Setting::find('e5n')?->value) {
+        if (! Setting::find('e5n')?->value) {
             throw new AttendanceRegisterDisabledException();
         }
         $event ??= Event::findOrFail(request()->eventId)->load('slot');

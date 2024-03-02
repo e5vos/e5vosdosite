@@ -1,4 +1,4 @@
-import { RequiredFields } from "types/misc";
+import { RequiredFields } from 'types/misc'
 import {
     Attender,
     Event,
@@ -9,122 +9,122 @@ import {
     TeamAttendance,
     TeamMemberAttendance,
     UserAttendance,
-} from "types/models";
+} from 'types/models'
 
-import routeSwitcher from "lib/route";
+import routeSwitcher from 'lib/route'
 
-import baseAPI from ".";
+import baseAPI from '.'
 
 export const eventAPI = baseAPI.injectEndpoints({
     endpoints: (builder) => ({
         getEvents: builder.query<
             EventStub[] | undefined,
-            Pick<Slot, "id"> | void
+            Pick<Slot, 'id'> | void
         >({
             query: (slot?) =>
                 slot
-                    ? routeSwitcher("events.slot", { slot_id: slot.id })
-                    : routeSwitcher("events.index"),
+                    ? routeSwitcher('events.slot', { slot_id: slot.id })
+                    : routeSwitcher('events.index'),
             transformResponse: (response: any) => {
-                if (!Array.isArray(response)) return [response];
-                else return response;
+                if (!Array.isArray(response)) return [response]
+                else return response
             },
             providesTags: (result) => {
                 if (result) {
                     return [
                         ...result.map(
-                            ({ id }) => ({ type: "Event", id: id }) as const,
+                            ({ id }) => ({ type: 'Event', id: id }) as const
                         ),
                         ...result.map(
                             ({ slot }) =>
                                 ({
-                                    type: "Event",
+                                    type: 'Event',
                                     id: `LIST${slot}`,
-                                }) as const,
+                                }) as const
                         ),
-                        { type: "Event", id: "LIST" },
-                    ];
+                        { type: 'Event', id: 'LIST' },
+                    ]
                 } else {
-                    return [{ type: "Event", id: "LIST" }];
+                    return [{ type: 'Event', id: 'LIST' }]
                 }
             },
         }),
         getEvent: builder.query<
-            RequiredFields<Event, "slot" | "location">,
-            Pick<Event, "id">
+            RequiredFields<Event, 'slot' | 'location'>,
+            Pick<Event, 'id'>
         >({
-            query: ({ id }) => routeSwitcher("event.show", { eventId: id }),
-            providesTags: (result, error, { id }) => [{ type: "Event", id }],
+            query: ({ id }) => routeSwitcher('event.show', { eventId: id }),
+            providesTags: (result, error, { id }) => [{ type: 'Event', id }],
         }),
-        getEventParticipants: builder.query<Attender[], Pick<Event, "id">>({
-            query: ({ id }) => routeSwitcher("event.participants", id),
+        getEventParticipants: builder.query<Attender[], Pick<Event, 'id'>>({
+            query: ({ id }) => routeSwitcher('event.participants', id),
             providesTags: (result, error, { id }) => [
-                { type: "EventParticipants", id },
+                { type: 'EventParticipants', id },
             ],
         }),
-        getSlots: builder.query<Omit<Slot, "events">[], void>({
-            query: () => routeSwitcher("slot.index"),
+        getSlots: builder.query<Omit<Slot, 'events'>[], void>({
+            query: () => routeSwitcher('slot.index'),
             transformResponse: (response: any) => {
-                if (!Array.isArray(response)) return [response];
-                else return response;
+                if (!Array.isArray(response)) return [response]
+                else return response
             },
             providesTags: (result) => {
                 if (result) {
                     return [
                         ...result.map(
-                            ({ id }) => ({ type: "Slot", id: id }) as const,
+                            ({ id }) => ({ type: 'Slot', id: id }) as const
                         ),
-                        { type: "Slot", id: "LIST" },
-                    ];
-                } else return [{ type: "Slot", id: "LIST" }];
+                        { type: 'Slot', id: 'LIST' },
+                    ]
+                } else return [{ type: 'Slot', id: 'LIST' }]
             },
         }),
         createEvent: builder.mutation<
             Event,
-            Omit<Event, "id" | "occupancy" | "">
+            Omit<Event, 'id' | 'occupancy' | ''>
         >({
             query: (event) => ({
-                url: routeSwitcher("events"),
-                method: "POST",
+                url: routeSwitcher('events'),
+                method: 'POST',
                 body: event,
             }),
             invalidatesTags: (result) => [
-                { type: "Event", id: `LIST${result?.slot_id}` },
-                { type: "Event", id: "LIST" },
+                { type: 'Event', id: `LIST${result?.slot_id}` },
+                { type: 'Event', id: 'LIST' },
             ],
         }),
-        editEvent: builder.mutation<Event, Omit<Event, "occupancy">>({
+        editEvent: builder.mutation<Event, Omit<Event, 'occupancy'>>({
             query: (event) => ({
-                url: routeSwitcher("event.update", { id: event.id }),
-                method: "PUT",
+                url: routeSwitcher('event.update', { id: event.id }),
+                method: 'PUT',
                 body: event,
             }),
             invalidatesTags: (result) => [
-                { type: "Event", id: result?.id },
-                { type: "Event", id: `LIST${result?.slot_id}` },
-                { type: "Event", id: "LIST" },
+                { type: 'Event', id: result?.id },
+                { type: 'Event', id: `LIST${result?.slot_id}` },
+                { type: 'Event', id: 'LIST' },
             ],
         }),
         getUsersPresentations: builder.query<Presentation[], void>({
-            query: () => routeSwitcher("events.mypresentations"),
+            query: () => routeSwitcher('events.mypresentations'),
             providesTags: (result) =>
                 result
                     ? [
                           ...result.map(
-                              ({ id }) => ({ type: "Event", id }) as const,
+                              ({ id }) => ({ type: 'Event', id }) as const
                           ),
-                          { type: "Event", id: "MYLIST" },
+                          { type: 'Event', id: 'MYLIST' },
                       ]
-                    : [{ type: "Event", id: "MYLIST" }],
+                    : [{ type: 'Event', id: 'MYLIST' }],
         }),
         signUp: builder.mutation<
-            | RequiredFields<TeamAttendance, "team">
-            | RequiredFields<UserAttendance, "user">,
-            { event: Pick<Event, "id">; attender: string | number }
+            | RequiredFields<TeamAttendance, 'team'>
+            | RequiredFields<UserAttendance, 'user'>,
+            { event: Pick<Event, 'id'>; attender: string | number }
         >({
             query: (body) => ({
-                url: routeSwitcher("event.signup", { id: body.event.id }),
-                method: "POST",
+                url: routeSwitcher('event.signup', { id: body.event.id }),
+                method: 'POST',
                 body: { attender: body.attender },
             }),
             invalidatesTags: (res, err, arg) =>
@@ -132,42 +132,42 @@ export const eventAPI = baseAPI.injectEndpoints({
                     ? []
                     : [
                           {
-                              type: "EventParticipants",
+                              type: 'EventParticipants',
                               id: arg.event.id,
                           },
                       ],
         }),
         attend: builder.mutation<
-            | RequiredFields<TeamAttendance, "team">
-            | RequiredFields<UserAttendance, "user">,
+            | RequiredFields<TeamAttendance, 'team'>
+            | RequiredFields<UserAttendance, 'user'>,
             {
-                event: Pick<Event, "id">;
-                attender: string | number;
-                present?: boolean | undefined;
+                event: Pick<Event, 'id'>
+                attender: string | number
+                present?: boolean | undefined
             }
         >({
             query: (body) => ({
-                url: routeSwitcher("event.attend", {
+                url: routeSwitcher('event.attend', {
                     eventId: body.event.id,
                 }),
-                method: "POST",
+                method: 'POST',
                 body: {
                     attender: body.attender,
                     toogle: body.present,
                 },
             }),
             invalidatesTags: (res, err, arg) =>
-                err ? [] : [{ type: "EventParticipants", id: arg.event.id }],
+                err ? [] : [{ type: 'EventParticipants', id: arg.event.id }],
         }),
         teamMemberAttend: builder.mutation<
             TeamMemberAttendance[],
             { data: TeamMemberAttendance[] }
         >({
             query: ({ data }) => ({
-                url: routeSwitcher("attendance.teamMemberAttend", {
+                url: routeSwitcher('attendance.teamMemberAttend', {
                     attendanceId: data.length > 0 ? data[0].attendance_id : -1,
                 }),
-                method: "POST",
+                method: 'POST',
                 body: {
                     memberAttendances: JSON.stringify(data),
                 },
@@ -176,78 +176,78 @@ export const eventAPI = baseAPI.injectEndpoints({
         }),
         cancelSignUp: builder.mutation<
             void,
-            { attender: string; event: Pick<Event, "id"> }
+            { attender: string; event: Pick<Event, 'id'> }
         >({
             query: (body) => ({
-                url: routeSwitcher("event.signup", { id: body.event.id }),
-                method: "DELETE",
+                url: routeSwitcher('event.signup', { id: body.event.id }),
+                method: 'DELETE',
                 body: { attender: body.attender },
             }),
             invalidatesTags: (res, err, arg) =>
-                err ? [] : [{ type: "EventParticipants", id: arg.event.id }],
+                err ? [] : [{ type: 'EventParticipants', id: arg.event.id }],
         }),
 
-        deleteEvent: builder.mutation<void, Pick<Event, "id">>({
+        deleteEvent: builder.mutation<void, Pick<Event, 'id'>>({
             query: ({ id }) => ({
-                url: routeSwitcher("event.delete", { id }),
-                method: "DELETE",
+                url: routeSwitcher('event.delete', { id }),
+                method: 'DELETE',
             }),
             invalidatesTags: (res, err, arg) =>
-                err ? [] : [{ type: "Event", id: "LIST" }],
+                err ? [] : [{ type: 'Event', id: 'LIST' }],
         }),
 
-        closeSignUp: builder.mutation<EventStub, Pick<Event, "id">>({
+        closeSignUp: builder.mutation<EventStub, Pick<Event, 'id'>>({
             query: ({ id }) => ({
-                url: routeSwitcher("event.close_signup", { id }),
-                method: "PUT",
+                url: routeSwitcher('event.close_signup', { id }),
+                method: 'PUT',
             }),
             invalidatesTags: (res, err, arg) =>
                 err
                     ? []
                     : [
-                          { type: "Event", id: "LIST" },
-                          { type: "Event", id: arg.id },
+                          { type: 'Event', id: 'LIST' },
+                          { type: 'Event', id: arg.id },
                       ],
         }),
 
-        updateEvent: builder.mutation<EventStub, Omit<Event, "occupancy">>({
+        updateEvent: builder.mutation<EventStub, Omit<Event, 'occupancy'>>({
             query: (event) => ({
-                url: routeSwitcher("event.update", { id: event.id }),
-                method: "PUT",
+                url: routeSwitcher('event.update', { id: event.id }),
+                method: 'PUT',
                 body: event,
             }),
             invalidatesTags: (res, err) =>
                 err
                     ? []
                     : [
-                          { type: "Event", id: res?.id },
-                          { type: "Event", id: `LIST${res?.slot_id}` },
-                          { type: "Event", id: "LIST" },
+                          { type: 'Event', id: res?.id },
+                          { type: 'Event', id: `LIST${res?.slot_id}` },
+                          { type: 'Event', id: 'LIST' },
                       ],
         }),
 
         eventSearch: builder.query<EventStub[], string>({
-            query: (q) => routeSwitcher("events.index", { q }),
+            query: (q) => routeSwitcher('events.index', { q }),
             providesTags: (result) =>
                 result
                     ? [
                           ...result.map(
-                              ({ id }) => ({ type: "Event", id }) as const,
+                              ({ id }) => ({ type: 'Event', id }) as const
                           ),
-                          { type: "Event", id: "SEARCH" },
+                          { type: 'Event', id: 'SEARCH' },
                       ]
-                    : [{ type: "Event", id: "SEARCH" }],
+                    : [{ type: 'Event', id: 'SEARCH' }],
         }),
         setScore: builder.mutation<
             void,
             {
-                event: Pick<Event, "id">;
-                attender: string | number;
-                rank: number;
+                event: Pick<Event, 'id'>
+                attender: string | number
+                rank: number
             }
         >({
             query: ({ event, attender, rank }) => ({
-                url: routeSwitcher("event.score", {
+                url: routeSwitcher('event.score', {
                     eventId: event.id,
                 }),
                 body: {
@@ -256,14 +256,14 @@ export const eventAPI = baseAPI.injectEndpoints({
                 },
             }),
             invalidatesTags: (res, err, arg) =>
-                err ? [] : [{ type: "Event", id: arg.event.id }],
+                err ? [] : [{ type: 'Event', id: arg.event.id }],
         }),
         setRating: builder.mutation<
             Rating,
-            { event: Pick<Event, "id">; rating: number }
+            { event: Pick<Event, 'id'>; rating: number }
         >({
             query: ({ event, rating }) => ({
-                url: routeSwitcher("event.rate", {
+                url: routeSwitcher('event.rate', {
                     eventId: event.id,
                 }),
                 body: {
@@ -271,9 +271,9 @@ export const eventAPI = baseAPI.injectEndpoints({
                 },
             }),
             invalidatesTags: (res, err, arg) =>
-                err ? [] : [{ type: "Event", id: arg.event.id }],
+                err ? [] : [{ type: 'Event', id: arg.event.id }],
         }),
     }),
-});
+})
 
-export default eventAPI;
+export default eventAPI

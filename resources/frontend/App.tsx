@@ -1,23 +1,23 @@
-import React, { useEffect } from "react";
-import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { PersistGate } from "redux-persist/integration/react";
-import "style/App.pcss";
-import { BaseLayout } from "templates";
+import React, { useEffect } from 'react'
+import { Provider } from 'react-redux'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { PersistGate } from 'redux-persist/integration/react'
+import 'style/App.pcss'
+import { BaseLayout } from 'templates'
 
-import refreshCSRF from "lib/csrf";
-import store, { persistor } from "lib/store";
+import refreshCSRF from 'lib/csrf'
+import store, { persistor } from 'lib/store'
 
-import { BackendError } from "components/Error";
-import Loader from "components/UIKit/Loader";
+import { BackendError } from 'components/Error'
+import Loader from 'components/UIKit/Loader'
 
 // Generic Routes
-const Home = React.lazy(() => import("pages/Home"));
-const Error = React.lazy(() => import("components/Error"));
+const Home = React.lazy(() => import('pages/Home'))
+const Error = React.lazy(() => import('components/Error'))
 
 // Teams
-const TeamsPage = React.lazy(() => import("pages/team"));
-const TeamPage = React.lazy(() => import("pages/team/[teamcode]"));
+const TeamsPage = React.lazy(() => import('pages/team'))
+const TeamPage = React.lazy(() => import('pages/team/[teamcode]'))
 
 const teamRoutes = (
     <Route path="csapat">
@@ -29,20 +29,20 @@ const teamRoutes = (
         <Route path="uj" element={<>NewTeamPage</>} />
         <Route path="admin" element={<>TeamAdminsPage</>} />
     </Route>
-);
+)
 
 // Events
-const EventsPage = React.lazy(() => import("pages/event"));
-const EventPage = React.lazy(() => import("pages/event/[eventid]/index"));
+const EventsPage = React.lazy(() => import('pages/event'))
+const EventPage = React.lazy(() => import('pages/event/[eventid]/index'))
 const ScannerPage = React.lazy(
-    () => import("pages/event/[eventid]/manage/scanner"),
-);
+    () => import('pages/event/[eventid]/manage/scanner')
+)
 
 const EditEventPage = React.lazy(
-    () => import("pages/event/[eventid]/manage/edit"),
-);
+    () => import('pages/event/[eventid]/manage/edit')
+)
 
-const CreateEventPage = React.lazy(() => import("pages/event/create"));
+const CreateEventPage = React.lazy(() => import('pages/event/create'))
 
 const eventRoutes = (
     <Route path="esemeny">
@@ -56,25 +56,25 @@ const eventRoutes = (
             </Route>
         </Route>
     </Route>
-);
+)
 
 // Slots
 
-const SlotsEventsPage = React.lazy(() => import("pages/slot"));
+const SlotsEventsPage = React.lazy(() => import('pages/slot'))
 
 const slotRoutes = (
     <Route path="sav">
         <Route index element={<SlotsEventsPage />} />
     </Route>
-);
+)
 
 // Presentations
 
-const PresentationPage = React.lazy(() => import("pages/presentation"));
+const PresentationPage = React.lazy(() => import('pages/presentation'))
 const PresentationsManagePage = React.lazy(
-    () => import("pages/presentation/manage"),
-);
-const AttendanceSheet = React.lazy(() => import("pages/attendance"));
+    () => import('pages/presentation/manage')
+)
+const AttendanceSheet = React.lazy(() => import('pages/attendance'))
 
 const presentationRoutes = (
     <Route path="eloadas">
@@ -87,17 +87,15 @@ const presentationRoutes = (
             </Route>
         </Route>
     </Route>
-);
+)
 
 // Admin
 
-const AdminsPage = React.lazy(() => import("pages/admin"));
-const SlotsPage = React.lazy(() => import("pages/admin/slot"));
-const SlotsCreatePage = React.lazy(() => import("pages/admin/slot/create"));
-const SlotsEditPage = React.lazy(
-    () => import("pages/admin/slot/[slotid]/edit"),
-);
-const PermissionsPage = React.lazy(() => import("pages/admin/permissions"));
+const AdminsPage = React.lazy(() => import('pages/admin'))
+const SlotsPage = React.lazy(() => import('pages/admin/slot'))
+const SlotsCreatePage = React.lazy(() => import('pages/admin/slot/create'))
+const SlotsEditPage = React.lazy(() => import('pages/admin/slot/[slotid]/edit'))
+const PermissionsPage = React.lazy(() => import('pages/admin/permissions'))
 const adminRoutes = (
     <Route path="admin">
         <Route index element={<AdminsPage />} />
@@ -112,30 +110,30 @@ const adminRoutes = (
             <Route index element={<PermissionsPage />} />
         </Route>
     </Route>
-);
+)
 
 // Auth
 
-const LoginPage = React.lazy(() => import("pages/login"));
-const LogoutPage = React.lazy(() => import("pages/logout"));
-const StudentCodePage = React.lazy(() => import("pages/studentcode"));
+const LoginPage = React.lazy(() => import('pages/login'))
+const LogoutPage = React.lazy(() => import('pages/logout'))
+const StudentCodePage = React.lazy(() => import('pages/studentcode'))
 const authRoutes = (
     <Route>
         <Route path="/login" element={<LoginPage />} />,
         <Route path="/studentcode" element={<StudentCodePage />} />,
         <Route path="/logout" element={<LogoutPage />} />,
     </Route>
-);
+)
 
 // const TermsPage = React.lazy(() => import("pages/terms"));
-const PrivacyPolicyPage = React.lazy(() => import("pages/privacypolicy"));
+const PrivacyPolicyPage = React.lazy(() => import('pages/privacypolicy'))
 
 // Application body
 
 function App() {
     useEffect(() => {
-        refreshCSRF();
-    }, []);
+        refreshCSRF()
+    }, [])
 
     return (
         <Provider store={store}>
@@ -173,7 +171,7 @@ function App() {
                 </BrowserRouter>
             </PersistGate>
         </Provider>
-    );
+    )
 }
 
-export default App;
+export default App

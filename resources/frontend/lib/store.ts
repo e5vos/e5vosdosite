@@ -1,14 +1,14 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { setupListeners } from "@reduxjs/toolkit/dist/query";
-import { routerMiddleware } from "connected-react-router";
-import { createBrowserHistory } from "history";
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { setupListeners } from '@reduxjs/toolkit/dist/query'
+import { routerMiddleware } from 'connected-react-router'
+import { createBrowserHistory } from 'history'
 import {
     TypedUseSelectorHook,
     useDispatch as originalDispatchHook,
     useSelector as originalSelectorHook,
-} from "react-redux/es/exports";
-import AuthReducer, { authSlice } from "reducers/authReducer";
-import settingsReducer, { settingsSlice } from "reducers/settingsReducer";
+} from 'react-redux/es/exports'
+import AuthReducer, { authSlice } from 'reducers/authReducer'
+import settingsReducer, { settingsSlice } from 'reducers/settingsReducer'
 import {
     FLUSH,
     PAUSE,
@@ -18,26 +18,26 @@ import {
     REHYDRATE,
     persistReducer,
     persistStore,
-} from "redux-persist";
-import storage from "redux-persist/lib/storage";
+} from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 
-import baseAPI from "./api";
+import baseAPI from './api'
 
-export const history = createBrowserHistory();
+export const history = createBrowserHistory()
 
 const rootReducer = persistReducer(
-    { key: "root", storage: storage, blacklist: [baseAPI.reducerPath] },
+    { key: 'root', storage: storage, blacklist: [baseAPI.reducerPath] },
     combineReducers({
         auth: AuthReducer,
         settings: settingsReducer,
         [baseAPI.reducerPath]: baseAPI.reducer,
-    }),
-);
+    })
+)
 
 const store = configureStore({
     reducer: rootReducer,
     devTools:
-        process.env.NODE_ENV === "development"
+        process.env.NODE_ENV === 'development'
             ? {
                   actionCreators: {
                       ...settingsSlice.actions,
@@ -60,14 +60,13 @@ const store = configureStore({
         })
             .concat(routerMiddleware(history))
             .concat(baseAPI.middleware),
-});
-setupListeners(store.dispatch);
-export type RootState = ReturnType<typeof rootReducer>;
-export type AppDispatch = typeof store.dispatch;
+})
+setupListeners(store.dispatch)
+export type RootState = ReturnType<typeof rootReducer>
+export type AppDispatch = typeof store.dispatch
 
-export const useDispatch: () => AppDispatch = originalDispatchHook;
-export const useSelector: TypedUseSelectorHook<RootState> =
-    originalSelectorHook;
-export default store;
+export const useDispatch: () => AppDispatch = originalDispatchHook
+export const useSelector: TypedUseSelectorHook<RootState> = originalSelectorHook
+export default store
 
-export const persistor = persistStore(store);
+export const persistor = persistStore(store)

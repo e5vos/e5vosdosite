@@ -1,7 +1,7 @@
-import { RootState, useSelector } from "lib/store";
+import { RootState, useSelector } from 'lib/store'
 
-export const dumpState = (state: RootState) => ({ ...state, auth: "REDACTED" });
+export const dumpState = (state: RootState) => ({ ...state, auth: 'REDACTED' })
 
-export const useStateDump = () => useSelector(dumpState);
+export const useStateDump = () => useSelector(dumpState)
 
-export default useStateDump;
+export default useStateDump

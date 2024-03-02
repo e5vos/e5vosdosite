@@ -1,46 +1,46 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 
-import { Event, UserStub } from "types/models";
+import { Event, UserStub } from 'types/models'
 
-import adminAPI from "lib/api/adminAPI";
-import eventAPI from "lib/api/eventAPI";
-import Locale from "lib/locale";
-import { sortByEJGClass } from "lib/util";
+import adminAPI from 'lib/api/adminAPI'
+import eventAPI from 'lib/api/eventAPI'
+import Locale from 'lib/locale'
+import { sortByEJGClass } from 'lib/util'
 
-import Button from "./UIKit/Button";
-import Dialog from "./UIKit/Dialog";
-import Form from "./UIKit/Form";
-import Loader from "./UIKit/Loader";
+import Button from './UIKit/Button'
+import Dialog from './UIKit/Dialog'
+import Form from './UIKit/Form'
+import Loader from './UIKit/Loader'
 
 const locale = Locale({
     hu: {
-        errorDuringSignup: "Hiba történt a jelentkezés során!",
-        fillEvent: "Esemény feltöltése",
-        search: "Keresés",
-        close: "Bezárás",
-        assign: "Beosztás",
+        errorDuringSignup: 'Hiba történt a jelentkezés során!',
+        fillEvent: 'Esemény feltöltése',
+        search: 'Keresés',
+        close: 'Bezárás',
+        assign: 'Beosztás',
     },
     en: {
-        errorDuringSignup: "An error occured during signup!",
-        fillEvent: "Fill event",
-        search: "Search",
-        close: "Close",
-        assign: "Assign",
+        errorDuringSignup: 'An error occured during signup!',
+        fillEvent: 'Fill event',
+        search: 'Search',
+        close: 'Close',
+        assign: 'Assign',
     },
-});
+})
 
 const PresentationFillDialog = ({
     open,
     onClose,
     event: external_event,
 }: {
-    open: boolean;
-    onClose: () => void;
-    event: Event & { slot_id: number };
+    open: boolean
+    onClose: () => void
+    event: Event & { slot_id: number }
 }) => {
-    const [searchString, setSearchString] = useState("");
+    const [searchString, setSearchString] = useState('')
 
-    const [availableStudents, setAvailableStudents] = useState<UserStub[]>();
+    const [availableStudents, setAvailableStudents] = useState<UserStub[]>()
 
     const [
         triggerGetFreeUsersQuery,
@@ -49,45 +49,45 @@ const PresentationFillDialog = ({
             isFetching: isStudentListFetching,
             isError: isStudentListError,
         },
-    ] = adminAPI.useLazyGetFreeUsersQuery();
+    ] = adminAPI.useLazyGetFreeUsersQuery()
 
     useEffect(() => {
-        if (availableStudentsAPI) setAvailableStudents(availableStudentsAPI);
-    }, [availableStudentsAPI]);
+        if (availableStudentsAPI) setAvailableStudents(availableStudentsAPI)
+    }, [availableStudentsAPI])
 
     const [triggerGetEventQuery, { data: event, isFetching: isEventFetching }] =
-        eventAPI.useLazyGetEventQuery();
+        eventAPI.useLazyGetEventQuery()
 
     const [APIsignUp, { isLoading: signupInProgress }] =
-        eventAPI.useSignUpMutation();
+        eventAPI.useSignUpMutation()
 
-    const signUp = async (student: Pick<UserStub, "id">) => {
+    const signUp = async (student: Pick<UserStub, 'id'>) => {
         try {
-            console.log(student);
+            console.log(student)
             await APIsignUp({
                 attender: student.id,
                 event: external_event,
-            }).unwrap();
+            }).unwrap()
             setAvailableStudents(
-                (state) => state?.filter((s) => s.id !== student.id),
-            );
+                (state) => state?.filter((s) => s.id !== student.id)
+            )
             //triggerGetFreeUsersQuery({ id: external_event.slot_id });
-            triggerGetEventQuery(external_event);
+            triggerGetEventQuery(external_event)
         } catch (err) {
-            console.error(err);
-            alert(locale.errorDuringSignup);
+            console.error(err)
+            alert(locale.errorDuringSignup)
         }
-    };
+    }
 
     useEffect(() => {
-        if (open && !event) triggerGetEventQuery(external_event, true);
+        if (open && !event) triggerGetEventQuery(external_event, true)
         if (
             open &&
             !availableStudents &&
             !isStudentListFetching &&
             !isStudentListError
         )
-            triggerGetFreeUsersQuery({ id: external_event.slot_id }, true);
+            triggerGetFreeUsersQuery({ id: external_event.slot_id }, true)
     }, [
         open,
         triggerGetFreeUsersQuery,
@@ -99,7 +99,7 @@ const PresentationFillDialog = ({
         triggerGetEventQuery,
         external_event.id,
         external_event,
-    ]);
+    ])
     return (
         <Dialog
             open={open}
@@ -140,8 +140,8 @@ const PresentationFillDialog = ({
                                         (student.name + student.ejg_class)
                                             .toLowerCase()
                                             .includes(
-                                                searchString.toLowerCase(),
-                                            ),
+                                                searchString.toLowerCase()
+                                            )
                                     )
                                     .sort(sortByEJGClass)
                                     .map((student) => (
@@ -150,7 +150,7 @@ const PresentationFillDialog = ({
                                             className="mb-3 flex flex-row justify-between"
                                         >
                                             <span>
-                                                {student.name} -{" "}
+                                                {student.name} -{' '}
                                                 {student.ejg_class}
                                             </span>
                                             <Button
@@ -171,7 +171,7 @@ const PresentationFillDialog = ({
                 </div>
             )}
         </Dialog>
-    );
-};
+    )
+}
 
-export default PresentationFillDialog;
+export default PresentationFillDialog

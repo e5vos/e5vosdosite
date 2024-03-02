@@ -3,12 +3,12 @@ import {
     AttendingTeam,
     AttendingUser,
     isAttenderTeam,
-} from "types/models";
+} from 'types/models'
 
 const TeamAttenderShowcase = ({
     attender: attendance,
 }: {
-    attender: AttendingTeam;
+    attender: AttendingTeam
 }) => {
     return (
         <div>
@@ -17,23 +17,23 @@ const TeamAttenderShowcase = ({
             </div>
             <div className="overflow-auto">div</div>
         </div>
-    );
-};
+    )
+}
 
 const UserAttenderShowcase = ({
     attender: attendance,
 }: {
-    attender: AttendingUser;
+    attender: AttendingUser
 }) => {
-    return <>This is a user attendance</>;
-};
+    return <>This is a user attendance</>
+}
 
 const AttenderShowcase = ({ attender, ...rest }: { attender: Attender }) => {
     if (isAttenderTeam(attender)) {
-        return <TeamAttenderShowcase attender={attender} {...rest} />;
+        return <TeamAttenderShowcase attender={attender} {...rest} />
     } else {
-        return <UserAttenderShowcase attender={attender} {...rest} />;
+        return <UserAttenderShowcase attender={attender} {...rest} />
     }
-};
+}
 
-export default AttenderShowcase;
+export default AttenderShowcase

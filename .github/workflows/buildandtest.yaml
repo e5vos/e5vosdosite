@@ -4,10 +4,22 @@ on:
     branches:
       - master
 jobs:
-  build:
+  laravel-tests:
     name: "Build + test"
     runs-on: "ubuntu-latest"
+    env:
+      DB_DATABASE: test_db
+      DB_USER: root
+      DB_PASSWORD: root
     steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+            php-version: '8.2'
+            extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+            coverage: none
+      - uses: actions/setup-node@v4
+        with:
+            node-version: '20'
       - name: Checkout source code
         uses: actions/checkout@v4
       - name: Directory Permissions
@@ -25,12 +37,7 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
       - name: Run frontend linters
-        uses: wearerequired/lint-action@v2
-        with:
-          eslint: true,
-          eslint_extensions: "js,jsx,cjs,mjs,ts,tsx,cts,mts"
-          prettier: true
-          prettier_extensions: "css,html,js,json,jsx,md,sass,scss,ts,tsx,vue,yaml,yml"
+        run: npm run lint
       - name: Build frontend
         run: npm run build
       - name: Start MySQL

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 
 /**
  * Small wrapper around browser navigator object
@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
  * @returns navigator object if exists
  */
 export default function useNavigator() {
-    const [navigator, setnavigator] = useState<Navigator | undefined>();
+    const [navigator, setnavigator] = useState<Navigator | undefined>()
     useEffect(() => {
-        setnavigator(window.navigator);
-    }, []);
-    return navigator;
+        setnavigator(window.navigator)
+    }, [])
+    return navigator
 }

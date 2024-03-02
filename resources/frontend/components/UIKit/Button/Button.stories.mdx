@@ -1,10 +1,10 @@
-import { Canvas, Meta, Story } from "@storybook/addon-docs";
+import { Canvas, Meta, Story } from '@storybook/addon-docs'
 
-import Button from ".";
+import Button from '.'
 
 <Meta title="Button/Button" component={Button} />
 
-export const Template = (args) => <Button {...args} />;
+export const Template = (args) => <Button {...args} />
 
 # Navbar
 
@@ -12,19 +12,19 @@ export const Template = (args) => <Button {...args} />;
     <Story
         name="Button"
         args={{
-            children: "Button",
-            variant: "primary",
+            children: 'Button',
+            variant: 'primary',
         }}
         argTypes={{
             variant: {
                 control: {
-                    type: "select",
+                    type: 'select',
                     options: [
-                        "primary",
-                        "secondary",
-                        "success",
-                        "danger",
-                        "default",
+                        'primary',
+                        'secondary',
+                        'success',
+                        'danger',
+                        'default',
                     ],
                 },
             },
@@ -35,8 +35,8 @@ export const Template = (args) => <Button {...args} />;
     <Story
         name="Button"
         args={{
-            children: "Button",
-            variant: "danger",
+            children: 'Button',
+            variant: 'danger',
         }}
     >
         {Template.bind({})}

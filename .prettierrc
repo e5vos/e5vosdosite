@@ -1,9 +1,14 @@
 {
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "semi": false,
+    "singleQuote": true,
     "importOrder": ["^types/(.*)$", "^lib/(.*)$", "^components/(.*)$", "^[./]"],
     "importOrderSeparation": true,
     "importOrderSortSpecifiers": true,
     "plugins": [
         "@trivago/prettier-plugin-sort-imports",
         "prettier-plugin-tailwindcss"
-    ]
+    ],
+    "filepath": "./resources/frontend/**/*.{js,jsx,ts,tsx,css,scss,less,html,json,md}"
 }

@@ -1,36 +1,36 @@
 // https://medium.com/@kch062522/useconfirm-a-custom-react-hook-to-prompt-confirmation-before-action-f4cb746ebd4e
-import { FC, useState } from "react";
+import { FC, useState } from 'react'
 
 export type ConfirmDialogProps = {
-    handleConfirm: () => void;
-    handleCancel: () => void;
-};
+    handleConfirm: () => void
+    handleCancel: () => void
+}
 const useConfirm = (Dialog: FC<ConfirmDialogProps>) => {
     const [promise, setPromise] = useState<{
-        resolve: (v: boolean | PromiseLike<boolean>) => void;
-    } | null>(null);
+        resolve: (v: boolean | PromiseLike<boolean>) => void
+    } | null>(null)
     const confirm = () =>
         new Promise<boolean>((resolve, reject) => {
-            setPromise({ resolve });
-        });
+            setPromise({ resolve })
+        })
 
     const handleConfirm = () => {
-        promise?.resolve(true);
-        setPromise(null);
-    };
+        promise?.resolve(true)
+        setPromise(null)
+    }
 
     const handleCancel = () => {
-        promise?.resolve(false);
-        setPromise(null);
-    };
+        promise?.resolve(false)
+        setPromise(null)
+    }
 
     const wrappedDialog = () => {
-        if (!promise) return <></>;
+        if (!promise) return <></>
         return (
             <Dialog handleConfirm={handleConfirm} handleCancel={handleCancel} />
-        );
-    };
-    return [wrappedDialog, confirm] as const;
-};
+        )
+    }
+    return [wrappedDialog, confirm] as const
+}
 
-export default useConfirm;
+export default useConfirm

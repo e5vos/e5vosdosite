@@ -1,22 +1,22 @@
-import useUser from "hooks/useUser";
-import { ReactNode } from "react";
+import useUser from 'hooks/useUser'
+import { ReactNode } from 'react'
 
-import { User } from "types/models";
+import { User } from 'types/models'
 
-import { GateFunction } from "lib/gates";
-import Locale from "lib/locale";
+import { GateFunction } from 'lib/gates'
+import Locale from 'lib/locale'
 
-import Error from "./Error";
-import Loader from "./UIKit/Loader";
+import Error from './Error'
+import Loader from './UIKit/Loader'
 
 const locale = Locale({
     hu: {
-        defaultmessage: "Nincs jogosultságod",
+        defaultmessage: 'Nincs jogosultságod',
     },
     en: {
         defaultmessage: "You don't have permission",
     },
-});
+})
 
 const Gate = ({
     children,
@@ -24,28 +24,28 @@ const Gate = ({
     params,
     user: paramUser,
 }: {
-    children: ReactNode;
-    gate: GateFunction;
-    user?: User;
-    params?: any[];
+    children: ReactNode
+    gate: GateFunction
+    user?: User
+    params?: any[]
 }) => {
-    const { user, isLoading } = useUser();
-    const usedUser = paramUser ?? user;
-    if (isLoading) return <Loader />;
-    if (!usedUser) return <Error code={401} />;
+    const { user, isLoading } = useUser()
+    const usedUser = paramUser ?? user
+    if (isLoading) return <Loader />
+    if (!usedUser) return <Error code={401} />
     if (params ? !gate(usedUser) : !gate(usedUser))
         return (
             <Error code={403} message={gate.message ?? locale.defaultmessage} />
-        );
-    return <>{children}</>;
-};
+        )
+    return <>{children}</>
+}
 
-export default Gate;
+export default Gate
 
 export const gated = (Component: React.FC, gate: GateFunction) => {
     return () => (
         <Gate gate={gate}>
             <Component />
         </Gate>
-    );
-};
+    )
+}

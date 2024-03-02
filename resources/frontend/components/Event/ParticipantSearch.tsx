@@ -1,22 +1,22 @@
-import { RequiredFields } from "types/misc";
-import { Attender, Event, isAttenderTeam } from "types/models";
+import { RequiredFields } from 'types/misc'
+import { Attender, Event, isAttenderTeam } from 'types/models'
 
-import Form from "components/UIKit/Form";
+import Form from 'components/UIKit/Form'
 
 const displayName = (e: Attender) => {
     if (isAttenderTeam(e)) {
-        return e.name;
+        return e.name
     } else {
-        return `${e.name} - ${e.ejg_class}}`;
+        return `${e.name} - ${e.ejg_class}}`
     }
-};
+}
 
 const ParticipantSearch = ({
     event,
     onChange,
 }: {
-    event: RequiredFields<Event, "attendees">;
-    onChange: (value: Attender) => any;
+    event: RequiredFields<Event, 'attendees'>
+    onChange: (value: Attender) => any
 }) => {
     return (
         <Form.ComboBox
@@ -30,11 +30,11 @@ const ParticipantSearch = ({
                     .startsWith(s.toLocaleLowerCase())
             }
             onChange={(e) => {
-                if (!e) return;
-                onChange(e);
+                if (!e) return
+                onChange(e)
             }}
         />
-    );
-};
+    )
+}
 
-export default ParticipantSearch;
+export default ParticipantSearch

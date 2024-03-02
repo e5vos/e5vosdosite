@@ -1,54 +1,54 @@
-import useGetPresentationSlotsQuery from "hooks/useGetPresentationSlotsQuery";
-import useUser from "hooks/useUser";
-import { useMemo, useState } from "react";
+import useGetPresentationSlotsQuery from 'hooks/useGetPresentationSlotsQuery'
+import useUser from 'hooks/useUser'
+import { useMemo, useState } from 'react'
 
-import { Presentation } from "types/models";
+import { Presentation } from 'types/models'
 
-import adminAPI from "lib/api/adminAPI";
-import eventAPI from "lib/api/eventAPI";
-import { isOperator, isTeacher } from "lib/gates";
-import Locale from "lib/locale";
+import adminAPI from 'lib/api/adminAPI'
+import eventAPI from 'lib/api/eventAPI'
+import { isOperator, isTeacher } from 'lib/gates'
+import Locale from 'lib/locale'
 
-import { gated } from "components/Gate";
-import PresentationCard from "components/PresentationCard";
-import Button from "components/UIKit/Button";
-import ButtonGroup from "components/UIKit/ButtonGroup";
-import Form from "components/UIKit/Form";
-import Loader from "components/UIKit/Loader";
+import { gated } from 'components/Gate'
+import PresentationCard from 'components/PresentationCard'
+import Button from 'components/UIKit/Button'
+import ButtonGroup from 'components/UIKit/ButtonGroup'
+import Form from 'components/UIKit/Form'
+import Loader from 'components/UIKit/Loader'
 
 const locale = Locale({
     hu: {
-        operatorInfo: "Operátor Információk",
-        isPresent: "jelen van",
-        isMissing: "hiányzik",
-        didNotSignUp: "nem jelentkezett",
-        title: "Előadások kezelése",
-        search: "Keresés",
-        unknown: "Ismeretlen",
+        operatorInfo: 'Operátor Információk',
+        isPresent: 'jelen van',
+        isMissing: 'hiányzik',
+        didNotSignUp: 'nem jelentkezett',
+        title: 'Előadások kezelése',
+        search: 'Keresés',
+        unknown: 'Ismeretlen',
     },
     en: {
-        operatorInfo: "Operator info",
-        isPresent: "is present",
-        isMissing: "is missing",
-        didNotSignUp: "did not sign up",
-        title: "Manage presentations",
-        search: "Search",
-        unknown: "Unknown",
+        operatorInfo: 'Operator info',
+        isPresent: 'is present',
+        isMissing: 'is missing',
+        didNotSignUp: 'did not sign up',
+        title: 'Manage presentations',
+        search: 'Search',
+        unknown: 'Unknown',
     },
-});
+})
 
 const AdminCounter = ({ slotId }: { slotId: number }) => {
     const { data: notSignedUpStudents } = adminAPI.useGetFreeUsersQuery({
         id: slotId,
-    });
+    })
 
     const { data: missingStudents } = adminAPI.useGetNotPresentUsersQuery({
         id: slotId,
-    });
+    })
 
     const { data: presentStudents } = adminAPI.useGetPresentUsersQuery({
         id: slotId,
-    });
+    })
 
     return (
         <div className="mx-auto mb-3 w-fit rounded-lg bg-red-500 px-4 py-4 text-center text-xl">
@@ -60,30 +60,30 @@ const AdminCounter = ({ slotId }: { slotId: number }) => {
                 {missingStudents?.length ?? locale.unknown} {locale.isMissing}
             </div>
             <div>
-                {notSignedUpStudents?.length ?? locale.unknown}{" "}
+                {notSignedUpStudents?.length ?? locale.unknown}{' '}
                 {locale.didNotSignUp}
             </div>
         </div>
-    );
-};
+    )
+}
 
 const PresentationManagePage = () => {
-    const [currentSlot, setcurrentSlot] = useState(0);
-    const { data: slots } = useGetPresentationSlotsQuery();
+    const [currentSlot, setcurrentSlot] = useState(0)
+    const { data: slots } = useGetPresentationSlotsQuery()
     const { data: presentations, isFetching: isEventsFetching } =
-        eventAPI.useGetEventsQuery(slots?.[currentSlot] ?? { id: -1 });
+        eventAPI.useGetEventsQuery(slots?.[currentSlot] ?? { id: -1 })
 
-    const { user } = useUser();
+    const { user } = useUser()
 
-    const [searchterm, setSearchterm] = useState("");
+    const [searchterm, setSearchterm] = useState('')
 
     const filteredpresentations = presentations?.filter(
         (presentation) =>
             presentation.name.toLowerCase().includes(searchterm) ||
-            presentation.organiser.toLowerCase().includes(searchterm),
-    );
+            presentation.organiser.toLowerCase().includes(searchterm)
+    )
 
-    const fillAllowed = useMemo(() => user && isOperator(user), [user]);
+    const fillAllowed = useMemo(() => user && isOperator(user), [user])
 
     return (
         <div className="mx-10">
@@ -129,7 +129,7 @@ const PresentationManagePage = () => {
                 </div>
             )}
         </div>
-    );
-};
+    )
+}
 
-export default gated(PresentationManagePage, isTeacher);
+export default gated(PresentationManagePage, isTeacher)

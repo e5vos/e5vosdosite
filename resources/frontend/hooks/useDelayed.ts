@@ -1,22 +1,22 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react'
 
 const useDelay = <T extends (...args: any[]) => void>(
     callback: T,
-    delay = 500,
+    delay = 500
 ) => {
-    const [dt, setDt] = useState<number | undefined>();
+    const [dt, setDt] = useState<number | undefined>()
 
     return useCallback(
         (...params: Parameters<T>) => {
-            clearTimeout(dt);
+            clearTimeout(dt)
             setDt(
                 window.setTimeout(() => {
-                    callback(...params);
-                }, delay),
-            );
+                    callback(...params)
+                }, delay)
+            )
         },
-        [dt, delay, callback],
-    );
-};
+        [dt, delay, callback]
+    )
+}
 
-export default useDelay;
+export default useDelay

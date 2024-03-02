@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react'
 
-import { RequiredFields } from "types/misc";
+import { RequiredFields } from 'types/misc'
 import {
     Team,
     TeamMember,
@@ -8,110 +8,110 @@ import {
     TeamMemberRoleType,
     User,
     UserStub,
-} from "types/models";
+} from 'types/models'
 
-import teamAPI from "lib/api/teamAPI";
-import { isAdmin } from "lib/gates";
-import Locale from "lib/locale";
+import teamAPI from 'lib/api/teamAPI'
+import { isAdmin } from 'lib/gates'
+import Locale from 'lib/locale'
 
-import AttenderShowcase from "components/AttendanceShowcase";
-import Button from "components/UIKit/Button";
-import ButtonGroup from "components/UIKit/ButtonGroup";
-import Card from "components/UIKit/Card";
-import Loader from "components/UIKit/Loader";
-import UserSearchCombobox from "components/User/UserSearch";
+import AttenderShowcase from 'components/AttendanceShowcase'
+import Button from 'components/UIKit/Button'
+import ButtonGroup from 'components/UIKit/ButtonGroup'
+import Card from 'components/UIKit/Card'
+import Loader from 'components/UIKit/Loader'
+import UserSearchCombobox from 'components/User/UserSearch'
 
 const cardLocale = Locale({
     hu: {
         membership: (role: TeamMemberRoleType): string => {
             switch (role) {
                 case TeamMemberRole.leader:
-                    return "Kapitány";
+                    return 'Kapitány'
                 case TeamMemberRole.member:
-                    return "Tag";
+                    return 'Tag'
                 case TeamMemberRole.invited:
-                    return "Meghívott";
+                    return 'Meghívott'
                 default:
-                    return "Ismeretlen";
+                    return 'Ismeretlen'
             }
         },
         invite: {
-            pending: "Függőben lévő meghívó",
-            accept: "Meghívó elfogadása",
-            decline: "Meghívó elutasítása",
-            send: "Meghívó küldése",
+            pending: 'Függőben lévő meghívó',
+            accept: 'Meghívó elfogadása',
+            decline: 'Meghívó elutasítása',
+            send: 'Meghívó küldése',
         },
-        activities: "Aktivitás",
-        members: "Tagok",
-        promote: "Előléptetés",
-        kick: "Kizárás",
-        resign: "Lemondás",
-        leave: "Kilépés",
-        noAttendanceYet: "Még nincs aktivitás",
+        activities: 'Aktivitás',
+        members: 'Tagok',
+        promote: 'Előléptetés',
+        kick: 'Kizárás',
+        resign: 'Lemondás',
+        leave: 'Kilépés',
+        noAttendanceYet: 'Még nincs aktivitás',
     },
     en: {
         membership: (role: TeamMemberRoleType) => {
             switch (role) {
                 case TeamMemberRole.leader:
-                    return "Captain";
+                    return 'Captain'
                 case TeamMemberRole.member:
-                    return "Member";
+                    return 'Member'
                 case TeamMemberRole.invited:
-                    return "Invited";
+                    return 'Invited'
                 default:
-                    return "Unknown";
+                    return 'Unknown'
             }
         },
         invite: {
-            pending: "Pending invite",
-            accept: "Accept invite",
-            decline: "Decline invite",
-            send: "Send invite",
+            pending: 'Pending invite',
+            accept: 'Accept invite',
+            decline: 'Decline invite',
+            send: 'Send invite',
         },
-        activities: "Activities",
-        members: "Members",
-        promote: "Promote",
-        kick: "Kick",
-        resign: "Resign",
-        leave: "Leave",
-        noAttendanceYet: "No activity yet",
+        activities: 'Activities',
+        members: 'Members',
+        promote: 'Promote',
+        kick: 'Kick',
+        resign: 'Resign',
+        leave: 'Leave',
+        noAttendanceYet: 'No activity yet',
     },
-});
+})
 
 const TeamCard = ({
     team,
     currentUser: user,
 }: {
-    team: RequiredFields<Team, "activity" | "members">;
-    currentUser: User;
+    team: RequiredFields<Team, 'activity' | 'members'>
+    currentUser: User
 }) => {
-    const [promote] = teamAPI.usePromoteMutation();
+    const [promote] = teamAPI.usePromoteMutation()
 
-    const [selectedUser, setSelectedUser] = useState<UserStub | null>(null);
+    const [selectedUser, setSelectedUser] = useState<UserStub | null>(null)
 
     const currentUsersMembership = useMemo(
         () => team.members?.find((member) => member.id === user?.id),
-        [team, user],
-    );
+        [team, user]
+    )
 
     const moreThanOneLeader = useMemo(
         () =>
             team.members.filter((e) => e.pivot.role === TeamMemberRole.leader)
                 .length > 1,
-        [team],
-    );
+        [team]
+    )
 
-    if (!team || !user) return <Loader />;
+    if (!team || !user) return <Loader />
 
     const canPromote = (member: TeamMember) =>
         member.pivot.role === TeamMemberRole.member &&
-        currentUsersMembership?.pivot.role === TeamMemberRole.leader;
+        currentUsersMembership?.pivot.role === TeamMemberRole.leader
     const canDemote = (member: TeamMember) =>
         (member.id === user.id &&
             (member.pivot.role !== TeamMemberRole.leader ||
                 moreThanOneLeader)) ||
         (member.pivot.role !== TeamMemberRole.leader &&
-            currentUsersMembership?.pivot.role === TeamMemberRole.leader);
+            currentUsersMembership?.pivot.role === TeamMemberRole.leader)
 
     return (
         <Card
@@ -183,8 +183,8 @@ const TeamCard = ({
                         <div className="grid-col-span py-2 text-center sm:mr-5 sm:text-left">
                             <span className="font-semibold">
                                 {member.name} ({member.ejg_class})
-                            </span>{" "}
-                            -{" "}
+                            </span>{' '}
+                            -{' '}
                             <span className="italic">
                                 {cardLocale.membership(member.pivot.role)}
                             </span>
@@ -235,12 +235,12 @@ const TeamCard = ({
                     <Button
                         className="!w-full rounded-l-none rounded-r-lg !outline-none"
                         onClick={async () => {
-                            if (!selectedUser) return;
+                            if (!selectedUser) return
                             await promote({
                                 user_id: selectedUser.id,
                                 team_code: team.code,
                                 promote: true,
-                            });
+                            })
                         }}
                     >
                         {cardLocale.invite.send}
@@ -248,7 +248,7 @@ const TeamCard = ({
                 </div>
             )}
         </Card>
-    );
-};
+    )
+}
 
-export default TeamCard;
+export default TeamCard

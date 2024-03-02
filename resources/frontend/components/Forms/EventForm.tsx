@@ -1,79 +1,79 @@
-import { useFormik } from "formik";
-import useEventDates from "hooks/useEventDates";
-import useUser from "hooks/useUser";
-import * as Yup from "yup";
+import { useFormik } from 'formik'
+import useEventDates from 'hooks/useEventDates'
+import useUser from 'hooks/useUser'
+import * as Yup from 'yup'
 
-import { CRUDForm } from "types/misc";
-import { SignupType, SignupTypeType } from "types/models";
+import { CRUDForm } from 'types/misc'
+import { SignupType, SignupTypeType } from 'types/models'
 
-import eventAPI from "lib/api/eventAPI";
-import { isAdmin } from "lib/gates";
-import Locale from "lib/locale";
-import { formatDateTimeInput } from "lib/util";
+import eventAPI from 'lib/api/eventAPI'
+import { isAdmin } from 'lib/gates'
+import Locale from 'lib/locale'
+import { formatDateTimeInput } from 'lib/util'
 
-import { EventFormValues } from "components/Event/CRUD";
-import LocationSearchCombobox from "components/Location/LocationSelect";
-import Button from "components/UIKit/Button";
-import Form from "components/UIKit/Form";
+import { EventFormValues } from 'components/Event/CRUD'
+import LocationSearchCombobox from 'components/Location/LocationSelect'
+import Button from 'components/UIKit/Button'
+import Form from 'components/UIKit/Form'
 
 const locale = Locale({
     hu: {
-        submit: "Mentés",
-        required: "Kötelező mező",
+        submit: 'Mentés',
+        required: 'Kötelező mező',
         fields: {
-            name: "Név",
-            description: "Leírás",
-            starts_at: "Kezdés",
-            ends_at: "Befejezés",
-            signup_deadline: "Jelentkezési határidő",
-            organiser: "Szervező",
-            location: "Helyszín",
-            capacity: "Kapacitás",
-            is_competition: "Verseny?",
-            slot: "Sáv",
-            signup_type: "Jelentkezés típusa",
+            name: 'Név',
+            description: 'Leírás',
+            starts_at: 'Kezdés',
+            ends_at: 'Befejezés',
+            signup_deadline: 'Jelentkezési határidő',
+            organiser: 'Szervező',
+            location: 'Helyszín',
+            capacity: 'Kapacitás',
+            is_competition: 'Verseny?',
+            slot: 'Sáv',
+            signup_type: 'Jelentkezés típusa',
         },
-        noslot: "Nincs sáv",
+        noslot: 'Nincs sáv',
         signup_type: (type: SignupTypeType): string => {
             switch (type) {
                 case SignupType.Individual:
-                    return "Egyéni jelentkezés";
+                    return 'Egyéni jelentkezés'
                 case SignupType.Team:
-                    return "Csapatos jelentkezés";
+                    return 'Csapatos jelentkezés'
                 case SignupType.Both:
-                    return "Egyéni és csapatos jelentkezés";
+                    return 'Egyéni és csapatos jelentkezés'
             }
         },
     },
     en: {
-        submit: "Submit",
-        required: "Required",
+        submit: 'Submit',
+        required: 'Required',
         fields: {
-            name: "Name",
-            description: "Description",
-            starts_at: "Starts at",
-            ends_at: "Ends at",
-            signup_deadline: "Signup deadline",
-            organiser: "Organiser",
-            location: "Location",
-            capacity: "Capacity",
-            is_competition: "Is competition?",
-            slot: "Slot",
-            signup_type: "Signup type",
+            name: 'Name',
+            description: 'Description',
+            starts_at: 'Starts at',
+            ends_at: 'Ends at',
+            signup_deadline: 'Signup deadline',
+            organiser: 'Organiser',
+            location: 'Location',
+            capacity: 'Capacity',
+            is_competition: 'Is competition?',
+            slot: 'Slot',
+            signup_type: 'Signup type',
         },
-        noslot: "No slot",
+        noslot: 'No slot',
         signup_type: (type: SignupTypeType): string => {
             switch (type) {
                 case SignupType.Individual:
-                    return "Individual signup";
+                    return 'Individual signup'
                 case SignupType.Team:
-                    return "Team signup";
+                    return 'Team signup'
                 case SignupType.Both:
-                    return "Individual and team signup";
+                    return 'Individual and team signup'
             }
         },
     },
-});
+})
 
 const EventForm = ({
     initialValues,
@@ -83,10 +83,10 @@ const EventForm = ({
     resetOnSubmit = false,
     ...rest
 }: CRUDForm<EventFormValues>) => {
-    const { user } = useUser(false);
+    const { user } = useUser(false)
     const { starts_at, ends_at, signup_deadline, now } =
-        useEventDates(initialValues);
-    const { data: slots } = eventAPI.useGetSlotsQuery();
+        useEventDates(initialValues)
+    const { data: slots } = eventAPI.useGetSlotsQuery()
     const formik = useFormik({
         initialValues: {
             ...initialValues,
@@ -94,7 +94,7 @@ const EventForm = ({
             ends_at: formatDateTimeInput(ends_at ?? now),
             signup_deadline: signup_deadline
                 ? formatDateTimeInput(signup_deadline)
-                : "",
+                : '',
             signup_enabled: Boolean(signup_deadline),
             capacity_enabled: Boolean(initialValues.capacity),
             slot_id: initialValues.slot_id,
@@ -131,13 +131,13 @@ const EventForm = ({
                     ? values.signup_deadline
                     : null,
                 capacity: values.capacity_enabled ? values.capacity : null,
-            });
-            if (resetOnSubmit) formik.resetForm();
-            return val;
+            })
+            if (resetOnSubmit) formik.resetForm()
+            return val
         },
         enableReinitialize: enableReinitialize,
-    });
-    console.log(formik.errors);
+    })
+    console.log(formik.errors)
     return (
         <Form onSubmit={formik.handleSubmit} {...rest}>
             <Form.Group>
@@ -216,7 +216,7 @@ const EventForm = ({
                     <Form.Label>{locale.fields.location}</Form.Label>
                     <LocationSearchCombobox
                         onChange={(e) =>
-                            formik.setFieldValue("location_id", e.id)
+                            formik.setFieldValue('location_id', e.id)
                         }
                     />
                 </Form.Group>
@@ -247,7 +247,7 @@ const EventForm = ({
                     <Form.Label>{locale.fields.slot}</Form.Label>
                     <Form.Select
                         name="slot_id"
-                        value={formik.values.slot_id ?? "-1"}
+                        value={formik.values.slot_id ?? '-1'}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                     >
@@ -298,7 +298,7 @@ const EventForm = ({
                 <Button type="submit">{locale.submit}</Button>
             </Form.Group>
         </Form>
-    );
-};
+    )
+}
 
-export default EventForm;
+export default EventForm

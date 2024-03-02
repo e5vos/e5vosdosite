@@ -1,79 +1,79 @@
-import { useFormik } from "formik";
-import useUser from "hooks/useUser";
+import { useFormik } from 'formik'
+import useUser from 'hooks/useUser'
 
-import { CRUDForm } from "types/misc";
+import { CRUDForm } from 'types/misc'
 import {
     Event,
     Permission,
     PermissionCode,
     PermissionCodeType,
     User,
-} from "types/models";
+} from 'types/models'
 
-import { isAdmin } from "lib/gates";
-import Locale from "lib/locale";
+import { isAdmin } from 'lib/gates'
+import Locale from 'lib/locale'
 
-import EventSearchCombobox from "components/Event/EventSearch";
-import Button from "components/UIKit/Button";
-import Form from "components/UIKit/Form";
-import UserSearchCombobox from "components/User/UserSearch";
+import EventSearchCombobox from 'components/Event/EventSearch'
+import Button from 'components/UIKit/Button'
+import Form from 'components/UIKit/Form'
+import UserSearchCombobox from 'components/User/UserSearch'
 
 const locale = Locale({
     hu: {
-        required: "Kötelező mező",
-        threeChars: "Pontosan 3 karakter",
-        event: "Esemény",
-        code: "Jog",
-        submit: "Mentés",
-        delete: "Törlés",
-        user: "Felhasználó",
+        required: 'Kötelező mező',
+        threeChars: 'Pontosan 3 karakter',
+        event: 'Esemény',
+        code: 'Jog',
+        submit: 'Mentés',
+        delete: 'Törlés',
+        user: 'Felhasználó',
         permissionName: (p: PermissionCodeType): string => {
             switch (p) {
                 case PermissionCode.admin:
-                    return "Adminisztrátor";
+                    return 'Adminisztrátor'
                 case PermissionCode.organiser:
-                    return "Programszervező";
+                    return 'Programszervező'
                 case PermissionCode.scanner:
-                    return "Jelenlétellenőr";
+                    return 'Jelenlétellenőr'
                 case PermissionCode.student:
-                    return "Diák";
+                    return 'Diák'
                 case PermissionCode.teacher:
-                    return "Tanár";
+                    return 'Tanár'
                 case PermissionCode.teacheradmin:
-                    return "Tanár Adminisztrátor";
+                    return 'Tanár Adminisztrátor'
                 case PermissionCode.operator:
-                    return "Zoland";
+                    return 'Zoland'
             }
         },
     },
     en: {
-        required: "Required",
-        threeChars: "Exactly 3 characters",
-        event: "Event",
-        code: "Permission",
-        submit: "Submit",
-        delete: "Delete",
-        user: "User",
+        required: 'Required',
+        threeChars: 'Exactly 3 characters',
+        event: 'Event',
+        code: 'Permission',
+        submit: 'Submit',
+        delete: 'Delete',
+        user: 'User',
         permissionName: (p: PermissionCodeType) => {
             switch (p) {
                 case PermissionCode.admin:
-                    return "Admin";
+                    return 'Admin'
                 case PermissionCode.organiser:
-                    return "Organiser";
+                    return 'Organiser'
                 case PermissionCode.scanner:
-                    return "Scanner";
+                    return 'Scanner'
                 case PermissionCode.student:
-                    return "Student";
+                    return 'Student'
                 case PermissionCode.teacher:
-                    return "Teacher";
+                    return 'Teacher'
                 case PermissionCode.teacheradmin:
-                    return "Teacher Admin";
+                    return 'Teacher Admin'
                 case PermissionCode.operator:
-                    return "Zoland";
+                    return 'Zoland'
             }
         },
     },
-});
+})
 
 const PermissionForm = ({
     initialValues,
@@ -86,12 +86,12 @@ const PermissionForm = ({
     const formik = useFormik({
         initialValues: initialValues,
         onSubmit: (values) => {
-            const val = onSubmit(values);
-            if (resetOnSubmit) formik.resetForm();
-            return val;
+            const val = onSubmit(values)
+            if (resetOnSubmit) formik.resetForm()
+            return val
         },
         enableReinitialize: enableReinitialize,
-    });
+    })
 
     return (
         <Form onSubmit={formik.handleSubmit}>
@@ -99,13 +99,13 @@ const PermissionForm = ({
                 <Form.Label>{locale.user}</Form.Label>
                 <UserSearchCombobox
                     className="!rounded-r-lg"
-                    onChange={(u) => formik.setFieldValue("user_id", u.id)}
+                    onChange={(u) => formik.setFieldValue('user_id', u.id)}
                 />
             </Form.Group>
             <Form.Group>
                 <Form.Label>{locale.event}</Form.Label>
                 <EventSearchCombobox
-                    onChange={(e) => formik.setFieldValue("event_id", e.id)}
+                    onChange={(e) => formik.setFieldValue('event_id', e.id)}
                 />
             </Form.Group>
             <Form.Group>
@@ -114,7 +114,7 @@ const PermissionForm = ({
                     name="code"
                     defaultValue={initialValues.code}
                     onChange={(e) => {
-                        formik.setFieldValue("code", e.target.value);
+                        formik.setFieldValue('code', e.target.value)
                     }}
                 >
                     {Object.entries(PermissionCode).map((entry) => (
@@ -128,8 +128,8 @@ const PermissionForm = ({
                 <Button type="submit">{submitLabel}</Button>
             </Form.Group>
         </Form>
-    );
-};
+    )
+}
 
 export const UserPermissionCreateForm = ({
     user,
@@ -139,23 +139,23 @@ export const UserPermissionCreateForm = ({
     resetOnSubmit,
     submitLabel = locale.submit,
     ...rest
-}: CRUDForm<Permission> & { user: Pick<User, "id"> }) => {
+}: CRUDForm<Permission> & { user: Pick<User, 'id'> }) => {
     const formik = useFormik({
         initialValues: initialValues,
         onSubmit: (values) => {
-            const val = onSubmit({ ...values, user_id: user.id });
-            if (resetOnSubmit) formik.resetForm();
-            return val;
+            const val = onSubmit({ ...values, user_id: user.id })
+            if (resetOnSubmit) formik.resetForm()
+            return val
         },
         enableReinitialize: enableReinitialize,
-    });
+    })
 
     return (
         <Form onSubmit={formik.handleSubmit}>
             <Form.Group>
                 <Form.Label>{locale.event}</Form.Label>
                 <EventSearchCombobox
-                    onChange={(e) => formik.setFieldValue("event_id", e.id)}
+                    onChange={(e) => formik.setFieldValue('event_id', e.id)}
                 />
             </Form.Group>
             <Form.Group>
@@ -164,7 +164,7 @@ export const UserPermissionCreateForm = ({
                     name="code"
                     defaultValue={initialValues.code}
                     onChange={(e) =>
-                        formik.setFieldValue("code", e.target.value)
+                        formik.setFieldValue('code', e.target.value)
                     }
                 >
                     {Object.entries(PermissionCode).map((entry) => {
@@ -172,7 +172,7 @@ export const UserPermissionCreateForm = ({
                             <option value={entry[1]} key={entry[1]}>
                                 {locale.permissionName(entry[1])}
                             </option>
-                        );
+                        )
                     })}
                 </Form.Select>
             </Form.Group>
@@ -180,8 +180,8 @@ export const UserPermissionCreateForm = ({
                 <Button type="submit">{submitLabel}</Button>
             </Form.Group>
         </Form>
-    );
-};
+    )
+}
 
 export const EventPermissionCreateForm = ({
     event,
@@ -191,27 +191,27 @@ export const EventPermissionCreateForm = ({
     resetOnSubmit,
     submitLabel = locale.submit,
     ...rest
-}: CRUDForm<Permission> & { event: Pick<Event, "id"> }) => {
-    const { user } = useUser(false);
+}: CRUDForm<Permission> & { event: Pick<Event, 'id'> }) => {
+    const { user } = useUser(false)
     const formik = useFormik({
         initialValues: initialValues,
 
         onSubmit: (values) => {
-            const val = onSubmit({ ...values, event_id: event.id });
-            if (resetOnSubmit) formik.resetForm();
-            return val;
+            const val = onSubmit({ ...values, event_id: event.id })
+            if (resetOnSubmit) formik.resetForm()
+            return val
         },
         enableReinitialize: enableReinitialize,
-    });
+    })
     const availablePermissions = isAdmin(user)
         ? [PermissionCode.organiser, PermissionCode.scanner]
-        : [PermissionCode.scanner];
+        : [PermissionCode.scanner]
     return (
         <Form onSubmit={formik.handleSubmit}>
             <Form.Group>
                 <Form.Label>{locale.user}</Form.Label>
                 <UserSearchCombobox
-                    onChange={(u) => formik.setFieldValue("user_id", u.id)}
+                    onChange={(u) => formik.setFieldValue('user_id', u.id)}
                 />
             </Form.Group>
             <Form.Group>
@@ -220,7 +220,7 @@ export const EventPermissionCreateForm = ({
                     name="code"
                     defaultValue={initialValues.code}
                     onChange={(e) =>
-                        formik.setFieldValue("code", e.target.value)
+                        formik.setFieldValue('code', e.target.value)
                     }
                 >
                     {availablePermissions.map((entry) => {
@@ -228,7 +228,7 @@ export const EventPermissionCreateForm = ({
                             <option value={entry} key={entry}>
                                 {locale.permissionName(entry)}
                             </option>
-                        );
+                        )
                     })}
                 </Form.Select>
             </Form.Group>
@@ -236,7 +236,7 @@ export const EventPermissionCreateForm = ({
                 <Button type="submit">{submitLabel}</Button>
             </Form.Group>
         </Form>
-    );
-};
+    )
+}
 
-export default PermissionForm;
+export default PermissionForm

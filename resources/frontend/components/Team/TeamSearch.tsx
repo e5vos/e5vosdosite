@@ -1,13 +1,13 @@
+import useUser from "hooks/useUser";
 import { useEffect } from "react";
 
 import { Team } from "types/models";
 
 import teamAPI from "lib/api/teamAPI";
+import { isAdmin } from "lib/gates";
 
 import Form from "components/UIKit/Form";
 import Loader from "components/UIKit/Loader";
-import useUser from "hooks/useUser";
-import { isAdmin } from "lib/gates";
 
 const TeamSearchCombobox = ({
     onChange,
@@ -20,7 +20,7 @@ const TeamSearchCombobox = ({
 }) => {
     const [getAllTeams, { data: allteams }] = teamAPI.useLazyGetAllTeamsQuery();
     const [getMyTeams, { data: myteams }] = teamAPI.useLazyGetMyTeamsQuery();
-    const {user} = useUser(false);
+    useUser(false);
 
     const teams = myTeams ? myteams : allteams;
     useEffect(() => {

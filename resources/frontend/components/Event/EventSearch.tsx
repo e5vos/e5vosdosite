@@ -1,5 +1,5 @@
 import useDelay from "hooks/useDelayed";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { EventStub } from "types/models";
 

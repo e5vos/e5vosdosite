@@ -1,6 +1,5 @@
 import { useFormik } from "formik";
 import useUser from "hooks/useUser";
-import * as Yup from "yup";
 
 import { CRUDForm } from "types/misc";
 import {

@@ -1,12 +1,11 @@
 import useDelay from "hooks/useDelayed";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { UserStub } from "types/models";
 
 import baseAPI from "lib/api";
 
 import Form from "components/UIKit/Form";
-import Loader from "components/UIKit/Loader";
 
 const elementName = (e: UserStub) => `${e.name} - ${e.ejg_class}`;
 

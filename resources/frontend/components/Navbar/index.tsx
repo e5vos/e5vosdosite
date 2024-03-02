@@ -64,11 +64,11 @@ const CustomNavbar = () => {
           </Navbar.Brand>
         }
       >
-        <Navbar.Link href="https://info.e5vosdo.hu">{locale.info}</Navbar.Link>
         {/*
-                <Navbar.Link href="/csapat">{locale.teams}</Navbar.Link>
-                <Navbar.Link href="/esemeny">{locale.events}</Navbar.Link>
-                 */}
+          <Navbar.Link href="https://info.e5vosdo.hu">{locale.info}</Navbar.Link>
+          <Navbar.Link href="/csapat">{locale.teams}</Navbar.Link>
+          <Navbar.Link href="/esemeny">{locale.events}</Navbar.Link>
+        */}
         {isTeacher(user) && (
           <Navbar.Link href="/eloadas/kezel">
             {locale.presentations_teacher}

@@ -104,6 +104,7 @@ class EventPolicy
     {
         if (!Setting::find('e5n.events.signup')?->value) {
             throw new SignupDisabledException();
+        }
         $event ??= Event::findOrFail(request()->eventId);
         $attenderCode = request()->attender ?? $user->e5code ?? null;
         $attenderType = strlen($attenderCode) === 13 ? 'user' : 'team';

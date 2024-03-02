@@ -9,28 +9,34 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v2
-      - name: Install frontend dependencies
-        run: npm ci
+        uses: actions/checkout@v4
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install backend dependencies
         run: |
           composer install --prefer-dist --no-progress --no-ansi --no-interaction
           echo "${PWD}/vendor/bin" >> $GITHUB_PATH
-    
       - name: Generate Routes
         run: php artisan ziggy:generate --types
+      - name: Lint with Pint
+        run: vendor/bin/pint --test
+      - name: Install frontend dependencies
+        run: npm ci
       - name: Run frontend linters
         uses: wearerequired/lint-action@v2
         with:
           eslint: true,
           eslint_extensions: "js,jsx,cjs,mjs,ts,tsx,cts,mts"
-
           prettier: true
           prettier_extensions: "css,html,js,json,jsx,md,sass,scss,ts,tsx,vue,yaml,yml"
-      - name: Run backend linters
-        run: vendor/bin/pint --dirty --test
       - name: Build frontend
         run: npm run build
+      - name: Start MySQL
+        run: |
+            sudo /etc/init.d/mysql start
+            mysql -e "CREATE DATABASE IF NOT EXISTS $DB_DATABASE;" -u$DB_USER -p$DB_PASSWORD
       - name: Run backend tests
         run: php artisan test
       - name: Run frontend tests

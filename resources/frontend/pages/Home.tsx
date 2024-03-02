@@ -55,15 +55,12 @@ const Home = () => {
                                 </Link>
                             </>
                         )}
-                        <Link to="https://info.e5vosdo.hu">
-                            <Button
-                                className="!w-full"
-                                variant="outline-secondary"
-                            >
-                                {locale.suInformation}
-                            </Button>
-                        </Link>
                         {/*
+            <Link to="https://info.e5vosdo.hu">
+              <Button className="!w-full" variant="outline-secondary">
+                {locale.suInformation}
+              </Button>
+            </Link>
             <Link to="/csapat">
               <Button className="!w-full" variant="outline-warning">
                 {locale.teams}

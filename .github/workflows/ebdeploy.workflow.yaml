@@ -3,6 +3,7 @@ on:
     push:
         branches:
             - prod
+    workflow_dispatch:
 jobs:
     deploy:
         runs-on: 'ubuntu-latest'
@@ -10,6 +11,12 @@ jobs:
         steps:
             - name: Checkout source code
               uses: actions/checkout@v2
+            - name: Exit if not prod
+              run: |
+                  if [[ "${{ github.ref }}" != "refs/heads/prod" ]]; then
+                    echo "Branch is not prod, exiting."
+                    exit 0
+                  fi
             - name: Calculate version number
               id: vnum
               run: echo "version=$(sh ./ci/deployver.sh ${{github.run_id}})" > $GITHUB_OUTPUT
@@ -34,7 +41,6 @@ jobs:
                   envkey_LOG_CHANNEL: stack
                   envkey_LOG_DEPRECATIONS_CHANNEL: 'null'
                   envkey_LOG_LEVEL: error
-
                   envkey_DB_CONNECTION: mysql
                   envkey_DB_HOST: ${{secrets.DB_HOST}}
                   envkey_DB_PORT: ${{secrets.DB_PORT}}
@@ -99,9 +105,12 @@ jobs:
                   envkey_DEBUG_API_KEY: '${{secrets.DEBUG_API_KEY}}'
                   envkey_DISCORD_WEBHOOK: '${{secrets.DISCORD_WEBHOOK}}'
 
+                  envkey_VITE_EVENT_HU_SHORT: 'GL'
+                  envkey_VITE_EVENT_EN_SHORT: 'FV'
+                  envkey_VITE_EVENT_HU: 'Gyárlátogatás'
+                  envkey_VITE_EVENT_EN: '"Factory Visit "'
             - name: Generate Routes
               run: php artisan ziggy:generate --types
-
             - name: Build frontend
               run: npm run build
 

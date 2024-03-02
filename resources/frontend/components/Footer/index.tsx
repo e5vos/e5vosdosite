@@ -28,7 +28,7 @@ const Footer = () => {
             <div className="flex w-full justify-evenly gap-2 md:mt-2 md:justify-end">
                 <Link to="/privacypolicy">{locale.privacypolicy}</Link>
                 <Link to="mailto:dev.do@e5vos.hu">{locale.contact}</Link>
-                <Link to="https://github.com/difcsi/e5vosdosite">
+                <Link to="https://github.com/e5vos/e5vosdosite">
                     {locale.github}
                 </Link>
             </div>

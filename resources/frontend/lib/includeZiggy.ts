@@ -1,5 +1,5 @@
-import { Config } from "ziggy-js";
+import { Config } from 'ziggy-js'
 
-import { Ziggy } from "../../js/ziggy";
+import { Ziggy } from '../../js/ziggy'
 
-export default Ziggy as Config;
+export default Ziggy as Config

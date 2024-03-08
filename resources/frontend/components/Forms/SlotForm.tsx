@@ -1,47 +1,47 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 
-import { CRUDForm } from "types/misc";
-import { SlotType } from "types/models";
+import { CRUDForm } from 'types/misc'
+import { SlotType } from 'types/models'
 
-import Locale from "lib/locale";
+import Locale from 'lib/locale'
 
-import { SlotFormValues } from "components/Slot/CRUD";
-import Button from "components/UIKit/Button";
-import Form from "components/UIKit/Form";
+import { SlotFormValues } from 'components/Slot/CRUD'
+import Button from 'components/UIKit/Button'
+import Form from 'components/UIKit/Form'
 
 const locale = Locale({
     hu: {
-        title: "Sáv létrehozása",
+        title: 'Sáv létrehozása',
         slot: {
-            name: "Sáv neve",
-            slot_type: "Sáv típusa",
+            name: 'Sáv neve',
+            slot_type: 'Sáv típusa',
             slot_types: {
-                presentation: "Előadás",
-                event: "Program",
+                presentation: 'Előadás',
+                event: 'Program',
             },
-            starts_at: "Sáv kezdete",
-            ends_at: "Sáv vége",
+            starts_at: 'Sáv kezdete',
+            ends_at: 'Sáv vége',
         },
-        submit: "Létrehozás",
-        required: "Kötelező mező",
+        submit: 'Létrehozás',
+        required: 'Kötelező mező',
     },
     en: {
-        title: "Create slot",
+        title: 'Create slot',
         slot: {
-            name: "Slot name",
-            slot_type: "Slot type",
+            name: 'Slot name',
+            slot_type: 'Slot type',
             slot_types: {
-                presentation: "Presentation",
-                event: "Event",
+                presentation: 'Presentation',
+                event: 'Event',
             },
-            starts_at: "Slot start",
-            ends_at: "Slot end",
+            starts_at: 'Slot start',
+            ends_at: 'Slot end',
         },
-        submit: "Create",
-        required: "Required",
+        submit: 'Create',
+        required: 'Required',
     },
-});
+})
 
 const SlotForm = ({
     initialValues,
@@ -61,12 +61,12 @@ const SlotForm = ({
             ends_at: Yup.string().required(locale.required),
         }),
         onSubmit: (values) => {
-            const val = onSubmit(values);
-            if (resetOnSubmit) formik.resetForm();
-            return val;
+            const val = onSubmit(values)
+            if (resetOnSubmit) formik.resetForm()
+            return val
         },
         enableReinitialize: enableReinitialize,
-    });
+    })
     return (
         <Form onSubmit={formik.handleSubmit} {...rest}>
             <Form.Group>
@@ -123,6 +123,6 @@ const SlotForm = ({
                 <Button type="submit">{submitLabel}</Button>
             </Form.Group>
         </Form>
-    );
-};
-export default SlotForm;
+    )
+}
+export default SlotForm

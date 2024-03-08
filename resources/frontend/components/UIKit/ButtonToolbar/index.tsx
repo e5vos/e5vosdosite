@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 const ButtonToolbar = ({
     children,
@@ -6,6 +6,6 @@ const ButtonToolbar = ({
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
 >) => {
-    return <div className="flex flex-row">{children}</div>;
-};
-export default ButtonToolbar;
+    return <div className="flex flex-row">{children}</div>
+}
+export default ButtonToolbar

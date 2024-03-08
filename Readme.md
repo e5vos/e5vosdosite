@@ -1,7 +1,7 @@
 # Setting up the Development Environment
 
 Install both frontend and backend dependencies :
- `composer install && npm install`
+`composer install && npm install`
 
 Create a `.env` file from `.env.example`. For Google credentials, we recommend setting up a sandbox on `localtest.me` (points to `localhost`) or setting up any `.local` domain. For convenience, you can use the sandbox project on `dev.do@e5vos.hu` if you have access.
 

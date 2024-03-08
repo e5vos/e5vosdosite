@@ -1,11 +1,11 @@
-import useConfirm, { ConfirmDialogProps } from "hooks/useConfirm";
-import useDelay from "hooks/useDelayed";
-import useEventDates from "hooks/useEventDates";
-import useUser from "hooks/useUser";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import useConfirm, { ConfirmDialogProps } from 'hooks/useConfirm'
+import useDelay from 'hooks/useDelayed'
+import useEventDates from 'hooks/useEventDates'
+import useUser from 'hooks/useUser'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
-import { CRUDFormImpl } from "types/misc";
+import { CRUDFormImpl } from 'types/misc'
 import {
     Attender,
     Event,
@@ -13,137 +13,137 @@ import {
     SignupTypeType,
     TeamMemberRole,
     isAttenderTeam,
-} from "types/models";
+} from 'types/models'
 
-import eventAPI from "lib/api/eventAPI";
-import teamAPI from "lib/api/teamAPI";
-import { isAdmin, isOrganiser, isScanner } from "lib/gates";
-import Locale from "lib/locale";
+import eventAPI from 'lib/api/eventAPI'
+import teamAPI from 'lib/api/teamAPI'
+import { isAdmin, isOrganiser, isScanner } from 'lib/gates'
+import Locale from 'lib/locale'
 
-import EventForm from "components/Forms/EventForm";
-import { EventPermissionCreateFormImpl } from "components/Permissions/CRUD";
-import Button from "components/UIKit/Button";
-import ButtonGroup from "components/UIKit/ButtonGroup";
-import Card from "components/UIKit/Card";
-import Dialog from "components/UIKit/Dialog";
-import Form from "components/UIKit/Form";
+import EventForm from 'components/Forms/EventForm'
+import { EventPermissionCreateFormImpl } from 'components/Permissions/CRUD'
+import Button from 'components/UIKit/Button'
+import ButtonGroup from 'components/UIKit/ButtonGroup'
+import Card from 'components/UIKit/Card'
+import Dialog from 'components/UIKit/Dialog'
+import Form from 'components/UIKit/Form'
 
-import ParticipantSearch from "./ParticipantSearch";
+import ParticipantSearch from './ParticipantSearch'
 
 export type EventFormValues = Pick<
     Event,
-    | "id"
-    | "name"
-    | "description"
-    | "starts_at"
-    | "ends_at"
-    | "signup_deadline"
-    | "signup_type"
-    | "organiser"
-    | "location_id"
-    | "capacity"
-    | "is_competition"
-    | "slot_id"
->;
+    | 'id'
+    | 'name'
+    | 'description'
+    | 'starts_at'
+    | 'ends_at'
+    | 'signup_deadline'
+    | 'signup_type'
+    | 'organiser'
+    | 'location_id'
+    | 'capacity'
+    | 'is_competition'
+    | 'slot_id'
+>
 
 const locale = Locale({
     hu: {
-        create: "Esemény létrehozása",
-        edit: "Esemény szerkesztése",
-        organiser: "Szervező",
-        description: "Leírás",
-        times: "Időpontok",
-        starts_at: "Kezdés",
-        ends_at: "Befejezés",
-        signup_deadline: "Jelentkezési határidő",
-        location: "Helyszín",
-        unknown: "Ismeretlen",
-        delete: "Törlés",
-        scanner: "Résztvevők kódjának beolvasása",
-        permissions: "Jogosultságok kezelése",
-        close_signup: "Jelentkezés lezárása",
+        create: 'Esemény létrehozása',
+        edit: 'Esemény szerkesztése',
+        organiser: 'Szervező',
+        description: 'Leírás',
+        times: 'Időpontok',
+        starts_at: 'Kezdés',
+        ends_at: 'Befejezés',
+        signup_deadline: 'Jelentkezési határidő',
+        location: 'Helyszín',
+        unknown: 'Ismeretlen',
+        delete: 'Törlés',
+        scanner: 'Résztvevők kódjának beolvasása',
+        permissions: 'Jogosultságok kezelése',
+        close_signup: 'Jelentkezés lezárása',
         are_you_sure: {
-            index: "Biztosan szeretnéd",
-            delete: "törölni az eseményt?",
-            close_signup: "lezárni a jelentkezést?",
-            yes: "Igen, biztos vagyok",
-            no: "Nem, mégsem",
+            index: 'Biztosan szeretnéd',
+            delete: 'törölni az eseményt?',
+            close_signup: 'lezárni a jelentkezést?',
+            yes: 'Igen, biztos vagyok',
+            no: 'Nem, mégsem',
         },
-        score: "Helyezés",
-        solo: "Egyéni jelentkezés",
-        singup: "Jelentkezés az eseményre",
-        signup_CTA: "Jelentkezz!",
-        unsignup_CTA: "Jelentkezés törlése",
-        applicants: "Jelentkezők",
-        participants: "Résztvevők",
+        score: 'Helyezés',
+        solo: 'Egyéni jelentkezés',
+        singup: 'Jelentkezés az eseményre',
+        signup_CTA: 'Jelentkezz!',
+        unsignup_CTA: 'Jelentkezés törlése',
+        applicants: 'Jelentkezők',
+        participants: 'Résztvevők',
         signup_type: (type: SignupTypeType): string => {
             switch (type) {
                 case SignupType.Individual:
-                    return "Egyéni jelentkezés";
+                    return 'Egyéni jelentkezés'
                 case SignupType.Team:
-                    return "Csapatos jelentkezés";
+                    return 'Csapatos jelentkezés'
                 case SignupType.Both:
-                    return "Egyéni és csapatos jelentkezés";
+                    return 'Egyéni és csapatos jelentkezés'
             }
         },
 
-        undefined: "Nincs megadva",
-        notyetset: "Még nincs megadva",
-        success: "sikeres",
-        cancelled: "sikeresen törölve",
+        undefined: 'Nincs megadva',
+        notyetset: 'Még nincs megadva',
+        success: 'sikeres',
+        cancelled: 'sikeresen törölve',
     },
     en: {
-        create: "Create event",
-        edit: "Edit event",
-        organiser: "Organiser",
-        description: "Description",
-        times: "Timetable",
-        starts_at: "Starts at",
-        ends_at: "Ends at",
-        signup_deadline: "Signup deadline",
-        location: "Location",
-        unknown: "Unknown",
-        delete: "Delete",
-        scanner: "Scan attendee codes",
-        permissions: "Manage permissions",
-        close_signup: "Close signup",
+        create: 'Create event',
+        edit: 'Edit event',
+        organiser: 'Organiser',
+        description: 'Description',
+        times: 'Timetable',
+        starts_at: 'Starts at',
+        ends_at: 'Ends at',
+        signup_deadline: 'Signup deadline',
+        location: 'Location',
+        unknown: 'Unknown',
+        delete: 'Delete',
+        scanner: 'Scan attendee codes',
+        permissions: 'Manage permissions',
+        close_signup: 'Close signup',
         are_you_sure: {
-            index: "Are you sure you want to",
-            delete: "delete the event?",
-            close_signup: "close the registration?",
+            index: 'Are you sure you want to',
+            delete: 'delete the event?',
+            close_signup: 'close the registration?',
             yes: "Yes, I'm sure",
-            no: "No, nevermind",
+            no: 'No, nevermind',
         },
-        score: "Score",
-        solo: "Solo signup",
-        singup: "Sign up for the event",
-        signup_CTA: "Sign up!",
-        applicants: "Applicants",
-        participants: "Participants",
+        score: 'Score',
+        solo: 'Solo signup',
+        singup: 'Sign up for the event',
+        signup_CTA: 'Sign up!',
+        applicants: 'Applicants',
+        participants: 'Participants',
         signup_type: (type: SignupTypeType) => {
             switch (type) {
                 case SignupType.Individual:
-                    return "Individual signup";
+                    return 'Individual signup'
                 case SignupType.Team:
-                    return "Team signup";
+                    return 'Team signup'
                 case SignupType.Both:
-                    return "Individual and team signup";
+                    return 'Individual and team signup'
             }
         },
-        undefined: "Not set",
-        notyetset: "Not set yet",
-        success: "successful",
-        cancelled: "successfully cancelled",
-        unsignup_CTA: "Cancel signup",
+        undefined: 'Not set',
+        notyetset: 'Not set yet',
+        success: 'successful',
+        cancelled: 'successfully cancelled',
+        unsignup_CTA: 'Cancel signup',
     },
-});
+})
 
 const useDeleteDialogTemplate = (event: Event) =>
     useCallback(({ handleConfirm, handleCancel }: ConfirmDialogProps) => {
         return (
             <Dialog
                 title={
-                    locale.are_you_sure.index + " " + locale.are_you_sure.delete
+                    locale.are_you_sure.index + ' ' + locale.are_you_sure.delete
                 }
                 closable={false}
             >
@@ -154,8 +154,8 @@ const useDeleteDialogTemplate = (event: Event) =>
                     {locale.are_you_sure.no}
                 </Button>
             </Dialog>
-        );
-    }, []);
+        )
+    }, [])
 
 const useCloseSignupDialogTemplate = (event: Event) =>
     useCallback(({ handleConfirm, handleCancel }: ConfirmDialogProps) => {
@@ -163,7 +163,7 @@ const useCloseSignupDialogTemplate = (event: Event) =>
             <Dialog
                 title={
                     locale.are_you_sure.index +
-                    " " +
+                    ' ' +
                     locale.are_you_sure.close_signup
                 }
                 closable={false}
@@ -175,107 +175,107 @@ const useCloseSignupDialogTemplate = (event: Event) =>
                     {locale.are_you_sure.no}
                 </Button>
             </Dialog>
-        );
-    }, []);
+        )
+    }, [])
 
 const EventReader = ({
     value: event,
     scoreLength = 3,
     ...rest
 }: CRUDFormImpl<Event, EventFormValues> & {
-    value: Event;
-    scoreLength?: number;
+    value: Event
+    scoreLength?: number
 }) => {
-    const { user } = useUser(false);
-    const { data: myteams } = teamAPI.useGetMyTeamsQuery();
+    const { user } = useUser(false)
+    const { data: myteams } = teamAPI.useGetMyTeamsQuery()
     const [triggerParticipants, { data: participants }] =
-        eventAPI.useLazyGetEventParticipantsQuery();
+        eventAPI.useLazyGetEventParticipantsQuery()
 
-    const attenderSelect = useRef<HTMLSelectElement>(null);
+    const attenderSelect = useRef<HTMLSelectElement>(null)
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
-    const [signup] = eventAPI.useSignUpMutation();
-    const [cancelSiguup] = eventAPI.useCancelSignUpMutation();
+    const [signup] = eventAPI.useSignUpMutation()
+    const [cancelSiguup] = eventAPI.useCancelSignUpMutation()
 
     const [statusmsg, setStatusmsg] = useState({
         isError: false,
-        message: "",
-    });
+        message: '',
+    })
 
-    const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
+    const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false)
 
     const cleanupStatusmsg = useDelay(() => {
-        setStatusmsg({ isError: false, message: "" });
-    }, 2500);
+        setStatusmsg({ isError: false, message: '' })
+    }, 2500)
 
-    const [deleteEvent] = eventAPI.useDeleteEventMutation();
-    const [closeSignup] = eventAPI.useCloseSignUpMutation();
-    const [setScoreAPI] = eventAPI.useSetScoreMutation();
+    const [deleteEvent] = eventAPI.useDeleteEventMutation()
+    const [closeSignup] = eventAPI.useCloseSignUpMutation()
+    const [setScoreAPI] = eventAPI.useSetScoreMutation()
 
-    const deleteDialogTemplate = useDeleteDialogTemplate(event);
-    const closeSignupDialogTemplate = useCloseSignupDialogTemplate(event);
+    const deleteDialogTemplate = useDeleteDialogTemplate(event)
+    const closeSignupDialogTemplate = useCloseSignupDialogTemplate(event)
     const [DeleteConfirmDialog, confirmDelete] =
-        useConfirm(deleteDialogTemplate);
+        useConfirm(deleteDialogTemplate)
     const [CloseSignupConfirmDialog, confirmCloseSignup] = useConfirm(
-        closeSignupDialogTemplate,
-    );
+        closeSignupDialogTemplate
+    )
 
-    const isUserOrganiser = isOrganiser(event)(user);
-    const isUserScanner = isScanner(event)(user);
+    const isUserOrganiser = isOrganiser(event)(user)
+    const isUserScanner = isScanner(event)(user)
 
-    const { now, starts_at, ends_at, signup_deadline } = useEventDates(event);
+    const { now, starts_at, ends_at, signup_deadline } = useEventDates(event)
 
     const handleSignup = async () => {
-        if (!event || !attenderSelect.current?.value) return;
+        if (!event || !attenderSelect.current?.value) return
         try {
             await signup({
                 attender: attenderSelect.current.value,
                 event,
-            }).unwrap();
+            }).unwrap()
             setStatusmsg({
                 isError: false,
-                message: locale.singup + " " + locale.success,
-            });
+                message: locale.singup + ' ' + locale.success,
+            })
         } catch (e: any) {
-            const message = (e.data as any).message;
-            setStatusmsg({ isError: true, message: message });
+            const message = (e.data as any).message
+            setStatusmsg({ isError: true, message: message })
         }
-        cleanupStatusmsg();
-    };
+        cleanupStatusmsg()
+    }
 
     const handleCancelSignup = async () => {
-        if (!event || !attenderSelect.current?.value) return;
+        if (!event || !attenderSelect.current?.value) return
         try {
             await cancelSiguup({
                 attender: attenderSelect.current.value,
                 event,
-            }).unwrap();
+            }).unwrap()
             setStatusmsg({
                 isError: false,
-                message: locale.singup + " " + locale.cancelled,
-            });
+                message: locale.singup + ' ' + locale.cancelled,
+            })
         } catch (e: any) {
-            const message = (e.data as any).message;
-            setStatusmsg({ isError: true, message: message });
+            const message = (e.data as any).message
+            setStatusmsg({ isError: true, message: message })
         }
-        cleanupStatusmsg();
-    };
+        cleanupStatusmsg()
+    }
 
     const canSignup = useMemo(() => {
-        if (!event.signup_deadline) return true;
-        return new Date(event.signup_deadline) > new Date();
-    }, [event]);
+        if (!event.signup_deadline) return true
+        return new Date(event.signup_deadline) > new Date()
+    }, [event])
 
     const signUpTeams = useMemo(() => {
-        if (!myteams) return [];
+        if (!myteams) return []
         return myteams.filter(
             (team) =>
                 !team.activity?.some((a) => a.pivot.event_id === event?.id) &&
                 team.members.find((m) => m.id === user?.id)?.pivot.role ===
-                    TeamMemberRole.leader,
-        );
-    }, [event?.id, myteams, user?.id]);
+                    TeamMemberRole.leader
+        )
+    }, [event?.id, myteams, user?.id])
 
     const setScore = useCallback(
         async (p: Attender, score: number) => {
@@ -283,19 +283,19 @@ const EventReader = ({
                 event: event,
                 attender: isAttenderTeam(p) ? p.code : p.id,
                 rank: score,
-            });
+            })
         },
-        [event, setScoreAPI],
-    );
+        [event, setScoreAPI]
+    )
 
     useEffect(() => {
-        if (event && isUserOrganiser) triggerParticipants(event);
-    }, [event, isUserOrganiser, triggerParticipants]);
+        if (event && isUserOrganiser) triggerParticipants(event)
+    }, [event, isUserOrganiser, triggerParticipants])
 
     const isEventSignupRelevant = signup_deadline
         ? now < signup_deadline &&
           (event.capacity ? event.capacity > event.occupancy : true)
-        : false;
+        : false
 
     return (
         <div>
@@ -360,13 +360,13 @@ const EventReader = ({
                                     {locale.unsignup_CTA}
                                 </Button>
                             </div>
-                            {statusmsg.message !== "" && (
+                            {statusmsg.message !== '' && (
                                 <Card
                                     title={statusmsg.message}
                                     className={`mt-2 ${
                                         statusmsg.isError
-                                            ? "bg-red-500"
-                                            : "bg-green-500"
+                                            ? 'bg-red-500'
+                                            : 'bg-green-500'
                                     }`}
                                 />
                             )}
@@ -406,9 +406,9 @@ const EventReader = ({
                                 className="!mb-2 !rounded-md text-white"
                                 variant="outline-danger"
                                 onClick={async () => {
-                                    if (!(await confirmDelete())) return;
-                                    await deleteEvent(event);
-                                    navigate("/esemeny");
+                                    if (!(await confirmDelete())) return
+                                    await deleteEvent(event)
+                                    navigate('/esemeny')
                                 }}
                             >
                                 {locale.delete}
@@ -448,8 +448,8 @@ const EventReader = ({
                                     variant="outline-warning"
                                     onClick={async () => {
                                         if (!(await confirmCloseSignup()))
-                                            return;
-                                        await closeSignup(event);
+                                            return
+                                        await closeSignup(event)
                                     }}
                                 >
                                     {locale.close_signup}
@@ -490,7 +490,7 @@ const EventReader = ({
                                                 <div className="w-full bg-gray p-2">
                                                     {participants?.find(
                                                         (p) =>
-                                                            p.pivot.rank === i,
+                                                            p.pivot.rank === i
                                                     )?.name ?? locale.notyetset}
                                                 </div>
                                             )}
@@ -504,16 +504,16 @@ const EventReader = ({
                     </Card>
                     <Card title={locale.times}>
                         <p>
-                            <strong>{locale.starts_at}</strong>:{" "}
-                            {starts_at?.toLocaleString("hu-HU")}
+                            <strong>{locale.starts_at}</strong>:{' '}
+                            {starts_at?.toLocaleString('hu-HU')}
                         </p>
                         <p>
-                            <strong>{locale.ends_at}</strong>:{" "}
-                            {ends_at?.toLocaleString("hu-HU")}
+                            <strong>{locale.ends_at}</strong>:{' '}
+                            {ends_at?.toLocaleString('hu-HU')}
                         </p>
                         <p>
-                            <strong>{locale.signup_deadline}</strong>:{" "}
-                            {signup_deadline?.toLocaleString("hu-HU") ??
+                            <strong>{locale.signup_deadline}</strong>:{' '}
+                            {signup_deadline?.toLocaleString('hu-HU') ??
                                 locale.undefined}
                         </p>
                     </Card>
@@ -545,39 +545,39 @@ const EventReader = ({
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
 const EventCreator = ({
     value,
     ...rest
 }: CRUDFormImpl<Event, Partial<EventFormValues>>) => {
-    const now = new Date();
-    const [createEvent] = eventAPI.useCreateEventMutation();
-    const navigate = useNavigate();
+    const now = new Date()
+    const [createEvent] = eventAPI.useCreateEventMutation()
+    const navigate = useNavigate()
     const onSubmit = useCallback(
         async (event: EventFormValues) => {
             try {
-                const res = await createEvent(event).unwrap();
-                navigate(`/esemeny/${res.id}`);
+                const res = await createEvent(event).unwrap()
+                navigate(`/esemeny/${res.id}`)
             } catch (e) {
-                console.error(e);
+                console.error(e)
             }
         },
-        [createEvent, navigate],
-    );
+        [createEvent, navigate]
+    )
     return (
         <EventForm
             initialValues={{
                 id: value.id ?? 0,
-                name: value.name ?? "",
-                description: value.description ?? "",
-                starts_at: value.starts_at ?? "",
-                ends_at: value.ends_at ?? "",
+                name: value.name ?? '',
+                description: value.description ?? '',
+                starts_at: value.starts_at ?? '',
+                ends_at: value.ends_at ?? '',
                 signup_deadline: value.signup_deadline ?? null,
-                signup_type: value.signup_type ?? "team_user",
+                signup_type: value.signup_type ?? 'team_user',
                 location_id: value.location_id ?? 0,
-                organiser: value.organiser ?? "",
+                organiser: value.organiser ?? '',
                 capacity: value.capacity ?? null,
                 is_competition: value.is_competition ?? false,
                 slot_id: value.slot_id ?? null,
@@ -587,14 +587,14 @@ const EventCreator = ({
             resetOnSubmit={true}
             {...rest}
         />
-    );
-};
+    )
+}
 const EventUpdater = ({
     value,
     ...rest
 }: CRUDFormImpl<Event, EventFormValues>) => {
-    const [changeEvent] = eventAPI.useEditEventMutation();
-    const navigate = useNavigate();
+    const [changeEvent] = eventAPI.useEditEventMutation()
+    const navigate = useNavigate()
     return (
         <EventForm
             initialValues={{
@@ -612,20 +612,20 @@ const EventUpdater = ({
                 slot_id: value.slot_id,
             }}
             onSubmit={async (event) => {
-                console.log(event);
-                await changeEvent(event);
-                navigate(`/esemeny/${event.id}`);
+                console.log(event)
+                await changeEvent(event)
+                navigate(`/esemeny/${event.id}`)
             }}
             resetOnSubmit={true}
             submitLabel={locale.edit}
             {...rest}
         ></EventForm>
-    );
-};
+    )
+}
 
 const EventCRUD = {
     Creator: EventCreator,
     Updater: EventUpdater,
     Reader: EventReader,
-};
-export default EventCRUD;
+}
+export default EventCRUD

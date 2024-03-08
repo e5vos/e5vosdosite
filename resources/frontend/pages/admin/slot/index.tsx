@@ -1,61 +1,61 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
-import adminAPI from "lib/api/adminAPI";
-import eventAPI from "lib/api/eventAPI";
-import { isAdmin } from "lib/gates";
-import Locale from "lib/locale";
+import adminAPI from 'lib/api/adminAPI'
+import eventAPI from 'lib/api/eventAPI'
+import { isAdmin } from 'lib/gates'
+import Locale from 'lib/locale'
 
-import { gated } from "components/Gate";
-import Button from "components/UIKit/Button";
-import Dialog from "components/UIKit/Dialog";
+import { gated } from 'components/Gate'
+import Button from 'components/UIKit/Button'
+import Dialog from 'components/UIKit/Dialog'
 
 const locale = Locale({
     hu: {
-        title: "Sávok",
-        create: "Új sáv létrehozása",
+        title: 'Sávok',
+        create: 'Új sáv létrehozása',
         slots: {
-            id: "ID",
-            name: "Név",
-            type: "Típus",
-            start: "Kezdés",
-            end: "Vége",
-            options: "Opciók",
-            edit: "Szerkesztés",
-            delete: "Törlés",
+            id: 'ID',
+            name: 'Név',
+            type: 'Típus',
+            start: 'Kezdés',
+            end: 'Vége',
+            options: 'Opciók',
+            edit: 'Szerkesztés',
+            delete: 'Törlés',
         },
         deleteDialog: {
-            title: "Sáv törlése",
-            description: "Biztosan törölni szeretnéd a sávot?",
-            delete: "Igen, sáv törlése",
+            title: 'Sáv törlése',
+            description: 'Biztosan törölni szeretnéd a sávot?',
+            delete: 'Igen, sáv törlése',
         },
     },
     en: {
-        title: "Slots",
-        create: "Create new slot",
+        title: 'Slots',
+        create: 'Create new slot',
         slots: {
-            id: "ID",
-            name: "Name",
-            type: "Type",
-            start: "Start",
-            end: "End",
-            options: "Options",
-            edit: "Edit",
-            delete: "Delete",
+            id: 'ID',
+            name: 'Name',
+            type: 'Type',
+            start: 'Start',
+            end: 'End',
+            options: 'Options',
+            edit: 'Edit',
+            delete: 'Delete',
         },
         deleteDialog: {
-            title: "Delete slot",
-            description: "Are you sure you want to delete this slot?",
-            delete: "Yes, delete slot",
+            title: 'Delete slot',
+            description: 'Are you sure you want to delete this slot?',
+            delete: 'Yes, delete slot',
         },
     },
-});
+})
 
 const SlotsPage = () => {
-    const { data: slots } = eventAPI.useGetSlotsQuery();
-    const [open, setOpen] = useState(false);
-    const [deleteSlot] = adminAPI.useDeleteSlotMutation();
-    const [slotToDelete, setSlotToDelete] = useState<number | null>(null);
+    const { data: slots } = eventAPI.useGetSlotsQuery()
+    const [open, setOpen] = useState(false)
+    const [deleteSlot] = adminAPI.useDeleteSlotMutation()
+    const [slotToDelete, setSlotToDelete] = useState<number | null>(null)
     return (
         <>
             <Dialog
@@ -69,10 +69,10 @@ const SlotsPage = () => {
                         variant="primary"
                         className="mx-1"
                         onClick={async () => {
-                            if (!slotToDelete) return;
-                            await deleteSlot({ id: slotToDelete });
-                            setOpen(false);
-                            setSlotToDelete(null);
+                            if (!slotToDelete) return
+                            await deleteSlot({ id: slotToDelete })
+                            setOpen(false)
+                            setSlotToDelete(null)
                         }}
                     >
                         {locale.deleteDialog.delete}
@@ -143,8 +143,8 @@ const SlotsPage = () => {
                                         variant="danger"
                                         className="mx-1"
                                         onClick={() => {
-                                            setOpen(true);
-                                            setSlotToDelete(slot.id);
+                                            setOpen(true)
+                                            setSlotToDelete(slot.id)
                                         }}
                                     >
                                         {locale.slots.delete}
@@ -156,7 +156,7 @@ const SlotsPage = () => {
                 </table>
             </div>
         </>
-    );
-};
+    )
+}
 
-export default gated(SlotsPage, isAdmin);
+export default gated(SlotsPage, isAdmin)

@@ -1,36 +1,36 @@
-import { FC } from "react";
+import { FC } from 'react'
 
-import { Presentation } from "types/models";
+import { Presentation } from 'types/models'
 
-import Locale from "lib/locale";
+import Locale from 'lib/locale'
 
-import Button from "components/UIKit/Button";
-import Loader from "components/UIKit/Loader";
+import Button from 'components/UIKit/Button'
+import Loader from 'components/UIKit/Loader'
 
 const getColor = (capacity: number | null) => {
-    if (capacity === null) return "bg-green-400";
+    if (capacity === null) return 'bg-green-400'
     switch (true) {
         case capacity > 20:
-            return "bg-green-400";
+            return 'bg-green-400'
         case capacity > 15:
-            return "bg-yellow-400";
+            return 'bg-yellow-400'
         case capacity > 10:
-            return "bg-yellow-600";
+            return 'bg-yellow-600'
         case capacity > 5:
-            return "bg-red-400";
+            return 'bg-red-400'
         default:
-            return "bg-red-500";
+            return 'bg-red-500'
     }
-};
+}
 
 const locale = Locale({
     hu: {
         presentation: {
-            title: "Előadás címe",
-            organiser: "Előadó",
-            description: "Előadás leírása",
-            location: "Előadás helye",
-            freeCapacity: "Szabad helyek",
+            title: 'Előadás címe',
+            organiser: 'Előadó',
+            description: 'Előadás leírása',
+            location: 'Előadás helye',
+            freeCapacity: 'Szabad helyek',
             multislot: {
                 starts: (SlotHref: FC) => (
                     <>
@@ -46,17 +46,17 @@ const locale = Locale({
                 ),
             },
         },
-        overfilled: "Túltöltve",
-        unrestricted: "Korlátlan",
-        select: "Kiválaszt",
+        overfilled: 'Túltöltve',
+        unrestricted: 'Korlátlan',
+        select: 'Kiválaszt',
     },
     en: {
         presentation: {
-            title: "Presentation title",
-            organiser: "Organiser",
-            description: "Presentation description",
-            location: "Presentation location",
-            freeCapacity: "Free capacity",
+            title: 'Presentation title',
+            organiser: 'Organiser',
+            description: 'Presentation description',
+            location: 'Presentation location',
+            freeCapacity: 'Free capacity',
             multislot: {
                 starts: (SlotHref: FC) => (
                     <>
@@ -70,11 +70,11 @@ const locale = Locale({
                 ),
             },
         },
-        overfilled: "Overfilled",
-        unrestricted: "Unrestricted",
-        select: "Select",
+        overfilled: 'Overfilled',
+        unrestricted: 'Unrestricted',
+        select: 'Select',
     },
-});
+})
 
 const PresentationsTable = ({
     presentations,
@@ -84,12 +84,12 @@ const PresentationsTable = ({
     disabled,
     isLoading,
 }: {
-    presentations: Presentation[];
-    callback?: (presentation: Presentation) => void;
-    selectSlot: (id: number) => void;
-    slotName: (id: number) => string | JSX.Element;
-    disabled?: boolean;
-    isLoading?: boolean;
+    presentations: Presentation[]
+    callback?: (presentation: Presentation) => void
+    selectSlot: (id: number) => void
+    slotName: (id: number) => string | JSX.Element
+    disabled?: boolean
+    isLoading?: boolean
 }) => {
     return (
         <table className="flex w-full table-auto border-separate border-spacing-x-0.5 border-spacing-y-1 flex-col text-sm md:table md:border-spacing-y-2 md:text-lg">
@@ -141,15 +141,15 @@ const PresentationsTable = ({
                                                             className="text-green-400"
                                                             onClick={() => {
                                                                 selectSlot(
-                                                                    presentation.root_parent_slot_id!,
-                                                                );
+                                                                    presentation.root_parent_slot_id!
+                                                                )
                                                             }}
                                                         >
                                                             {slotName(
-                                                                presentation.root_parent_slot_id!,
+                                                                presentation.root_parent_slot_id!
                                                             )}
                                                         </span>
-                                                    ),
+                                                    )
                                                 )}
                                             {presentation.direct_child_slot_id &&
                                                 locale.presentation.multislot.continues(
@@ -158,15 +158,15 @@ const PresentationsTable = ({
                                                             className="text-green-400"
                                                             onClick={() => {
                                                                 selectSlot(
-                                                                    presentation.direct_child_slot_id!,
-                                                                );
+                                                                    presentation.direct_child_slot_id!
+                                                                )
                                                             }}
                                                         >
                                                             {slotName(
-                                                                presentation.direct_child_slot_id!,
+                                                                presentation.direct_child_slot_id!
                                                             )}
                                                         </span>
-                                                    ),
+                                                    )
                                                 )}
                                         </div>
                                     )}
@@ -179,18 +179,18 @@ const PresentationsTable = ({
                                     </div>
                                     <div>
                                         {presentation.location?.name ??
-                                            "Ismeretlen hely"}
+                                            'Ismeretlen hely'}
                                     </div>
                                 </div>
                             </td>
                             <td
                                 className={
-                                    "m-4 whitespace-normal rounded-l-lg rounded-r-lg border-hidden  px-2 py-2 text-center text-black md:h-24 md:rounded-l-none md:py-0 " +
+                                    'm-4 whitespace-normal rounded-l-lg rounded-r-lg border-hidden  px-2 py-2 text-center text-black md:h-24 md:rounded-l-none md:py-0 ' +
                                     getColor(
                                         presentation.capacity
                                             ? presentation.capacity -
                                                   presentation.occupancy
-                                            : null,
+                                            : null
                                     )
                                 }
                             >
@@ -208,7 +208,7 @@ const PresentationsTable = ({
                                     {callback &&
                                     (!presentation.signup_deadline ||
                                         Date.parse(
-                                            presentation.signup_deadline,
+                                            presentation.signup_deadline
                                         ) >= Date.now()) &&
                                     (!presentation.capacity ||
                                         presentation.capacity >
@@ -234,7 +234,7 @@ const PresentationsTable = ({
                     ))}
             </tbody>
         </table>
-    );
-};
+    )
+}
 
-export default PresentationsTable;
+export default PresentationsTable

@@ -1,39 +1,39 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { Presentation } from "types/models";
+import { Presentation } from 'types/models'
 
-import Locale from "lib/locale";
+import Locale from 'lib/locale'
 
-import PresentationFillDialog from "./PresentationFillDialog";
-import Button from "./UIKit/Button";
-import ButtonGroup from "./UIKit/ButtonGroup";
-import Card from "./UIKit/Card";
+import PresentationFillDialog from './PresentationFillDialog'
+import Button from './UIKit/Button'
+import ButtonGroup from './UIKit/ButtonGroup'
+import Card from './UIKit/Card'
 
 const locale = Locale({
     hu: {
-        attendance_sheet: "Jelenléti Ív",
-        fill: "Kitöltés",
-        edit: "Szerkesztés",
+        attendance_sheet: 'Jelenléti Ív',
+        fill: 'Kitöltés',
+        edit: 'Szerkesztés',
     },
     en: {
-        attendance_sheet: "Attendance Sheet",
-        fill: "Fill",
-        edit: "Edit",
+        attendance_sheet: 'Attendance Sheet',
+        fill: 'Fill',
+        edit: 'Edit',
     },
-});
+})
 
 const PresentationCard = ({
     presentation,
     className,
     fillAllowed = false,
 }: {
-    presentation: Presentation;
-    className?: string;
-    fillAllowed: boolean;
+    presentation: Presentation
+    className?: string
+    fillAllowed: boolean
 }) => {
-    const [isDialogOpen, setisDialogOpen] = useState(false);
-    const navigate = useNavigate();
+    const [isDialogOpen, setisDialogOpen] = useState(false)
+    const navigate = useNavigate()
     return (
         <Card
             title={presentation.name}
@@ -41,9 +41,9 @@ const PresentationCard = ({
             buttonBar={
                 <div>
                     <div className="flew-row mb-1 mt-3 flex w-full justify-between px-2">
-                        <div>{presentation.location?.name ?? "Ismeretlen"}</div>
+                        <div>{presentation.location?.name ?? 'Ismeretlen'}</div>
                         <div className="mx-2">
-                            {presentation.slot_id ?? "-"}/{presentation.id}
+                            {presentation.slot_id ?? '-'}/{presentation.id}
                         </div>
                         <div>
                             {presentation.occupancy}/
@@ -73,7 +73,7 @@ const PresentationCard = ({
                             <Button
                                 onClick={() =>
                                     navigate(
-                                        `/esemeny/${presentation.id}/kezel/szerkeszt`,
+                                        `/esemeny/${presentation.id}/kezel/szerkeszt`
                                     )
                                 }
                             >
@@ -91,13 +91,13 @@ const PresentationCard = ({
                         event={presentation}
                         open={isDialogOpen}
                         onClose={() => {
-                            setisDialogOpen(false);
+                            setisDialogOpen(false)
                         }}
                     />
                 )}
             </div>
         </Card>
-    );
-};
+    )
+}
 
-export default PresentationCard;
+export default PresentationCard

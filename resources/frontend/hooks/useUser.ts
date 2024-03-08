@@ -1,44 +1,44 @@
-import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
-import baseAPI from "lib/api";
-import { useDispatch, useSelector } from "lib/store";
+import baseAPI from 'lib/api'
+import { useDispatch, useSelector } from 'lib/store'
 
 const useUser = (redirect: boolean = true, destination?: string) => {
-    const navigate = useNavigate();
-    const token = useSelector((state) => state.auth.token);
+    const navigate = useNavigate()
+    const token = useSelector((state) => state.auth.token)
 
     const [
         trigger,
         { data: user, isUninitialized, error, isLoading, isFetching, ...rest },
-    ] = baseAPI.useLazyGetCurrentUserDataQuery();
+    ] = baseAPI.useLazyGetCurrentUserDataQuery()
 
-    const location = useLocation();
-    const dispatch = useDispatch();
+    const location = useLocation()
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        let redirectToLogin: string | undefined;
-        let redirectToStudentCode: string | undefined;
+        let redirectToLogin: string | undefined
+        let redirectToStudentCode: string | undefined
 
         if (!redirect) {
-            redirectToLogin = undefined;
-            redirectToStudentCode = undefined;
+            redirectToLogin = undefined
+            redirectToStudentCode = undefined
         } else if (destination) {
-            redirectToLogin = destination;
-            redirectToStudentCode = destination;
+            redirectToLogin = destination
+            redirectToStudentCode = destination
         } else {
-            redirectToLogin = "/login?next=" + location.pathname;
-            redirectToStudentCode = "/studentcode?next=" + location.pathname;
+            redirectToLogin = '/login?next=' + location.pathname
+            redirectToStudentCode = '/studentcode?next=' + location.pathname
         }
 
         if (
-            (!token || (error && "status" in error && error.status === 401)) &&
+            (!token || (error && 'status' in error && error.status === 401)) &&
             redirectToLogin
         ) {
-            navigate(redirectToLogin);
+            navigate(redirectToLogin)
         }
         if (user && !user.e5code && redirectToStudentCode) {
-            navigate(redirectToStudentCode);
+            navigate(redirectToStudentCode)
         }
     }, [
         user,
@@ -49,11 +49,11 @@ const useUser = (redirect: boolean = true, destination?: string) => {
         destination,
         location.pathname,
         token,
-    ]);
+    ])
 
     useEffect(() => {
-        if (token) trigger();
-    }, [token, trigger]);
+        if (token) trigger()
+    }, [token, trigger])
 
     return {
         user: user && !error && token ? user : undefined,
@@ -63,7 +63,7 @@ const useUser = (redirect: boolean = true, destination?: string) => {
         refetch: trigger,
         isUninitialized,
         ...rest,
-    };
-};
+    }
+}
 
-export default useUser;
+export default useUser

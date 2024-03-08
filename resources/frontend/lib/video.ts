@@ -8,12 +8,12 @@
 export function showVideo(
     stream: MediaStream | null,
     video: HTMLVideoElement,
-    muted: boolean = true,
+    muted: boolean = true
 ) {
-    video.srcObject = stream;
-    video.volume = muted ? 0 : 1;
+    video.srcObject = stream
+    video.volume = muted ? 0 : 1
     video.onloadedmetadata = () =>
         video.play().catch((error) => {
-            console.error(error);
-        });
+            console.error(error)
+        })
 }

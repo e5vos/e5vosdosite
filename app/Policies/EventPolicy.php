@@ -171,7 +171,7 @@ class EventPolicy
             throw new SignupRequiredException();
         }
         $attenderType = is_numeric($attender) || strlen($attender) === 13 ? 'user' : 'team';
-        if ($event->signup_type != null && str_contains($event->signup_type, $attenderType)) {
+        if ($event->signup_type !== 'team_user' && $event->signup_type !== $attenderType) {
             throw new WrongSignupTypeException();
         }
         if ($event->slot?->slot_type === SlotType::presentation->value) {

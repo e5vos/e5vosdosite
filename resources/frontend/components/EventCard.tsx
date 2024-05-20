@@ -1,4 +1,5 @@
 import useUser from 'hooks/useUser'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { Event } from 'types/models'
@@ -23,6 +24,7 @@ const EventCard = ({
 }) => {
     const user = useUser(false)
     const navigate = useNavigate()
+    const isFootball = useMemo(() => event.slot?.name === 'Foci', [event.slot])
     return (
         <div
             className={`mb-3 flex flex-col justify-between rounded-lg bg-gray-600 p-2 ${
@@ -32,7 +34,24 @@ const EventCard = ({
             <div>
                 <h3 className="px-2 text-2xl font-bold">{event.name}</h3>
                 <h4 className="px-2 text-sm">{event.organiser}</h4>
-                <p className="mt-2 px-2">{event.description}</p>
+                {isFootball ? (
+                    <div className="flex w-full items-center justify-center gap-2 py-2">
+                        <div className="rounded-lg bg-slate-100 px-6 py-2 text-xl font-semibold text-gray-700">
+                            {event.description.substring(
+                                0,
+                                event.description.indexOf('-')
+                            )}
+                        </div>
+                        -
+                        <div className="rounded-lg bg-slate-100 px-6 py-2 text-xl font-semibold text-gray-700">
+                            {event.description.substring(
+                                event.description.indexOf('-') + 1
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    <p>{event.description}</p>
+                )}
             </div>
             <div>
                 <div className="flew-row mb-1 mt-2 flex w-full justify-between">

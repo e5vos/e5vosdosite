@@ -91,6 +91,9 @@ const locale = Locale({
         notyetset: 'Még nincs megadva',
         success: 'sikeres',
         cancelled: 'sikeresen törölve',
+        football: {
+            score: 'Eredmény',
+        },
     },
     en: {
         create: 'Create event',
@@ -135,6 +138,9 @@ const locale = Locale({
         success: 'successful',
         cancelled: 'successfully cancelled',
         unsignup_CTA: 'Cancel signup',
+        football: {
+            score: 'Score',
+        },
     },
 })
 
@@ -266,6 +272,8 @@ const EventReader = ({
         if (!event.signup_deadline && event.signup_type !== null) return true
         return new Date(event.signup_deadline) > new Date()
     }, [event])
+
+    const isFootball = useMemo(() => event.slot?.name === 'Foci', [event.slot])
 
     const signUpTeams = useMemo(() => {
         if (!myteams) return []
@@ -499,9 +507,28 @@ const EventReader = ({
                                 ))}
                         </Card>
                     )}
-                    <Card title={locale.description}>
-                        <p>{event.description}</p>
-                    </Card>
+                    {isFootball ? (
+                        <Card title={locale.football.score}>
+                            <div className="flex w-full items-center justify-center gap-2 py-2">
+                                <div className="rounded-lg bg-slate-100 px-6 py-2 text-xl font-semibold text-gray-700">
+                                    {event.description.substring(
+                                        0,
+                                        event.description.indexOf('-')
+                                    )}
+                                </div>
+                                -
+                                <div className="rounded-lg bg-slate-100 px-6 py-2 text-xl font-semibold text-gray-700">
+                                    {event.description.substring(
+                                        event.description.indexOf('-') + 1
+                                    )}
+                                </div>
+                            </div>
+                        </Card>
+                    ) : (
+                        <Card title={locale.description}>
+                            <p>{event.description}</p>
+                        </Card>
+                    )}
                     <Card title={locale.times}>
                         <p>
                             <strong>{locale.starts_at}</strong>:{' '}
@@ -606,7 +633,7 @@ const EventUpdater = ({
                 starts_at: value.starts_at,
                 ends_at: value.ends_at,
                 signup_deadline: value.signup_deadline,
-                signup_type: value.signup_type,
+                signup_type: value.signup_type ?? '',
                 location_id: value.location_id,
                 organiser: value.organiser,
                 capacity: value.capacity,

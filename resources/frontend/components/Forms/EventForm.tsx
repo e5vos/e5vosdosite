@@ -112,7 +112,7 @@ const EventForm = ({
             is_competition: Yup.boolean(),
             capacity_enabled: Yup.boolean(),
             slot_id: Yup.number(),
-            signup_type: Yup.string(),
+            signup_type: Yup.string().nullable(),
         }),
         onSubmit: (values) => {
             const val = onSubmit({
@@ -215,9 +215,9 @@ const EventForm = ({
                 <Form.Group>
                     <Form.Label>{locale.fields.location}</Form.Label>
                     <LocationSearchCombobox
-                        onChange={(e) =>
+                        onChange={(e) => {
                             formik.setFieldValue('location_id', e.id)
-                        }
+                        }}
                     />
                 </Form.Group>
             )}
@@ -274,6 +274,7 @@ const EventForm = ({
                                 {locale.signup_type(value)}
                             </option>
                         ))}
+                        <option value="">null</option>
                     </Form.Select>
                 </Form.Group>
             )}

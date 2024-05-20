@@ -53,9 +53,9 @@ const CustomNavbar = () => {
                             value={user.e5code}
                         />
                     ) : (
-                        <Donci className="mx-auto animate-pulse fill-red" />
+                        <Donci className="fill-red mx-auto animate-pulse" />
                     )}
-                    <span className=" mt-2 w-full rounded-full bg-gray px-3 py-1 text-center">
+                    <span className=" bg-gray mt-2 w-full rounded-full px-3 py-1 text-center">
                         {user.e5code ?? locale.noe5code}
                     </span>
                 </Dialog>
@@ -70,8 +70,9 @@ const CustomNavbar = () => {
                 {/*
           <Navbar.Link href="https://info.e5vosdo.hu">{locale.info}</Navbar.Link>
           <Navbar.Link href="/csapat">{locale.teams}</Navbar.Link>
-          <Navbar.Link href="/esemeny">{locale.events}</Navbar.Link>
-        */}
+            */}
+                <Navbar.Link href="/esemeny">{locale.events}</Navbar.Link>
+                {/*
                 {isTeacher(user) && (
                     <Navbar.Link href="/eloadas/kezel">
                         {locale.presentations_teacher}
@@ -80,6 +81,7 @@ const CustomNavbar = () => {
                 <Navbar.Link href="/eloadas">
                     {locale.presentationSignup}
                 </Navbar.Link>
+                */}
                 {!user && (
                     <Navbar.Link href={`/login?next=${location.pathname}`}>
                         {locale.login}

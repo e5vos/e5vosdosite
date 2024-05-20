@@ -263,7 +263,7 @@ const EventReader = ({
     }
 
     const canSignup = useMemo(() => {
-        if (!event.signup_deadline) return true
+        if (!event.signup_deadline && event.signup_type !== null) return true
         return new Date(event.signup_deadline) > new Date()
     }, [event])
 
@@ -487,7 +487,7 @@ const EventReader = ({
                                                     }
                                                 />
                                             ) : (
-                                                <div className="w-full bg-gray p-2">
+                                                <div className="bg-gray w-full p-2">
                                                     {participants?.find(
                                                         (p) =>
                                                             p.pivot.rank === i
@@ -511,11 +511,13 @@ const EventReader = ({
                             <strong>{locale.ends_at}</strong>:{' '}
                             {ends_at?.toLocaleString('hu-HU')}
                         </p>
-                        <p>
-                            <strong>{locale.signup_deadline}</strong>:{' '}
-                            {signup_deadline?.toLocaleString('hu-HU') ??
-                                locale.undefined}
-                        </p>
+                        {canSignup && (
+                            <p>
+                                <strong>{locale.signup_deadline}</strong>:{' '}
+                                {signup_deadline?.toLocaleString('hu-HU') ??
+                                    locale.undefined}
+                            </p>
+                        )}
                     </Card>
                     <Card title={locale.location}>
                         {event.location?.name ?? locale.unknown}
@@ -608,7 +610,7 @@ const EventUpdater = ({
                 location_id: value.location_id,
                 organiser: value.organiser,
                 capacity: value.capacity,
-                is_competition: value.is_competition,
+                is_competition: value.is_competition ?? false,
                 slot_id: value.slot_id,
             }}
             onSubmit={async (event) => {

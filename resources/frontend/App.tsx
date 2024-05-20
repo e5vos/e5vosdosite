@@ -47,9 +47,9 @@ const CreateEventPage = React.lazy(() => import('pages/event/create'))
 const eventRoutes = (
     <Route path="esemeny">
         <Route index element={<EventsPage />} />
+        <Route path="uj" element={<CreateEventPage />} />
         <Route path=":eventid">
             <Route index element={<EventPage />} />
-            <Route path="uj" element={<CreateEventPage />} />
             <Route path="kezel">
                 <Route path="szerkeszt" element={<EditEventPage />} />
                 <Route path="scanner" element={<ScannerPage />} />
@@ -144,10 +144,10 @@ function App() {
                             <Routes>
                                 <Route path="/">
                                     <Route index element={<Home />} />
-                                    {teamRoutes}
+                                    {/*teamRoutes*/}
                                     {slotRoutes}
                                     {eventRoutes}
-                                    {presentationRoutes}
+                                    {/*presentationRoutes*/}
                                     {adminRoutes}
                                     {authRoutes}
                                     <Route

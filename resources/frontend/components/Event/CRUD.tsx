@@ -17,8 +17,9 @@ import {
 
 import eventAPI from 'lib/api/eventAPI'
 import teamAPI from 'lib/api/teamAPI'
-import { isAdmin, isOrganiser, isScanner } from 'lib/gates'
+import { isAdmin, isOperator, isOrganiser, isScanner } from 'lib/gates'
 import Locale from 'lib/locale'
+import { formatDateTimeInput } from 'lib/util'
 
 import EventForm from 'components/Forms/EventForm'
 import { EventPermissionCreateFormImpl } from 'components/Permissions/CRUD'
@@ -218,6 +219,7 @@ const EventReader = ({
     const [deleteEvent] = eventAPI.useDeleteEventMutation()
     const [closeSignup] = eventAPI.useCloseSignUpMutation()
     const [setScoreAPI] = eventAPI.useSetScoreMutation()
+    const [changeEvent] = eventAPI.useEditEventMutation()
 
     const deleteDialogTemplate = useDeleteDialogTemplate(event)
     const closeSignupDialogTemplate = useCloseSignupDialogTemplate(event)
@@ -305,6 +307,28 @@ const EventReader = ({
           (event.capacity ? event.capacity > event.occupancy : true)
         : false
 
+    async function changeFootballScore(team: number, direction: number) {
+        const score = event.description.split('-').map(Number)
+        score[team] += direction
+        if (score[0] < 0 || score[1] < 0) return
+
+        const newEvent: EventFormValues = {
+            id: event.id,
+            name: event.name,
+            description: `${score[0]}-${score[1]}`,
+            starts_at: formatDateTimeInput(new Date(event.starts_at)),
+            ends_at: formatDateTimeInput(new Date(event.ends_at)),
+            signup_deadline: event.signup_deadline,
+            signup_type: event.signup_type,
+            location_id: event.location_id,
+            organiser: event.organiser,
+            capacity: event.capacity,
+            is_competition: event.is_competition,
+            slot_id: event.slot_id,
+        }
+        await changeEvent(newEvent)
+    }
+
     return (
         <div>
             <DeleteConfirmDialog />
@@ -381,7 +405,43 @@ const EventReader = ({
                         </div>
                     )}
                     <ButtonGroup className="mt-6 !block w-full sm:hidden">
-                        {(isAdmin(user) ||
+                        {isFootball && (isAdmin(user) || isUserOrganiser) && (
+                            <div className="mb-2 flex w-full justify-evenly rounded-lg py-4 outline outline-2 outline-white">
+                                <ButtonGroup>
+                                    <Button
+                                        onClick={() =>
+                                            changeFootballScore(0, 1)
+                                        }
+                                    >
+                                        🔼
+                                    </Button>
+                                    <Button
+                                        onClick={() =>
+                                            changeFootballScore(0, -1)
+                                        }
+                                    >
+                                        🔽
+                                    </Button>
+                                </ButtonGroup>
+                                <ButtonGroup>
+                                    <Button
+                                        onClick={() =>
+                                            changeFootballScore(1, 1)
+                                        }
+                                    >
+                                        🔼
+                                    </Button>
+                                    <Button
+                                        onClick={() =>
+                                            changeFootballScore(1, -1)
+                                        }
+                                    >
+                                        🔽
+                                    </Button>
+                                </ButtonGroup>
+                            </div>
+                        )}
+                        {/*(isAdmin(user) ||
                             isUserOrganiser ||
                             isUserScanner) && (
                             <Link
@@ -395,7 +455,7 @@ const EventReader = ({
                                     {locale.scanner}
                                 </Button>
                             </Link>
-                        )}
+                            )*/}
                         {(isAdmin(user) || isUserOrganiser) && (
                             <Link
                                 className="w-full"
@@ -409,7 +469,7 @@ const EventReader = ({
                                 </Button>
                             </Link>
                         )}
-                        {isAdmin(user) && (
+                        {isOperator(user) && (
                             <Button
                                 className="!mb-2 !rounded-md text-white"
                                 variant="outline-danger"
@@ -422,7 +482,7 @@ const EventReader = ({
                                 {locale.delete}
                             </Button>
                         )}
-                        {(isAdmin(user) || isUserOrganiser) && (
+                        {(isOperator(user) || isUserOrganiser) && (
                             <>
                                 <Dialog
                                     open={isPermissionDialogOpen}
@@ -495,7 +555,7 @@ const EventReader = ({
                                                     }
                                                 />
                                             ) : (
-                                                <div className="bg-gray w-full p-2">
+                                                <div className="w-full bg-gray-500 p-2">
                                                     {participants?.find(
                                                         (p) =>
                                                             p.pivot.rank === i
@@ -581,7 +641,6 @@ const EventCreator = ({
     value,
     ...rest
 }: CRUDFormImpl<Event, Partial<EventFormValues>>) => {
-    const now = new Date()
     const [createEvent] = eventAPI.useCreateEventMutation()
     const navigate = useNavigate()
     const onSubmit = useCallback(

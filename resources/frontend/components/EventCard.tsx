@@ -2,7 +2,7 @@ import useUser from 'hooks/useUser'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { Event } from 'types/models'
+import { Event, User } from 'types/models'
 
 import { isAdmin, isTeacherAdmin } from 'lib/gates'
 import Locale from 'lib/locale'

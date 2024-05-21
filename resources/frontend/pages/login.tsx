@@ -36,7 +36,7 @@ const LoginRecoveryPanel = () => {
     const token = useSelector((state) => state.auth.token)
     useEffect(() => {
         if (token !== '') {
-            navigate(params.next ?? '/eloadas', { replace: true })
+            navigate(params.next ?? '/dashboard', { replace: true })
         }
     }, [navigate, params.next, token])
     if (!user) return <Loader />

@@ -14,6 +14,7 @@ import Loader from 'components/UIKit/Loader'
 // Generic Routes
 const Home = React.lazy(() => import('pages/Home'))
 const Error = React.lazy(() => import('components/Error'))
+const Dashboard = React.lazy(() => import('pages/dashboard'))
 
 // Teams
 const TeamsPage = React.lazy(() => import('pages/team'))
@@ -144,6 +145,10 @@ function App() {
                             <Routes>
                                 <Route path="/">
                                     <Route index element={<Home />} />
+                                    <Route
+                                        path="dashboard"
+                                        element={<Dashboard />}
+                                    />
                                     {/*teamRoutes*/}
                                     {slotRoutes}
                                     {eventRoutes}

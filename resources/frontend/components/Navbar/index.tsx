@@ -21,6 +21,8 @@ const locale = Locale({
         info: 'DÖ Információk',
         noe5code: 'Nincs E5 kódod :(',
         presentations_teacher: 'Előadások - Tanári',
+        dashboard: 'Kezdőlap',
+        home: 'Kezdőlap',
     },
     en: {
         presentationSignup: 'Presentation signup',
@@ -32,6 +34,8 @@ const locale = Locale({
         info: 'SU Information',
         noe5code: 'You have no E5 code :(',
         presentations_teacher: "Presentations - Teacher's Page",
+        dashboard: 'Dashboard',
+        home: 'Home',
     },
 })
 
@@ -71,6 +75,12 @@ const CustomNavbar = () => {
           <Navbar.Link href="https://info.e5vosdo.hu">{locale.info}</Navbar.Link>
           <Navbar.Link href="/csapat">{locale.teams}</Navbar.Link>
             */}
+                {!user && <Navbar.Link href={`/`}>{locale.home}</Navbar.Link>}
+                {user && (
+                    <Navbar.Link href="/dashboard">
+                        {locale.dashboard}
+                    </Navbar.Link>
+                )}
                 <Navbar.Link href="/esemeny">{locale.events}</Navbar.Link>
                 {/*
                 {isTeacher(user) && (

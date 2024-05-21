@@ -79,7 +79,7 @@ const LoginForm = () => {
             }
             // e.data.token contains token
             dispatch(authSlice.actions.setToken(e.data.token))
-            navigate(params.next ?? '/eloadas')
+            navigate(params.next ?? '/dashboard')
         },
         [dispatch, navigate, params.next]
     )

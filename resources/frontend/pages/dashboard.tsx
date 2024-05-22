@@ -1,4 +1,5 @@
 import useUser from 'hooks/useUser'
+import { useMemo } from 'react'
 
 import eventAPI from 'lib/api/eventAPI'
 import Locale from 'lib/locale'
@@ -53,6 +54,36 @@ const Dashboard = () => {
             event.slot.name === 'Foci'
     )
 
+    const footballScore = useMemo(() => {
+        return currentFootballMatch?.description
+            .split('/')[0]
+            .split('-')
+            .map(Number)
+    }, [currentFootballMatch?.description])
+
+    const footballGroup = useMemo(() => {
+        switch (currentFootballMatch?.description.split('/')[1]) {
+            case 'ACSOP':
+                return 'A csoport'
+            case 'BCSOP':
+                return 'B csoport'
+            case 'CCSOP':
+                return 'C csoport'
+            case 'DCSOP':
+                return 'D csoport'
+            case 'NEGYED':
+                return 'Negyeddöntő'
+            case 'ELODONT':
+                return 'Elődöntő'
+            case 'DONTO':
+                return 'Döntő'
+            case 'BRONZ':
+                return 'Bronzmeccs'
+            default:
+                return ''
+        }
+    }, [currentFootballMatch?.description])
+
     if (!events) return <Loader />
     return (
         <div className="w-full">
@@ -68,25 +99,21 @@ const Dashboard = () => {
                         <h3 className="text-lg">{locale.subtitle}</h3>
                     </div>
                     <div className="mb-2 mt-4 flex flex-wrap items-center justify-between rounded-lg bg-gray-600 px-4 py-2 sm:col-span-1 md:col-span-2 lg:col-span-3">
-                        <h4 className="text-lg font-semibold">
-                            {currentFootballMatch?.name}
-                        </h4>
+                        <div>
+                            <h5 className="text-sm italic">{footballGroup}</h5>
+                            <h4 className="text-lg font-semibold">
+                                {currentFootballMatch
+                                    ? currentFootballMatch.name
+                                    : 'Jelenleg nincs meccs'}
+                            </h4>
+                        </div>
                         <div className="flex items-center justify-center gap-2 py-2">
                             <div className="rounded-lg bg-slate-100 px-6 py-2 text-xl font-semibold text-gray-700">
-                                {currentFootballMatch?.description.substring(
-                                    0,
-                                    currentFootballMatch?.description.indexOf(
-                                        '-'
-                                    )
-                                )}
+                                {footballScore ? footballScore[0] : '0'}
                             </div>
                             -
                             <div className="rounded-lg bg-slate-100 px-6 py-2 text-xl font-semibold text-gray-700">
-                                {currentFootballMatch?.description.substring(
-                                    currentFootballMatch?.description.indexOf(
-                                        '-'
-                                    ) + 1
-                                )}
+                                {footballScore ? footballScore[1] : '0'}
                             </div>
                         </div>
                     </div>

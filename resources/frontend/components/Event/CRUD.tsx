@@ -94,6 +94,7 @@ const locale = Locale({
         cancelled: 'sikeresen törölve',
         football: {
             score: 'Eredmény',
+            team: 'Játékosok',
         },
     },
     en: {
@@ -141,6 +142,7 @@ const locale = Locale({
         unsignup_CTA: 'Cancel signup',
         football: {
             score: 'Score',
+            team: 'Players',
         },
     },
 })
@@ -307,15 +309,21 @@ const EventReader = ({
           (event.capacity ? event.capacity > event.occupancy : true)
         : false
 
+    const footballScore = useMemo(() => {
+        if (!isFootball) return [0, 0]
+        return event.description.split('/')[0].split('-').map(Number)
+    }, [event.description, isFootball])
+
     async function changeFootballScore(team: number, direction: number) {
-        const score = event.description.split('-').map(Number)
-        score[team] += direction
-        if (score[0] < 0 || score[1] < 0) return
+        footballScore[team] += direction
+        if (footballScore[0] < 0 || footballScore[1] < 0) return
 
         const newEvent: EventFormValues = {
             id: event.id,
             name: event.name,
-            description: `${score[0]}-${score[1]}`,
+            description: `${footballScore[0]}-${footballScore[1]}/${
+                event.description.split('/')[1]
+            }/${event.description.split('/')[2]}`,
             starts_at: formatDateTimeInput(new Date(event.starts_at)),
             ends_at: formatDateTimeInput(new Date(event.ends_at)),
             signup_deadline: event.signup_deadline,
@@ -412,15 +420,17 @@ const EventReader = ({
                                         onClick={() =>
                                             changeFootballScore(0, 1)
                                         }
+                                        variant="success"
                                     >
-                                        🔼
+                                        +
                                     </Button>
                                     <Button
                                         onClick={() =>
                                             changeFootballScore(0, -1)
                                         }
+                                        variant="danger"
                                     >
-                                        🔽
+                                        -
                                     </Button>
                                 </ButtonGroup>
                                 <ButtonGroup>
@@ -428,15 +438,17 @@ const EventReader = ({
                                         onClick={() =>
                                             changeFootballScore(1, 1)
                                         }
+                                        variant="success"
                                     >
-                                        🔼
+                                        +
                                     </Button>
                                     <Button
                                         onClick={() =>
                                             changeFootballScore(1, -1)
                                         }
+                                        variant="danger"
                                     >
-                                        🔽
+                                        -
                                     </Button>
                                 </ButtonGroup>
                             </div>
@@ -568,22 +580,22 @@ const EventReader = ({
                         </Card>
                     )}
                     {isFootball ? (
-                        <Card title={locale.football.score}>
-                            <div className="flex w-full items-center justify-center gap-2 py-2">
-                                <div className="rounded-lg bg-slate-100 px-6 py-2 text-xl font-semibold text-gray-700">
-                                    {event.description.substring(
-                                        0,
-                                        event.description.indexOf('-')
-                                    )}
+                        <>
+                            <Card title={locale.football.score}>
+                                <div className="flex w-full items-center justify-center gap-2 py-2">
+                                    <div className="rounded-lg bg-slate-100 px-6 py-2 text-xl font-semibold text-gray-700">
+                                        {footballScore[0]}
+                                    </div>
+                                    -
+                                    <div className="rounded-lg bg-slate-100 px-6 py-2 text-xl font-semibold text-gray-700">
+                                        {footballScore[1]}
+                                    </div>
                                 </div>
-                                -
-                                <div className="rounded-lg bg-slate-100 px-6 py-2 text-xl font-semibold text-gray-700">
-                                    {event.description.substring(
-                                        event.description.indexOf('-') + 1
-                                    )}
-                                </div>
-                            </div>
-                        </Card>
+                            </Card>
+                            <Card title={locale.football.team}>
+                                {event.description.split('/')[2]}
+                            </Card>
+                        </>
                     ) : (
                         <Card title={locale.description}>
                             <p>{event.description}</p>

@@ -25,6 +25,34 @@ const EventCard = ({
     const user = useUser(false)
     const navigate = useNavigate()
     const isFootball = useMemo(() => event.slot?.name === 'Foci', [event.slot])
+    const footballScore = useMemo(() => {
+        if (!isFootball) return [0, 0]
+        return event.description.split('/')[0].split('-').map(Number)
+    }, [event.description, isFootball])
+    const footballGroup = useMemo(() => {
+        switch (event.description.split('/')[1]) {
+            case 'ACSOP':
+                return 'A csoport'
+            case 'BCSOP':
+                return 'B csoport'
+            case 'CCSOP':
+                return 'C csoport'
+            case 'DCSOP':
+                return 'D csoport'
+            case 'NEGYED':
+                return 'Negyeddöntő'
+            case 'ELODONT':
+                return 'Elődöntő'
+            case 'DONTO':
+                return 'Döntő'
+            case 'BRONZ':
+                return 'Bronzmeccs'
+            case 'KISB':
+                return 'Kis Bajnokság'
+            default:
+                return 'Ismeretlen'
+        }
+    }, [event.description])
     return (
         <div
             className={`mb-3 flex flex-col justify-between rounded-lg bg-gray-600 p-2 ${
@@ -33,20 +61,17 @@ const EventCard = ({
         >
             <div>
                 <h3 className="px-2 text-2xl font-bold">{event.name}</h3>
-                <h4 className="px-2 text-sm">{event.organiser}</h4>
+                <h4 className="px-2 text-sm">
+                    {isFootball ? footballGroup : event.organiser}
+                </h4>
                 {isFootball ? (
                     <div className="flex w-full items-center justify-center gap-2 py-2">
                         <div className="rounded-lg bg-slate-100 px-6 py-2 text-xl font-semibold text-gray-700">
-                            {event.description.substring(
-                                0,
-                                event.description.indexOf('-')
-                            )}
+                            {footballScore[0]}
                         </div>
                         -
                         <div className="rounded-lg bg-slate-100 px-6 py-2 text-xl font-semibold text-gray-700">
-                            {event.description.substring(
-                                event.description.indexOf('-') + 1
-                            )}
+                            {footballScore[1]}
                         </div>
                     </div>
                 ) : (
@@ -56,7 +81,9 @@ const EventCard = ({
             <div>
                 <div className="flew-row mb-1 mt-2 flex w-full justify-between">
                     <div className="rounded-full bg-gray-400 px-3">
-                        {event.location?.name ?? 'Ismeretlen'}
+                        {isFootball
+                            ? new Date(event.starts_at).toLocaleString()
+                            : event.location?.name ?? 'Ismeretlen'}
                     </div>
                     {(isAdmin(user) || isTeacherAdmin(user)) && (
                         <div className=" flex overflow-hidden rounded-full bg-slate-200">

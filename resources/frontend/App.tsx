@@ -15,6 +15,7 @@ import Loader from 'components/UIKit/Loader'
 const Home = React.lazy(() => import('pages/Home'))
 const Error = React.lazy(() => import('components/Error'))
 const Dashboard = React.lazy(() => import('pages/dashboard'))
+const MatchPage = React.lazy(() => import('pages/match'))
 
 // Teams
 const TeamsPage = React.lazy(() => import('pages/team'))
@@ -148,6 +149,10 @@ function App() {
                                     <Route
                                         path="dashboard"
                                         element={<Dashboard />}
+                                    />
+                                    <Route
+                                        path="foci"
+                                        element={<MatchPage />}
                                     />
                                     {/*teamRoutes*/}
                                     {slotRoutes}

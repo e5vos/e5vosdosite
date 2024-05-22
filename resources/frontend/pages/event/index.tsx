@@ -30,7 +30,7 @@ const locale = Locale({
 const EventsPage = () => {
     const { data: slots, error: slotsError } = eventAPI.useGetSlotsQuery()
     const { user } = useUser(false)
-    const [currentSlot, setCurrentSlot] = useState(0)
+    const [currentSlot, setCurrentSlot] = useState(1)
 
     const { data: events, isFetching: isEventsFetching } =
         eventAPI.useGetEventsQuery(

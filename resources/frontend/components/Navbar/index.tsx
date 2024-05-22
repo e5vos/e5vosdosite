@@ -23,6 +23,7 @@ const locale = Locale({
         presentations_teacher: 'Előadások - Tanári',
         dashboard: 'Kezdőlap',
         home: 'Kezdőlap',
+        football: 'Mérkőzések',
     },
     en: {
         presentationSignup: 'Presentation signup',
@@ -36,6 +37,7 @@ const locale = Locale({
         presentations_teacher: "Presentations - Teacher's Page",
         dashboard: 'Dashboard',
         home: 'Home',
+        football: 'Matches',
     },
 })
 
@@ -81,6 +83,7 @@ const CustomNavbar = () => {
                         {locale.dashboard}
                     </Navbar.Link>
                 )}
+                <Navbar.Link href="/foci">{locale.football}</Navbar.Link>
                 <Navbar.Link href="/esemeny">{locale.events}</Navbar.Link>
                 {/*
                 {isTeacher(user) && (

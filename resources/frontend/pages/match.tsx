@@ -9,10 +9,40 @@ const locale = Locale({
     hu: {
         title: `${import.meta.env.VITE_EVENT_HU_SHORT} - Mérkőzések`,
         groupMatches: `Csoportmérkőzések`,
+        team: {
+            bulgaria: `🇧🇬 Bulgária`,
+            czech: `🇨🇿 Csehország`,
+            portugal: `🇵🇹 Portugália`,
+            poland: `🇵🇱 Lengyelország`,
+            france: `🇫🇷 Franciaország`,
+            italy: `🇮🇹 Olaszország`,
+            belgium: `🇧🇪 Belgium`,
+            denmark: `🇩🇰 Dánia`,
+            hungary: `🇭🇺 Magyarország`,
+            germany: `🇩🇪 Németország`,
+            spain: `🇪🇸 Spanyolország`,
+            croatia: `🇭🇷 Horvátország`,
+            greece: `🇬🇷 Görögország`,
+        },
     },
     en: {
         title: `${import.meta.env.VITE_EVENT_HU_SHORT} - Matches`,
         groupMatches: `Group matches`,
+        team: {
+            bulgaria: `🇧🇬 Bulgaria`,
+            czech: `🇨🇿 Czech Republic`,
+            portugal: `🇵🇹 Portugal`,
+            poland: `🇵🇱 Poland`,
+            france: `🇫🇷 France`,
+            italy: `🇮🇹 Italy`,
+            belgium: `🇧🇪 Belgium`,
+            denmark: `🇩🇰 Denmark`,
+            hungary: `🇭🇺 Hungary`,
+            germany: `🇩🇪 Germany`,
+            spain: `🇪🇸 Spain`,
+            croatia: `🇭🇷 Croatia`,
+            greece: `🇬🇷 Greece`,
+        },
     },
 })
 
@@ -49,25 +79,25 @@ const Match = () => {
             </div>
             <div className="mx-auto mt-2 grid w-full gap-2 text-center sm:grid-cols-2 md:grid-cols-4">
                 <Card title="A csoport" className="!justify-start">
-                    <p>🇧🇬 Bulgária</p>
-                    <p>🇨🇿 Csehország</p>
-                    <p>🇵🇹 Portugália</p>
-                    <p>🇵🇱 Lengyelország</p>
+                    <p>{locale.team.bulgaria}</p>
+                    <p>{locale.team.czech}</p>
+                    <p>{locale.team.portugal}</p>
+                    <p>{locale.team.poland}</p>
                 </Card>
                 <Card title="B csoport" className="!justify-start">
-                    <p>🇫🇷 Franciaország</p>
-                    <p>🇮🇹 Olaszország</p>
-                    <p>🇧🇪 Belgium</p>
+                    <p>{locale.team.france}</p>
+                    <p>{locale.team.italy}</p>
+                    <p>{locale.team.belgium}</p>
                 </Card>
                 <Card title="C csoport" className="!justify-start">
-                    <p>🇩🇰 Dánia</p>
-                    <p>🇭🇺 Magyarország</p>
-                    <p>🇩🇪 Németország</p>
+                    <p>{locale.team.denmark}</p>
+                    <p>{locale.team.hungary}</p>
+                    <p>{locale.team.germany}</p>
                 </Card>
                 <Card title="D csoport" className="!justify-start">
-                    <p>🇪🇸 Spanyolország</p>
-                    <p>🇭🇷 Horvátország</p>
-                    <p>🇬🇷 Görögország</p>
+                    <p>{locale.team.spain}</p>
+                    <p>{locale.team.croatia}</p>
+                    <p>{locale.team.greece}</p>
                 </Card>
             </div>
             <div className="rounded-lg bg-gray-600 px-4 py-2 text-center font-semibold">

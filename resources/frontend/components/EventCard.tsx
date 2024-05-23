@@ -11,8 +11,34 @@ import Button from './UIKit/Button'
 import ButtonGroup from './UIKit/ButtonGroup'
 
 const locale = Locale({
-    hu: 'Esemény megtekintése',
-    en: 'View event',
+    hu: {
+        view: 'Esemény megtekintése',
+        football: {
+            acsop: 'A csoport',
+            bcsop: 'B csoport',
+            ccsop: 'C csoport',
+            dcsop: 'D csoport',
+            negyed: 'Negyeddöntő',
+            elodont: 'Elődöntő',
+            donto: 'Döntő',
+            bronz: 'Bronzmeccs',
+            kisb: 'Kis Bajnokság',
+        },
+    },
+    en: {
+        view: 'View event',
+        football: {
+            acsop: 'A group',
+            bcsop: 'B group',
+            ccsop: 'C group',
+            dcsop: 'D group',
+            negyed: 'Quarterfinal',
+            elodont: 'Semifinal',
+            donto: 'Final',
+            bronz: 'Bronze match',
+            kisb: 'Small Championship',
+        },
+    },
 })
 
 const EventCard = ({
@@ -32,25 +58,25 @@ const EventCard = ({
     const footballGroup = useMemo(() => {
         switch (event.description.split('/')[1]) {
             case 'ACSOP':
-                return 'A csoport'
+                return locale.football.acsop
             case 'BCSOP':
-                return 'B csoport'
+                return locale.football.bcsop
             case 'CCSOP':
-                return 'C csoport'
+                return locale.football.ccsop
             case 'DCSOP':
-                return 'D csoport'
+                return locale.football.dcsop
             case 'NEGYED':
-                return 'Negyeddöntő'
+                return locale.football.negyed
             case 'ELODONT':
-                return 'Elődöntő'
+                return locale.football.elodont
             case 'DONTO':
-                return 'Döntő'
+                return locale.football.donto
             case 'BRONZ':
-                return 'Bronzmeccs'
+                return locale.football.bronz
             case 'KISB':
-                return 'Kis Bajnokság'
+                return locale.football.kisb
             default:
-                return 'Ismeretlen'
+                return ''
         }
     }, [event.description])
     return (
@@ -100,7 +126,7 @@ const EventCard = ({
                         onClick={() => navigate(`/esemeny/${event.id}`)}
                         className="text-white"
                     >
-                        {locale}
+                        {locale.view}
                     </Button>
                 </ButtonGroup>
             </div>

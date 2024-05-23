@@ -314,6 +314,11 @@ const EventReader = ({
         return event.description.split('/')[0].split('-').map(Number)
     }, [event.description, isFootball])
 
+    const footballTeam = useMemo(() => {
+        if (!isFootball) return ''
+        return event.description.split('/')[2]
+    }, [event.description, isFootball])
+
     async function changeFootballScore(team: number, direction: number) {
         footballScore[team] += direction
         if (footballScore[0] < 0 || footballScore[1] < 0) return
@@ -593,7 +598,7 @@ const EventReader = ({
                                 </div>
                             </Card>
                             <Card title={locale.football.team}>
-                                {event.description.split('/')[2]}
+                                {footballTeam}
                             </Card>
                         </>
                     ) : (

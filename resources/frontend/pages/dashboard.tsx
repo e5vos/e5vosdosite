@@ -35,7 +35,7 @@ const locale = Locale({
 })
 
 const Dashboard = () => {
-    const { user } = useUser(true)
+    const { user } = useUser()
 
     const { data: events, isFetching: isEventsFetching } =
         eventAPI.useGetEventsQuery()
@@ -47,12 +47,14 @@ const Dashboard = () => {
             event.slot.name !== 'Foci'
     )
 
-    const currentFootballMatch = events?.find(
-        (event) =>
-            new Date(event.starts_at) < new Date() &&
-            new Date(event.ends_at) > new Date() &&
-            event.slot.name === 'Foci'
-    )
+    const currentFootballMatch = useMemo(() => {
+        return events?.find(
+            (event) =>
+                new Date(event.starts_at) < new Date() &&
+                new Date(event.ends_at) > new Date() &&
+                event.slot.name === 'Foci'
+        )
+    }, [events])
 
     const footballScore = useMemo(() => {
         return currentFootballMatch?.description

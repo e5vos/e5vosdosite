@@ -105,10 +105,10 @@ jobs:
                   envkey_DEBUG_API_KEY: '${{secrets.DEBUG_API_KEY}}'
                   envkey_DISCORD_WEBHOOK: '${{secrets.DISCORD_WEBHOOK}}'
 
-                  envkey_VITE_EVENT_HU_SHORT: 'GL'
-                  envkey_VITE_EVENT_EN_SHORT: 'FV'
-                  envkey_VITE_EVENT_HU: 'Gyárlátogatás'
-                  envkey_VITE_EVENT_EN: '"Factory Visit "'
+                  envkey_VITE_EVENT_HU_SHORT: 'EK'
+                  envkey_VITE_EVENT_EN_SHORT: 'EC'
+                  envkey_VITE_EVENT_HU: '"EPAS Kupa"'
+                  envkey_VITE_EVENT_EN: '"EPAS Cup "'
             - name: Generate Routes
               run: php artisan ziggy:generate --types
             - name: Build frontend

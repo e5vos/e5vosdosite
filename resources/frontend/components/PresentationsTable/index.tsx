@@ -8,18 +8,19 @@ import Button from 'components/UIKit/Button'
 import Loader from 'components/UIKit/Loader'
 
 const getColor = (capacity: number | null) => {
-    if (capacity === null) return 'bg-green-400'
+    // className = "bg-[#f2bd2d]";
+    if (capacity === null) return 'dark:bg-green-600 bg-green-400'
     switch (true) {
         case capacity > 20:
-            return 'bg-green-400'
+            return 'dark:bg-green-600 bg-green-400'
         case capacity > 15:
-            return 'bg-yellow-400'
+            return 'dark:bg-[#dea200] bg-yellow-400'
         case capacity > 10:
-            return 'bg-yellow-600'
+            return 'dark:bg-[#de7500] bg-yellow-600'
         case capacity > 5:
-            return 'bg-red-400'
+            return 'dark:bg-red-400 bg-red-300'
         default:
-            return 'bg-red-500'
+            return 'dark:bg-red-500 bg-red-500'
     }
 }
 
@@ -116,8 +117,8 @@ const PresentationsTable = ({
 }) => {
     return (
         <table className="flex w-full table-auto border-separate border-spacing-x-0.5 border-spacing-y-1 flex-col text-sm md:table md:border-spacing-y-2 md:text-lg">
-            <thead className="hidden border-separate bg-foreground-300 text-foreground dark:bg-gray-500 md:table-header-group ">
-                <tr className="rounded-lg shadow-md">
+            <thead className="bg-slate- hidden border-separate bg-slate-400 text-black dark:bg-gray-500 dark:text-white md:table-header-group ">
+                <tr className="shadow-md">
                     <th className="rounded-l-lg py-1">
                         {locale.presentation.title}
                     </th>
@@ -141,7 +142,7 @@ const PresentationsTable = ({
                     presentations.map((presentation, index) => (
                         <tr
                             key={index}
-                            className="mb-5 flex flex-col rounded-lg bg-white shadow-md dark:bg-gray-600 md:table-row"
+                            className="mb-5 flex flex-col rounded bg-slate-200 shadow-md dark:bg-gray-600 md:table-row md:rounded-none"
                         >
                             <td className="rounded-l-lg border-hidden px-2 py-0.5  text-center text-4xl font-bold md:text-lg">
                                 {presentation.name}
@@ -156,7 +157,7 @@ const PresentationsTable = ({
                                     </p>
                                     {(presentation.direct_child ||
                                         presentation.root_parent) && (
-                                        <div className="bg-sky-300 dark:bg-blue-500">
+                                        <div className="bg-blue-300 dark:bg-blue-500">
                                             {presentation.root_parent_slot_id &&
                                                 locale.presentation.multislot.starts(
                                                     () => (
@@ -217,7 +218,7 @@ const PresentationsTable = ({
                             </td>
                             <td
                                 className={
-                                    'm-4 whitespace-normal rounded-l-lg rounded-r-lg border-hidden  px-2 py-2 text-center text-black md:h-24 md:rounded-l-none md:py-0 ' +
+                                    'm-4 whitespace-normal rounded-l-lg rounded-r-lg border-hidden  px-2 py-2 text-center text-black dark:text-white md:h-24 md:rounded-l-none md:py-0 ' +
                                     getColor(
                                         presentation.capacity
                                             ? presentation.capacity -

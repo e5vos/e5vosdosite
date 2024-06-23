@@ -40,7 +40,7 @@ const Control = ({
             pattern={invalid ? '' : undefined}
             onInvalid={onInvalid}
             {...rest}
-            className={`border-b-2 border-white bg-transparent text-black invalid:border-red invalid:text-red-500  focus:border-gray-400 invalid:focus:text-white dark:text-white ${
+            className={`border-b-2 border-white bg-transparent text-black invalid:border-red invalid:text-red-500 focus:border-gray-400 invalid:focus:text-white dark:text-white ${
                 className ?? ''
             }`}
         />

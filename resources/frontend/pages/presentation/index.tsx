@@ -176,7 +176,7 @@ const PresentationsPage = () => {
 
     const selectSlotById = useCallback(
         (id: number) => {
-            let newSlot = slots?.findIndex((slot) => slot.id === id)
+            const newSlot = slots?.findIndex((slot) => slot.id === id)
             if (newSlot !== undefined) setcurrentSlot(newSlot)
         },
         [slots]

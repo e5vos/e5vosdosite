@@ -52,7 +52,7 @@ const QRDialog = ({
         {shownQR && (
             <QRCode className="mx-auto my-2 max-w-full" value={shownQR?.code} />
         )}
-        <span className="dark:bg-gray w-full rounded-full bg-slate-200 px-3 py-1 text-center">
+        <span className="w-full rounded-full bg-slate-200 px-3 py-1 text-center dark:bg-gray">
             {shownQR?.code ?? ''}
         </span>
     </Dialog>

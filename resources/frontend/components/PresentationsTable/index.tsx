@@ -8,7 +8,6 @@ import Button from 'components/UIKit/Button'
 import Loader from 'components/UIKit/Loader'
 
 const getColor = (capacity: number | null) => {
-    // className = "bg-[#f2bd2d]";
     if (capacity === null) return 'dark:bg-green-600 bg-green-400'
     switch (true) {
         case capacity > 20:
@@ -17,8 +16,6 @@ const getColor = (capacity: number | null) => {
             return 'dark:bg-[#dea200] bg-yellow-400'
         case capacity > 10:
             return 'dark:bg-[#de7500] bg-yellow-600'
-        case capacity > 5:
-            return 'dark:bg-red-400 bg-red-300'
         default:
             return 'dark:bg-red-500 bg-red-500'
     }

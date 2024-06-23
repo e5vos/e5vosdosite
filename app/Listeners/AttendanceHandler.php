@@ -3,8 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\EventAttendance;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class AttendanceHandler
 {
@@ -21,7 +19,6 @@ class AttendanceHandler
     /**
      * Handle the event.
      *
-     * @param  \App\Events\EventAttendance  $event
      * @return void
      */
     public function handle(EventAttendance $event)

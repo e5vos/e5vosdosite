@@ -3,12 +3,10 @@
 namespace Database\Seeders;
 
 use App\Helpers\PermissionType;
-use App\Models\User;
 use App\Models\Event;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Permission;
-use Illuminate\Database\Eloquent\Factories\Sequence;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
@@ -31,7 +29,8 @@ class UserSeeder extends Seeder
                     ->state(
                         function ($attributes) use ($events, $permissions_count, &$i, $events_count) {
                             $eventId = $events[rand(0, round(($events_count) / $permissions_count) - 1) + ($i < $permissions_count - 1 ? ++$i : $i = 0) * $events_count / $permissions_count]->id;
-                            return ['event_id' => $attributes["code"] == PermissionType::Organiser->value ? $eventId : null];
+
+                            return ['event_id' => $attributes['code'] == PermissionType::Organiser->value ? $eventId : null];
                         }
                     )
             )

@@ -6,33 +6,22 @@ use App\Exceptions\InvalidCodeException;
 use App\Http\Controllers\{
     Controller
 };
-use App\Http\Resources\UserResource;
-use App\Http\Resources\UserResourceCollection;
-use App\Models\{
-    Permission,
-    User
-};
-
-use Laravel\Socialite\Facades\Socialite;
+use App\Models\Permission;
+use App\Models\User;
 use Illuminate\Http\Request;
-
-
-use Illuminate\Support\Facades\{
-    Hash,
-    Auth,
-    Http,
-    Log,
-};
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
-
     public function redirect($provider = 'google')
     {
         if (auth()->check()) {
             return response('Already logged in', 400);
         }
+
         return ['url' => Socialite::driver($provider)->stateless()->redirect()->getTargetUrl()];
     }
 
@@ -41,8 +30,7 @@ class AuthController extends Controller
         $userData = Socialite::driver($provider)->stateless()->user();
         $user = User::firstWhere('email', $userData->email);
 
-
-        if (!isset($user)) {
+        if (! isset($user)) {
             $user = User::create([
                 'name' => $userData->name,
                 'email' => $userData->email,
@@ -53,11 +41,11 @@ class AuthController extends Controller
                 'code' => 'STD',
             ]);
         }
-        if (!$user->google_id) {
+        if (! $user->google_id) {
             $user->google_id = Hash::make($userData->id);
         }
 
-        if (!Hash::check($userData->id, $user->google_id)) {
+        if (! Hash::check($userData->id, $user->google_id)) {
             abort(400);
         }
         $user->save();
@@ -65,6 +53,7 @@ class AuthController extends Controller
         $tokenName = $request->header('User-Agent');
         $tokenName = strlen($tokenName) > 100 ? substr($tokenName, 0, 100) : $tokenName;
         $token = $user->createToken($tokenName, ['JOIN THE USSR'])->plainTextToken;
+
         return view('oauth.callback', ['token' => $token]);
     }
 
@@ -80,13 +69,13 @@ class AuthController extends Controller
      */
     public function setE5code(Request $request)
     {
-        $validated = env("E5VOS_FAKE_API") ||  Http::post(env('E5VOS_API_URL'), [
+        $validated = env('E5VOS_FAKE_API') || Http::post(env('E5VOS_API_URL'), [
             'email' => $request->user()->email,
             'studentId' => $request->e5code,
-            'api_token' => env('E5VOS_API_TOKEN')
-        ])->body() === "true";
+            'api_token' => env('E5VOS_API_TOKEN'),
+        ])->body() === 'true';
 
-        if (!$validated) {
+        if (! $validated) {
             throw new InvalidCodeException();
         }
 
@@ -94,7 +83,7 @@ class AuthController extends Controller
         $ejgLetter = $request->e5code[4];
         $codeYear = intval($request->e5code);
         $ejgYear = date('Y') - $codeYear;
-        $currmonth =  date('m');
+        $currmonth = date('m');
 
         if ($currmonth < 9) {
             $ejgYear--;
@@ -114,14 +103,15 @@ class AuthController extends Controller
         } else {
             $ejgYear += 9;
         }
-        $request->user()->ejg_class = strval($ejgYear) . '.' . $ejgLetter;
+        $request->user()->ejg_class = strval($ejgYear).'.'.$ejgLetter;
         $request->user()->save();
         Permission::firstOrCreate([
             'user_id' => $request->user()->id,
             'code' => 'STD',
         ]);
+
         return response()->json([
-            'message' => 'E5 code set'
+            'message' => 'E5 code set',
         ], 200);
     }
 }

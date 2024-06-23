@@ -2,9 +2,8 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
-
 use App\Models\Event;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class EventResource extends JsonResource
 {
@@ -46,7 +45,7 @@ class EventResource extends JsonResource
             'teams' => TeamResource::collection($this->whenLoaded('teams')),
             // 'attendees' => UserResource::collection($this->whenLoaded('attendees')),
 
-            "pivot" => $this->whenPivotLoaded($this->pivot?->getTable(), fn () => $this->pivot),
+            'pivot' => $this->whenPivotLoaded($this->pivot?->getTable(), fn () => $this->pivot),
         ];
     }
 }

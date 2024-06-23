@@ -1,25 +1,25 @@
-import { Menu, Transition } from "@headlessui/react";
-import { ReactComponent as Donci } from "assets/donci.svg";
-import useIsMobile from "hooks/useIsMobile";
-import { ReactNode } from "react";
+import { Menu, Transition } from '@headlessui/react'
+import { ReactComponent as Donci } from 'assets/donci.svg'
+import useIsMobile from 'hooks/useIsMobile'
+import { ReactNode } from 'react'
 
-import Locale from "lib/locale";
+import Locale from 'lib/locale'
 
-import { ThemeSwitch } from "components/themeSwitch";
+import { ThemeSwitch } from 'components/themeSwitch'
 
-import { ReactComponent as Caret } from "./assets/caret.svg";
-import { ReactComponent as MobileMenu } from "./assets/mobileMenu.svg";
+import { ReactComponent as Caret } from './assets/caret.svg'
+import { ReactComponent as MobileMenu } from './assets/mobileMenu.svg'
 
 const Brand = ({
     href,
     children,
     onClick,
 }: {
-    href?: string;
-    children: ReactNode;
-    onClick?: () => any;
+    href?: string
+    children: ReactNode
+    onClick?: () => any
 }) => {
-    const Tag = href ? "a" : "span";
+    const Tag = href ? 'a' : 'span'
     return (
         <Tag href={href} className="flex items-center" onClick={onClick}>
             <Donci className="mr-5 h-full w-12 fill-black dark:fill-white" />
@@ -27,17 +27,17 @@ const Brand = ({
                 {children}
             </span>
         </Tag>
-    );
-};
+    )
+}
 
 const DropDownItem = ({
     href,
     children,
 }: {
-    href?: string;
-    children: ReactNode;
+    href?: string
+    children: ReactNode
 }) => {
-    const Tag = href ? "a" : "span";
+    const Tag = href ? 'a' : 'span'
     return (
         <Menu.Item>
             {({ active }) => (
@@ -46,15 +46,15 @@ const DropDownItem = ({
                 </Tag>
             )}
         </Menu.Item>
-    );
-};
+    )
+}
 
 const DropDownComponent = ({
     toggle,
     children,
 }: {
-    toggle: ReactNode;
-    children: ReactNode;
+    toggle: ReactNode
+    children: ReactNode
 }) => {
     return (
         <Menu as="li">
@@ -78,7 +78,7 @@ const DropDownComponent = ({
                             static
                             className="z-10 w-44 divide-y divide-gray-100 rounded bg-white font-normal shadow"
                             style={{
-                                visibility: open ? "visible" : "hidden",
+                                visibility: open ? 'visible' : 'hidden',
                             }}
                         >
                             <ul
@@ -92,8 +92,8 @@ const DropDownComponent = ({
                 </>
             )}
         </Menu>
-    );
-};
+    )
+}
 
 const Link = ({ href, children }: { href: string; children: ReactNode }) => {
     return (
@@ -105,25 +105,25 @@ const Link = ({ href, children }: { href: string; children: ReactNode }) => {
                 {children}
             </a>
         </li>
-    );
-};
+    )
+}
 
 const Navbar = ({
     children,
     brand,
 }: {
-    children: ReactNode;
-    brand: ReactNode;
+    children: ReactNode
+    brand: ReactNode
 }) => {
     const locale = Locale({
         hu: {
-            openMenu: "Főmenü megnyitása",
+            openMenu: 'Főmenü megnyitása',
         },
         en: {
-            openMenu: "Open main menu",
+            openMenu: 'Open main menu',
         },
-    });
-    const isMobile = useIsMobile();
+    })
+    const isMobile = useIsMobile()
     return (
         <nav className="mb-2 rounded border-gray-200 bg-slate-50 px-2 pt-2 text-black dark:bg-gray-700 dark:text-white">
             <Menu as="div" className="">
@@ -169,7 +169,7 @@ const Navbar = ({
                         >
                             <Menu.Items
                                 className={`w-full ${
-                                    isMobile && open ? "visible" : "hidden"
+                                    isMobile && open ? 'visible' : 'hidden'
                                 }`}
                                 id="mobile-menu"
                                 static
@@ -184,14 +184,14 @@ const Navbar = ({
                 )}
             </Menu>
         </nav>
-    );
-};
+    )
+}
 
 const DropDown = Object.assign(DropDownComponent, {
     Item: DropDownItem,
-});
+})
 export default Object.assign(Navbar, {
     Link,
     Dropdown: DropDown,
     Brand,
-});
+})

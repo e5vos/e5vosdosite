@@ -1,5 +1,5 @@
 const TeamManager = () => {
-    return <></>;
-};
+    return <></>
+}
 
-export default TeamManager;
+export default TeamManager

@@ -1,44 +1,44 @@
-import { ReactComponent as Donci } from "assets/donci.svg";
-import useUser from "hooks/useUser";
-import { useState } from "react";
-import QRCode from "react-qr-code";
-import { useLocation } from "react-router-dom";
+import { ReactComponent as Donci } from 'assets/donci.svg'
+import useUser from 'hooks/useUser'
+import { useState } from 'react'
+import QRCode from 'react-qr-code'
+import { useLocation } from 'react-router-dom'
 
-import { isTeacher } from "lib/gates";
-import Locale from "lib/locale";
+import { isTeacher } from 'lib/gates'
+import Locale from 'lib/locale'
 
-import Dialog from "components/UIKit/Dialog";
-import Navbar from "components/UIKit/Navbar";
+import Dialog from 'components/UIKit/Dialog'
+import Navbar from 'components/UIKit/Navbar'
 
 const locale = Locale({
     hu: {
-        presentationSignup: "Előadásjelentkezés",
-        events: "Események",
-        title: "Eötvös DÖ",
-        login: "Bejelentkezés",
-        teams: "Csapatok",
-        logout: "Kijelentkezés",
-        info: "DÖ Információk",
-        noe5code: "Nincs E5 kódod :(",
-        presentations_teacher: "Előadások - Tanári",
+        presentationSignup: 'Előadásjelentkezés',
+        events: 'Események',
+        title: 'Eötvös DÖ',
+        login: 'Bejelentkezés',
+        teams: 'Csapatok',
+        logout: 'Kijelentkezés',
+        info: 'DÖ Információk',
+        noe5code: 'Nincs E5 kódod :(',
+        presentations_teacher: 'Előadások - Tanári',
     },
     en: {
-        presentationSignup: "Presentation signup",
-        events: "Events",
-        title: "Eötvös DÖ",
-        login: "Login",
-        teams: "Teams",
-        logout: "Logout",
-        info: "SU Information",
-        noe5code: "You have no E5 code :(",
+        presentationSignup: 'Presentation signup',
+        events: 'Events',
+        title: 'Eötvös DÖ',
+        login: 'Login',
+        teams: 'Teams',
+        logout: 'Logout',
+        info: 'SU Information',
+        noe5code: 'You have no E5 code :(',
         presentations_teacher: "Presentations - Teacher's Page",
     },
-});
+})
 
 const CustomNavbar = () => {
-    const { user } = useUser(false);
-    const [showCode, setShowCode] = useState(false);
-    const location = useLocation();
+    const { user } = useUser(false)
+    const [showCode, setShowCode] = useState(false)
+    const location = useLocation()
     return (
         <>
             {user && (
@@ -67,11 +67,11 @@ const CustomNavbar = () => {
                     </Navbar.Brand>
                 }
             >
-                <Navbar.Link href="https://info.e5vosdo.hu">
-                    {locale.info}
-                </Navbar.Link>
-                <Navbar.Link href="/csapat">{locale.teams}</Navbar.Link>
-                <Navbar.Link href="/esemeny">{locale.events}</Navbar.Link>
+                {/*
+          <Navbar.Link href="https://info.e5vosdo.hu">{locale.info}</Navbar.Link>
+          <Navbar.Link href="/csapat">{locale.teams}</Navbar.Link>
+          <Navbar.Link href="/esemeny">{locale.events}</Navbar.Link>
+        */}
                 {isTeacher(user) && (
                     <Navbar.Link href="/eloadas/kezel">
                         {locale.presentations_teacher}
@@ -90,6 +90,6 @@ const CustomNavbar = () => {
                 )}
             </Navbar>
         </>
-    );
-};
-export default CustomNavbar;
+    )
+}
+export default CustomNavbar

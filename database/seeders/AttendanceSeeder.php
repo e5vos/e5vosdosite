@@ -3,12 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Attendance;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Event;
-use App\Models\User;
 use App\Models\Team;
 use App\Models\TeamMemberAttendance;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class AttendanceSeeder extends Seeder
 {

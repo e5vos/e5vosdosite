@@ -11,7 +11,6 @@ class SettingPolicy
 {
     use HandlesAuthorization;
 
-
     /**
      * settings can only be managed by operators
      */
@@ -19,8 +18,10 @@ class SettingPolicy
     {
         return $user->hasPermission(PermissionType::Operator->value) ? Response::allow() : Response::denyAsNotFound();
     }
+
     /**
      * Determine whether the user can view any settings.
+     *
      * @return false
      */
     public function viewAny()
@@ -30,6 +31,7 @@ class SettingPolicy
 
     /**
      * Determine whether the user can set a setting.
+     *
      * @return false
      */
     public function set(User $user)
@@ -39,6 +41,7 @@ class SettingPolicy
 
     /**
      * Determine whether the user can create settings.
+     *
      * @return false
      */
     public function create()
@@ -48,6 +51,7 @@ class SettingPolicy
 
     /**
      * Determine whether the user can delete the setting.
+     *
      * @return false
      */
     public function delete()

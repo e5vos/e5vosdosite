@@ -1,51 +1,51 @@
-import useUser from "hooks/useUser";
-import { useMemo, useState } from "react";
-import { FaSearch } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import useUser from 'hooks/useUser'
+import { useMemo, useState } from 'react'
+import { FaSearch } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
 
-import eventAPI from "lib/api/eventAPI";
-import { isAdmin } from "lib/gates";
-import Locale from "lib/locale";
+import eventAPI from 'lib/api/eventAPI'
+import { isAdmin } from 'lib/gates'
+import Locale from 'lib/locale'
 
-import EventCard from "components/EventCard";
-import Button from "components/UIKit/Button";
-import Form from "components/UIKit/Form";
-import Loader from "components/UIKit/Loader";
+import EventCard from 'components/EventCard'
+import Button from 'components/UIKit/Button'
+import Form from 'components/UIKit/Form'
+import Loader from 'components/UIKit/Loader'
 
 const locale = Locale({
     hu: {
-        title: "E5N - Programok",
-        create: "Program hozzadása",
-        search: "Keresés",
+        title: `${import.meta.env.VITE_EVENT_HU_SHORT} - Programok`,
+        create: 'Program hozzadása',
+        search: 'Keresés',
     },
     en: {
-        title: "E5N - Events",
-        create: "Create event",
-        search: "Search",
+        title: `${import.meta.env.VITE_EVENT_EN_SHORT} - Events`,
+        create: 'Create event',
+        search: 'Search',
     },
-});
+})
 
 const EventsPage = () => {
-    const { user } = useUser(false);
+    const { user } = useUser(false)
 
     const { data: events, isFetching: isEventsFetching } =
-        eventAPI.useGetEventsQuery();
+        eventAPI.useGetEventsQuery()
 
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState('')
 
     const filteredEvents = useMemo(() => {
-        if (!events) return [];
+        if (!events) return []
 
         return events.filter((event) => {
-            return event.name.toLowerCase().includes(search.toLowerCase());
-        });
-    }, [events, search]);
+            return event.name.toLowerCase().includes(search.toLowerCase())
+        })
+    }, [events, search])
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
-    };
+        setSearch(e.target.value)
+    }
 
-    if (!events) return <Loader />;
+    if (!events) return <Loader />
     return (
         <div className="mx-5">
             <div className="container mx-auto">
@@ -89,7 +89,7 @@ const EventsPage = () => {
                 </div>
             )}
         </div>
-    );
-};
+    )
+}
 
-export default EventsPage;
+export default EventsPage

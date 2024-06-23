@@ -1,63 +1,61 @@
-import useUser from "hooks/useUser";
-import { MouseEventHandler } from "react";
-import { useParams } from "react-router-dom";
+import useUser from 'hooks/useUser'
+import { MouseEventHandler } from 'react'
+import { useParams } from 'react-router-dom'
 
-import { Attender, isAttenderTeam, isAttenderUser } from "types/models";
+import { Attender, isAttenderTeam, isAttenderUser } from 'types/models'
 
-import eventAPI from "lib/api/eventAPI";
-import { isOperator, isTeacher } from "lib/gates";
-import Locale from "lib/locale";
-import { reverseNameOrder } from "lib/util";
+import eventAPI from 'lib/api/eventAPI'
+import { isOperator, isTeacher } from 'lib/gates'
+import Locale from 'lib/locale'
+import { reverseNameOrder } from 'lib/util'
 
-import { gated } from "components/Gate";
-import Button from "components/UIKit/Button";
-import Form from "components/UIKit/Form";
-import Loader from "components/UIKit/Loader";
+import { gated } from 'components/Gate'
+import Button from 'components/UIKit/Button'
+import Form from 'components/UIKit/Form'
+import Loader from 'components/UIKit/Loader'
 
 const locale = Locale({
     hu: {
-        attendanceSheet: "Jelenléti ív",
-        delete: "Törlés",
-        refresh: "Frissítés",
+        attendanceSheet: 'Jelenléti ív',
+        delete: 'Törlés',
+        refresh: 'Frissítés',
     },
     en: {
-        attendanceSheet: "Attendance sheet",
-        delete: "Delete",
-        refresh: "Refresh",
+        attendanceSheet: 'Attendance sheet',
+        delete: 'Delete',
+        refresh: 'Refresh',
     },
-});
+})
 
 const AttendancePage = () => {
-    const { eventid } = useParams<{ eventid: string }>();
+    const { eventid } = useParams<{ eventid: string }>()
     const { data: event, isLoading: isEventLoading } =
-        eventAPI.useGetEventQuery({ id: Number(eventid ?? -1) });
+        eventAPI.useGetEventQuery({ id: Number(eventid ?? -1) })
     const {
         data: participantsData,
         isLoading: isParticipantsLoading,
         isFetching: isParticipantsFetching,
         refetch,
-    } = eventAPI.useGetEventParticipantsQuery({ id: Number(eventid ?? -1) });
+    } = eventAPI.useGetEventParticipantsQuery({ id: Number(eventid ?? -1) })
 
-    const [deleteAttendance] = eventAPI.useCancelSignUpMutation();
-    const { user } = useUser();
+    const [deleteAttendance] = eventAPI.useCancelSignUpMutation()
+    const { user } = useUser()
     const participants =
         participantsData
             ?.slice()
             .sort((a, b) =>
-                reverseNameOrder(a.name).localeCompare(
-                    reverseNameOrder(b.name),
-                ),
-            ) ?? [];
+                reverseNameOrder(a.name).localeCompare(reverseNameOrder(b.name))
+            ) ?? []
 
-    const [toggleAPI, { isLoading }] = eventAPI.useAttendMutation();
+    const [toggleAPI, { isLoading }] = eventAPI.useAttendMutation()
 
-    if (isEventLoading || isParticipantsLoading || !event) return <Loader />;
+    if (isEventLoading || isParticipantsLoading || !event) return <Loader />
 
     const toggle =
         (attending: Attender): MouseEventHandler<HTMLInputElement> =>
         async (e) => {
-            const target = e.currentTarget;
-            e.preventDefault();
+            const target = e.currentTarget
+            e.preventDefault()
 
             const res = await toggleAPI({
                 attender: isAttenderTeam(attending)
@@ -65,23 +63,23 @@ const AttendancePage = () => {
                     : attending.id,
                 event: event,
                 present: target.checked,
-            });
-            if ("error" in res) {
-                alert("Error");
+            })
+            if ('error' in res) {
+                alert('Error')
             } else {
-                target.checked = !target.checked;
+                target.checked = !target.checked
             }
-        };
+        }
 
     const deleteAttendanceAction = async (attending: Attender) => {
         await deleteAttendance({
             attender: String(
-                isAttenderUser(attending) ? attending.id : attending.code,
+                isAttenderUser(attending) ? attending.id : attending.code
             ),
             event: event,
-        }).unwrap();
-        refetch();
-    };
+        }).unwrap()
+        refetch()
+    }
 
     return (
         <div className="container mx-auto mt-2 ">
@@ -96,14 +94,14 @@ const AttendancePage = () => {
                                 key={attending.name}
                                 className={`col- mx-2 my-2 grid max-w-lg justify-center gap-4 align-middle ${
                                     user && isOperator(user)
-                                        ? "grid-cols-7"
-                                        : "grid-cols-6"
+                                        ? 'grid-cols-7'
+                                        : 'grid-cols-6'
                                 }`}
                             >
                                 <span className="col-span-4 mx-4">
                                     {isAttenderUser(attending)
                                         ? reverseNameOrder(attending.name)
-                                        : attending.name}{" "}
+                                        : attending.name}{' '}
                                     {isAttenderUser(attending) &&
                                         attending.ejg_class}
                                 </span>
@@ -133,7 +131,7 @@ const AttendancePage = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default gated(AttendancePage, isTeacher);
+export default gated(AttendancePage, isTeacher)

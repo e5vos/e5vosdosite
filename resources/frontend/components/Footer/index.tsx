@@ -1,22 +1,22 @@
-import { ReactComponent as Donci } from "assets/donci.svg";
-import { Link } from "react-router-dom";
+import { ReactComponent as Donci } from 'assets/donci.svg'
+import { Link } from 'react-router-dom'
 
-import Locale from "lib/locale";
+import Locale from 'lib/locale'
 
 const locale = Locale({
     hu: {
-        title: "Eötvös József Gimnázium Diákönkormányzata",
-        privacypolicy: "Adatvédelmi nyilatkozat",
-        contact: "Kapcsolat",
-        github: "GitHub",
+        title: 'Eötvös József Gimnázium Diákönkormányzata',
+        privacypolicy: 'Adatvédelmi nyilatkozat',
+        contact: 'Kapcsolat',
+        github: 'GitHub',
     },
     en: {
-        title: "Student Union of Eötvös József Grammar School",
-        privacypolicy: "Privacy policy",
-        contact: "Contact",
-        github: "GitHub",
+        title: 'Student Union of Eötvös József Grammar School',
+        privacypolicy: 'Privacy policy',
+        contact: 'Contact',
+        github: 'GitHub',
     },
-});
+})
 
 const Footer = () => {
     return (
@@ -28,12 +28,12 @@ const Footer = () => {
             <div className="flex w-full justify-evenly gap-2 md:mt-2 md:justify-end">
                 <Link to="/privacypolicy">{locale.privacypolicy}</Link>
                 <Link to="mailto:dev.do@e5vos.hu">{locale.contact}</Link>
-                <Link to="https://github.com/difcsi/e5vosdosite">
+                <Link to="https://github.com/e5vos/e5vosdosite">
                     {locale.github}
                 </Link>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Footer;
+export default Footer

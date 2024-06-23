@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react'
 
-import DebugDump from "components/Debug/DebugDump";
-import Footer from "components/Footer";
-import Navbar from "components/Navbar";
+import DebugDump from 'components/Debug/DebugDump'
+import Footer from 'components/Footer'
+import Navbar from 'components/Navbar'
 
 export const BaseLayout = ({ children }: { children: ReactNode }) => {
     return (
@@ -12,5 +12,5 @@ export const BaseLayout = ({ children }: { children: ReactNode }) => {
             <main className="px-2">{children}</main>
             <Footer />
         </>
-    );
-};
+    )
+}

@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\BonusPoint;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class BonusPointSeeder extends Seeder

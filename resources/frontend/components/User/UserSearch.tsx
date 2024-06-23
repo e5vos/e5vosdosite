@@ -1,57 +1,56 @@
-import useDelay from "hooks/useDelayed";
-import { useEffect, useState } from "react";
+import useDelay from 'hooks/useDelayed'
+import { useState } from 'react'
 
-import { UserStub } from "types/models";
+import { UserStub } from 'types/models'
 
-import baseAPI from "lib/api";
+import baseAPI from 'lib/api'
 
-import Form from "components/UIKit/Form";
-import Loader from "components/UIKit/Loader";
+import Form from 'components/UIKit/Form'
 
-const elementName = (e: UserStub) => `${e.name} - ${e.ejg_class}`;
+const elementName = (e: UserStub) => `${e.name} - ${e.ejg_class}`
 
 const filter = (s: String) => (e: UserStub) =>
-    elementName(e).toLocaleLowerCase().includes(s.toLocaleLowerCase());
+    elementName(e).toLocaleLowerCase().includes(s.toLocaleLowerCase())
 
 const UserSearchCombobox = ({
     onChange,
     initialValue,
     className,
 }: {
-    onChange: (value: UserStub) => any;
-    initialValue?: UserStub;
-    className?: string;
+    onChange: (value: UserStub) => any
+    initialValue?: UserStub
+    className?: string
 }) => {
-    const [search, setSearch] = useState<string>("-1");
+    const [search, setSearch] = useState<string>('-1')
 
-    const { data: options } = baseAPI.useUserSearchQuery(search ?? "-1");
+    const { data: options } = baseAPI.useUserSearchQuery(search ?? '-1')
 
     const onQueryChange = useDelay((value: string) => {
         if (!value.startsWith(search)) {
-            setSearch(value);
+            setSearch(value)
         }
-    }, 500);
+    }, 500)
 
-    if (className === undefined) className = "";
+    if (className === undefined) className = ''
     return (
         <div className="w-full">
             <Form.ComboBox
                 options={options ?? []}
-                initialValue={initialValue ? elementName(initialValue) : ""}
+                initialValue={initialValue ? elementName(initialValue) : ''}
                 onQueryChange={onQueryChange}
                 getElementName={elementName}
                 onChange={(e) => {
-                    if (!e) return;
-                    onChange(e);
+                    if (!e) return
+                    onChange(e)
                 }}
-                className={"rounded-l-lg !border-b-0 " + className}
+                className={'rounded-l-lg !border-b-0 ' + className}
                 renderElement={(e) => (
                     <span className="mt-3">{elementName(e)}</span>
                 )}
                 filter={filter}
             />
         </div>
-    );
-};
+    )
+}
 
-export default UserSearchCombobox;
+export default UserSearchCombobox

@@ -4,12 +4,12 @@ namespace App\Exceptions;
 
 use Exception;
 
-class NoE5NException extends Exception
+class AttendanceRegisterDisabledException extends Exception
 {
     public function render()
     {
         return response()->json([
-            'message' => 'Az E5vös Napok még nem kezdődtek el',
+            'message' => 'A jelenléti ívek módosítása le van tiltva.',
         ], 403);
     }
 }

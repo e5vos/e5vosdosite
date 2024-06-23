@@ -1,41 +1,41 @@
-import useDelay from "hooks/useDelayed";
-import { useEffect, useState } from "react";
+import useDelay from 'hooks/useDelayed'
+import { useState } from 'react'
 
-import { EventStub } from "types/models";
+import { EventStub } from 'types/models'
 
-import eventAPI from "lib/api/eventAPI";
+import eventAPI from 'lib/api/eventAPI'
 
-import Form from "components/UIKit/Form";
+import Form from 'components/UIKit/Form'
 
 const filter = (s: string) => (e: EventStub) =>
-    e.name.toLocaleLowerCase().startsWith(s.toLocaleLowerCase());
+    e.name.toLocaleLowerCase().startsWith(s.toLocaleLowerCase())
 
 const EventSearchCombobox = ({
     onChange,
     initialValue,
 }: {
-    onChange: (value: EventStub) => any;
-    initialValue?: EventStub;
+    onChange: (value: EventStub) => any
+    initialValue?: EventStub
 }) => {
-    const [search, setSearch] = useState<string>("-1");
+    const [search, setSearch] = useState<string>('-1')
 
-    const { data: options } = eventAPI.useEventSearchQuery(search);
+    const { data: options } = eventAPI.useEventSearchQuery(search)
 
     const onQueryChange = useDelay((value: string) => {
         if (!value.startsWith(search)) {
-            setSearch(value);
+            setSearch(value)
         }
-    });
+    })
 
     return (
         <div className="max-w-sm">
             <Form.ComboBox
                 options={options ?? []}
                 onQueryChange={onQueryChange}
-                initialValue={initialValue ? initialValue.name : ""}
+                initialValue={initialValue ? initialValue.name : ''}
                 onChange={(e) => {
-                    if (!e) return;
-                    onChange(e);
+                    if (!e) return
+                    onChange(e)
                 }}
                 className="!mb-0 !border-b-0"
                 getElementName={(e) => e.name}
@@ -43,7 +43,7 @@ const EventSearchCombobox = ({
                 filter={filter}
             />
         </div>
-    );
-};
+    )
+}
 
-export default EventSearchCombobox;
+export default EventSearchCombobox

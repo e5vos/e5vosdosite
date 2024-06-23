@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class BonusPointFactory extends Factory
 {
     protected $model = BonusPoint::class;
+
     /**
      * Define the model's default state.
      *

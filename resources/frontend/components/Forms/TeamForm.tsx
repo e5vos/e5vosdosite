@@ -1,40 +1,40 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 
-import { CRUDForm } from "types/misc";
+import { CRUDForm } from 'types/misc'
 
-import Locale from "lib/locale";
+import Locale from 'lib/locale'
 
-import { TeamFormValues } from "components/Team/CRUD";
-import Button from "components/UIKit/Button";
-import Form from "components/UIKit/Form";
+import { TeamFormValues } from 'components/Team/CRUD'
+import Button from 'components/UIKit/Button'
+import Form from 'components/UIKit/Form'
 
 const locale = Locale({
     hu: {
-        required: "Kötelező mező",
-        gte2: "Legalább 2 karakter",
-        lte11: "Legfeljebb 10 karakter",
-        mustBeLetters: "Csak betűk lehetnek",
-        submit: "Létrehozás",
+        required: 'Kötelező mező',
+        gte2: 'Legalább 2 karakter',
+        lte11: 'Legfeljebb 10 karakter',
+        mustBeLetters: 'Csak betűk lehetnek',
+        submit: 'Létrehozás',
         labels: {
-            name: "Név",
-            code: "Kód",
-            description: "Leírás",
+            name: 'Név',
+            code: 'Kód',
+            description: 'Leírás',
         },
     },
     en: {
-        required: "Required",
-        gte2: "At least 2 characters",
-        lte11: "At most 10 characters",
-        mustBeLetters: "Must be letters only",
-        submit: "Create",
+        required: 'Required',
+        gte2: 'At least 2 characters',
+        lte11: 'At most 10 characters',
+        mustBeLetters: 'Must be letters only',
+        submit: 'Create',
         labels: {
-            name: "Name",
-            code: "Code",
-            description: "Description",
+            name: 'Name',
+            code: 'Code',
+            description: 'Description',
         },
     },
-});
+})
 
 const TeamForm = ({
     initialValues,
@@ -61,12 +61,12 @@ const TeamForm = ({
                 name: values.name,
                 code: values.code,
                 description: values.description,
-            });
-            if (resetOnSubmit) formik.resetForm();
-            return val;
+            })
+            if (resetOnSubmit) formik.resetForm()
+            return val
         },
         enableReinitialize: enableReinitialize,
-    });
+    })
     return (
         <Form onSubmit={formik.handleSubmit} {...rest}>
             <Form.Group>
@@ -105,7 +105,7 @@ const TeamForm = ({
                 </Button>
             </Form.Group>
         </Form>
-    );
-};
+    )
+}
 
-export default TeamForm;
+export default TeamForm

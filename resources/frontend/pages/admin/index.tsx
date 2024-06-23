@@ -1,54 +1,54 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import adminAPI from "lib/api/adminAPI";
-import { isAdmin, isOperator } from "lib/gates";
-import Locale from "lib/locale";
+import adminAPI from 'lib/api/adminAPI'
+import { isAdmin, isOperator } from 'lib/gates'
+import Locale from 'lib/locale'
 
-import { gated } from "components/Gate";
-import Button from "components/UIKit/Button";
-import Dialog from "components/UIKit/Dialog";
+import { gated } from 'components/Gate'
+import Button from 'components/UIKit/Button'
+import Dialog from 'components/UIKit/Dialog'
 
 const locale = Locale({
     hu: {
-        title: "Eötvös Napok Adminisztrátor",
-        system: "Rendszer",
-        cacheClear: "Cache törlése",
+        title: `${import.meta.env.VITE_EVENT_HU} Adminisztrátor`,
+        system: 'Rendszer',
+        cacheClear: 'Cache törlése',
         UsersDialog: {
-            title: "Felhasználók",
-            description: "Az összes felhasználó listája",
+            title: 'Felhasználók',
+            description: 'Az összes felhasználó listája',
         },
         eventsDialog: {
-            title: "Események",
+            title: 'Események',
         },
         slots: {
-            title: "Sávok",
-            button: "Sávok kezelése",
+            title: 'Sávok',
+            button: 'Sávok kezelése',
         },
     },
     en: {
-        title: "Eötvös Napok Admin",
-        system: "System",
-        cacheClear: "Clear cache",
+        title: `${import.meta.env.VITE_EVENT_EN} Admin`,
+        system: 'System',
+        cacheClear: 'Clear cache',
         UsersDialog: {
-            title: "Users",
-            description: "List of all users",
+            title: 'Users',
+            description: 'List of all users',
         },
         eventsDialog: {
-            title: "Events",
+            title: 'Events',
         },
         slots: {
-            title: "Slots",
-            button: "Manage slots",
+            title: 'Slots',
+            button: 'Manage slots',
         },
     },
-});
+})
 
 const AdminPage = () => {
-    const [clearCache] = adminAPI.useClearCacheMutation();
-    const navigate = useNavigate();
-    const [usersDialogOpen, setUsersDialogOpen] = useState(false);
-    const [eventsDialogOpen, setEventsDialogOpen] = useState(false);
+    const [clearCache] = adminAPI.useClearCacheMutation()
+    const navigate = useNavigate()
+    const [usersDialogOpen, setUsersDialogOpen] = useState(false)
+    const [eventsDialogOpen, setEventsDialogOpen] = useState(false)
     return (
         <>
             <div className="mx-auto max-w-4xl">
@@ -62,7 +62,7 @@ const AdminPage = () => {
                         </h3>
                         <Button
                             onClick={async () => {
-                                await clearCache();
+                                await clearCache()
                             }}
                             variant="danger"
                             className="p-3"
@@ -73,7 +73,7 @@ const AdminPage = () => {
                 </div>
             </div>
         </>
-    );
-};
+    )
+}
 
-export default gated(AdminPage, isAdmin);
+export default gated(AdminPage, isAdmin)

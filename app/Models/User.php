@@ -8,18 +8,17 @@ use App\Exceptions\StudentBusyException;
 use App\Helpers\MembershipType;
 use App\Helpers\PermissionType;
 use App\Helpers\SlotType;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Cache;
-use App\Models\TeamMembership;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * App\Models\User
+ *
  * @property int $id
  * @property string $name
  * @property string $e5mail
@@ -48,7 +47,6 @@ class User extends Authenticatable
         'email',
         'google_id',
     ];
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -88,24 +86,21 @@ class User extends Authenticatable
 
     /**
      * Determine if the user has the $code permission
-     * @param string $code
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPermission(string $code)
     {
-        $permissions = $_SESSION['permissions'] ?? Cache::remember('users.' . $this->id . '.permissions', now()->addMinutes(5), function () {
+        $permissions = $_SESSION['permissions'] ?? Cache::remember('users.'.$this->id.'.permissions', now()->addMinutes(5), function () {
             return $this->permissions()->get()->pluck('code')->toArray();
         });
         $_SESSION['permissions'] = $permissions;
+
         return in_array($code, $permissions) || in_array(PermissionType::Operator->value, $permissions);
     }
 
-
     /**
      * Get the organised events for the user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function organisedEvents(): BelongsToMany
     {
@@ -114,21 +109,14 @@ class User extends Authenticatable
 
     /**
      * All th events where the user is a scanner.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function scannerAtEvents(): BelongsToMany
     {
         return $this->belongsToMany(Event::class, 'permissions', 'user_id', 'event_id')->where('code', '=', PermissionType::Scanner);
     }
 
-
     /**
      * determine if the user is an organiser of the $event
-     *
-     * @param int $eventId
-     *
-     * @return boolean
      */
     public function organisesEvent(int $eventId): bool
     {
@@ -137,10 +125,6 @@ class User extends Authenticatable
 
     /**
      * determine if the user is a scanner of the $event
-     *
-     * @param int $eventId
-     *
-     * @return boolean
      */
     public function scansEvent(int $eventId): bool
     {
@@ -154,6 +138,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Team::class, 'team_memberships', 'user_id', 'team_code');
     }
+
     /**
      * The teammemberships for the User
      */
@@ -161,7 +146,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(TeamMemberShip::class);
     }
-
 
     /**
      * Get all attendances of the user
@@ -204,7 +188,6 @@ class User extends Authenticatable
         return $this->hasMany(Rating::class);
     }
 
-
     /**
      * Get all teamattendances of the user
      */
@@ -230,7 +213,7 @@ class User extends Authenticatable
             'event:name,id,location_id',
             'team:name,code',
             'team.members:id,name,ejg_class',
-            'teamMemberAttendances:user_id,is_present,attendance_id'
+            'teamMemberAttendances:user_id,is_present,attendance_id',
         ]);
     }
 
@@ -253,34 +236,37 @@ class User extends Authenticatable
     public function isBusy($time = null): bool
     {
         $time ??= now();
-        return Attendance::whereIn("event_id", Event::currentEvents($time)->pluck("id")->toArray())
-            ->where("user_id", $this->id)
-            ->orWhereIn("team_code", $this->teamMemberships()->pluck("team_code")->toArray())
+
+        return Attendance::whereIn('event_id', Event::currentEvents($time)->pluck('id')->toArray())
+            ->where('user_id', $this->id)
+            ->orWhereIn('team_code', $this->teamMemberships()->pluck('team_code')->toArray())
             ->count() > 0;
     }
 
     /**
      * Sign up user to $event
      *
-     * @param  Event $event the event to sign up for
-     * @param  bool $force whether to force the signup even if it has a root parent
+     * @param  Event  $event  the event to sign up for
+     * @param  bool  $force  whether to force the signup even if it has a root parent
+     * @return Attendance the newly created EventSignup object
+     *
      * @throws StudentBusyException if user is busy at the event timeslot
      * @throws EventFullException if the event is full
      * @throws AlreadySignedUpException Student is signed up for this event
-     * @return Attendance the newly created EventSignup object
      */
     public function signUp(Event $event, bool $force = false)
     {
-        if (!$force && $event->root_parent !== null) {
+        if (! $force && $event->root_parent !== null) {
             $this->signUp(Event::findOrFail($event->root_parent));
+
             return Attendance::where('user_id', $this->id)->where('event_id', $event->id)->first();
         }
         if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusyInSlot($event->slot)) {
             throw new StudentBusyException();
         }
         if (
-            isset($event->capacity) && $event->occupancy >= $event->capacity  &&
-            !request()->user()->hasPermission(PermissionType::Admin->value)
+            isset($event->capacity) && $event->occupancy >= $event->capacity &&
+            ! request()->user()->hasPermission(PermissionType::Admin->value)
         ) {
             throw new EventFullException();
         }
@@ -295,24 +281,26 @@ class User extends Authenticatable
         $signup->user()->associate($this);
         $signup->save();
         $event->forget('occupancy');
+
         return $signup;
     }
 
     /**
      * make user attend $event
      *
-     * @param  Event $event the event to attend
-     * @param  bool $force whether to force the signup even if it has a root parent
+     * @param  Event  $event  the event to attend
+     * @param  bool  $force  whether to force the signup even if it has a root parent
      * @return Attendance the newly created Attendance object
      */
     public function attend(Event $event, bool $force = false)
     {
-        if (!$force && $event->root_parent !== null) {
+        if (! $force && $event->root_parent !== null) {
             $this->attend(Event::findOrFail($event->root_parent));
+
             return $this->signups()->where('event_id', $event->id)->first();
         }
         $signup = $this->signups()->where('event_id', $event->id)->first();
-        if (!isset($signup)) {
+        if (! isset($signup)) {
             if (isset($event->capacity) && $event->occupancy >= $event->capacity) {
                 throw new EventFullException();
             }
@@ -330,16 +318,16 @@ class User extends Authenticatable
         }
         $signup->save();
         $event->forget('occupancy');
+
         return $signup;
     }
 
     /**
      * Determine if the user is in the specified m
      *
-     * @param  Team|string $team
-     * @return boolean
+     * @return bool
      */
-    public function isInTeam(Team | string $team)
+    public function isInTeam(Team|string $team)
     {
         return $this->teamMemberships()->where('team_code', $team->code ?? $team)->where('role', '!=', MembershipType::Invited)->exists();
     }
@@ -347,10 +335,9 @@ class User extends Authenticatable
     /**
      * Determine if the user is the leader of the specified team
      *
-     * @param  Team|string $team
-     * @return boolean
+     * @return bool
      */
-    public function isLeaderOfTeam(Team | string $team)
+    public function isLeaderOfTeam(Team|string $team)
     {
         return $this->teamMemberships()->where('team_code', $team->code ?? $team)->where('role', MembershipType::Leader)->exists();
     }

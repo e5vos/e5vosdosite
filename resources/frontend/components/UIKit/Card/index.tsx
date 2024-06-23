@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react'
 
-import ButtonGroup from "../ButtonGroup";
+import ButtonGroup from '../ButtonGroup'
 
 const Card = ({
     title,
@@ -15,16 +15,16 @@ const Card = ({
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
 > & {
-    title?: ReactNode;
-    subtitle?: ReactNode;
-    children?: ReactNode;
-    buttonBar?: ReturnType<typeof ButtonGroup>;
-    titleClassName?: string;
-    subtitleClassName?: string;
+    title?: ReactNode
+    subtitle?: ReactNode
+    children?: ReactNode
+    buttonBar?: ReturnType<typeof ButtonGroup>
+    titleClassName?: string
+    subtitleClassName?: string
 }) => (
     <div
-        className={`dark:bg-gray-600 mb-3 flex flex-col justify-between rounded-lg bg-slate-200 p-2 ${
-            className ?? ""
+        className={`mb-3 flex flex-col justify-between rounded-lg bg-slate-200 p-2 dark:bg-gray-600 ${
+            className ?? ''
         }`}
         {...rest}
     >
@@ -32,7 +32,7 @@ const Card = ({
             <div>
                 <h3
                     className={`px-2 text-center text-xl font-bold ${
-                        titleClassName ?? ""
+                        titleClassName ?? ''
                     }`}
                 >
                     {title}
@@ -41,7 +41,7 @@ const Card = ({
                     <>
                         <h4
                             className={`px-2 text-center text-sm ${
-                                subtitleClassName ?? ""
+                                subtitleClassName ?? ''
                             }`}
                         >
                             {subtitle}
@@ -53,6 +53,6 @@ const Card = ({
         {children && <div className="my-2">{children}</div>}
         {buttonGroup}
     </div>
-);
+)
 
-export default Card;
+export default Card

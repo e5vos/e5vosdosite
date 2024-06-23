@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Setting;
 use App\Http\Resources\SettingResource;
+use App\Models\Setting;
+use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
@@ -22,12 +22,12 @@ class SettingController extends Controller
     /**
      * Store a newly created setting in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request)
     {
         $setting = Setting::create(['key' => $request->key, 'value' => $request->value]);
+
         return (new SettingResource($setting))->jsonSerialize();
     }
 
@@ -41,6 +41,7 @@ class SettingController extends Controller
     {
         $setting = Setting::where('key', $key)->firstOrFail();
         $setting->update(['value' => $value]);
+
         return response((new SettingResource($setting))->jsonSerialize(), 200);
     }
 
@@ -49,12 +50,14 @@ class SettingController extends Controller
      *
      * @param  string  $key
      * @return \Illuminate\Http\Response
+     *
      * @deprecated
      */
     public function toggle($key)
     {
         $setting = Setting::where('key', $key)->firstOrFail();
-        $setting->update(['value' => !$setting->value]);
+        $setting->update(['value' => ! $setting->value]);
+
         return response((new SettingResource($setting))->jsonSerialize(), 200);
     }
 
@@ -68,6 +71,7 @@ class SettingController extends Controller
     {
         $setting = Setting::where('key', $key)->firstOrFail();
         $setting->delete();
+
         return response()->noContent();
     }
 }

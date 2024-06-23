@@ -1,9 +1,7 @@
 <?php
 
-
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
 Route::get('/auth/callback', [AuthController::class, 'callback']);
 
 Route::get('/', function () {
@@ -25,15 +23,14 @@ Route::get('/', function () {
 
 Route::get('/{any}', function (string $any) {
     //search ../public/ for the file
-    $path = base_path() . '/public/' . $any;
+    $path = base_path().'/public/'.$any;
     if (file_exists($path)) {
         return response()->file($path);
     }
+
     //if not found, return the frontend
     return view('frontend');
 })->where('any', '.*');
-
-
 
 // Route::any('/eloadas', function () {
 //     return view('frontend');
@@ -46,7 +43,6 @@ Route::get('/{any}', function (string $any) {
 // Route::any('/eloadas/kezel/{id}', function () {
 //     return view('frontend');
 // });
-
 
 // Route::any('/login', function () {
 //     return view('frontend');

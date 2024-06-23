@@ -1,6 +1,6 @@
-import Button from "components/UIKit/Button";
-import ButtonGroup from "components/UIKit/ButtonGroup";
-import ButtonToolbar from "components/UIKit/ButtonToolbar";
+import Button from 'components/UIKit/Button'
+import ButtonGroup from 'components/UIKit/ButtonGroup'
+import ButtonToolbar from 'components/UIKit/ButtonToolbar'
 
 /**
  * Paginator button group component for pagination of data lists.
@@ -11,13 +11,13 @@ export default function Paginator({
     setCurrentPage,
     className,
 }: {
-    pageCount: number;
-    currentPage: number;
-    setCurrentPage: (page: number) => void;
-    className?: string;
+    pageCount: number
+    currentPage: number
+    setCurrentPage: (page: number) => void
+    className?: string
 }) {
     const StartButtons = ({ size = 2 }: { size?: number }) => {
-        const startButtons = [];
+        const startButtons = []
         for (let i = 1; i <= size; i++) {
             startButtons.push(
                 <Button
@@ -26,18 +26,18 @@ export default function Paginator({
                     disabled={i === currentPage}
                 >
                     {i}
-                </Button>,
-            );
+                </Button>
+            )
         }
-        return <>{startButtons}</>;
-    };
+        return <>{startButtons}</>
+    }
 
     const MiddleButtons = ({ size = 3 }: { size?: number }) => {
-        const middleButtons = [];
+        const middleButtons = []
 
-        let start = Math.max(currentPage - Math.floor(size / 2), size);
-        const end = Math.min(start + size, pageCount - Math.ceil(size / 2));
-        start = Math.max(end - size, size);
+        let start = Math.max(currentPage - Math.floor(size / 2), size)
+        const end = Math.min(start + size, pageCount - Math.ceil(size / 2))
+        start = Math.max(end - size, size)
         for (let i = start; i < end; i++) {
             middleButtons.push(
                 <Button
@@ -46,14 +46,14 @@ export default function Paginator({
                     key={i}
                 >
                     {i}
-                </Button>,
-            );
+                </Button>
+            )
         }
-        return <>{middleButtons}</>;
-    };
+        return <>{middleButtons}</>
+    }
 
     const EndButtons = ({ size = 2 }: { size?: number }) => {
-        const endButtons = [];
+        const endButtons = []
         for (let i = pageCount - size; i < pageCount; i++) {
             endButtons.push(
                 <Button
@@ -62,11 +62,11 @@ export default function Paginator({
                     key={i}
                 >
                     {i}
-                </Button>,
-            );
+                </Button>
+            )
         }
-        return <>{endButtons}</>;
-    };
+        return <>{endButtons}</>
+    }
 
     if (pageCount > 7) {
         return (
@@ -81,7 +81,7 @@ export default function Paginator({
                     <EndButtons />
                 </ButtonGroup>
             </ButtonToolbar>
-        );
+        )
     } else
         return (
             <ButtonToolbar className={className}>
@@ -99,5 +99,5 @@ export default function Paginator({
                         ))}
                 </ButtonGroup>
             </ButtonToolbar>
-        );
+        )
 }

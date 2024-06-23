@@ -1,35 +1,35 @@
-import { Dialog as DialogHeadless } from "@headlessui/react";
-import { ReactNode } from "react";
+import { Dialog as DialogHeadless } from '@headlessui/react'
+import { ReactNode } from 'react'
 
-import Locale from "lib/locale";
+import Locale from 'lib/locale'
 
-import Button from "./Button";
-import Loader from "./Loader";
+import Button from './Button'
+import Loader from './Loader'
 
 const locale = Locale({
     hu: {
-        close: "Bezárás",
+        close: 'Bezárás',
     },
     en: {
-        close: "Close",
+        close: 'Close',
     },
-});
+})
 
 const Scroller = ({ children }: { children: ReactNode }) => {
-    return <div className="scroller  h-[500px] overflow-auto">{children}</div>;
-};
+    return <div className="scroller  h-[500px] overflow-auto">{children}</div>
+}
 
 type Closable = {
-    onClose: () => void;
-    closable?: true;
-};
+    onClose: () => void
+    closable?: true
+}
 
 type Unclosable = {
-    onClose?: never;
-    closable: false;
-};
+    onClose?: never
+    closable: false
+}
 
-const noop = (a: boolean) => {};
+const noop = (a: boolean) => {}
 
 const Dialog = ({
     open = true,
@@ -40,11 +40,11 @@ const Dialog = ({
     onClose,
     closable,
 }: {
-    open?: boolean;
-    title?: string | ReactNode;
-    description?: string | ReactNode;
-    children?: ReactNode;
-    isLoading?: boolean;
+    open?: boolean
+    title?: string | ReactNode
+    description?: string | ReactNode
+    children?: ReactNode
+    isLoading?: boolean
 } & (Closable | Unclosable)) => {
     return (
         <DialogHeadless
@@ -93,7 +93,7 @@ const Dialog = ({
                 </DialogHeadless.Panel>
             </div>
         </DialogHeadless>
-    );
-};
+    )
+}
 
-export default Object.assign(Dialog, { Scroller });
+export default Object.assign(Dialog, { Scroller })

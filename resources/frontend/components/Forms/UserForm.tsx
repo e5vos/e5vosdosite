@@ -1,37 +1,37 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 
-import { CRUDForm } from "types/misc";
-import { EJGClass } from "types/models";
+import { CRUDForm } from 'types/misc'
+import { EJGClass } from 'types/models'
 
-import Locale from "lib/locale";
+import Locale from 'lib/locale'
 
-import Button from "components/UIKit/Button";
-import Form from "components/UIKit/Form";
-import { UserFormValues } from "components/User/CRUD";
+import Button from 'components/UIKit/Button'
+import Form from 'components/UIKit/Form'
+import { UserFormValues } from 'components/User/CRUD'
 
 const locale = Locale({
     hu: {
-        submit: "Létrehozás",
+        submit: 'Létrehozás',
         fields: {
-            name: "Név",
-            email: "Email",
-            img_url: "Profilkép",
-            e5code: "E5 kód",
-            ejg_class: "Osztály",
+            name: 'Név',
+            email: 'Email',
+            img_url: 'Profilkép',
+            e5code: 'E5 kód',
+            ejg_class: 'Osztály',
         },
     },
     en: {
-        submit: "Create",
+        submit: 'Create',
         fields: {
-            name: "Name",
-            email: "Email",
-            img_url: "Profile picture",
-            e5code: "E5 code",
-            ejg_class: "Class",
+            name: 'Name',
+            email: 'Email',
+            img_url: 'Profile picture',
+            e5code: 'E5 code',
+            ejg_class: 'Class',
         },
     },
-});
+})
 
 const UserForm = ({
     initialValues,
@@ -51,12 +51,12 @@ const UserForm = ({
                 img_url: values.img_url,
                 e5code: values.e5code,
                 ejg_class: values.ejg_class,
-            });
-            if (resetOnSubmit) formik.resetForm();
-            return val;
+            })
+            if (resetOnSubmit) formik.resetForm()
+            return val
         },
         enableReinitialize: enableReinitialize,
-    });
+    })
     return (
         <Form onSubmit={formik.handleSubmit}>
             <Form.Group>
@@ -89,7 +89,7 @@ const UserForm = ({
                 <Button>{submitLabel}</Button>
             </Form.Group>
         </Form>
-    );
-};
+    )
+}
 
-export default UserForm;
+export default UserForm

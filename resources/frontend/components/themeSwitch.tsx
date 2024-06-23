@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { SVGProps } from "react";
+import { useEffect, useState } from 'react'
+import { SVGProps } from 'react'
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
-    size?: number;
-};
+    size?: number
+}
 
 const MoonFilledIcon = ({
     size = 24,
@@ -25,7 +25,7 @@ const MoonFilledIcon = ({
             fill="currentColor"
         />
     </svg>
-);
+)
 
 const SunFilledIcon = ({
     size = 24,
@@ -47,7 +47,7 @@ const SunFilledIcon = ({
             <path d="M12 22.96a.969.969 0 01-1-.96v-.08a1 1 0 012 0 1.038 1.038 0 01-1 1.04zm7.14-2.82a1.024 1.024 0 01-.71-.29l-.13-.13a1 1 0 011.41-1.41l.13.13a1 1 0 010 1.41.984.984 0 01-.7.29zm-14.28 0a1.024 1.024 0 01-.71-.29 1 1 0 010-1.41l.13-.13a1 1 0 011.41 1.41l-.13.13a1 1 0 01-.7.29zM22 13h-.08a1 1 0 010-2 1.038 1.038 0 011.04 1 .969.969 0 01-.96 1zM2.08 13H2a1 1 0 010-2 1.038 1.038 0 011.04 1 .969.969 0 01-.96 1zm16.93-7.01a1.024 1.024 0 01-.71-.29 1 1 0 010-1.41l.13-.13a1 1 0 011.41 1.41l-.13.13a.984.984 0 01-.7.29zm-14.02 0a1.024 1.024 0 01-.71-.29l-.13-.14a1 1 0 011.41-1.41l.13.13a1 1 0 010 1.41.97.97 0 01-.7.3zM12 3.04a.969.969 0 01-1-.96V2a1 1 0 012 0 1.038 1.038 0 01-1 1.04z" />
         </g>
     </svg>
-);
+)
 
 const SystemThemeIcon = ({
     size = 24,
@@ -82,47 +82,47 @@ const SystemThemeIcon = ({
             <path d="M 42.5,259.5 C 64.1692,259.333 85.8359,259.5 107.5,260C 117.915,265.479 120.748,273.646 116,284.5C 113.065,289.111 108.898,291.611 103.5,292C 82.7821,292.953 62.1154,292.62 41.5,291C 34.513,288.193 31.1797,283.027 31.5,275.5C 31.293,267.392 34.9597,262.059 42.5,259.5 Z" />
         </g>
     </svg>
-);
+)
 
 export const ThemeSwitch = () => {
-    const [theme, setIsDarkMode] = useState(localStorage.theme);
+    const [theme, setIsDarkMode] = useState(localStorage.theme)
 
     useEffect(() => {
-        if (theme === "dark") {
-            document.documentElement.classList.remove("light");
-            document.documentElement.classList.add("dark");
-            localStorage.theme = "dark";
-        } else if (theme === "light") {
-            document.documentElement.classList.remove("dark");
-            document.documentElement.classList.add("light");
-            localStorage.theme = "light";
+        if (theme === 'dark') {
+            document.documentElement.classList.remove('light')
+            document.documentElement.classList.add('dark')
+            localStorage.theme = 'dark'
+        } else if (theme === 'light') {
+            document.documentElement.classList.remove('dark')
+            document.documentElement.classList.add('light')
+            localStorage.theme = 'light'
         } else {
-            localStorage.theme = "system";
-            if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                document.documentElement.classList.remove("light");
-                document.documentElement.classList.add("dark");
+            localStorage.theme = 'system'
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.remove('light')
+                document.documentElement.classList.add('dark')
             } else {
-                document.documentElement.classList.remove("dark");
-                document.documentElement.classList.add("light");
+                document.documentElement.classList.remove('dark')
+                document.documentElement.classList.add('light')
             }
         }
-    }, [theme]);
+    }, [theme])
 
     const toggleTheme = () => {
         setIsDarkMode((prevMode: string) =>
-            prevMode === "light"
-                ? "dark"
-                : prevMode === "dark"
-                ? "system"
-                : "light",
-        );
-    };
+            prevMode === 'light'
+                ? 'dark'
+                : prevMode === 'dark'
+                ? 'system'
+                : 'light'
+        )
+    }
 
     return (
         <div onClick={toggleTheme}>
-            {theme === "dark" ? (
+            {theme === 'dark' ? (
                 <MoonFilledIcon size={22} />
-            ) : theme === "light" ? (
+            ) : theme === 'light' ? (
                 <SunFilledIcon size={22} />
             ) : (
                 <SystemThemeIcon
@@ -131,5 +131,5 @@ export const ThemeSwitch = () => {
                 />
             )}
         </div>
-    );
-};
+    )
+}

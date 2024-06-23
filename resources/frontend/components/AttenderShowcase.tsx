@@ -1,27 +1,27 @@
-import { Disclosure } from "@headlessui/react";
+import { Disclosure } from '@headlessui/react'
 
 import {
     Attender,
     AttendingTeam,
     AttendingUser,
     isAttenderTeam,
-} from "types/models";
+} from 'types/models'
 
-import Locale from "lib/locale";
-import { getInitials } from "lib/util";
+import Locale from 'lib/locale'
+import { getInitials } from 'lib/util'
 
 const locale = Locale({
     hu: {
-        individual: "Egyéni",
-        team: "Csapat",
+        individual: 'Egyéni',
+        team: 'Csapat',
         rank: (rank: number) => `${rank}. hely`,
     },
     en: {
-        individual: "Individual",
-        team: "Team",
+        individual: 'Individual',
+        team: 'Team',
         rank: (rank: number) => `${rank}. place`,
     },
-});
+})
 
 const TeamAttenderShowcase = ({ attender }: { attender: AttendingTeam }) => {
     return (
@@ -54,8 +54,8 @@ const TeamAttenderShowcase = ({ attender }: { attender: AttendingTeam }) => {
                 </div>
             </Disclosure.Panel>
         </Disclosure>
-    );
-};
+    )
+}
 
 const UserAttenderShowcase = ({ attender }: { attender: AttendingUser }) => {
     return (
@@ -72,15 +72,15 @@ const UserAttenderShowcase = ({ attender }: { attender: AttendingUser }) => {
                 )}
             </Disclosure.Panel>
         </Disclosure>
-    );
-};
+    )
+}
 
 const AttenderShowcase = ({ attender, ...rest }: { attender: Attender }) => {
     if (isAttenderTeam(attender)) {
-        return <TeamAttenderShowcase attender={attender} {...rest} />;
+        return <TeamAttenderShowcase attender={attender} {...rest} />
     } else {
-        return <UserAttenderShowcase attender={attender} {...rest} />;
+        return <UserAttenderShowcase attender={attender} {...rest} />
     }
-};
+}
 
-export default AttenderShowcase;
+export default AttenderShowcase

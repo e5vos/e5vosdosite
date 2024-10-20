@@ -33,6 +33,8 @@ const locale = Locale({
                 Nem betöltött eseménysáv! Valószínűleg programsáv!
             </span>
         ),
+        nopresentations:
+            'Nincsenek elérhető előadások, kérjük keresse Baranyai Balázst!',
     },
     en: {
         title: `${import.meta.env.VITE_EVENT_EN} - Presentation signup`,
@@ -52,6 +54,8 @@ const locale = Locale({
                 Event slot not loaded! Probably an event slot!
             </span>
         ),
+        nopresentations:
+            'No presentations available, please contact Balázs Baranyai!',
     },
 })
 
@@ -73,7 +77,7 @@ const SelectField = ({
                         locale.presentationNotYetSelected}
                 </div>
                 {selectedPresentation && (
-                    <div className="mt-2 rounded-lg bg-goldenrod p-3 ">
+                    <div className="bg-goldenrod mt-2 rounded-lg p-3">
                         <div className="text-lg">
                             <IoLocationSharp className="inline-block text-xl" />
                             {selectedPresentation.location?.name ??
@@ -99,10 +103,12 @@ const SelectField = ({
 const PresentationsPage = () => {
     const [currentSlot, setcurrentSlot] = useState(0)
 
-    const { data: slots } = useGetPresentationSlotsQuery()
+    const { data: slots, isLoading: isSlotsLoading } =
+        useGetPresentationSlotsQuery()
     const {
         data: selectedPresentations,
         isFetching: isMyPresentationsFetching,
+        isLoading: isMyPresentationsLoading,
         refetch: refetchSelected,
     } = eventAPI.useGetUsersPresentationsQuery()
     const {
@@ -145,7 +151,9 @@ const PresentationsPage = () => {
             }).unwrap()
             refetchSelected()
             refetchEvents()
-        } catch (err) {}
+        } catch (err) {
+            return
+        }
     }
 
     const cancelSignupAction = async (presentation: Presentation) => {
@@ -179,7 +187,7 @@ const PresentationsPage = () => {
 
     const selectSlotById = useCallback(
         (id: number) => {
-            let newSlot = slots?.findIndex((slot) => slot.id === id)
+            const newSlot = slots?.findIndex((slot) => slot.id === id)
             if (newSlot !== undefined) setcurrentSlot(newSlot)
         },
         [slots]
@@ -215,7 +223,17 @@ const PresentationsPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [errormsg])
 
-    if (!slots || !selectedPresentations || !presentations) return <Loader />
+    if (isSlotsLoading || isMyPresentationsLoading || isEventsLoading)
+        return <Loader />
+
+    if (
+        !slots ||
+        slots.length == 0 ||
+        !presentations ||
+        presentations.length == 0
+    ) {
+        return <>{locale.nopresentations}</>
+    }
 
     return (
         <div className="mx-5">

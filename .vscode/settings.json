@@ -38,6 +38,20 @@
       "database": "e5vosdosite",
       "username": "root",
       "password": ""
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MariaDB",
+      "name": "e5vosdo",
+      "database": "e5vosdosite",
+      "username": "e5vosdo",
+      "password": "abcd1234"
     }
   ],
   "cSpell.enabled": false,

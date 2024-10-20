@@ -1,0 +1,85 @@
+service: laravel
+
+provider:
+    name: aws
+    # The AWS region in which to deploy (us-east-1 is the default)
+    region: eu-central-1
+    # Environment variables
+    environment:
+        MAINTENANCE_MODE: ${param:maintenance, null}
+        QUEUE_CONNECTION: sqs
+        SQS_QUEUE: ${construct:jobs.queueUrl}
+    iam:
+        role:
+            statements:
+                # Allow Lambda to read and write files in the S3 buckets
+                - Effect: Allow
+                  Action: s3:*
+                  Resource:
+                      - !Sub '${Storage.Arn}' # the storage bucket
+                      - !Sub '${Storage.Arn}/*' # and everything inside
+
+package:
+    # Files and directories to exclude from deployment
+    patterns:
+        - '!node_modules/**'
+        - '!public/storage'
+        - '!public/storage/**'
+        - '!public/hot'
+        - '!storage/**'
+        - '!tests/**'
+        - 'storage/oauth-private.key'
+        - 'storage/oauth-public.key'
+
+functions:
+    # This function runs the Laravel website/API
+    web:
+        handler: Bref\LaravelBridge\Http\OctaneHandler
+        runtime: php-82
+        timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
+        environment:
+            BREF_LOOP_MAX: 250
+            OCTANE_PERSIST_DATABASE_SESSIONS: 1
+            
+        events:
+            - httpApi: '*'
+
+    # This function lets us run artisan commands in Lambda
+    artisan:
+        handler: artisan
+        runtime: php-82-console
+        timeout: 720 # in seconds
+        # Uncomment to also run the scheduler every minute
+        events:
+            - schedule:
+                  rate: rate(1 minute)
+                  input: '"schedule:run"'
+constructs:
+    jobs:
+        type: queue
+        worker:
+            handler: Bref\LaravelBridge\Queue\QueueHandler
+            runtime: php-82
+            timeout: 60 # seconds
+    website:
+        type: server-side-website
+        domain:
+            - e5vosdo.hu
+            - 'www.e5vosdo.hu'
+        certificate: arn:aws:acm:us-east-1:795856675129:certificate/2b667727-c569-4d0c-8e37-57f18eccfcfb
+        assets:
+            '/build/*': public/build
+            '/images/*': public/images
+            '/favicon.ico': public/favicon.ico
+            '/robots.txt': public/robots.txt
+            # add here any file or directory that needs to be served from S3
+resources:
+    Resources:
+        # Create our S3 storage bucket using CloudFormation
+        Storage:
+            Type: AWS::S3::Bucket
+
+plugins:
+    # We need to include the Bref plugin
+    - ./vendor/bref/bref
+    - serverless-lift

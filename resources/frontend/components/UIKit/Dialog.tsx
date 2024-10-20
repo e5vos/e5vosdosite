@@ -53,11 +53,11 @@ const Dialog = ({
             className="relative z-50"
         >
             <div
-                className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm"
+                className="bg-foreground-900/40 fixed inset-0 backdrop-blur-sm"
                 aria-hidden="true"
             />
             <div className="fixed inset-0 flex items-center justify-center p-4">
-                <DialogHeadless.Panel className="mx-auto flex max-h-[95%] min-w-[200px] max-w-[95%] flex-col gap-4 rounded-3xl border-8 border-gray-700 bg-gray-600 p-3 shadow-xl  shadow-gray-800">
+                <DialogHeadless.Panel className="mx-auto flex max-h-[95%] min-w-[200px] max-w-[95%] flex-col gap-4 rounded-3xl border-8 border-foreground-50 bg-foreground-200 p-3 shadow-xl  shadow-gray-700">
                     <div className="overflow-auto">
                         {isLoading ? (
                             <Loader />

@@ -61,7 +61,7 @@ const EditSlotPage = () => {
                     {locale.title}
                 </h1>
             </div>
-            <div className="min-w-12 mx-28 mt-2 flex flex-col justify-center align-middle">
+            <div className="mx-28 mt-2 flex min-w-12 flex-col justify-center align-middle">
                 <SlotCRUD.Updater value={initialValues} />
             </div>
         </div>

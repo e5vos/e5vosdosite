@@ -12,7 +12,7 @@ const ErrorMsgBox = ({
             }`}
         >
             <h4 className="text-xl font-semibold">Hiba</h4>
-            <hr className="mx-3 bg-white shadow-md shadow-white" />
+            <hr className="mx-3 bg-foreground shadow-md shadow-foreground" />
             <p>{errormsg}</p>
         </div>
     )

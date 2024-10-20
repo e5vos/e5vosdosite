@@ -93,8 +93,8 @@ const PresentationsTable = ({
 }) => {
     return (
         <table className="flex w-full table-auto border-separate border-spacing-x-0.5 border-spacing-y-1 flex-col text-sm md:table md:border-spacing-y-2 md:text-lg">
-            <thead className="hidden border-separate bg-gray-500 text-white md:table-header-group ">
-                <tr className="shadow-md">
+            <thead className="hidden border-separate bg-foreground-300 text-foreground dark:bg-gray-500 md:table-header-group ">
+                <tr className="rounded-lg shadow-md">
                     <th className="rounded-l-lg py-1">
                         {locale.presentation.title}
                     </th>
@@ -118,7 +118,7 @@ const PresentationsTable = ({
                     presentations.map((presentation, index) => (
                         <tr
                             key={index}
-                            className="mb-5 flex flex-col rounded bg-gray-600 shadow-md md:table-row md:rounded-none"
+                            className="mb-5 flex flex-col rounded-lg bg-white shadow-md dark:bg-gray-600 md:table-row"
                         >
                             <td className="rounded-l-lg border-hidden px-2 py-0.5  text-center text-4xl font-bold md:text-lg">
                                 {presentation.name}
@@ -133,12 +133,12 @@ const PresentationsTable = ({
                                     </p>
                                     {(presentation.direct_child ||
                                         presentation.root_parent) && (
-                                        <div className="bg-blue-500">
+                                        <div className="bg-sky-300 dark:bg-blue-500">
                                             {presentation.root_parent_slot_id &&
                                                 locale.presentation.multislot.starts(
                                                     () => (
                                                         <span
-                                                            className="text-green-400"
+                                                            className="text-green-700 dark:text-green-400"
                                                             onClick={() => {
                                                                 selectSlot(
                                                                     presentation.root_parent_slot_id!
@@ -155,7 +155,7 @@ const PresentationsTable = ({
                                                 locale.presentation.multislot.continues(
                                                     () => (
                                                         <span
-                                                            className="text-green-400"
+                                                            className="text-green-700 dark:text-green-400"
                                                             onClick={() => {
                                                                 selectSlot(
                                                                     presentation.direct_child_slot_id!

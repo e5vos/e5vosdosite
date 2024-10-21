@@ -48,6 +48,7 @@
     "react-router-dom": "^6.16.0",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
+    "serverless-lift": "^1.30.2",
     "vite-plugin-svgr": "^2.4.0",
     "yup": "^0.32.11",
     "ziggy-js": "^1.8.1"

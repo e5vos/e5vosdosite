@@ -17,7 +17,7 @@ yarn-error.log
 /.idea
 /.vscode
 
-deploy.zip.serverless/laravel.zip
+deploy.zip
 .serverless/laravel.zip
 .serverless/cloudformation-template-update-stack.json
 .serverless/meta.json

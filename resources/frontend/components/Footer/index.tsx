@@ -20,7 +20,7 @@ const locale = Locale({
 
 const Footer = () => {
     return (
-        <div className="flex flex-col justify-between bg-gray-800 px-8 py-3 align-middle md:flex-row">
+        <div className="flex flex-col justify-between bg-foreground-50 px-8 py-3 align-middle dark:bg-gray-800 md:flex-row">
             <div className=" flex w-full flex-col items-center justify-start text-center md:flex-row md:gap-2">
                 <Donci fill="white" className="w-10 hover:animate-wiggle" />
                 <p className="md:my-auto">{locale.title}</p>

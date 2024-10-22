@@ -29,10 +29,12 @@ const locale = Locale({
         noe5code: 'Nem adtad meg az E5 kódot!',
         nologin: 'Nem vagy bejelentkezve!',
         sloterror: (
-            <span className="text-red-300">
+            <span className="text-red-500 dark:text-red-300">
                 Nem betöltött eseménysáv! Valószínűleg programsáv!
             </span>
         ),
+        nopresentations:
+            'Nincsenek elérhető előadások, kérjük keresse Baranyai Balázst!',
     },
     en: {
         title: `${import.meta.env.VITE_EVENT_EN} - Presentation signup`,
@@ -45,13 +47,12 @@ const locale = Locale({
         noe5code: 'You have not entered your E5 code!',
         nologin: 'You are not logged in!',
         sloterror: (
-            <span
-                className="text
-      -red-300"
-            >
+            <span className="text-red-500 dark:text-red-300">
                 Event slot not loaded! Probably an event slot!
             </span>
         ),
+        nopresentations:
+            'No presentations available, please contact Balázs Baranyai!',
     },
 })
 
@@ -68,7 +69,7 @@ const SelectField = ({
         <div className="flex flex-1 flex-col items-stretch justify-center gap-4 text-center md:mx-3 md:flex-row md:gap-8">
             <div className="flex-1">
                 <h3>{locale.selectedPresentation}</h3>
-                <div className="rounded-lg bg-green-600 p-3 ">
+                <div className="rounded-lg bg-lime-500 p-3 dark:bg-lime-600 ">
                     {selectedPresentation?.name ??
                         locale.presentationNotYetSelected}
                 </div>
@@ -99,10 +100,12 @@ const SelectField = ({
 const PresentationsPage = () => {
     const [currentSlot, setcurrentSlot] = useState(0)
 
-    const { data: slots } = useGetPresentationSlotsQuery()
+    const { data: slots, isLoading: isSlotsLoading } =
+        useGetPresentationSlotsQuery()
     const {
         data: selectedPresentations,
         isFetching: isMyPresentationsFetching,
+        isLoading: isMyPresentationsLoading,
         refetch: refetchSelected,
     } = eventAPI.useGetUsersPresentationsQuery()
     const {
@@ -145,7 +148,9 @@ const PresentationsPage = () => {
             }).unwrap()
             refetchSelected()
             refetchEvents()
-        } catch (err) {}
+        } catch (err) {
+            return
+        }
     }
 
     const cancelSignupAction = async (presentation: Presentation) => {
@@ -179,7 +184,7 @@ const PresentationsPage = () => {
 
     const selectSlotById = useCallback(
         (id: number) => {
-            let newSlot = slots?.findIndex((slot) => slot.id === id)
+            const newSlot = slots?.findIndex((slot) => slot.id === id)
             if (newSlot !== undefined) setcurrentSlot(newSlot)
         },
         [slots]
@@ -215,8 +220,17 @@ const PresentationsPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [errormsg])
 
-    if (!slots || !selectedPresentations || !presentations) return <Loader />
+    if (isSlotsLoading || isMyPresentationsLoading || isEventsLoading)
+        return <Loader />
 
+    if (
+        !slots ||
+        slots.length == 0 ||
+        !presentations ||
+        presentations.length == 0
+    ) {
+        return <>{locale.nopresentations}</>
+    }
     return (
         <div className="mx-5">
             <div className="container mx-auto">

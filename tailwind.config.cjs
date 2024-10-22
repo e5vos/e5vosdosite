@@ -2,7 +2,7 @@ const colors = require('tailwindcss/colors')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    darkMode: true,
+    darkMode: 'class',
     content: [
         './index.html',
         './resources/**/*.{js,ts,jsx,tsx,.blade.php,.php}',
@@ -103,6 +103,20 @@ module.exports = {
                     700: '#735100',
                     800: '#3B2A00',
                     900: '#030200',
+                },
+                foreground: {
+                    DEFAULT: 'var(--color-foreground)',
+                    bg: 'var(--color-foreground-bg)',
+                    50: 'var(--color-foreground-50)',
+                    100: 'var(--color-foreground-100)',
+                    200: 'var(--color-foreground-200)',
+                    300: 'var(--color-foreground-300)',
+                    400: 'var(--color-foreground-400)',
+                    500: 'var(--color-foreground-500)',
+                    600: 'var(--color-foreground-600)',
+                    700: 'var(--color-foreground-700)',
+                    800: 'var(--color-foreground-800)',
+                    900: 'var(--color-foreground-900)',
                 },
             },
             listStyleType: {

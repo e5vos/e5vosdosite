@@ -27,6 +27,7 @@ const Button = ({
     if (type === 'submit' && !variant) variant = 'success'
 
     let buttonclass = 'outline outline-2 outline-offset-0  '
+    if (variant.includes('outline')) buttonclass += 'text-foreground '
     switch (variant) {
         case 'primary':
             buttonclass +=
@@ -34,15 +35,15 @@ const Button = ({
             break
         case 'outline-primary':
             buttonclass +=
-                'outline-blue-400 enabled:hover:bg-blue-400 disabled:bg-blue-700 text-white'
+                'outline-blue-400 enabled:hover:bg-blue-400 disabled:bg-blue-700'
             break
         case 'secondary':
             buttonclass +=
-                'bg-white outline-white enabled:hover:bg-gray-600 disabled:bg-gray-600 text-black enabled:hover:text-white disabled:text-white'
+                'bg-white outline-white dark:enabled:hover:bg-gray-600 enabled:hover:bg-gray-50 dark:disabled:bg-gray-600 disabled:bg-gray-50 text-black dark:enabled:hover:text-white dark:disabled:text-white'
             break
         case 'outline-secondary':
             buttonclass +=
-                ' outline-white enabled:hover:bg-white disabled:bg-white text-white enabled:hover:text-black disabled:text-black'
+                ' outline-white enabled:hover:bg-white disabled:bg-white enabled:hover:text-black disabled:text-black'
             break
         case 'danger':
             buttonclass +=
@@ -50,7 +51,7 @@ const Button = ({
             break
         case 'outline-danger':
             buttonclass +=
-                'outline-red enabled:hover:bg-red disabled:bg-red text-white enabled:hover:text-white disabled:text-white'
+                'outline-red enabled:hover:bg-red disabled:bg-red enabled:hover:text-white disabled:text-white'
             break
         case 'success':
             buttonclass +=
@@ -58,7 +59,7 @@ const Button = ({
             break
         case 'outline-success':
             buttonclass +=
-                'outline-green enabled:hover:bg-green disabled:bg-green text-white enabled:hover:text-black disabled:text-black'
+                'outline-green enabled:hover:bg-green disabled:bg-green enabled:hover:text-black disabled:text-black'
             break
         case 'warning':
             buttonclass +=
@@ -66,7 +67,7 @@ const Button = ({
             break
         case 'outline-warning':
             buttonclass +=
-                'outline-goldenrod enabled:hover:bg-goldenrod disabled:bg-godlenrod text-white enabled:hover:text-black disabled:text-black'
+                'outline-goldenrod enabled:hover:bg-goldenrod disabled:bg-godlenrod enabled:hover:text-black disabled:text-black'
             break
         case 'info':
             buttonclass +=
@@ -74,7 +75,7 @@ const Button = ({
             break
         case 'outline-info':
             buttonclass +=
-                'outline-blue-600 enabled:hover:bg-blue-600 disabled:bg-blue text-white enabled:hover:text-white disabled:text-white'
+                'outline-blue-600 enabled:hover:bg-blue-600 disabled:bg-blue enabled:hover:text-white disabled:text-white'
             break
         default:
     }

@@ -1,0 +1,216 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: e5vos
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: e5vosdosite
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+service: laravel
+
+provider:
+    name: aws
+    # The AWS region in which to deploy (us-east-1 is the default)
+    region: eu-central-1
+    # Environment variables
+    iam:
+        role:
+            statements:
+                # Allow Lambda to read and write files in the S3 buckets
+                - Effect: Allow
+                  Action: s3:*
+                  Resource:
+                      - !Sub '${Storage.Arn}' # the storage bucket
+                      - !Sub '${Storage.Arn}/*' # and everything inside
+                - Effect: Allow
+                  Resource: !GetAtt CacheTable.Arn
+                  Action:
+                      - dynamodb:DescribeTable
+                      - dynamodb:Query
+                      - dynamodb:Scan
+                      - dynamodb:GetItem
+                      - dynamodb:PutItem
+                      - dynamodb:UpdateItem
+                      - dynamodb:DeleteItem
+    environment:
+        # This environment variable will contain the table name
+        DYNAMODB_CACHE_TABLE: !Ref CacheTable
+        # MAINTENANCE_MODE: ${param:maintenance, null}
+        QUEUE_CONNECTION: sqs
+        SQS_QUEUE: ${construct:jobs.queueUrl}
+custom:
+    AURORA:
+        HOST:
+            Fn::GetAtt: [AuroraRDSCluster, Endpoint.Address]
+        PORT:
+            Fn::GetAtt: [AuroraRDSCluster, Endpoint.Port]
+        VPC_CIDR: 10
+        MYSQL:
+            HOST:
+                Fn::GetAtt: [MySqlRDSInstance, Endpoint.Address]
+            PORT:
+        Fn::GetAtt: [MySqlRDSInstance, Endpoint.Port]
+
+package:
+    # Files and directories to exclude from deployment
+    patterns:
+        - '!node_modules/**'
+        - '!public/storage'
+        - '!public/storage/**'
+        - '!public/hot'
+        - '!storage/**'
+        - '!tests/**'
+        - 'storage/oauth-private.key'
+        - 'storage/oauth-public.key'
+
+functions:
+    # This function runs the Laravel website/API
+    web:
+        handler: Bref\LaravelBridge\Http\OctaneHandler
+        runtime: php-82
+        timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
+        environment:
+            BREF_LOOP_MAX: 250
+            OCTANE_PERSIST_DATABASE_SESSIONS: 1
+        events:
+            - httpApi: '*'
+
+    # This function lets us run artisan commands in Lambda
+    artisan:
+        handler: artisan
+        runtime: php-82-console
+        timeout: 720 # in seconds
+        # Uncomment to also run the scheduler every minute
+        events:
+            - schedule:
+                  rate: rate(1 minute)
+                  input: '"schedule:run"'
+constructs:
+    jobs:
+        type: queue
+        worker:
+            handler: Bref\LaravelBridge\Queue\QueueHandler
+            runtime: php-82
+            timeout: 60 # seconds
+    website:
+        type: server-side-website
+        domain:
+            - e5vosdo.hu
+            - www.e5vosdo.hu
+        certificate: ${env:SSL_CERTIFICATE_ARN}
+        assets:
+            '/build/*': public/build
+            #'/images/*': public/images
+            '/favicon.ico': public/favicon.ico
+            '/robots.txt': public/robots.txt
+
+            # add here any file or directory that needs to be served from S3
+resources:
+    Resources:
+        # Create our S3 storage bucket using CloudFormation
+        Storage:
+            Type: AWS::S3::Bucket
+            #Properties:
+            #BucketName: ${self:service}-${self:provider.stage}-storage
+
+        CacheTable:
+            Type: AWS::DynamoDB::Table
+            Properties:
+                AttributeDefinitions: # only keys are defined here, other attributes are dynamic
+                    - AttributeName: id # adds a mandatory id field
+                      AttributeType: S # the type of id is a string
+                BillingMode: PAY_PER_REQUEST # billed for each request instead of paying for a constant capacity
+                TimeToLiveSpecification: # deletes cache keys automatically based on a ttl field which contains a timestamp
+                    AttributeName: ttl
+                    Enabled: true
+                KeySchema:
+                    - AttributeName: id
+                      KeyType: HASH # the type of key, HASH means partition key (similar to primary keys in SQL)
+        E5VPC:
+            Type: AWS::EC2::VPC
+            Properties:
+                CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.0.0/16
+                EnableDnsSupport: true
+                EnableDnsHostnames: true
+                InstanceTenancy: default
+                Tags:
+                    - Key: 'Name'
+                      Value: 'DOVPC'
+        E5SubnetA:
+            DependsOn: E5VPC
+            Type: AWS::EC2::Subnet
+            Properties:
+                VpcId:
+                    Ref: E5VPC
+                AvailabilityZone: ${self:provider.region}a
+                CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.0.0/24
+                Tags:
+                    - Key: 'Name'
+                      Value: 'E5SubnetA'
+        E5SubnetB:
+            DependsOn: E5VPC
+            Type: AWS::EC2::Subnet
+            Properties:
+                VpcId:
+                    Ref: E5VPC
+                AvailabilityZone: ${self:provider.region}b
+                CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.1.0/24
+                Tags:
+                    - Key: 'Name'
+                      Value: 'E5SubnetB'
+        E5SubnetC:
+            DependsOn: E5VPC
+            Type: AWS::EC2::Subnet
+            Properties:
+                VpcId:
+                    Ref: E5VPC
+                AvailabilityZone: ${self:provider.region}c
+                CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.2.0/24
+                Tags:
+                    - Key: 'Name'
+                      Value: 'E5SubnetC'
+        E5SubnetGroup:
+            Type: AWS::RDS::DBSubnetGroup
+            Properties:
+                DBSubnetGroupDescription: 'DO Subnet Group'
+                SubnetIds:
+                    - Ref: E5SubnetA
+                    - Ref: E5SubnetB
+                    - Ref: E5SubnetC
+                Tags:
+                    - Key: 'Name'
+                      Value: 'E5 Subnet Group'
+        E5SecurityGroup:
+            DependsOn: E5VPC
+            Type: AWS::EC2::SecurityGroup
+            Properties:
+                GroupDescription: 'E5 Security Group'
+                VpcId:
+                    Ref: E5VPC
+                SecurityGroupIngress:
+                    - IpProtocol: tcp
+                      FromPort: 0
+                      ToPort: 65535
+                      CidrIp: '0.0.0.0/0'
+                Tags:
+                    - Key: 'Name'
+                      Value: 'E5SecurityGroup'
+        DBInstance:
+            DependsOn: E5SecurityGroup
+            Type: AWS::RDS::DBInstance
+            Properties:
+                BackupRetentionPeriod: 3
+                MonitoringInterval: 0
+                PromotionTier: 1
+                DBName: ${env:DB_DATABASE}
+                MasterUsername: ${env:DB_USERNAME}
+                MasterUserPassword: ${env:DB_PASSWORD}
+                Engine: mysql
+                DBInstanceClass: db.t2.micro
+                VPCSecurityGroups:
+                    - !GetAtt E5SecurityGroup.GroupId
+                DBSubnetGroupName:
+                    Ref: E5SubnetGroup
+
+plugins:
+    # We need to include the Bref plugin
+    - ./vendor/bref/bref
+    - serverless-lift
+    - serverless-pseudo-parameters

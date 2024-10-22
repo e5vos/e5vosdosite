@@ -92,6 +92,9 @@
     "prettier": "^3.0.3",
     "prettier-eslint-cli": "^8.0.1",
     "prettier-plugin-tailwindcss": "^0.5.6",
+    "serverless": "^4.4.7",
+    "serverless-lift": "^1.30.2",
+    "serverless-pseudo-parameters": "^2.6.1",
     "storybook": "^7.5.2",
     "tailwind-scrollbar": "^3.0.5",
     "tailwindcss": "^3.3.3",
@@ -103,5 +106,13 @@
   "engines": {
     "node": "^18.0.0 || >=20.0.0"
   },
-  "packageManager": "npm@8.18.0"
+  "packageManager": "npm@8.18.0",
+  "overrides": {
+    "serverless-lift": {
+      "serverless": "$serverless"
+    },
+    "serverless-pseudo-parameters": {
+      "serverless": "$serverless"
+    }
+  }
 }

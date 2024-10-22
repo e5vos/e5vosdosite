@@ -35,16 +35,17 @@ provider:
         # MAINTENANCE_MODE: ${param:maintenance, null}
         QUEUE_CONNECTION: sqs
         SQS_QUEUE: ${construct:jobs.queueUrl}
-AURORA:
-    HOST:
-      Fn::GetAtt: [AuroraRDSCluster, Endpoint.Address]
-    PORT:
-      Fn::GetAtt: [AuroraRDSCluster, Endpoint.Port]
-    VPC_CIDR: 10
-    MYSQL:
-      HOST:
-        Fn::GetAtt: [MySqlRDSInstance, Endpoint.Address]
-      PORT:
+custom:
+    AURORA:
+        HOST:
+            Fn::GetAtt: [AuroraRDSCluster, Endpoint.Address]
+        PORT:
+            Fn::GetAtt: [AuroraRDSCluster, Endpoint.Port]
+        VPC_CIDR: 10
+        MYSQL:
+            HOST:
+                Fn::GetAtt: [MySqlRDSInstance, Endpoint.Address]
+            PORT:
         Fn::GetAtt: [MySqlRDSInstance, Endpoint.Port]
 
 package:
@@ -106,8 +107,8 @@ resources:
         # Create our S3 storage bucket using CloudFormation
         Storage:
             Type: AWS::S3::Bucket
-            Properties:
-                BucketName: ${self:service}-${self:provider.stage}-storage
+            #Properties:
+            #BucketName: ${self:service}-${self:provider.stage}-storage
 
         CacheTable:
             Type: AWS::DynamoDB::Table
@@ -123,96 +124,90 @@ resources:
                     - AttributeName: id
                       KeyType: HASH # the type of key, HASH means partition key (similar to primary keys in SQL)
         E5VPC:
-          Type: AWS::EC2::VPC
-          Properties:
-            CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.0.0/16
-            EnableDnsSupport: true
-            EnableDnsHostnames: true
-            InstanceTenancy: default
-            Tags:
-              -
-                Key: "Name"
-                Value: "DOVPC"
+            Type: AWS::EC2::VPC
+            Properties:
+                CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.0.0/16
+                EnableDnsSupport: true
+                EnableDnsHostnames: true
+                InstanceTenancy: default
+                Tags:
+                    - Key: 'Name'
+                      Value: 'DOVPC'
         E5SubnetA:
-          DependsOn: E5VPC
-          Type: AWS::EC2::Subnet
-          Properties:
-            VpcId:
-              Ref: E5VPC
-            AvailabilityZone: ${self:provider.region}a
-            CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.0.0/24
-            Tags:
-              -
-                Key: "Name"
-                Value: "E5SubnetA"
+            DependsOn: E5VPC
+            Type: AWS::EC2::Subnet
+            Properties:
+                VpcId:
+                    Ref: E5VPC
+                AvailabilityZone: ${self:provider.region}a
+                CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.0.0/24
+                Tags:
+                    - Key: 'Name'
+                      Value: 'E5SubnetA'
         E5SubnetB:
-          DependsOn: E5VPC
-          Type: AWS::EC2::Subnet
-          Properties:
-            VpcId:
-              Ref: E5VPC
-            AvailabilityZone: ${self:provider.region}b
-            CidrBlock: ${self:custom.AURORA.VPC_CIDR}.1.0.0/24
-            Tags:
-              -
-                Key: "Name"
-                Value: "E5SubnetB"
+            DependsOn: E5VPC
+            Type: AWS::EC2::Subnet
+            Properties:
+                VpcId:
+                    Ref: E5VPC
+                AvailabilityZone: ${self:provider.region}b
+                CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.1.0/24
+                Tags:
+                    - Key: 'Name'
+                      Value: 'E5SubnetB'
         E5SubnetC:
-          DependsOn: E5VPC
-          Type: AWS::EC2::Subnet
-          Properties:
-            VpcId:
-              Ref: E5VPC
-            AvailabilityZone: ${self:provider.region}c
-            CidrBlock: ${self:custom.AURORA.VPC_CIDR}.2.0.0/24
-            Tags:
-              -
-                Key: "Name"
-                Value: "E5SubnetC"
+            DependsOn: E5VPC
+            Type: AWS::EC2::Subnet
+            Properties:
+                VpcId:
+                    Ref: E5VPC
+                AvailabilityZone: ${self:provider.region}c
+                CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.2.0/24
+                Tags:
+                    - Key: 'Name'
+                      Value: 'E5SubnetC'
         E5SubnetGroup:
-          Type: AWS::RDS::DBSubnetGroup
-          Properties:
-            DBSubnetGroupDescription: "DO Subnet Group"
-            SubnetIds:
-              - Ref: E5SubnetA
-              - Ref: E5SubnetB
-              - Ref: E5SubnetC
-            Tags:
-              -
-                Key: "Name"
-                Value: "E5 Subnet Group"
+            Type: AWS::RDS::DBSubnetGroup
+            Properties:
+                DBSubnetGroupDescription: 'DO Subnet Group'
+                SubnetIds:
+                    - Ref: E5SubnetA
+                    - Ref: E5SubnetB
+                    - Ref: E5SubnetC
+                Tags:
+                    - Key: 'Name'
+                      Value: 'E5 Subnet Group'
         E5SecurityGroup:
-          DependsOn: E5VPC
-          Type: AWS::EC2::SecurityGroup
-          Properties:
-            GroupDescription: "E5 Security Group"
-            VpcId:
-              Ref: E5VPC
-            SecurityGroupIngress:
-              - IpProtocol: tcp
-                FromPort: 0
-                ToPort: 65535
-                CidrIp: "0.0.0.0/0"
-            Tags:
-              -
-                Key: "Name"
-                Value: "E5SecurityGroup"
+            DependsOn: E5VPC
+            Type: AWS::EC2::SecurityGroup
+            Properties:
+                GroupDescription: 'E5 Security Group'
+                VpcId:
+                    Ref: E5VPC
+                SecurityGroupIngress:
+                    - IpProtocol: tcp
+                      FromPort: 0
+                      ToPort: 65535
+                      CidrIp: '0.0.0.0/0'
+                Tags:
+                    - Key: 'Name'
+                      Value: 'E5SecurityGroup'
         DBInstance:
-          DependsOn: E5SecurityGroup
-          Type: AWS::RDS::DBInstance
-          Properties:
-            BackupRetentionPeriod: 3
-            MonitoringInterval: 0
-            PromotionTier: 1
-            DBName: ${env:DB_NAME}
-            MasterUsername: ${env:DB_USERNAME}
-            MasterUserPassword: ${env:DB_PASSWORD}
-            Engine: mysql
-            DBInstanceClass: db.t2.microű
-            VPCSecurityGroups:
-              - !GetAtt E5SecurityGroup.GroupId
-            DBSubnetGroupName:
-              Ref: E5SubnetGroup
+            DependsOn: E5SecurityGroup
+            Type: AWS::RDS::DBInstance
+            Properties:
+                BackupRetentionPeriod: 3
+                MonitoringInterval: 0
+                PromotionTier: 1
+                DBName: ${env:DB_DATABASE}
+                MasterUsername: ${env:DB_USERNAME}
+                MasterUserPassword: ${env:DB_PASSWORD}
+                Engine: mysql
+                DBInstanceClass: db.t2.micro
+                VPCSecurityGroups:
+                    - !GetAtt E5SecurityGroup.GroupId
+                DBSubnetGroupName:
+                    Ref: E5SubnetGroup
 
 plugins:
     # We need to include the Bref plugin

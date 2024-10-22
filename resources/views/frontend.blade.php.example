@@ -9,6 +9,7 @@
 
     <meta name="msapplication-TileColor" content="#FFFFFF" />
     <meta name="theme-color" content="#FFFFFF" />
+    <meta name="darkreader-lock" />
 
     <title>Eötvös DÖ</title>
     <meta name="description" content="Eötvös DÖ " />

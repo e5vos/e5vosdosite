@@ -1,3 +1,35 @@
+:root.light {
+    --color-foreground: hsl(0, 0%, 0%);
+    --color-foreground-bg: hsl(0, 100%, 100%);
+
+    --color-foreground-50: hsl(0, 0%, 98%);
+    --color-foreground-100: hsl(240, 5%, 96%);
+    --color-foreground-200: hsl(240, 6%, 90%);
+    --color-foreground-300: hsl(240, 5%, 84%);
+    --color-foreground-400: hsl(240, 5%, 65%);
+    --color-foreground-500: hsl(240, 4%, 46%);
+    --color-foreground-600: hsl(240, 5%, 34%);
+    --color-foreground-700: hsl(240, 5%, 26%);
+    --color-foreground-800: hsl(240, 4%, 16%);
+    --color-foreground-900: hsl(240, 6%, 10%);
+}
+
+:root.dark {
+    --color-foreground: hsl(240, 100%, 100%);
+    --color-foreground-bg: hsl(240, 0%, 0%);
+
+    --color-foreground-50: hsl(0, 6%, 10%);
+    --color-foreground-100: hsl(240, 4%, 16%);
+    --color-foreground-200: hsl(240, 5%, 26%);
+    --color-foreground-300: hsl(240, 5%, 34%);
+    --color-foreground-400: hsl(240, 4%, 46%);
+    --color-foreground-500: hsl(240, 5%, 65%);
+    --color-foreground-600: hsl(240, 5%, 84%);
+    --color-foreground-700: hsl(240, 6%, 90%);
+    --color-foreground-800: hsl(240, 5%, 96%);
+    --color-foreground-900: hsl(0, 0%, 98%);
+}
+
 form {
     label.form-group {
         @apply mb-2 block;
@@ -68,7 +100,7 @@ div.buttongroup-sm {
 
 html,
 body {
-    @apply bg-gray-700 text-white;
+    @apply bg-foreground-100 text-foreground;
 }
 
 html,

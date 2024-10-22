@@ -29,7 +29,7 @@ const locale = Locale({
         noe5code: 'Nem adtad meg az E5 kódot!',
         nologin: 'Nem vagy bejelentkezve!',
         sloterror: (
-            <span className="text-red-300">
+            <span className="text-red-500 dark:text-red-300">
                 Nem betöltött eseménysáv! Valószínűleg programsáv!
             </span>
         ),
@@ -47,10 +47,7 @@ const locale = Locale({
         noe5code: 'You have not entered your E5 code!',
         nologin: 'You are not logged in!',
         sloterror: (
-            <span
-                className="text
-      -red-300"
-            >
+            <span className="text-red-500 dark:text-red-300">
                 Event slot not loaded! Probably an event slot!
             </span>
         ),
@@ -72,12 +69,12 @@ const SelectField = ({
         <div className="flex flex-1 flex-col items-stretch justify-center gap-4 text-center md:mx-3 md:flex-row md:gap-8">
             <div className="flex-1">
                 <h3>{locale.selectedPresentation}</h3>
-                <div className="rounded-lg bg-green-600 p-3 ">
+                <div className="rounded-lg bg-lime-500 p-3 dark:bg-lime-600 ">
                     {selectedPresentation?.name ??
                         locale.presentationNotYetSelected}
                 </div>
                 {selectedPresentation && (
-                    <div className="bg-goldenrod mt-2 rounded-lg p-3 ">
+                    <div className="mt-2 rounded-lg bg-goldenrod p-3 ">
                         <div className="text-lg">
                             <IoLocationSharp className="inline-block text-xl" />
                             {selectedPresentation.location?.name ??

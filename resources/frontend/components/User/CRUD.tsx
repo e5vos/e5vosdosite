@@ -81,7 +81,6 @@ const UserUpdater = ({
 
 const UserReader = ({
     value: user,
-    ...rest
 }: CRUDFormImpl<User, UserFormValues> & {
     value: User
 }) => {

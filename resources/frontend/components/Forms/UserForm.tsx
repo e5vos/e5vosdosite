@@ -58,7 +58,7 @@ const UserForm = ({
         enableReinitialize: enableReinitialize,
     })
     return (
-        <Form onSubmit={formik.handleSubmit}>
+        <Form onSubmit={formik.handleSubmit} {...rest}>
             <Form.Group>
                 <Form.Label>{locale.fields.name}</Form.Label>
                 <Form.Control />

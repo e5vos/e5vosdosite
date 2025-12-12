@@ -160,6 +160,7 @@ const ComboBoxOption = ({
     return (
         <Combobox.Option
             value={value}
+            key={key}
             className="hover:bg-slate-400 hover:ring-0 hover:dark:bg-gray-300"
         >
             {children}

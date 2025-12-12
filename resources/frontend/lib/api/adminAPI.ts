@@ -128,7 +128,7 @@ export const adminAPI = baseAPI
                     method: 'POST',
                     body: data,
                 }),
-                invalidatesTags: (res, err, arg) =>
+                invalidatesTags: (res, err) =>
                     err || !res
                         ? []
                         : [
@@ -145,7 +145,7 @@ export const adminAPI = baseAPI
                     method: 'PUT',
                     body: data,
                 }),
-                invalidatesTags: (res, err, arg) =>
+                invalidatesTags: (res, err) =>
                     err || !res
                         ? []
                         : [

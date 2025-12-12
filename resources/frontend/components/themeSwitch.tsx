@@ -50,14 +50,13 @@ const SunFilledIcon = ({
 )
 
 const SystemThemeIcon = ({
-    size = 24,
-    width,
-    height,
+    width = 24,
+    height = 24,
     ...props
 }: IconSvgProps) => (
     <svg
-        width="24"
-        height="24"
+        width={width}
+        height={height}
         shapeRendering="geometricPrecision"
         textRendering="geometricPrecision"
         imageRendering="optimizeQuality"

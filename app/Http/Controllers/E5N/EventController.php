@@ -6,9 +6,7 @@ use App\Exceptions\NotAllowedException;
 use App\Exceptions\ResourceDidNoExistException;
 use App\Helpers\PermissionType;
 use App\Helpers\SlotType;
-use App\Http\Controllers\{
-    Controller
-};
+use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\SlotResource;
 use App\Http\Resources\TeamResource;
@@ -19,9 +17,7 @@ use App\Models\Slot;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{
-    Cache,
-};
+use Illuminate\Support\Facades\Cache;
 
 class EventController extends Controller
 {
@@ -227,10 +223,10 @@ class EventController extends Controller
         $attenderId = $attender === 'user_id' && ! is_numeric($request->attender) ? User::where('e5code', $request->attender)->firstOrFail()->id : $request->attender;
         $attendance = Attendance::where('event_id', $eventId)->where($attender, $attenderId)->first();
         if ($attendance === null) {
-            throw new ResourceDidNoExistException();
+            throw new ResourceDidNoExistException;
         }
         if ($attendance->is_present && ($request->user()->hasPermission(PermissionType::Admin->value) || $request->user()->hasPermission(PermissionType::Operator->value))) {
-            throw new NotAllowedException();
+            throw new NotAllowedException;
         }
         if ($event->direct_child !== null) {
             EventController::unsignup($request, $event->direct_child, true);

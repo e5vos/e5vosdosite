@@ -105,7 +105,7 @@ class Team extends Model
      */
     public function addMember(User $user, $role = MembershipType::Invited)
     {
-        $teamMember = new TeamMembership();
+        $teamMember = new TeamMembership;
         $teamMember->team()->associate($this);
         $teamMember->user()->associate($user);
         $teamMember->role = $role;
@@ -134,15 +134,15 @@ class Team extends Model
             return $this->signups()->where('event_id', $event->id)->first();
         }
         if (isset($event->capacity) && $event->occupancy >= $event->capacity) {
-            throw new EventFullException();
+            throw new EventFullException;
         }
         if ($this->signups()->where('event_id', $event->id)->exists()) {
-            throw new AlreadySignedUpException();
+            throw new AlreadySignedUpException;
         }
         if ($event->direct_child !== null) {
             $this->signUp(Event::findOrFail($event->direct_child), true);
         }
-        $signup = new Attendance();
+        $signup = new Attendance;
         $signup->event()->associate($event);
         $signup->team()->associate($this);
         $signup->save();
@@ -177,9 +177,9 @@ class Team extends Model
 
         if (! isset($signup)) {
             if (isset($event->capacity) && $event->occupancy >= $event->capacity) {
-                throw new EventFullException();
+                throw new EventFullException;
             }
-            $signup = new Attendance();
+            $signup = new Attendance;
             $signup->event()->associate($event);
             $signup->team()->associate($this);
         }

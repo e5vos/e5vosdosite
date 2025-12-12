@@ -3,12 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\ResourceDidNoExistException;
-use App\Http\Controllers\{
-    Controller
-};
-use App\Models\{
-    Permission,
-};
+use App\Http\Controllers\Controller;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 
 class PermissionController extends Controller
@@ -45,7 +41,7 @@ class PermissionController extends Controller
             $request->code,
         ]);
         if ($permission === null) {
-            throw new ResourceDidNoExistException();
+            throw new ResourceDidNoExistException;
         }
         $permission->delete();
 

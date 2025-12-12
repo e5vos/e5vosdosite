@@ -13,7 +13,7 @@ class SlotTest extends TestCase
     /**
      * test if slots can be retrieved
      */
-    public function testGetSlots()
+    public function test_get_slots()
     {
         $response = $this->get('/api/slot');
         $response->assertStatus(200);
@@ -22,7 +22,7 @@ class SlotTest extends TestCase
     /**
      * Test if slots can be created
      */
-    public function testSlotCreation()
+    public function test_slot_creation()
     {
         $user = User::first();
         Permission::factory()->create(['code' => 'ADM', 'user_id' => $user->id]);
@@ -44,7 +44,7 @@ class SlotTest extends TestCase
     /**
      * Test if slots can be edited
      */
-    public function testSlotEdit()
+    public function test_slot_edit()
     {
         $user = User::first();
         Permission::factory()->create(['code' => 'ADM', 'user_id' => $user->id]);
@@ -67,7 +67,7 @@ class SlotTest extends TestCase
     /**
      * Test if slots can be deleted
      */
-    public function testSlotDelete()
+    public function test_slot_delete()
     {
         $user = User::first();
         Permission::factory()->create(['code' => 'ADM', 'user_id' => $user->id]);

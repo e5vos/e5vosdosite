@@ -11,7 +11,7 @@ class AuthenticationTest extends TestCase
     /**
      * Test if auth fails if user is already logged in.
      */
-    public function testAuthFailsIfUserIsAlreadyLoggedIn()
+    public function test_auth_fails_if_user_is_already_logged_in()
     {
         $user = User::first();
         $response = $this->actingAs($user)->get('/api/login');

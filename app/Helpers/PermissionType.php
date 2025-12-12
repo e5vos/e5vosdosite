@@ -10,5 +10,5 @@ enum PermissionType: string
     case Teacher = 'TCH'; // tanár
     case Student = 'STD'; // diák
     case Operator = 'OPT'; // zoland
-    case TeacherAdmin = 'TAD'; //bara
+    case TeacherAdmin = 'TAD'; // bara
 }

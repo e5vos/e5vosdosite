@@ -262,21 +262,21 @@ class User extends Authenticatable
             return Attendance::where('user_id', $this->id)->where('event_id', $event->id)->first();
         }
         if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusyInSlot($event->slot)) {
-            throw new StudentBusyException();
+            throw new StudentBusyException;
         }
         if (
             isset($event->capacity) && $event->occupancy >= $event->capacity &&
             ! request()->user()->hasPermission(PermissionType::Admin->value)
         ) {
-            throw new EventFullException();
+            throw new EventFullException;
         }
         if (Attendance::where('user_id', $this->id)->where('event_id', $event->id)->exists()) {
-            throw new AlreadySignedUpException();
+            throw new AlreadySignedUpException;
         }
         if ($event->direct_child !== null) {
             $this->signUp(Event::findOrFail($event->direct_child), true);
         }
-        $signup = new Attendance();
+        $signup = new Attendance;
         $signup->event()->associate($event);
         $signup->user()->associate($this);
         $signup->save();
@@ -302,9 +302,9 @@ class User extends Authenticatable
         $signup = $this->signups()->where('event_id', $event->id)->first();
         if (! isset($signup)) {
             if (isset($event->capacity) && $event->occupancy >= $event->capacity) {
-                throw new EventFullException();
+                throw new EventFullException;
             }
-            $signup = new Attendance();
+            $signup = new Attendance;
             $signup->event()->associate($event);
             $signup->user()->associate($this);
         }

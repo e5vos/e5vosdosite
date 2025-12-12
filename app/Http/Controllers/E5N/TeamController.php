@@ -4,9 +4,7 @@ namespace App\Http\Controllers\E5N;
 
 use App\Exceptions\NotAllowedException;
 use App\Helpers\MembershipType;
-use App\Http\Controllers\{
-    Controller
-};
+use App\Http\Controllers\Controller;
 use App\Http\Resources\TeamResource;
 use App\Models\Team;
 use App\Models\TeamMembership;
@@ -34,7 +32,7 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
-        //check for existing team
+        // check for existing team
         if (Team::where('code', $request->code)->exists()) {
             abort(409, 'Team already exists');
         }
@@ -115,7 +113,7 @@ class TeamController extends Controller
         switch ($updatableRole) {
             case MembershipType::Leader->value:
                 if ($request->promote) {
-                    throw new NotAllowedException();
+                    throw new NotAllowedException;
                 } else {
                     $updatableRole = MembershipType::Member->value;
                     break;
@@ -154,7 +152,7 @@ class TeamController extends Controller
                 $membership->role = $updatableRole;
                 $membership->save();
             } else {
-                $membership = new TeamMembership();
+                $membership = new TeamMembership;
                 $membership->team_code = $teamCode;
                 $membership->user_id = request()->userId;
                 $membership->role = $updatableRole;

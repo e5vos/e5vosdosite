@@ -14,7 +14,7 @@ const EventSearchCombobox = ({
     onChange,
     initialValue,
 }: {
-    onChange: (value: EventStub) => any
+    onChange: (value: EventStub) => void
     initialValue?: EventStub
 }) => {
     const [search, setSearch] = useState<string>('-1')

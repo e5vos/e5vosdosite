@@ -32,8 +32,8 @@ const useScannerHandler = ({
 }: {
     event: Pick<Event, 'id'>
     teamMemberPrompt: (member: TeamMember) => Promise<boolean>
-    onSuccess?: (attendance: User | Team) => any
-    onError?: (error: string) => any
+    onSuccess?: (attendance: User | Team) => void
+    onError?: (error: string) => void
 }) => {
     const [getTeam] = teamAPI.useLazyGetTeamQuery()
     const [attend] = eventAPI.useAttendMutation()
@@ -50,7 +50,7 @@ const useScannerHandler = ({
                     attender: scanvalue,
                     present: true,
                 }).unwrap()
-            } catch (e: any) {
+            } catch (e) {
                 console.log(e.data.message)
                 onError?.(e.data.message as string)
                 return
@@ -66,7 +66,7 @@ const useScannerHandler = ({
             } catch (e) {
                 return
             }
-            let memberAttendances: TeamMemberAttendance[] = []
+            const memberAttendances: TeamMemberAttendance[] = []
 
             for (const member of team.members.filter(
                 (member) => member.pivot.role !== TeamMemberRole.invited
@@ -80,8 +80,8 @@ const useScannerHandler = ({
 
             try {
                 await teamMemberAttend({ data: memberAttendances }).unwrap()
-            } catch (e: any) {
-                onError?.(e.data.message as string)
+            } catch (e) {
+                onError?.((e as { data: { message: string } }).data.message)
                 return
             }
             onSuccess?.(attendance.team)

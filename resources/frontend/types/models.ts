@@ -38,9 +38,10 @@ export interface User {
 }
 export type UserStub = Required<Pick<User, 'id' | 'name' | 'ejg_class'>>
 
-export const isTeam = (team: any): team is Team => {
-    return team.code !== undefined && team.code !== null
+export const isTeam = (team: Team | User): team is Team => {
+    return 'code' in team
 }
+
 interface BasicAttendance {
     id: number
     is_present: boolean
@@ -73,26 +74,26 @@ export type Attender = AttendingUser | AttendingTeam
 export type Attendance = UserAttendance | TeamAttendance
 
 export const isTeamAttendance = (
-    attendance: any
+    attendance: Attendance
 ): attendance is TeamAttendance => {
     return attendance.team_code !== undefined && attendance.team_code !== null
 }
 export const isUserAttendance = (
-    attendance: any
+    attendance: Attendance
 ): attendance is UserAttendance => {
     return attendance.user_id !== undefined && attendance.team_code !== null
 }
 
 export const isAttenderUser = (
-    attendance: any
-): attendance is AttendingUser => {
-    return isUserAttendance(attendance.pivot)
+    attender: Attender
+): attender is AttendingUser => {
+    return isUserAttendance(attender.pivot)
 }
 
 export const isAttenderTeam = (
-    attendance: any
-): attendance is AttendingTeam => {
-    return isTeamAttendance(attendance.pivot)
+    attender: Attender
+): attender is AttendingTeam => {
+    return isTeamAttendance(attender.pivot)
 }
 
 export const TeamMemberRole = {

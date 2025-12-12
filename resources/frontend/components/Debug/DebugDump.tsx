@@ -17,7 +17,7 @@ const DebugDump = () => {
     const [statestr, setStatestr] = useState('')
 
     useEffect(() => {
-        ;(window as any).dump = async () => {
+        ;(window as { dump?: () => Promise<void> }).dump = async () => {
             setOpen(true)
         }
     }, [])

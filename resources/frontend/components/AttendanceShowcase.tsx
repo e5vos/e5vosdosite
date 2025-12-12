@@ -15,7 +15,7 @@ const TeamAttenderShowcase = ({
             <div>
                 <div>Event name</div>
             </div>
-            <div className="overflow-auto">div</div>
+            <div className="overflow-auto">{attendance.description}</div>
         </div>
     )
 }
@@ -25,7 +25,7 @@ const UserAttenderShowcase = ({
 }: {
     attender: AttendingUser
 }) => {
-    return <>This is a user attendance</>
+    return <>This is a user attendance of {attendance.name}</>
 }
 
 const AttenderShowcase = ({ attender, ...rest }: { attender: Attender }) => {

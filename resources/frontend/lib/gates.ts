@@ -1,8 +1,18 @@
 import { Event, PermissionCode, User } from 'types/models'
 
-export type GateFunction = ((user: User | undefined) => boolean) & {
+export type GateFunction = ((
+    user: User | undefined,
+    ...rest: unknown[]
+) => boolean) & {
     message?: string
 }
+
+export type TailParams<F> = F extends (
+    first: unknown,
+    ...rest: infer R
+) => unknown
+    ? R
+    : never
 
 const gate = (fun: (user: User) => boolean, message?: string): GateFunction => {
     return Object.assign(

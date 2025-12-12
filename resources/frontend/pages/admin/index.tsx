@@ -1,13 +1,9 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-
 import adminAPI from 'lib/api/adminAPI'
-import { isAdmin, isOperator } from 'lib/gates'
+import { isAdmin } from 'lib/gates'
 import Locale from 'lib/locale'
 
 import { gated } from 'components/Gate'
 import Button from 'components/UIKit/Button'
-import Dialog from 'components/UIKit/Dialog'
 
 const locale = Locale({
     hu: {
@@ -46,9 +42,6 @@ const locale = Locale({
 
 const AdminPage = () => {
     const [clearCache] = adminAPI.useClearCacheMutation()
-    const navigate = useNavigate()
-    const [usersDialogOpen, setUsersDialogOpen] = useState(false)
-    const [eventsDialogOpen, setEventsDialogOpen] = useState(false)
     return (
         <>
             <div className="mx-auto max-w-4xl">

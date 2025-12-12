@@ -29,7 +29,9 @@ type Unclosable = {
     closable: false
 }
 
-const noop = (a: boolean) => {}
+const noop = () => {
+    // do nothing.
+}
 
 const Dialog = ({
     open = true,
@@ -49,7 +51,7 @@ const Dialog = ({
     return (
         <DialogHeadless
             open={open}
-            onClose={closable ? onClose! : noop}
+            onClose={closable ? onClose : noop}
             className="relative z-50"
         >
             <div

@@ -69,6 +69,7 @@ const Label = ({
             className={`mr-1 font-bold underline underline-offset-4 ${
                 className ?? ''
             }`}
+            {...rest}
         >
             {children}
         </span>
@@ -91,7 +92,7 @@ const Form = ({
     className,
     children,
     ...rest
-}: { children: ReactNode } & React.DetailedHTMLProps<
+}: { children: ReactNode; className?: string } & React.DetailedHTMLProps<
     React.InputHTMLAttributes<HTMLFormElement>,
     HTMLFormElement
 >) => {
@@ -139,6 +140,7 @@ const Select = forwardRef(
         )
     }
 )
+Select.displayName = 'Select'
 
 const Option = ({ children, ...rest }: HTMLInputProps<HTMLOptionElement>) => {
     return <option {...rest}>{children}</option>
@@ -146,23 +148,25 @@ const Option = ({ children, ...rest }: HTMLInputProps<HTMLOptionElement>) => {
 
 const ComboBoxOption = ({
     children,
+    key,
     value,
 }: {
     children: ReactNode
-    key: any
-    value: any
+    key: string | number
+    value: string | number | object
 }) => {
     return (
         <Combobox.Option
             value={value}
             className="hover:bg-gray-300 hover:ring-0"
+            key={key}
         >
             {children}
         </Combobox.Option>
     )
 }
 
-const ComboBox = <T = any,>({
+const ComboBox = <T,>({
     options,
     filter,
     onChange,

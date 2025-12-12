@@ -138,7 +138,7 @@ const locale = Locale({
     },
 })
 
-const useDeleteDialogTemplate = (event: Event) =>
+const useDeleteDialogTemplate = () =>
     useCallback(({ handleConfirm, handleCancel }: ConfirmDialogProps) => {
         return (
             <Dialog
@@ -157,7 +157,7 @@ const useDeleteDialogTemplate = (event: Event) =>
         )
     }, [])
 
-const useCloseSignupDialogTemplate = (event: Event) =>
+const useCloseSignupDialogTemplate = () =>
     useCallback(({ handleConfirm, handleCancel }: ConfirmDialogProps) => {
         return (
             <Dialog
@@ -237,8 +237,8 @@ const EventReader = ({
                 isError: false,
                 message: locale.singup + ' ' + locale.success,
             })
-        } catch (e: any) {
-            const message = (e.data as any).message
+        } catch (e) {
+            const message = (e as { data: { message: string } }).data.message
             setStatusmsg({ isError: true, message: message })
         }
         cleanupStatusmsg()
@@ -255,8 +255,8 @@ const EventReader = ({
                 isError: false,
                 message: locale.singup + ' ' + locale.cancelled,
             })
-        } catch (e: any) {
-            const message = (e.data as any).message
+        } catch (e) {
+            const message = (e as { data: { message: string } }).data.message
             setStatusmsg({ isError: true, message: message })
         }
         cleanupStatusmsg()
@@ -298,7 +298,7 @@ const EventReader = ({
         : false
 
     return (
-        <div>
+        <div {...rest}>
             <DeleteConfirmDialog />
             <CloseSignupConfirmDialog />
             <div className="mx-2 mt-4 grid-cols-3 gap-3 lg:mx-12 lg:grid">
@@ -552,7 +552,6 @@ const EventCreator = ({
     value,
     ...rest
 }: CRUDFormImpl<Event, Partial<EventFormValues>>) => {
-    const now = new Date()
     const [createEvent] = eventAPI.useCreateEventMutation()
     const navigate = useNavigate()
     const onSubmit = useCallback(

@@ -23,6 +23,8 @@ const Button = ({
         | 'outline-warning'
         | 'info'
         | 'outline-info'
+    type?: 'button' | 'submit' | 'reset'
+    className?: string
 }) => {
     if (type === 'submit' && !variant) variant = 'success'
 

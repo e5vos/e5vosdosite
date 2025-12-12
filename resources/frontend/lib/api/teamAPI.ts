@@ -9,14 +9,14 @@ export const teamAPI = baseAPI.injectEndpoints({
     endpoints: (builder) => ({
         getAllTeams: builder.query<Omit<Team, 'activity' | 'members'>[], void>({
             query: () => routeSwitcher('teams.index'),
-            providesTags: (result) => [{ type: 'Team', id: 'LIST' }],
+            providesTags: () => [{ type: 'Team', id: 'LIST' }],
         }),
         getMyTeams: builder.query<
             RequiredFields<Team, 'activity' | 'members'>[],
             void
         >({
-            query: (user) => routeSwitcher('user.myteams'),
-            providesTags: (result) => [{ type: 'Team', id: 'MYTEAMS' }],
+            query: () => routeSwitcher('user.myteams'),
+            providesTags: () => [{ type: 'Team', id: 'MYTEAMS' }],
         }),
         getTeam: builder.query<
             RequiredFields<Team, 'activity' | 'members'>,

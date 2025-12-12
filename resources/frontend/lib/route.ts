@@ -4,7 +4,7 @@ import includedZiggy from './includeZiggy'
 
 declare global {
     interface Window {
-        Ziggy: any
+        Ziggy: Config
         route:
             | ((name: string, params?: RouteParams<string>) => string)
             | undefined
@@ -26,10 +26,6 @@ if (typeof window !== 'undefined' && typeof window.Ziggy !== 'undefined') {
         .catch((error) => {
             console.error(error)
         })
-}
-
-declare global {
-    interface Window {}
 }
 
 const routeSwitcher = <T extends RouteName>(

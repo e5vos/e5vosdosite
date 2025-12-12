@@ -89,7 +89,7 @@ const AttendancePage = () => {
                 </h1>
                 <div className="mt-4">
                     <ul className="mb-3 border">
-                        {participants?.map((attending, index) => (
+                        {participants?.map((attending) => (
                             <li
                                 key={attending.name}
                                 className={`col- mx-2 my-2 grid max-w-lg justify-center gap-4 align-middle ${

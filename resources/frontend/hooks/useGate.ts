@@ -1,11 +1,11 @@
 import { User } from 'types/models'
 
-import { GateFunction } from 'lib/gates'
+import { GateFunction, TailParams } from 'lib/gates'
 
-const useGate = <T = any>(
+const useGate = <T extends GateFunction>(
     user: User | undefined,
-    gate: GateFunction,
-    ...rest: T[]
+    gate: T,
+    ...rest: TailParams<T>
 ): boolean | string => {
     if (!user) return false
     if (!gate(user, ...rest)) return gate.message ?? false

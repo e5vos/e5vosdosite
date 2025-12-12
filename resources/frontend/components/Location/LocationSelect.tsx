@@ -11,7 +11,7 @@ const LocationSearchCombobox = ({
     onChange,
     initialValue,
 }: {
-    onChange: (value: Location) => any
+    onChange: (value: Location) => void
     initialValue?: Location
 }) => {
     const { data: options } = locationAPI.useGetLocationsQuery()

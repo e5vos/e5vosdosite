@@ -102,16 +102,16 @@ class EventPolicy
     public function signup(User $user, ?Event $event = null)
     {
         if (! Setting::find('e5n.events.signup')?->value) {
-            throw new SignupDisabledException();
+            throw new SignupDisabledException;
         }
         $event ??= Event::findOrFail(request()->eventId);
         $attenderCode = request()->attender ?? $user->e5code ?? null;
         $attenderType = strlen($attenderCode) === 13 ? 'user' : 'team';
         if (! $event->isSignupOpen()) {
-            throw new SignupClosedException();
+            throw new SignupClosedException;
         }
         if ($event->signup_type !== 'team_user' && $event->signup_type !== $attenderType) {
-            throw new WrongSignupTypeException();
+            throw new WrongSignupTypeException;
         }
         if ($attenderType === 'user') {
             $isAttender = is_numeric($attenderCode) ? $user->id == $attenderCode : $user->e5code === $attenderCode; // check for both id and e5code
@@ -138,12 +138,12 @@ class EventPolicy
         }
 
         if (! Setting::find('e5n.events.signup')?->value) {
-            throw new SignupDisabledException();
+            throw new SignupDisabledException;
         }
 
         $event = $event ?? Event::findOrFail(request()->eventId);
         if (! $event->isSignupOpen()) {
-            throw new SignupClosedException();
+            throw new SignupClosedException;
         }
 
         return request()->attender === $user->e5code || $user->isLeaderOfTeam(request()->attender) || $user->hasPermission(PermissionType::Admin->value);
@@ -163,16 +163,16 @@ class EventPolicy
     public function attend(User $user, ?Event $event = null)
     {
         if (! Setting::find('e5n')?->value) {
-            throw new AttendanceRegisterDisabledException();
+            throw new AttendanceRegisterDisabledException;
         }
         $event ??= Event::findOrFail(request()->eventId)->load('slot');
         $attender = request()->attender ?? request()->user()->e5code;
         if ($event->signup_deadline == null && $event->signuppers()->filter(fn (mixed $signupper) => $signupper->getKey() == $attender || $signupper->e5code === $attender)->count() === 0) {
-            throw new SignupRequiredException();
+            throw new SignupRequiredException;
         }
         $attenderType = is_numeric($attender) || strlen($attender) === 13 ? 'user' : 'team';
         if ($event->signup_type !== 'team_user' && $event->signup_type !== $attenderType) {
-            throw new WrongSignupTypeException();
+            throw new WrongSignupTypeException;
         }
         if ($event->slot?->slot_type === SlotType::presentation->value) {
             return $user->hasPermission(PermissionType::Teacher->value) || $user->hasPermission(PermissionType::TeacherAdmin->value);

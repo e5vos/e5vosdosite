@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\InvalidCodeException;
-use App\Http\Controllers\{
-    Controller
-};
+use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -76,7 +74,7 @@ class AuthController extends Controller
         ])->body() === 'true';
 
         if (! $validated) {
-            throw new InvalidCodeException();
+            throw new InvalidCodeException;
         }
 
         $request->user()->e5code = $request->e5code;

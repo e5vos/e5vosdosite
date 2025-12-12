@@ -140,6 +140,6 @@ class EventTest extends TestCase
         $response = $this->actingAs($user)->put('/api/event/'.$event->id.'/close');
         $response->assertStatus(200);
 
-        //assert that the event is closed
+        // assert that the event is closed
     }
 }

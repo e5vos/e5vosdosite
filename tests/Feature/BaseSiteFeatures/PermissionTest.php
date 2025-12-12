@@ -14,7 +14,7 @@ class PermissionTest extends TestCase
     /**
      * test if a user can be added as an organiser to an event
      */
-    public function testAddPermissionEvent()
+    public function test_add_permission_event()
     {
         Permission::where('user_id', 1)->delete();
         $response = $this->post('/api/permissions/1/event/1', ['Accept' => 'application/json']);
@@ -29,7 +29,7 @@ class PermissionTest extends TestCase
     /**
      * test if a user can be removed as an organiser from an event
      */
-    public function testRemovePermissionEvent()
+    public function test_remove_permission_event()
     {
         Permission::where('user_id', 1)->delete();
         Permission::create([

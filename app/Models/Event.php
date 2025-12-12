@@ -192,7 +192,7 @@ class Event extends Model implements CachableAttributes
     public function fillUp()
     {
         if (! $this->slot()->where('slot_type', '!=', SlotType::presentation->value)->get()) {
-            throw new NotPresentationException();
+            throw new NotPresentationException;
         }
         $availalbeStudents = User::whereDoesntHave('events', function ($query) {
             $query->where('slot', $this->slot);

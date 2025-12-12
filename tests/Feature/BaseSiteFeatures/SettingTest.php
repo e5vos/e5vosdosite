@@ -12,7 +12,7 @@ class SettingTest extends TestCase
     /**
      * Non operators cant get settings.
      */
-    public function testNonOperatorsCantGetSettings()
+    public function test_non_operators_cant_get_settings()
     {
         $response = $this->getJson('/api/settings');
         $response->assertStatus(404);
@@ -21,7 +21,7 @@ class SettingTest extends TestCase
     /**
      * Test if settings can be retrieved by operators.
      */
-    public function testSettingsCanBeRetrievedByOperator()
+    public function test_settings_can_be_retrieved_by_operator()
     {
         $user = User::first();
         Permission::factory()->create(['code' => 'OPT', 'user_id' => $user->id]);
@@ -32,7 +32,7 @@ class SettingTest extends TestCase
     /**
      * Test if settings can be set by operators.
      */
-    public function testSettingsCanBeToggledByOperator()
+    public function test_settings_can_be_toggled_by_operator()
     {
         $user = User::first();
         Permission::factory()->create(['code' => 'OPT', 'user_id' => $user->id]);
@@ -49,7 +49,7 @@ class SettingTest extends TestCase
      *
      * @throws \Exception
      */
-    public function testSettingsCanBeDeletedByOperator()
+    public function test_settings_can_be_deleted_by_operator()
     {
         $user = User::first();
         Permission::factory()->create(['code' => 'OPT', 'user_id' => $user->id]);
@@ -64,7 +64,7 @@ class SettingTest extends TestCase
      *
      * @return void
      */
-    public function testSettingsCanBeCreatedByOperator()
+    public function test_settings_can_be_created_by_operator()
     {
         $user = User::first();
         Permission::factory()->create(['code' => 'OPT', 'user_id' => $user->id]);

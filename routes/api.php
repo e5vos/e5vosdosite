@@ -1,8 +1,6 @@
 <?php
 
-use App\Events\{
-    Ping
-};
+use App\Events\Ping;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\AuthController;
@@ -58,7 +56,7 @@ Route::controller(UserController::class)->middleware(['auth:sanctum'])->prefix('
 });
 Route::get('/users', [UserController::class, 'index'])->middleware(['auth:sanctum'])->can('viewAny', User::class)->name('users.index');
 
-//routes telated to e5n slots
+// routes telated to e5n slots
 Route::controller(SlotController::class)->prefix('/slot')->group(function () {
     Route::get('/', 'index')->name('slot.index');
     Route::middleware(['auth:sanctum'])->group(function () {
@@ -71,7 +69,7 @@ Route::controller(SlotController::class)->prefix('/slot')->group(function () {
     });
 });
 
-//routes related to E5N events
+// routes related to E5N events
 Route::controller(EventController::class)->group(function () {
     Route::get('/events', 'index')->name('events.index');
     Route::middleware(['auth:sanctum'])->post('/events', 'store')->can('create', Event::class)->name('event.store');
@@ -96,12 +94,12 @@ Route::controller(EventController::class)->group(function () {
     });
 });
 
-//manage attendances
+// manage attendances
 Route::prefix('/attendance')->middleware(['auth:sanctum'])->controller(EventController::class)->group(function () {
     Route::post('{attendanceId}/teamMemberAttend', 'teamMemberAttend')->name('attendance.teamMemberAttend');
 });
 
-//routes related to E5N teams
+// routes related to E5N teams
 Route::controller(TeamController::class)->middleware(['auth:sanctum'])->group(function () {
     Route::get('/team', 'index')->can('viewAny', Team::class)->name('teams.index');
     Route::post('/team', 'store')->can('create', Team::class)->name('team.store');
@@ -123,13 +121,13 @@ Route::controller(LocationController::class)->prefix('locations')->group(functio
     Route::get('/', 'index')->name('location.index');
 });
 
-//routes related to permissions
+// routes related to permissions
 Route::middleware(['auth:sanctum'])->controller(PermissionController::class)->prefix('permissions')->group(function () {
     Route::post('/', 'addPermission')->can('create', Permission::class)->name('permission.store');
     Route::delete('/', 'removePermission')->can('destroy', Permission::class)->name('permission.delete');
 });
 
-//setting routes
+// setting routes
 Route::prefix('/setting')->middleware(['auth:sanctum'])->controller(SettingController::class)->group(
     function () {
         Route::get('/', 'index')->can('viewAny', Setting::class)->name('setting.index');
@@ -155,12 +153,12 @@ Route::controller(LocationController::class)->group(function () {
 Route::any('cacheclear', [AdminController::class, 'cacheClear'])->name('cacheclear');
 Route::post('dumpState', [AdminController::class, 'dumpState'])->name('debug.dump');
 
-//test websocket broadcast
+// test websocket broadcast
 Route::post('/ping', function () {
     Ping::dispatch();
 });
 
-//if anything else that starts with /api/ is requested, return 404
+// if anything else that starts with /api/ is requested, return 404
 Route::any('/{any}', function () {
     abort(404);
 })->where('any', '.*');

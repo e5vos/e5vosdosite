@@ -31,7 +31,7 @@ class EventResource extends JsonResource
             'img_url' => $this->img_url,
             'starts_at' => $this->starts_at,
             'ends_at' => $this->ends_at,
-            //'rating' => $this->rating,
+            // 'rating' => $this->rating,
             'occupancy' => $this->occupancy,
 
             'root_parent' => $this->root_parent,

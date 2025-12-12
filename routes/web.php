@@ -22,13 +22,13 @@ Route::get('/', function () {
 });
 
 Route::get('/{any}', function (string $any) {
-    //search ../public/ for the file
+    // search ../public/ for the file
     $path = base_path().'/public/'.$any;
     if (file_exists($path)) {
         return response()->file($path);
     }
 
-    //if not found, return the frontend
+    // if not found, return the frontend
     return view('frontend');
 })->where('any', '.*');
 

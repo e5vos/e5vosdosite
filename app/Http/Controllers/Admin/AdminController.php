@@ -17,7 +17,7 @@ class AdminController extends Controller
     public function cacheClear(Request $request)
     {
         if (env('APP_ENV') === 'production' && ! $request->user()->hasPermission(PermissionType::Admin->value)) {
-            throw new NotAllowedException();
+            throw new NotAllowedException;
         }
         DB::statement('TRUNCATE TABLE cache');
 
@@ -27,7 +27,7 @@ class AdminController extends Controller
     public function dumpState(Request $request)
     {
         if (env('APP_ENV') === 'production' && ! $request->user()->hasPermission(PermissionType::Admin->value) && (! getenv('DEBUG_API_KEY') || $request->key != env('DEBUG_API_KEY'))) {
-            throw new NotAllowedException();
+            throw new NotAllowedException;
         }
         Http::post(env('DISCORD_WEBHOOK', ''), [
             'username' => 'DoSys',

@@ -94,7 +94,7 @@ const PermissionForm = ({
     })
 
     return (
-        <Form onSubmit={formik.handleSubmit}>
+        <Form onSubmit={formik.handleSubmit} {...rest}>
             <Form.Group>
                 <Form.Label>{locale.user}</Form.Label>
                 <UserSearchCombobox
@@ -151,7 +151,7 @@ export const UserPermissionCreateForm = ({
     })
 
     return (
-        <Form onSubmit={formik.handleSubmit}>
+        <Form onSubmit={formik.handleSubmit} {...rest}>
             <Form.Group>
                 <Form.Label>{locale.event}</Form.Label>
                 <EventSearchCombobox
@@ -207,7 +207,7 @@ export const EventPermissionCreateForm = ({
         ? [PermissionCode.organiser, PermissionCode.scanner]
         : [PermissionCode.scanner]
     return (
-        <Form onSubmit={formik.handleSubmit}>
+        <Form onSubmit={formik.handleSubmit} {...rest}>
             <Form.Group>
                 <Form.Label>{locale.user}</Form.Label>
                 <UserSearchCombobox

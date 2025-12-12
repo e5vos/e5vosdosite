@@ -50,7 +50,7 @@ const SlotUpdator = ({ value: slot }: { value: SlotFormValues }) => {
     const navigate = useNavigate()
     const [updateSlot] = adminAPI.useUpdateSlotMutation()
     const onSubmit = useCallback(
-        async (values: any) => {
+        async (values: SlotFormValues) => {
             await updateSlot(values as Slot)
             navigate('/admin/sav')
         },

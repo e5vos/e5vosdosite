@@ -15,12 +15,12 @@ const ParticipantSearch = ({
     event,
     onChange,
 }: {
-    event: RequiredFields<Event, 'attendees'>
-    onChange: (value: Attender) => any
+    event: RequiredFields<Event, 'attendances'>
+    onChange: (value: Attender) => void
 }) => {
     return (
         <Form.ComboBox
-            options={event.attendees}
+            options={event.attendances}
             className="!mb-0 !border-b-0"
             getElementName={(e) => e.name}
             renderElement={(e) => <span>{displayName(e)}</span>}

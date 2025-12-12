@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 
 import { User } from 'types/models'
 
-import { GateFunction } from 'lib/gates'
+import { GateFunction, TailParams } from 'lib/gates'
 import Locale from 'lib/locale'
 
 import Error from './Error'
@@ -18,22 +18,22 @@ const locale = Locale({
     },
 })
 
-const Gate = ({
+const Gate = <T extends GateFunction>({
     children,
     gate,
     params,
     user: paramUser,
 }: {
     children: ReactNode
-    gate: GateFunction
+    gate: T
     user?: User
-    params?: any[]
+    params?: TailParams<T>
 }) => {
     const { user, isLoading } = useUser()
     const usedUser = paramUser ?? user
     if (isLoading) return <Loader />
     if (!usedUser) return <Error code={401} />
-    if (params ? !gate(usedUser) : !gate(usedUser))
+    if (!gate(usedUser, ...(params ?? [])))
         return (
             <Error code={403} message={gate.message ?? locale.defaultmessage} />
         )
@@ -43,9 +43,11 @@ const Gate = ({
 export default Gate
 
 export const gated = (Component: React.FC, gate: GateFunction) => {
-    return () => (
+    const GatedComponent = () => (
         <Gate gate={gate}>
             <Component />
         </Gate>
     )
+    GatedComponent.displayName = `gated(${Component.displayName || Component.name || 'Component'})`
+    return GatedComponent
 }

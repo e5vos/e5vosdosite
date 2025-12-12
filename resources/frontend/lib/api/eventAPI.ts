@@ -25,7 +25,7 @@ export const eventAPI = baseAPI.injectEndpoints({
                 slot
                     ? routeSwitcher('events.slot', { slot_id: slot.id })
                     : routeSwitcher('events.index'),
-            transformResponse: (response: any) => {
+            transformResponse: (response) => {
                 if (!Array.isArray(response)) return [response]
                 else return response
             },
@@ -64,7 +64,7 @@ export const eventAPI = baseAPI.injectEndpoints({
         }),
         getSlots: builder.query<Omit<Slot, 'events'>[], void>({
             query: () => routeSwitcher('slot.index'),
-            transformResponse: (response: any) => {
+            transformResponse: (response) => {
                 if (!Array.isArray(response)) return [response]
                 else return response
             },
@@ -172,7 +172,7 @@ export const eventAPI = baseAPI.injectEndpoints({
                     memberAttendances: JSON.stringify(data),
                 },
             }),
-            invalidatesTags: (res, err, arg) => (err ? [] : []),
+            invalidatesTags: (_, err) => (err ? [] : []),
         }),
         cancelSignUp: builder.mutation<
             void,
@@ -192,7 +192,7 @@ export const eventAPI = baseAPI.injectEndpoints({
                 url: routeSwitcher('event.delete', { id }),
                 method: 'DELETE',
             }),
-            invalidatesTags: (res, err, arg) =>
+            invalidatesTags: (_, err) =>
                 err ? [] : [{ type: 'Event', id: 'LIST' }],
         }),
 
@@ -201,7 +201,7 @@ export const eventAPI = baseAPI.injectEndpoints({
                 url: routeSwitcher('event.close_signup', { id }),
                 method: 'PUT',
             }),
-            invalidatesTags: (res, err, arg) =>
+            invalidatesTags: (_, err, arg) =>
                 err
                     ? []
                     : [

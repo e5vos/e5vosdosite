@@ -24,20 +24,15 @@ const locale = Locale({
 const openWindow = (
     url: string,
     title: string,
-    options: { [key: string]: any } = {}
+    options: { [key: string]: number | string } = {}
 ) => {
     if (typeof url === 'object') {
         options = url
         url = ''
     }
     options = { url, title, width: 600, height: 720, ...options }
-    const dualScreenLeft =
-        /** @ts-ignore */
-
-        window.screenLeft !== undefined ? window.screenLeft : window.screen.left
-    const dualScreenTop =
-        /** @ts-ignore */
-        window.swcreenTop !== undefined ? window.screenTop : window.screen.top
+    const dualScreenLeft = window.screenLeft
+    const dualScreenTop = window.screenTop
     const width =
         window.innerWidth ||
         document.documentElement.clientWidth ||
@@ -50,7 +45,6 @@ const openWindow = (
     options.top = height / 2 - options.height / 2 + dualScreenTop
     const optionsStr = Object.keys(options)
         .reduce((acc, key) => {
-            /** @ts-ignore */
             acc.push(`${key}=${options[key]}`)
             return acc
         }, [])
@@ -72,7 +66,7 @@ const LoginForm = () => {
     const navigate = useNavigate()
     const params = useParams()
     const dispatch = useDispatch()
-    const onMessage = useCallback<(this: Window, e: MessageEvent<any>) => any>(
+    const onMessage = useCallback<(this: Window, e: MessageEvent) => void>(
         (e) => {
             if (!e.data.token) {
                 return

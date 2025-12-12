@@ -18,6 +18,12 @@ import Dialog from 'components/UIKit/Dialog'
 import Form from 'components/UIKit/Form'
 import Loader from 'components/UIKit/Loader'
 
+declare global {
+    interface Window {
+        scan?: (code: string) => Promise<void>
+    }
+}
+
 const locale = Locale({
     hu: {
         scanner: 'QR Olvasó',
@@ -142,7 +148,7 @@ const Scanner = () => {
         },
     })
     useEffect(() => {
-        ;(window as any).scan = scan
+        window.scan = scan
     }, [scan])
 
     const { user } = useUser()
@@ -200,7 +206,7 @@ const Scanner = () => {
                 </Form.Group>
             </Form>
             <QrReader
-                onResult={async (result, error) => {
+                onResult={async (result) => {
                     if (result) {
                         await scan(result.getText())
                         setSelectedMember(null)

@@ -68,8 +68,8 @@ const PresentationFillDialog = ({
                 attender: student.id,
                 event: external_event,
             }).unwrap()
-            setAvailableStudents(
-                (state) => state?.filter((s) => s.id !== student.id)
+            setAvailableStudents((state) =>
+                state?.filter((s) => s.id !== student.id)
             )
             //triggerGetFreeUsersQuery({ id: external_event.slot_id });
             triggerGetEventQuery(external_event)

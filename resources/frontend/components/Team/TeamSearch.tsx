@@ -39,6 +39,7 @@ const TeamSearchCombobox = ({
                     if (!t) return
                     onChange(t)
                 }}
+                initialValue={initialValue.name}
             />
         </div>
     )

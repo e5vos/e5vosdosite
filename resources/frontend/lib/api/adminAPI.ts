@@ -37,7 +37,7 @@ export const adminAPI = baseAPI
                     method: 'POST',
                     body: slot,
                 }),
-                invalidatesTags: (res, err, arg) =>
+                invalidatesTags: (_, err) =>
                     err ? [] : [{ type: 'Slot', id: 'LIST' }],
             }),
 
@@ -84,11 +84,11 @@ export const adminAPI = baseAPI
                     err
                         ? []
                         : arg.event_id
-                        ? [
-                              { type: 'User', id: arg.user_id },
-                              { type: 'Event', id: arg.event_id },
-                          ]
-                        : [{ type: 'User', id: arg.user_id }],
+                          ? [
+                                { type: 'User', id: arg.user_id },
+                                { type: 'Event', id: arg.event_id },
+                            ]
+                          : [{ type: 'User', id: arg.user_id }],
             }),
             deletePermission: builder.mutation<void, Permission>({
                 query: (data) => ({
@@ -100,15 +100,15 @@ export const adminAPI = baseAPI
                     err
                         ? []
                         : arg.event_id
-                        ? [
-                              { type: 'User', id: arg.user_id },
-                              { type: 'Event', id: arg.event_id },
-                          ]
-                        : [{ type: 'User', id: arg.user_id }],
+                          ? [
+                                { type: 'User', id: arg.user_id },
+                                { type: 'Event', id: arg.event_id },
+                            ]
+                          : [{ type: 'User', id: arg.user_id }],
             }),
             dumpState: builder.mutation<
                 void,
-                { key: string | undefined; dump: Object }
+                { key: string | undefined; dump: object }
             >({
                 query: ({ key, dump }) => ({
                     url: routeSwitcher('debug.dump'),

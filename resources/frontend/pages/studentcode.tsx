@@ -65,8 +65,8 @@ const StudentCodePage = () => {
             try {
                 await updateStudentCode(values.studentCode).unwrap()
                 navigate(next ?? '/dashboard')
-            } catch (error: any) {
-                switch (error.status) {
+            } catch (error) {
+                switch ((error as { status: number }).status) {
                     case 400:
                         formik.setFieldError('studentCode', locale.invalidCode)
                         break

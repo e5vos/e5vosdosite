@@ -42,7 +42,7 @@ const QRDialog = ({
     setShownQR,
 }: {
     shownQR: Team | null
-    setShownQR: (qr: Team | null) => any
+    setShownQR: (qr: Team | null) => void
 }) => (
     <Dialog
         title={locale.team_code(shownQR?.name ?? '')}

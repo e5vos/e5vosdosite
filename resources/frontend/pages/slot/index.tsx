@@ -30,7 +30,7 @@ const ViewSlotEventsPage = () => {
 
     const { data: events, isFetching: isEventsFetching } =
         eventAPI.useGetEventsQuery(
-            slots ? slots[currentSlot] ?? { id: -1 } : { id: -1 }
+            slots ? (slots[currentSlot] ?? { id: -1 }) : { id: -1 }
         )
 
     if (slotsError) return <Error code={500} />

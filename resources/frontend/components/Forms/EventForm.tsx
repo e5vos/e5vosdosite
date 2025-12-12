@@ -295,7 +295,7 @@ const EventForm = ({
             )}
 
             <Form.Group>
-                <Button type="submit">{locale.submit}</Button>
+                <Button type="submit">{submitLabel}</Button>
             </Form.Group>
         </Form>
     )

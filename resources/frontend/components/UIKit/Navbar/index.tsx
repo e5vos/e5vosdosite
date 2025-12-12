@@ -17,7 +17,7 @@ const Brand = ({
 }: {
     href?: string
     children: ReactNode
-    onClick?: () => any
+    onClick?: () => void
 }) => {
     const Tag = href ? 'a' : 'span'
     return (
@@ -40,7 +40,7 @@ const DropDownItem = ({
     const Tag = href ? 'a' : 'span'
     return (
         <Menu.Item>
-            {({ active }) => (
+            {() => (
                 <Tag href={href} className="block px-4 py-2 hover:bg-gray-100">
                     {children}
                 </Tag>

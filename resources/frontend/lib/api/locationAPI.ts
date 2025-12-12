@@ -13,7 +13,7 @@ export const locationAPI = baseAPI
         endpoints: (builder) => ({
             getLocations: builder.query<Omit<Location, 'events'>[], void>({
                 query: () => routeSwitcher('locations.index'),
-                providesTags: (res, err, arg) =>
+                providesTags: (res) =>
                     res
                         ? [
                               ...res.map(
@@ -43,7 +43,7 @@ export const locationAPI = baseAPI
                     method: 'PATCH',
                     body: location,
                 }),
-                invalidatesTags: (res, err, arg) =>
+                invalidatesTags: (res, err) =>
                     err
                         ? []
                         : [

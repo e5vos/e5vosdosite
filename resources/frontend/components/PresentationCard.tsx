@@ -38,6 +38,7 @@ const PresentationCard = ({
         <Card
             title={presentation.name}
             subtitle={presentation.organiser}
+            className={className}
             buttonBar={
                 <div>
                     <div className="flew-row mb-1 mt-3 flex w-full justify-between px-2">

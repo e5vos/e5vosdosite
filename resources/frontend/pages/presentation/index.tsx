@@ -205,19 +205,20 @@ const PresentationsPage = () => {
 
     useEffect(() => {
         if (!signupError || !('status' in signupError)) return
-        const message = (signupError.data as any).message
+        const message = (signupError as { data: { message: string } }).data
+            .message
         setErrormsg(message)
     }, [signupError])
 
     useEffect(() => {
         if (!cancelSignupError || !('status' in cancelSignupError)) return
-        const message = (cancelSignupError.data as any).message
+        const message = (cancelSignupError as { data: { message: string } })
+            .data.message
         setErrormsg(message)
     }, [cancelSignupError, cleanupErrormsg])
 
     useEffect(() => {
         if (errormsg) cleanupErrormsg('')
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [errormsg])
 
     if (isSlotsLoading || isMyPresentationsLoading || isEventsLoading)

@@ -44,14 +44,14 @@ export const baseAPI = createApi({
             void
         >({
             // return type depends zoli TODO
-            query: (data) => ({
+            query: () => ({
                 url: routeSwitcher('user.current'),
                 method: 'GET',
             }),
             providesTags: (result) => [{ type: 'User', id: result?.id }],
         }),
         getCurrentUserDetails: builder.query<User, void>({
-            query: (data) => ({
+            query: () => ({
                 url: routeSwitcher('user.details'),
                 method: 'GET',
             }),
@@ -66,7 +66,7 @@ export const baseAPI = createApi({
                 method: 'PATCH',
                 body: { e5code: code },
             }),
-            invalidatesTags: (res, err, arg) =>
+            invalidatesTags: (res, err) =>
                 err
                     ? []
                     : [

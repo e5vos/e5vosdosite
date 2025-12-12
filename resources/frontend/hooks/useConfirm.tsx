@@ -10,7 +10,7 @@ const useConfirm = (Dialog: FC<ConfirmDialogProps>) => {
         resolve: (v: boolean | PromiseLike<boolean>) => void
     } | null>(null)
     const confirm = () =>
-        new Promise<boolean>((resolve, reject) => {
+        new Promise<boolean>((resolve) => {
             setPromise({ resolve })
         })
 

@@ -76,6 +76,29 @@ const locale = Locale({
     },
 })
 
+const SlotSelectSpan = ({
+    className,
+    slot_id,
+    selectSlot,
+    slotName,
+}: {
+    className?: string
+    slot_id: number
+    selectSlot: (id: number) => void
+    slotName: (id: number) => string | JSX.Element
+}) => {
+    return (
+        <span
+            className={className}
+            onClick={() => {
+                selectSlot(slot_id)
+            }}
+        >
+            {slotName(slot_id)}
+        </span>
+    )
+}
+
 const PresentationsTable = ({
     presentations,
     callback,
@@ -137,35 +160,44 @@ const PresentationsTable = ({
                                             {presentation.root_parent_slot_id &&
                                                 locale.presentation.multislot.starts(
                                                     () => (
-                                                        <span
-                                                            className="text-green-700 dark:text-green-400"
-                                                            onClick={() => {
-                                                                selectSlot(
-                                                                    presentation.root_parent_slot_id!
-                                                                )
-                                                            }}
-                                                        >
-                                                            {slotName(
-                                                                presentation.root_parent_slot_id!
+                                                        <>
+                                                            {presentation.root_parent_slot_id && (
+                                                                <SlotSelectSpan
+                                                                    className="text-green-700 dark:text-green-400"
+                                                                    slot_id={
+                                                                        presentation.root_parent_slot_id
+                                                                    }
+                                                                    selectSlot={
+                                                                        selectSlot
+                                                                    }
+                                                                    slotName={
+                                                                        slotName
+                                                                    }
+                                                                />
                                                             )}
-                                                        </span>
+                                                        </>
                                                     )
                                                 )}
                                             {presentation.direct_child_slot_id &&
                                                 locale.presentation.multislot.continues(
                                                     () => (
-                                                        <span
-                                                            className="text-green-700 dark:text-green-400"
-                                                            onClick={() => {
-                                                                selectSlot(
-                                                                    presentation.direct_child_slot_id!
-                                                                )
-                                                            }}
-                                                        >
-                                                            {slotName(
-                                                                presentation.direct_child_slot_id!
+                                                        <>
+                                                            {' '}
+                                                            {presentation.direct_child_slot_id && (
+                                                                <SlotSelectSpan
+                                                                    className="text-red-700 dark:text-red-400"
+                                                                    slot_id={
+                                                                        presentation.direct_child_slot_id
+                                                                    }
+                                                                    selectSlot={
+                                                                        selectSlot
+                                                                    }
+                                                                    slotName={
+                                                                        slotName
+                                                                    }
+                                                                />
                                                             )}
-                                                        </span>
+                                                        </>
                                                     )
                                                 )}
                                         </div>

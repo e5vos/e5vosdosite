@@ -21,7 +21,7 @@ const EventCard = ({
     event: Event
     className?: string
 }) => {
-    const user = useUser(false)
+    const { user } = useUser(false)
     const navigate = useNavigate()
     return (
         <div

@@ -46,6 +46,7 @@ const UserForm = ({
         validationSchema: Yup.object({}),
         onSubmit: (values) => {
             const val = onSubmit({
+                id: values.id,
                 name: values.name,
                 email: values.email,
                 img_url: values.img_url,

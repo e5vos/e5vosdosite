@@ -9,6 +9,14 @@ jobs:
         runs-on: 'ubuntu-latest'
         environment: Elastic Beanstalk
         steps:
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.5'
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+                  coverage: none
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '24'
             - name: Checkout source code
               uses: actions/checkout@v2
             - name: Exit if not prod

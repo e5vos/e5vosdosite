@@ -5,7 +5,7 @@ import useUser from 'hooks/useUser'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { CRUDFormImpl } from 'types/misc'
+import { CRUDFormImpl, CRUDImpl } from 'types/misc'
 import {
     Attender,
     Event,
@@ -182,10 +182,13 @@ const EventReader = ({
     value: event,
     scoreLength = 3,
     ...rest
-}: CRUDFormImpl<Event, EventFormValues> & {
+}: CRUDImpl<Event, EventFormValues> & {
     value: Event
     scoreLength?: number
-}) => {
+} & React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLDivElement>,
+        HTMLDivElement
+    >) => {
     const { user } = useUser(false)
     const { data: myteams } = teamAPI.useGetMyTeamsQuery()
     const [triggerParticipants, { data: participants }] =
@@ -213,8 +216,8 @@ const EventReader = ({
     const [closeSignup] = eventAPI.useCloseSignUpMutation()
     const [setScoreAPI] = eventAPI.useSetScoreMutation()
 
-    const deleteDialogTemplate = useDeleteDialogTemplate(event)
-    const closeSignupDialogTemplate = useCloseSignupDialogTemplate(event)
+    const deleteDialogTemplate = useDeleteDialogTemplate()
+    const closeSignupDialogTemplate = useCloseSignupDialogTemplate()
     const [DeleteConfirmDialog, confirmDelete] =
         useConfirm(deleteDialogTemplate)
     const [CloseSignupConfirmDialog, confirmCloseSignup] = useConfirm(
@@ -480,7 +483,8 @@ const EventReader = ({
                                                 <ParticipantSearch
                                                     event={{
                                                         ...event,
-                                                        attendees: participants,
+                                                        attendances:
+                                                            participants,
                                                     }}
                                                     onChange={(p) =>
                                                         setScore(p, i + 1)

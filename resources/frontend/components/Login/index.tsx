@@ -41,10 +41,10 @@ const openWindow = (
         window.innerHeight ||
         document.documentElement.clientHeight ||
         window.screen.height
-    options.left = width / 2 - options.width / 2 + dualScreenLeft
-    options.top = height / 2 - options.height / 2 + dualScreenTop
+    options.left = width / 2 - (options.width as number) / 2 + dualScreenLeft
+    options.top = height / 2 - (options.height as number) / 2 + dualScreenTop
     const optionsStr = Object.keys(options)
-        .reduce((acc, key) => {
+        .reduce<string[]>((acc, key) => {
             acc.push(`${key}=${options[key]}`)
             return acc
         }, [])

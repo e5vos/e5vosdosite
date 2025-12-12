@@ -1,7 +1,7 @@
 import useUser from 'hooks/useUser'
 import { useCallback } from 'react'
 
-import { CRUDFormImpl, CRUDInterface } from 'types/misc'
+import { CRUDFormImpl } from 'types/misc'
 import { User } from 'types/models'
 
 import baseAPI from 'lib/api'
@@ -103,7 +103,7 @@ const UserReader = ({
     return <></>
 }
 
-const UserCRUD: CRUDInterface<User, UserFormValues> = {
+const UserCRUD = {
     Creator: UserCreator,
     Updater: UserUpdater,
     Reader: UserReader,

@@ -51,8 +51,7 @@ const useScannerHandler = ({
                     present: true,
                 }).unwrap()
             } catch (e) {
-                console.log(e.data.message)
-                onError?.(e.data.message as string)
+                onError?.((e as { data: { message: string } }).data.message)
                 return
             }
             if (!isTeamAttendance(attendance)) {

@@ -3,12 +3,10 @@ import React from 'react'
 
 import Loader from 'components/UIKit/Loader'
 
-export const loginRequired = <P, T extends React.ComponentType<P>>(
-    Component: T
+export const loginRequired = <P extends object>(
+    Component: React.ComponentType<P>
 ): React.ComponentType<P> => {
-    type Props = React.ComponentProps<T>
-
-    const GatedComponent: React.FC<Props> = (props: Props) => {
+    const GatedComponent = (props: P) => {
         const { isLoading } = useUser()
         if (isLoading) return <Loader />
         return <Component {...props} />
@@ -16,5 +14,5 @@ export const loginRequired = <P, T extends React.ComponentType<P>>(
 
     GatedComponent.displayName = `loginRequired(${Component.displayName || Component.name || 'Component'})`
 
-    return GatedComponent as React.ComponentType<P>
+    return GatedComponent
 }

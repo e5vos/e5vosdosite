@@ -21,19 +21,27 @@ export type CRUDInterface<T, K> = {
     Deleter?: ({ value, className }: CRUDFormImpl<T, K>) => JSX.Element
 }
 
-export type CRUDForm<T> = Omit<
-    React.DetailedHTMLProps<
-        React.InputHTMLAttributes<HTMLFormElement>,
-        HTMLFormElement
-    >,
-    'onSubmit' | 'value' | keyof Parameters<typeof useFormik>[0]
-> & {
+export type CRUDImplData<T> = {
     initialValues: T
     onSubmit: (values: T) => void
     submitLabel?: string
     resetOnSubmit?: boolean
     enableReinitialize?: boolean
 }
+
+export type CRUDForm<T> = Omit<
+    React.DetailedHTMLProps<
+        React.InputHTMLAttributes<HTMLFormElement>,
+        HTMLFormElement
+    >,
+    'onSubmit' | 'value' | keyof Parameters<typeof useFormik>[0]
+> &
+    CRUDImplData<T>
+
+export type CRUDImpl<T, K = T> = Omit<
+    CRUDImplData<T>,
+    'initialValues' | 'onSubmit'
+> & { value: K }
 
 export type CRUDFormImpl<T, K = T> = Omit<
     CRUDForm<T>,

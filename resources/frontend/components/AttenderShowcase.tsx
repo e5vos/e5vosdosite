@@ -1,9 +1,9 @@
 import { Disclosure } from '@headlessui/react'
 
 import {
-    Attender,
-    AttendingTeam,
-    AttendingUser,
+    EventedAttender,
+    EventedTeamAttender,
+    EventedUserAttender,
     isAttenderTeam,
 } from 'types/models'
 
@@ -23,7 +23,11 @@ const locale = Locale({
     },
 })
 
-const TeamAttenderShowcase = ({ attender }: { attender: AttendingTeam }) => {
+const TeamAttenderShowcase = ({
+    attender,
+}: {
+    attender: EventedTeamAttender
+}) => {
     return (
         <Disclosure>
             <Disclosure.Button>
@@ -57,7 +61,11 @@ const TeamAttenderShowcase = ({ attender }: { attender: AttendingTeam }) => {
     )
 }
 
-const UserAttenderShowcase = ({ attender }: { attender: AttendingUser }) => {
+const UserAttenderShowcase = ({
+    attender,
+}: {
+    attender: EventedUserAttender
+}) => {
     return (
         <Disclosure>
             <Disclosure.Button>
@@ -75,7 +83,12 @@ const UserAttenderShowcase = ({ attender }: { attender: AttendingUser }) => {
     )
 }
 
-const AttenderShowcase = ({ attender, ...rest }: { attender: Attender }) => {
+const AttenderShowcase = ({
+    attender,
+    ...rest
+}: {
+    attender: EventedAttender
+}) => {
     if (isAttenderTeam(attender)) {
         return <TeamAttenderShowcase attender={attender} {...rest} />
     } else {

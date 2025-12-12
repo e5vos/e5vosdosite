@@ -218,7 +218,10 @@ const ComboBox = <T,>({
             />
             <Combobox.Options className="scrollbar-track-gray- scrollbar-thumb-min-h-5 mb-2 mt-0 block max-h-64 w-full overflow-auto bg-slate-200 scrollbar-thin scrollbar-thumb-gray-50 hover:scrollbar-thumb-gray-300 dark:bg-gray">
                 {filteredOptions.slice(0, limit).map((option, index) => (
-                    <ComboBoxOption key={index} value={option}>
+                    <ComboBoxOption
+                        key={getElementName(option) ?? index}
+                        value={getElementName(option)}
+                    >
                         {renderElement(option)}
                     </ComboBoxOption>
                 ))}

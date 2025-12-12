@@ -5,7 +5,7 @@ import { ReactNode } from 'react'
 
 import Locale from 'lib/locale'
 
-import { ThemeSwitch } from 'components/themeSwitch'
+import { ThemeSwitch } from 'components/ThemeSwitch'
 
 import { ReactComponent as Caret } from './assets/caret.svg'
 import { ReactComponent as MobileMenu } from './assets/mobileMenu.svg'

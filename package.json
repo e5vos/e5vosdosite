@@ -25,7 +25,8 @@
     "build-storybook": "storybook build",
     "lint": "eslint .",
     "cypress": "cypress open",
-    "serve": "serve dist"
+    "serve": "serve dist",
+    "typescript-typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",

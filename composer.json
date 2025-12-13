@@ -28,7 +28,7 @@
         "laravel/tinker": "^2.7",
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-google-cloud-storage": "^2.0",
-        "tightenco/ziggy": "^1.0"
+        "tightenco/ziggy": "^2.6"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",

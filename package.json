@@ -50,7 +50,7 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
     "vite-plugin-svgr": "^2.4.0",
-    "yup": "^0.32.11",
+    "yup": "^1.7.1",
     "ziggy-js": "^1.8.1"
   },
   "devDependencies": {

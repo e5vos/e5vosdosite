@@ -6,7 +6,7 @@ import {
     TypedUseSelectorHook,
     useDispatch as originalDispatchHook,
     useSelector as originalSelectorHook,
-} from 'react-redux/es/exports'
+} from 'react-redux'
 import AuthReducer, { authSlice } from 'reducers/authReducer'
 import settingsReducer, { settingsSlice } from 'reducers/settingsReducer'
 import {

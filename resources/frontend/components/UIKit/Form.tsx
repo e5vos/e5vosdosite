@@ -40,7 +40,7 @@ const Control = ({
             pattern={invalid ? '' : undefined}
             onInvalid={onInvalid}
             {...rest}
-            className={`border-b-2 border-white bg-transparent text-black invalid:border-red invalid:text-red-500 focus:border-gray-400 invalid:focus:text-white dark:text-white ${
+            className={`invalid:border-red border-b-2 border-white bg-transparent text-black invalid:text-red-500 focus:border-gray-400 invalid:focus:text-white dark:text-white ${
                 className ?? ''
             }`}
         />
@@ -131,7 +131,7 @@ const Select = forwardRef(
     ) => {
         return (
             <select
-                className={`form-select max-w-sm bg-slate-300 dark:bg-gray ${
+                className={`form-select dark:bg-gray max-w-sm bg-slate-300 ${
                     className ?? ''
                 }`}
                 {...rest}
@@ -212,11 +212,11 @@ const ComboBox = <T,>({
                     setQuery(e.target.value)
                     onQueryChange?.(e.target.value)
                 }}
-                className={`mb-2 mt-0 block w-full border-0 border-b-2 border-gray-200 bg-slate-200 invalid:border-red invalid:text-red focus:border-gray-300 focus:ring-0 dark:bg-gray ${
+                className={`invalid:border-red invalid:text-red dark:bg-gray mt-0 mb-2 block w-full border-0 border-b-2 border-gray-200 bg-slate-200 focus:border-gray-300 focus:ring-0 ${
                     className ?? ''
                 }`}
             />
-            <Combobox.Options className="scrollbar-track-gray- scrollbar-thumb-min-h-5 mb-2 mt-0 block max-h-64 w-full overflow-auto bg-slate-200 scrollbar-thin scrollbar-thumb-gray-50 hover:scrollbar-thumb-gray-300 dark:bg-gray">
+            <Combobox.Options className="scrollbar-track-gray- scrollbar-thumb-min-h-5 scrollbar-thin scrollbar-thumb-gray-50 hover:scrollbar-thumb-gray-300 dark:bg-gray mt-0 mb-2 block max-h-64 w-full overflow-auto bg-slate-200">
                 {filteredOptions.slice(0, limit).map((option, index) => (
                     <ComboBoxOption
                         key={getElementName(option) ?? index}

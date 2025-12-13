@@ -62,7 +62,7 @@ const useScannerHandler = ({
             let team: RequiredFields<Team, 'activity' | 'members'>
             try {
                 team = await getTeam({ code: scanvalue }).unwrap()
-            } catch (e) {
+            } catch {
                 return
             }
             const memberAttendances: TeamMemberAttendance[] = []

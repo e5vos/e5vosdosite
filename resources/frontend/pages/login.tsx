@@ -61,9 +61,9 @@ const LoginPage = () => {
 
     return (
         <div className="mx-auto text-center">
-            <h1 className="mb-8 text-4xl font-bold ">{locale.title}</h1>
+            <h1 className="mb-8 text-4xl font-bold">{locale.title}</h1>
             {user ? <LoginRecoveryPanel /> : <LoginForm />}
-            <div className="mt-4 text-sm italic text-gray-500">
+            <div className="mt-4 text-sm text-gray-500 italic">
                 {locale.legal}{' '}
                 <Link to="/privacypolicy" target="_blank" className="underline">
                     {locale.legalLink}

@@ -352,8 +352,8 @@ const PrivacyPolicyPage = () => {
             <h1 className="text-center text-xl">{locale.title}</h1>
             <div className="text-center">{locale.date}</div>
             <section className="my-4">
-                <h2 className=" text-lg font-bold">1. {locale.laws.title}</h2>
-                <ol className="ml-16 list-lower-latin">
+                <h2 className="text-lg font-bold">1. {locale.laws.title}</h2>
+                <ol className="list-lower-latin ml-16">
                     {locale.laws.array.map((e) => (
                         <li key={e}>{e}</li>
                     ))}
@@ -501,13 +501,13 @@ const PrivacyPolicyPage = () => {
                     </p>
                 </div>
                 <div className="my-2">
-                    <h3 className=" font-bold">
+                    <h3 className="font-bold">
                         3.2 {locale.handling.basis.title}
                     </h3>
                     <p>{locale.handling.basis.description}</p>
                 </div>
                 <div className="my-2">
-                    <h3 className=" font-bold">
+                    <h3 className="font-bold">
                         3.3 {locale.handling.goal.title}
                     </h3>
                     <p>{locale.handling.goal.description}</p>
@@ -520,7 +520,7 @@ const PrivacyPolicyPage = () => {
                         <p>{locale.handling.tech.description}</p>
                         <div className="mt-2">
                             <span>{locale.handling.tech.sourcesIntro}</span>
-                            <ol className="ml-16 list-lower-latin">
+                            <ol className="list-lower-latin ml-16">
                                 {locale.handling.tech.sources.map((e) => (
                                     <li key={e}>{e}</li>
                                 ))}
@@ -535,7 +535,7 @@ const PrivacyPolicyPage = () => {
                     </h3>
                     <div>
                         <span>{locale.handling.access.intro}</span>
-                        <ol className="ml-16 list-lower-latin">
+                        <ol className="list-lower-latin ml-16">
                             {locale.handling.access.accessors.map((e) => (
                                 <li key={e}>{e}</li>
                             ))}
@@ -562,7 +562,7 @@ const PrivacyPolicyPage = () => {
                         <span>
                             {locale.miscellaneous.securityMeasures.intro}
                         </span>
-                        <ol className="ml-16 list-lower-latin">
+                        <ol className="list-lower-latin ml-16">
                             {locale.miscellaneous.securityMeasures.sources.map(
                                 (e) => (
                                     <li key={e}>{e}</li>
@@ -577,7 +577,7 @@ const PrivacyPolicyPage = () => {
                                     .techMeasuresIntro
                             }
                         </span>
-                        <ol className="ml-16 list-lower-latin">
+                        <ol className="list-lower-latin ml-16">
                             {locale.miscellaneous.securityMeasures.techMeasures.map(
                                 (e) => (
                                     <li key={e}>{e}</li>
@@ -592,7 +592,7 @@ const PrivacyPolicyPage = () => {
                                     .circumstancesIntro
                             }
                         </span>
-                        <ol className="ml-16 list-lower-latin">
+                        <ol className="list-lower-latin ml-16">
                             {locale.miscellaneous.securityMeasures.circumstances.map(
                                 (e) => (
                                     <li key={e}>{e}</li>
@@ -661,7 +661,7 @@ const PrivacyPolicyPage = () => {
                 </h2>
                 <div>
                     <span>{locale.ownersRights.rightsListIntro}</span>
-                    <ol className="ml-16 list-lower-latin">
+                    <ol className="list-lower-latin ml-16">
                         {locale.ownersRights.rightsList.map((e) => (
                             <li key={e}>{e}</li>
                         ))}
@@ -672,7 +672,7 @@ const PrivacyPolicyPage = () => {
                         5.1 {locale.ownersRights.information.title}
                     </h3>
                     <p>{locale.ownersRights.information.intro}</p>
-                    <ol className="ml-16 list-lower-latin">
+                    <ol className="list-lower-latin ml-16">
                         {locale.ownersRights.information.contentsList.map(
                             (e) => (
                                 <li key={e}>{e}</li>
@@ -682,25 +682,25 @@ const PrivacyPolicyPage = () => {
                     <p>{locale.ownersRights.information.outro}</p>
                 </div>
                 <div className="my-2">
-                    <h3 className=" font-bold">
+                    <h3 className="font-bold">
                         5.2 {locale.ownersRights.access.title}
                     </h3>
                     <p>{locale.ownersRights.access.description}</p>
                 </div>
                 <div className="my-2">
-                    <h3 className=" font-bold">
+                    <h3 className="font-bold">
                         5.3 {locale.ownersRights.correction.title}
                     </h3>
                     <p>{locale.ownersRights.correction.description}</p>
                 </div>
                 <div className="my-2">
-                    <h3 className=" font-bold">
+                    <h3 className="font-bold">
                         5.4 {locale.ownersRights.delete.title}
                     </h3>
                     <div>
                         <div className="my-2">
                             <span>{locale.ownersRights.delete.intro}</span>
-                            <ol className="ml-16 list-lower-latin">
+                            <ol className="list-lower-latin ml-16">
                                 {locale.ownersRights.delete.causes.map((e) => (
                                     <li key={e}>{e}</li>
                                 ))}
@@ -717,7 +717,7 @@ const PrivacyPolicyPage = () => {
                     </h3>
                     <div className="my-2">
                         <span>{locale.ownersRights.limit.requestIntro}</span>
-                        <ol className="ml-16 list-lower-latin">
+                        <ol className="list-lower-latin ml-16">
                             {locale.ownersRights.limit.requestTypes.map((e) => (
                                 <li key={e}>{e}</li>
                             ))}
@@ -725,7 +725,7 @@ const PrivacyPolicyPage = () => {
                     </div>
                     <div className="my-2">
                         <span>{locale.ownersRights.limit.durationIntro}</span>
-                        <ol className="ml-16 list-lower-latin">
+                        <ol className="list-lower-latin ml-16">
                             {locale.ownersRights.limit.durationScopes.map(
                                 (e) => (
                                     <li key={e}>{e}</li>
@@ -758,7 +758,7 @@ const PrivacyPolicyPage = () => {
                     </h3>
                     <div className="my-2">
                         <span>{locale.complaint.contact.intro}</span>
-                        <ol className="ml-16 list-lower-latin">
+                        <ol className="list-lower-latin ml-16">
                             {locale.complaint.contact.causes.map((e) => (
                                 <li key={e}>{e}</li>
                             ))}
@@ -767,7 +767,7 @@ const PrivacyPolicyPage = () => {
                     <p>{locale.complaint.contact.deadline}</p>
                     <div className="my-2">
                         <span>{locale.complaint.contact.cost}</span>
-                        <ol className="ml-16 list-lower-latin">
+                        <ol className="list-lower-latin ml-16">
                             {locale.complaint.contact.exceptWhen.map((e) => (
                                 <li key={e}>{e}</li>
                             ))}
@@ -778,7 +778,7 @@ const PrivacyPolicyPage = () => {
                     </p>
                     <div>
                         <span>{locale.complaint.contact.damagesIntro}</span>
-                        <ol className="ml-16 list-lower-latin">
+                        <ol className="list-lower-latin ml-16">
                             {locale.complaint.contact.damagesExceptions.map(
                                 (e) => (
                                     <li key={e}>{e}</li>
@@ -799,7 +799,7 @@ const PrivacyPolicyPage = () => {
                     </h3>
                     <div className="my-2">
                         <span>{locale.complaint.authoritiesStart.intro}</span>
-                        <ol className="ml-16 list-lower-latin">
+                        <ol className="list-lower-latin ml-16">
                             {locale.complaint.authoritiesStart.options.map(
                                 (e) => (
                                     <li key={e.name}>

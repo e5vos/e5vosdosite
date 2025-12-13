@@ -177,7 +177,7 @@ const TeamCard = ({
                 {team.members?.map((member) => (
                     <div
                         key={member.id}
-                        className="mb-2 items-center rounded-lg bg-slate-200 p-2 dark:bg-gray md:grid md:grid-cols-2 lg:grid-cols-3"
+                        className="dark:bg-gray mb-2 items-center rounded-lg bg-slate-200 p-2 md:grid md:grid-cols-2 lg:grid-cols-3"
                     >
                         <div className="grid-col-span py-2 text-center sm:mr-5 sm:text-left">
                             <span className="font-semibold">
@@ -229,10 +229,10 @@ const TeamCard = ({
                 ))}
             </div>
             {currentUsersMembership?.pivot.role === TeamMemberRole.leader && (
-                <div className="mt-2 flex w-full rounded-lg bg-slate-300 dark:bg-gray">
+                <div className="dark:bg-gray mt-2 flex w-full rounded-lg bg-slate-300">
                     <UserSearchCombobox
                         onChange={setSelectedUser}
-                        className="bg-slate-300 dark:bg-gray"
+                        className="dark:bg-gray bg-slate-300"
                     />
                     <Button
                         className="!w-full rounded-l-none rounded-r-lg !outline-none"

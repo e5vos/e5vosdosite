@@ -7,12 +7,12 @@ const ErrorMsgBox = ({
 }) => {
     return (
         <div
-            className={`mx-auto my-4 max-w-6xl rounded-lg bg-red py-3 text-center transition delay-100 duration-500 ease-in-out ${
+            className={`bg-red mx-auto my-4 max-w-6xl rounded-lg py-3 text-center transition delay-100 duration-500 ease-in-out ${
                 !errorShown && 'hidden'
             }`}
         >
             <h4 className="text-xl font-semibold">Hiba</h4>
-            <hr className="mx-3 bg-foreground shadow-md shadow-foreground" />
+            <hr className="bg-foreground shadow-foreground mx-3 shadow-md" />
             <p>{errormsg}</p>
         </div>
     )

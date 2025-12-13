@@ -1,7 +1,10 @@
-const colors = require('tailwindcss/colors')
+import headlessui from '@headlessui/tailwindcss'
+import forms from '@tailwindcss/forms'
+import scrollbar from 'tailwind-scrollbar'
+import colors from 'tailwindcss/colors'
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
     darkMode: 'class',
     content: [
         './index.html',
@@ -124,9 +127,5 @@ module.exports = {
             },
         },
     },
-    plugins: [
-        require('@headlessui/tailwindcss'),
-        require('@tailwindcss/forms'),
-        require('tailwind-scrollbar'),
-    ],
+    plugins: [headlessui, forms, scrollbar],
 }

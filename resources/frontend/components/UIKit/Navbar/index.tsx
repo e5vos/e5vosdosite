@@ -1,5 +1,5 @@
 import { Menu, Transition } from '@headlessui/react'
-import { ReactComponent as Donci } from 'assets/donci.svg'
+import Donci from 'assets/donci.svg?react'
 import useIsMobile from 'hooks/useIsMobile'
 import { ReactNode } from 'react'
 
@@ -7,8 +7,8 @@ import Locale from 'lib/locale'
 
 import { ThemeSwitch } from 'components/ThemeSwitch'
 
-import { ReactComponent as Caret } from './assets/caret.svg'
-import { ReactComponent as MobileMenu } from './assets/mobileMenu.svg'
+import Caret from './assets/caret.svg?react'
+import MobileMenu from './assets/mobileMenu.svg?react'
 
 const Brand = ({
     href,
@@ -23,7 +23,7 @@ const Brand = ({
     return (
         <Tag href={href} className="flex items-center" onClick={onClick}>
             <Donci className="mr-5 h-full w-12 fill-black dark:fill-white" />
-            <span className="self-center whitespace-nowrap text-xl font-semibold">
+            <span className="self-center text-xl font-semibold whitespace-nowrap">
                 {children}
             </span>
         </Tag>
@@ -60,7 +60,7 @@ const DropDownComponent = ({
         <Menu as="li">
             {({ open }) => (
                 <>
-                    <Menu.Button className="flex w-full items-center justify-between rounded py-2 pl-3 pr-4 font-medium text-gray-700 hover:bg-gray-100 md:w-auto md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-700">
+                    <Menu.Button className="flex w-full items-center justify-between rounded py-2 pr-4 pl-3 font-medium text-gray-700 hover:bg-gray-100 md:w-auto md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-700">
                         {toggle}
                         <Caret />
                     </Menu.Button>
@@ -100,7 +100,7 @@ const Link = ({ href, children }: { href: string; children: ReactNode }) => {
         <li>
             <a
                 href={href}
-                className="block rounded py-2 pl-3 pr-4 text-black hover:bg-gray-100 dark:text-white md:p-0 md:hover:bg-inherit md:hover:text-gray-50"
+                className="block rounded py-2 pr-4 pl-3 text-black hover:bg-gray-100 md:p-0 md:hover:bg-inherit md:hover:text-gray-50 dark:text-white"
             >
                 {children}
             </a>
@@ -145,7 +145,7 @@ const Navbar = ({
                                 <div className="flex flex-wrap items-center justify-between">
                                     <ThemeSwitch />
                                     <Menu.Button
-                                        className="ml-3 inline-flex items-center justify-center rounded-lg  hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300 md:hidden"
+                                        className="ml-3 inline-flex items-center justify-center rounded-lg hover:text-gray-900 focus:ring-2 focus:ring-blue-300 focus:outline-none md:hidden"
                                         aria-controls="mobile-menu-2"
                                         aria-expanded="false"
                                     >

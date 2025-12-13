@@ -1,4 +1,4 @@
-import ziggyroute, { Config, RouteName, RouteParams } from 'ziggy-js'
+import { Config, RouteName, RouteParams, route as ziggyroute } from 'ziggy-js'
 
 import includedZiggy from './includeZiggy'
 

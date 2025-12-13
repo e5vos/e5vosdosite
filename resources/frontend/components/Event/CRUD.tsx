@@ -319,18 +319,18 @@ const EventReader = ({
                     <h2 className="mt-1 text-center text-xl lg:text-left">
                         {locale.organiser}: {event.organiser}
                     </h2>
-                    <p className="text-l mt-1 text-center italic text-gray-50 lg:text-left">
+                    <p className="text-l mt-1 text-center text-gray-50 italic lg:text-left">
                         {locale.signup_type(event.signup_type)}
                     </p>
                     {user && canSignup && (
-                        <div className="mt-2 w-full rounded-lg  bg-slate-200 p-2 dark:bg-gray-600 md:mb-0 ">
+                        <div className="mt-2 w-full rounded-lg bg-slate-200 p-2 md:mb-0 dark:bg-gray-600">
                             <h3 className="text-center font-bold">
                                 {locale.singup}
                             </h3>
                             <div className="mt-2 flex w-full flex-row items-center justify-center rounded-lg border-2">
                                 <Form.Select
                                     ref={attenderSelect}
-                                    className=" !max-w-none flex-1 !rounded-l-lg bg-slate-200 dark:bg-gray"
+                                    className="dark:bg-gray !max-w-none flex-1 !rounded-l-lg bg-slate-200"
                                 >
                                     {event.signup_type !== SignupType.Team &&
                                         user.e5code && (
@@ -350,14 +350,14 @@ const EventReader = ({
                                         ))}
                                 </Form.Select>
                                 <Button
-                                    className="min-w-fit !rounded-l-none !rounded-r-lg "
+                                    className="min-w-fit !rounded-l-none !rounded-r-lg"
                                     onClick={handleSignup}
                                 >
                                     {locale.signup_CTA}
                                 </Button>
                                 <Button
                                     variant="danger"
-                                    className="min-w-fit !rounded-l-none !rounded-r-lg "
+                                    className="min-w-fit !rounded-l-none !rounded-r-lg"
                                     onClick={handleCancelSignup}
                                 >
                                     {locale.unsignup_CTA}
@@ -491,7 +491,7 @@ const EventReader = ({
                                                     }
                                                 />
                                             ) : (
-                                                <div className="w-full bg-gray p-2">
+                                                <div className="bg-gray w-full p-2">
                                                     {participants?.find(
                                                         (p) =>
                                                             p.pivot.rank === i

@@ -52,7 +52,7 @@ const QRDialog = ({
         {shownQR && (
             <QRCode className="mx-auto my-2 max-w-full" value={shownQR?.code} />
         )}
-        <span className="w-full rounded-full bg-slate-200 px-3 py-1 text-center dark:bg-gray">
+        <span className="dark:bg-gray w-full rounded-full bg-slate-200 px-3 py-1 text-center">
             {shownQR?.code ?? ''}
         </span>
     </Dialog>
@@ -121,7 +121,7 @@ const YourTeamsPage = () => {
                                     className={
                                         currentUserMember(team)?.pivot.role ===
                                         TeamMemberRole.invited
-                                            ? '!h-fit !gap-4 bg-yellow-700 '
+                                            ? '!h-fit !gap-4 bg-yellow-700'
                                             : '!h-fit !gap-4'
                                     }
                                     buttonBar={

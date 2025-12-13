@@ -51,7 +51,7 @@ const ViewSlotEventsPage = () => {
                     )}
                 </h1>
 
-                <div className="mx-auto mb-4 mt-4 md:flex">
+                <div className="mx-auto mt-4 mb-4 md:flex">
                     <ButtonGroup className="mx-auto">
                         {slots.map((slot, index) => (
                             <Button

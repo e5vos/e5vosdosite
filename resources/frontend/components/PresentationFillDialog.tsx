@@ -130,7 +130,7 @@ const PresentationFillDialog = ({
                         </Form.Group>
                     </div>
 
-                    <div className="scroller h-full min-h-[500px]  overflow-auto">
+                    <div className="scroller h-full min-h-[500px] overflow-auto">
                         <ul className="mx-3">
                             {!availableStudents ? (
                                 <Loader />

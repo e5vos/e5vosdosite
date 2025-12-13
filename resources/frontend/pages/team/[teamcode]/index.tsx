@@ -49,7 +49,7 @@ const TeamPage = () => {
             </Dialog>
             <div className="text-center">
                 <Button
-                    className="mx-auto mb-3 w-full max-w-4xl "
+                    className="mx-auto mb-3 w-full max-w-4xl"
                     onClick={() => setOpenQR(true)}
                 >
                     {locale.openQR}

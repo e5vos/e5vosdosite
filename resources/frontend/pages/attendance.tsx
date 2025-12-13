@@ -82,7 +82,7 @@ const AttendancePage = () => {
     }
 
     return (
-        <div className="container mx-auto mt-2 ">
+        <div className="container mx-auto mt-2">
             <div className="mx-auto w-fit text-center">
                 <h1 className="text-4xl font-bold">
                     {locale.attendanceSheet} - {event?.name}

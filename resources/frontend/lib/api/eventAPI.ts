@@ -57,7 +57,8 @@ export const eventAPI = baseAPI.injectEndpoints({
             providesTags: (result, error, { id }) => [{ type: 'Event', id }],
         }),
         getEventParticipants: builder.query<Attender[], Pick<Event, 'id'>>({
-            query: ({ id }) => routeSwitcher('event.participants', id),
+            query: ({ id }) =>
+                routeSwitcher('event.participants', { eventId: id }),
             providesTags: (result, error, { id }) => [
                 { type: 'EventParticipants', id },
             ],

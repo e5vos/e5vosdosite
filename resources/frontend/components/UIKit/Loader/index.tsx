@@ -1,4 +1,4 @@
-import { ReactComponent as Donci } from 'assets/donci.svg'
+import Donci from 'assets/donci.svg?react'
 
 const Loader = ({ className }: { className?: string }) => {
     return (

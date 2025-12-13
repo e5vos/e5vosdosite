@@ -41,7 +41,7 @@ const PresentationCard = ({
             className={className}
             buttonBar={
                 <div>
-                    <div className="flew-row mb-1 mt-3 flex w-full justify-between px-2">
+                    <div className="flew-row mt-3 mb-1 flex w-full justify-between px-2">
                         <div>{presentation.location?.name ?? 'Ismeretlen'}</div>
                         <div className="mx-2">
                             {presentation.slot_id ?? '-'}/{presentation.id}

@@ -90,7 +90,7 @@ const SlotsPage = () => {
                     <Button variant="primary">{locale.create}</Button>
                 </Link>
                 <table className="mt-2 w-auto table-auto">
-                    <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                    <thead className="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" className="px-6 py-3">
                                 {locale.slots.id}
@@ -118,22 +118,22 @@ const SlotsPage = () => {
                                 key={slot.id}
                                 className="border-gray-700 bg-gray-800"
                             >
-                                <td className="whitespace-nowrap px-6 py-4 font-medium text-white">
+                                <td className="px-6 py-4 font-medium whitespace-nowrap text-white">
                                     {slot.id}
                                 </td>
-                                <td className="whitespace-nowrap px-6 py-4 font-medium text-white">
+                                <td className="px-6 py-4 font-medium whitespace-nowrap text-white">
                                     {slot.name}
                                 </td>
-                                <td className="whitespace-nowrap px-6 py-4 font-medium text-white">
+                                <td className="px-6 py-4 font-medium whitespace-nowrap text-white">
                                     {slot.slot_type}
                                 </td>
-                                <td className="whitespace-nowrap px-6 py-4 font-medium text-white">
+                                <td className="px-6 py-4 font-medium whitespace-nowrap text-white">
                                     {slot.starts_at}
                                 </td>
-                                <td className="whitespace-nowrap px-6 py-4 font-medium text-white">
+                                <td className="px-6 py-4 font-medium whitespace-nowrap text-white">
                                     {slot.ends_at}
                                 </td>
-                                <td className="whitespace-nowrap px-6 py-4 font-medium text-white">
+                                <td className="px-6 py-4 font-medium whitespace-nowrap text-white">
                                     <Link to={`/admin/sav/${slot.id}/kezel`}>
                                         <Button variant="info" className="mx-1">
                                             {locale.slots.edit}

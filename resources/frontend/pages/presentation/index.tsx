@@ -69,12 +69,12 @@ const SelectField = ({
         <div className="flex flex-1 flex-col items-stretch justify-center gap-4 text-center md:mx-3 md:flex-row md:gap-8">
             <div className="flex-1">
                 <h3>{locale.selectedPresentation}</h3>
-                <div className="rounded-lg bg-green-400 p-3 dark:bg-green-600 ">
+                <div className="rounded-lg bg-green-400 p-3 dark:bg-green-600">
                     {selectedPresentation?.name ??
                         locale.presentationNotYetSelected}
                 </div>
                 {selectedPresentation && (
-                    <div className="mt-2 rounded-lg bg-goldenrod p-3 ">
+                    <div className="bg-goldenrod mt-2 rounded-lg p-3">
                         <div className="text-lg">
                             <IoLocationSharp className="inline-block text-xl" />
                             {selectedPresentation.location?.name ??
@@ -148,7 +148,7 @@ const PresentationsPage = () => {
             }).unwrap()
             refetchSelected()
             refetchEvents()
-        } catch (err) {
+        } catch {
             return
         }
     }
@@ -237,7 +237,7 @@ const PresentationsPage = () => {
             <div className="container mx-auto">
                 <Title>{locale.title}</Title>
                 <ErrorMsgBox errorShown={errormsg !== ''} errormsg={errormsg} />
-                <div className="mb-4 flex-row items-stretch justify-between  md:flex ">
+                <div className="mb-4 flex-row items-stretch justify-between md:flex">
                     <ButtonGroup>
                         {slots.map((slot, index) => (
                             <Button

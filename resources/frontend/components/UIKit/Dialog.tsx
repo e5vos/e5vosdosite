@@ -16,7 +16,7 @@ const locale = Locale({
 })
 
 const Scroller = ({ children }: { children: ReactNode }) => {
-    return <div className="scroller  h-[500px] overflow-auto">{children}</div>
+    return <div className="scroller h-[500px] overflow-auto">{children}</div>
 }
 
 type Closable = {
@@ -59,7 +59,7 @@ const Dialog = ({
                 aria-hidden="true"
             />
             <div className="fixed inset-0 flex items-center justify-center p-4">
-                <DialogHeadless.Panel className="mx-auto flex max-h-[95%] min-w-[200px] max-w-[95%] flex-col gap-4 rounded-3xl border-8 border-slate-400 bg-slate-300 p-3 shadow-xl shadow-gray-800 dark:border-gray-700  dark:bg-gray-600">
+                <DialogHeadless.Panel className="mx-auto flex max-h-[95%] max-w-[95%] min-w-[200px] flex-col gap-4 rounded-3xl border-8 border-slate-400 bg-slate-300 p-3 shadow-xl shadow-gray-800 dark:border-gray-700 dark:bg-gray-600">
                     <div className="overflow-auto">
                         {isLoading ? (
                             <Loader />

@@ -1,4 +1,4 @@
-import { ReactComponent as Donci } from 'assets/donci.svg'
+import Donci from 'assets/donci.svg?react'
 import useUser from 'hooks/useUser'
 import { useState } from 'react'
 import QRCode from 'react-qr-code'
@@ -49,13 +49,13 @@ const CustomNavbar = () => {
                 >
                     {user.e5code ? (
                         <QRCode
-                            className="mb-2 mt-2 max-w-full"
+                            className="mt-2 mb-2 max-w-full"
                             value={user.e5code}
                         />
                     ) : (
-                        <Donci className="mx-auto animate-pulse fill-red" />
+                        <Donci className="fill-red mx-auto animate-pulse" />
                     )}
-                    <span className=" mt-2 w-full rounded-full bg-slate-200 px-3 py-1 text-center dark:bg-gray">
+                    <span className="dark:bg-gray mt-2 w-full rounded-full bg-slate-200 px-3 py-1 text-center">
                         {user.e5code ?? locale.noe5code}
                     </span>
                 </Dialog>

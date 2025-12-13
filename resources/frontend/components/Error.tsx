@@ -1,4 +1,4 @@
-import { ReactComponent as Donci } from 'assets/donci.svg'
+import Donci from 'assets/donci.svg?react'
 import { useEffectOnce } from 'hooks/useEffectOnce'
 import { ReactNode, useState } from 'react'
 
@@ -58,7 +58,7 @@ const Error = ({
     return (
         <div className="flex h-full flex-col items-center justify-center">
             <div className="text-9xl font-bold">
-                <Donci className="mx-auto animate-pulse fill-red" />
+                <Donci className="fill-red mx-auto animate-pulse" />
                 {code}{' '}
             </div>
             {children ?? (

@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, JSX } from 'react'
 
 import { Presentation } from 'types/models'
 
@@ -114,7 +114,7 @@ const PresentationsTable = ({
 }) => {
     return (
         <table className="flex w-full table-auto border-separate border-spacing-x-0.5 border-spacing-y-1 flex-col text-sm md:table md:border-spacing-y-2 md:text-lg">
-            <thead className="bg-slate- hidden border-separate bg-slate-400 text-black dark:bg-gray-500 dark:text-white md:table-header-group ">
+            <thead className="bg-slate- hidden border-separate bg-slate-400 text-black md:table-header-group dark:bg-gray-500 dark:text-white">
                 <tr className="shadow-md">
                     <th className="rounded-l-lg py-1">
                         {locale.presentation.title}
@@ -139,15 +139,15 @@ const PresentationsTable = ({
                     presentations.map((presentation, index) => (
                         <tr
                             key={index}
-                            className="mb-5 flex flex-col rounded bg-slate-200 shadow-md dark:bg-gray-600 md:table-row md:rounded-none"
+                            className="mb-5 flex flex-col rounded bg-slate-200 shadow-md md:table-row md:rounded-none dark:bg-gray-600"
                         >
-                            <td className="rounded-l-lg border-hidden px-2 py-0.5  text-center text-4xl font-bold md:text-lg">
+                            <td className="rounded-l-lg border-hidden px-2 py-0.5 text-center text-4xl font-bold md:text-lg">
                                 {presentation.name}
                             </td>
-                            <td className="px-2 py-0.5 text-center underline ">
+                            <td className="px-2 py-0.5 text-center underline">
                                 {presentation.organiser}
                             </td>
-                            <td className=" text-center ">
+                            <td className="text-center">
                                 <div className="flex h-full flex-col justify-around">
                                     <p className="mr-2 flex-1 px-2 py-0.5">
                                         {presentation.description}
@@ -215,7 +215,7 @@ const PresentationsTable = ({
                             </td>
                             <td
                                 className={
-                                    'm-4 whitespace-normal rounded-l-lg rounded-r-lg border-hidden  px-2 py-2 text-center text-black dark:text-white md:h-24 md:rounded-l-none md:py-0 ' +
+                                    'm-4 rounded-l-lg rounded-r-lg border-hidden px-2 py-2 text-center whitespace-normal text-black md:h-24 md:rounded-l-none md:py-0 dark:text-white ' +
                                     getColor(
                                         presentation.capacity
                                             ? presentation.capacity -

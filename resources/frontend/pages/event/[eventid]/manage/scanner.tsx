@@ -159,9 +159,9 @@ const Scanner = () => {
     if (!isScanner(event)(user) && !isOrganiser(event)(user))
         return <Error code={403} />
     return (
-        <div className="container mx-auto ">
+        <div className="container mx-auto">
             <div className="text-center">
-                <h1 className=" text-4xl font-bold">
+                <h1 className="text-4xl font-bold">
                     {event.name} - {locale.scanner}
                 </h1>
                 <h3>

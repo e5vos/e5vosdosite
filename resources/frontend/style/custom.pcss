@@ -34,12 +34,12 @@ form {
     label.form-group {
         @apply mb-2 block;
         span {
-            @apply -ml-1 -mt-2  px-1 text-sm;
+            @apply -mt-2 -ml-1 px-1 text-sm;
         }
 
         select,
         input {
-            @apply mb-2 mt-0 block w-full border-0 border-b-2 border-gray-200 invalid:border-red invalid:text-red focus:border-gray-300 focus:ring-0;
+            @apply invalid:border-red invalid:text-red mt-0 mb-2 block w-full border-0 border-b-2 border-gray-200 focus:border-gray-300 focus:ring-0;
             &[type='checkbox'] {
                 height: 1.5rem;
                 width: 1.5rem;

@@ -35,16 +35,16 @@ const EventCard = ({
                 <p className="mt-2 px-2">{event.description}</p>
             </div>
             <div>
-                <div className="flew-row mb-1 mt-2 flex w-full justify-between">
+                <div className="flew-row mt-2 mb-1 flex w-full justify-between">
                     <div className="rounded-full bg-slate-400 px-3 dark:bg-gray-400">
                         {event.location?.name ?? 'Ismeretlen'}
                     </div>
                     {(isAdmin(user) || isTeacherAdmin(user)) && (
-                        <div className=" flex overflow-hidden rounded-full bg-slate-200">
-                            <p className="bg-red-400 pl-3 pr-2">
+                        <div className="flex overflow-hidden rounded-full bg-slate-200">
+                            <p className="bg-red-400 pr-2 pl-3">
                                 {event.slot_id ?? '-'}
                             </p>
-                            <p className="bg-blue-400 pl-2 pr-3">{event.id}</p>
+                            <p className="bg-blue-400 pr-3 pl-2">{event.id}</p>
                         </div>
                     )}
                 </div>

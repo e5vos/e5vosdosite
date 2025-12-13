@@ -55,12 +55,12 @@ const EventsPage = () => {
             </div>
             <div className="mx-auto my-3 flex w-full gap-2 text-center">
                 <Form.Group className="!mb-0 flex w-full gap-2 rounded-lg bg-slate-300 pl-4 dark:bg-gray-600">
-                    <Form.Label className=" flex items-center gap-2 no-underline">
+                    <Form.Label className="flex items-center gap-2 no-underline">
                         <FaSearch />
                         {locale.search}
                     </Form.Label>
                     <Form.Control
-                        className="!mb-0 !w-full rounded-r-md !border-0 !bg-slate-200 dark:!bg-gray"
+                        className="dark:!bg-gray !mb-0 !w-full rounded-r-md !border-0 !bg-slate-200"
                         onChange={handleSearchChange}
                     />
                 </Form.Group>

@@ -64,7 +64,7 @@ const PermissionsPage = () => {
     return (
         <div className="mx-auto max-w-lg text-center">
             <div>
-                <h1 className="mb-10 text-4xl ">{locale.title}</h1>
+                <h1 className="mb-10 text-4xl">{locale.title}</h1>
             </div>
             <div>
                 <UserSearchCombobox

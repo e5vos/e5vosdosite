@@ -71,7 +71,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@trivago/prettier-plugin-sort-imports": "^4.2.1",
-    "@types/chart.js": "^2.9.38",
+    "@types/chart.js": "^4.0.1",
     "@types/js-cookie": "^3.0.4",
     "@types/node": "^18.18.5",
     "@types/react": "^18.2.28",

@@ -40,7 +40,7 @@
     "pusher-js": "^7.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.11.0",
+    "react-icons": "^5.5.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-qr-code": "^2.0.12",
     "react-qr-reader": "^3.0.0-beta-1",

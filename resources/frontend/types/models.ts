@@ -83,6 +83,7 @@ interface BasicAttendance {
     is_present: boolean
     rank: number | null
     event_id: number
+    event?: Event
 }
 export interface UserAttendance extends BasicAttendance {
     user_id: number
@@ -99,25 +100,36 @@ export type AttendingTeam = RequiredAndOmitFields<
     'members',
     'activity'
 > & {
-    pivot: Omit<TeamAttendance, 'team'>
+    pivot: RequiredAndOmitFields<TeamAttendance, 'event', 'team'>
 }
 export type AttendingUser = Omit<User, 'activity'> & {
-    pivot: Omit<UserAttendance, 'user'>
+    pivot: RequiredAndOmitFields<UserAttendance, 'event', 'user'>
 }
 
 export type Attender = AttendingUser | AttendingTeam
 
+export type EventedUserAttender = AttendingUser & {
+    pivot: { event: NonNullable<AttendingUser['pivot']['event']> }
+}
+export type EventedTeamAttender = AttendingTeam & {
+    pivot: { event: NonNullable<AttendingTeam['pivot']['event']> }
+}
+
+export type EventedAttender = EventedUserAttender | EventedTeamAttender
+
 export type Attendance = UserAttendance | TeamAttendance
 
 export const isTeamAttendance = (
-    attendance: Attendance
+    attendance: unknown
 ): attendance is TeamAttendance => {
-    return attendance.team_code !== undefined && attendance.team_code !== null
+    const att = attendance as TeamAttendance
+    return att.team_code !== undefined && att.team_code !== null
 }
 export const isUserAttendance = (
-    attendance: Attendance
+    attendance: unknown
 ): attendance is UserAttendance => {
-    return attendance.user_id !== undefined && attendance.team_code !== null
+    const att = attendance as UserAttendance
+    return att.user_id !== undefined && att.user_id !== null
 }
 
 export const isAttenderUser = (

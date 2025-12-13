@@ -14,12 +14,12 @@ jobs:
         steps:
             - uses: shivammathur/setup-php@v2
               with:
-                  php-version: '8.2'
+                  php-version: '8.5'
                   extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
                   coverage: none
             - uses: actions/setup-node@v4
               with:
-                  node-version: '20'
+                  node-version: '24'
             - name: Checkout source code
               uses: actions/checkout@v4
             - name: Directory Permissions
@@ -38,6 +38,8 @@ jobs:
               run: npm ci
             - name: Run frontend linters
               run: npm run lint
+            - name: Run frontend type checks
+              run: npm run typescript-typecheck
             - name: Build frontend
               run: npm run build
             - name: Start MySQL

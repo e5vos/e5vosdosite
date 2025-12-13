@@ -5,8 +5,9 @@ import adminAPI from 'lib/api/adminAPI'
 import { isAdmin } from 'lib/gates'
 import Locale from 'lib/locale'
 
-import SlotForm, { SlotFormValues } from 'components/Forms/SlotForm'
+import SlotForm from 'components/Forms/SlotForm'
 import { gated } from 'components/Gate'
+import { SlotFormValues } from 'components/Slot/CRUD'
 
 const locale = Locale({
     hu: {

@@ -102,7 +102,7 @@
     "serverless": "^4.4.7",
     "serverless-lift": "^1.32.1",
     "serverless-pseudo-parameters": "^2.6.1",
-    "storybook": "^10.1.8",
+    "storybook": "^10.1.10",
     "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4.1.18",
     "ts-node": "^10.9.1",

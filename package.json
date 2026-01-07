@@ -71,7 +71,7 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.15",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.0",
+    "@testing-library/react": "^16.3.1",
     "@trivago/prettier-plugin-sort-imports": "^6.0.0",
     "@types/chart.js": "^4.0.1",
     "@types/js-cookie": "^3.0.4",

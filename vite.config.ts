@@ -52,7 +52,7 @@ export const config = {
     },
     plugins: [
         tsconfigPaths(),
-        laravel(['resources/frontend/main.tsx']),
+        laravel(['resources/frontend/main.tsx', 'resources/css/app.css']),
         react(),
         svgr(),
     ],

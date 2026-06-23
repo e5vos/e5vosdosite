@@ -55,6 +55,39 @@ class AuthController extends Controller
         return view('oauth.callback', ['token' => $token]);
     }
 
+    /**
+     * Session-based OAuth callback for Livewire web flow.
+     * Creates a Laravel session instead of a Sanctum token.
+     */
+    public function webCallback(Request $request)
+    {
+        $userData = Socialite::driver('google_web')->user();
+        $user = User::firstWhere('email', $userData->email);
+
+        if (! isset($user)) {
+            $user = User::create([
+                'name' => $userData->name,
+                'email' => $userData->email,
+                'img_url' => $userData->avatar,
+            ]);
+            Permission::firstOrCreate([
+                'user_id' => $user->id,
+                'code' => 'STD',
+            ]);
+        }
+        if (! $user->google_id) {
+            $user->google_id = Hash::make($userData->id);
+        }
+
+        if (! Hash::check($userData->id, $user->google_id)) {
+            abort(400);
+        }
+        $user->save();
+        Auth::login($user, remember: true);
+
+        return redirect()->intended(route('home'));
+    }
+
     public function logout(Request $request)
     {
         Auth::logout();

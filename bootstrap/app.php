@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Middleware\EnsureEmailIsVerified;
+use App\Http\Middleware\EnsureHasE5Code;
+use App\Http\Middleware\EnsureHasPermission;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -30,16 +32,18 @@ $app = Application::configure(basePath: dirname(__DIR__))
             Request::HEADER_X_FORWARDED_PROTO |
             Request::HEADER_X_FORWARDED_AWS_ELB);
 
-        // CSRF is disabled application-wide (stateless API + external auth flow).
-        // Sanctum's stateful CSRF check is likewise disabled via config/sanctum.php.
-        $middleware->validateCsrfTokens(except: ['*']);
+        // CSRF is only disabled for the API and the legacy OAuth popup callback.
+        // Web routes (including Livewire) retain CSRF protection.
+        $middleware->validateCsrfTokens(except: ['api/*', 'auth/callback']);
 
-        // Unauthenticated users hitting the "auth" middleware go to the login endpoint.
-        $middleware->redirectGuestsTo('https://e5vosdo.hu/api/login');
+        // Unauthenticated users hitting the "auth" middleware go to the login page.
+        $middleware->redirectGuestsTo('/login');
 
-        // Custom "verified" middleware responds with JSON 409 instead of a redirect.
+        // Middleware aliases used in route definitions.
         $middleware->alias([
-            'verified' => EnsureEmailIsVerified::class,
+            'verified'   => EnsureEmailIsVerified::class,
+            'has.e5code' => EnsureHasE5Code::class,
+            'permission' => EnsureHasPermission::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

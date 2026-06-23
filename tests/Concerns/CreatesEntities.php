@@ -59,6 +59,9 @@ trait CreatesEntities
             'ends_at' => $slot->ends_at,
             'capacity' => null,
             'signup_type' => 'user',
+            // Keep signup closed by default so @can('signup', $event) is never
+            // evaluated in Livewire templates unless the test explicitly needs it.
+            'signup_deadline' => now()->subDay(),
             'root_parent' => null,
             'direct_child' => null,
         ], $attributes));
@@ -73,12 +76,18 @@ trait CreatesEntities
      * A unique, schema-valid e5code (matches the DB check constraint
      * 20[0-9]{2}[A-FN][0-9]{2}EJG[0-9]{3}). Used where signup/attendance logic
      * branches on a 13-character attender code.
+     *
+     * Supports up to 100 000 unique codes across a test run by varying both the
+     * middle two digits and the final three digits, avoiding the wrap-around
+     * collision that occurs when only the final three digits are used.
      */
     protected function uniqueE5code(): string
     {
-        $n = str_pad((string) (++static::$entitySeq % 1000), 3, '0', STR_PAD_LEFT);
+        $n = ++static::$entitySeq;
+        $suffix = str_pad((string) ($n % 1000), 3, '0', STR_PAD_LEFT);
+        $mid = str_pad((string) (intdiv($n, 1000) % 100), 2, '0', STR_PAD_LEFT);
 
-        return '2099N00EJG'.$n;
+        return "2099N{$mid}EJG{$suffix}";
     }
 
     /**

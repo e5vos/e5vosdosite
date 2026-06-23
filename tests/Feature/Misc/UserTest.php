@@ -105,4 +105,26 @@ class UserTest extends TestCase
             ->assertStatus(200)
             ->assertJsonFragment(['code' => $team->code]);
     }
+
+    public function test_plain_user_cannot_delete_another_user()
+    {
+        $target = $this->makeUser();
+
+        $this->actingAs($this->makeUser())
+            ->deleteJson('/api/user/'.$target->id)
+            ->assertStatus(403);
+    }
+
+    public function test_admin_can_soft_delete_a_user()
+    {
+        $admin = $this->makeUser();
+        $this->grant($admin, PermissionType::Admin->value);
+        $target = $this->makeUser();
+
+        $this->actingAs($admin)
+            ->deleteJson('/api/user/'.$target->id)
+            ->assertStatus(204);
+
+        $this->assertDatabaseMissing('users', ['id' => $target->id]);
+    }
 }

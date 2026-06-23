@@ -22,3 +22,4 @@ deploy.zip
 .serverless/cloudformation-template-update-stack.json
 .serverless/meta.json
 .serverless/serverless-state.json
+.env.dusk.local

@@ -147,7 +147,7 @@ class EventPolicy
     public function unsignup(User $user, ?Event $event = null)
     {
         if (! request()->has('attender')) {
-            abort(400, 'No attender specified');
+            return false;
         }
 
         if (! Setting::find('e5n.events.signup')?->value) {

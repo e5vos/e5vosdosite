@@ -108,4 +108,14 @@ class TeamModelTest extends TestCase
 
         $this->assertTrue($team->events()->get()->contains('id', $event->id));
     }
+
+    public function test_activity_relationship_returns_attendances()
+    {
+        $team = $this->makeTeam();
+        $this->addMember($team, $this->makeUser(), MembershipType::Leader);
+        $event = $this->makeEvent(['signup_type' => 'team']);
+        $team->signUp($event);
+
+        $this->assertGreaterThanOrEqual(1, $team->activity()->count());
+    }
 }

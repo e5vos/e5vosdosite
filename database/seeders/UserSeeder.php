@@ -4,36 +4,63 @@ namespace Database\Seeders;
 
 use App\Helpers\PermissionType;
 use App\Models\Event;
-use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        $events = Event::all();
-        $permissions_count = 5;
-        $i = $permissions_count;
-        $events_count = $events->count();
-        User::factory()
-            ->count(1000)
-            ->has(
-                Permission::factory()
-                    ->count($permissions_count)
-                    ->state(
-                        function ($attributes) use ($events, $permissions_count, &$i, $events_count) {
-                            $eventId = $events[rand(0, round(($events_count) / $permissions_count) - 1) + ($i < $permissions_count - 1 ? ++$i : $i = 0) * $events_count / $permissions_count]->id;
+    public function __construct(private int $count = 1000) {}
 
-                            return ['event_id' => $attributes['code'] == PermissionType::Organiser->value ? $eventId : null];
-                        }
-                    )
-            )
-            ->create();
+    public function run(): void
+    {
+        $users = User::factory()->count($this->count)->create();
+        $eventIds = Event::pluck('id')->all();
+        $eventCount = count($eventIds);
+        $now = Carbon::now();
+
+        // Build all permission rows in-memory, then bulk-insert in one query per chunk.
+        $rows = [];
+        $orgIndex = 0;
+
+        foreach ($users as $i => $user) {
+            // Every user gets a Student permission.
+            $rows[] = [
+                'user_id' => $user->id,
+                'code' => PermissionType::Student->value,
+                'event_id' => null,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+
+            // Distribute Organiser permissions across events so each event gets
+            // roughly the same share of organisers (mirrors the old complex closure).
+            if ($eventCount > 0) {
+                $rows[] = [
+                    'user_id' => $user->id,
+                    'code' => PermissionType::Organiser->value,
+                    'event_id' => $eventIds[$orgIndex % $eventCount],
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+                $orgIndex++;
+            }
+
+            // Sprinkle a few extra role permissions for variety.
+            if ($i % 20 === 0) {
+                $rows[] = ['user_id' => $user->id, 'code' => PermissionType::Teacher->value,      'event_id' => null, 'created_at' => $now, 'updated_at' => $now];
+            }
+            if ($i % 50 === 0) {
+                $rows[] = ['user_id' => $user->id, 'code' => PermissionType::Admin->value,        'event_id' => null, 'created_at' => $now, 'updated_at' => $now];
+            }
+            if ($i % 100 === 0) {
+                $rows[] = ['user_id' => $user->id, 'code' => PermissionType::TeacherAdmin->value, 'event_id' => null, 'created_at' => $now, 'updated_at' => $now];
+            }
+        }
+
+        foreach (array_chunk($rows, 500) as $chunk) {
+            DB::table('permissions')->insert($chunk);
+        }
     }
 }

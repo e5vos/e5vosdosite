@@ -5,7 +5,6 @@ namespace Tests;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -41,13 +40,12 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * Migrate and seed, but only when the testing database is empty.
+     * Migrate:fresh and seed once per test-runner process.
      *
-     * The DatabaseSeeder inserts ~1000 users plus events and attendances, which
-     * is expensive. Seeding only when empty means that cost is paid at most once
-     * per machine (the data persists between runs inside the committed schema),
-     * while each individual test stays isolated via the transaction above. Drop
-     * the testing database to force a reseed after schema or seeder changes.
+     * $databasePrepared is false at process start (new run), so every `php
+     * vendor/bin/phpunit` invocation gets a clean, freshly-seeded database.
+     * Individual tests are still isolated by the beginTransaction/rollBack pair
+     * above, so the seed data is never mutated between tests.
      */
     private function prepareDatabaseOnce(): void
     {
@@ -56,9 +54,7 @@ abstract class TestCase extends BaseTestCase
         }
         self::$databasePrepared = true;
 
-        if (! Schema::hasTable('users') || DB::table('users')->count() === 0) {
-            Artisan::call('migrate:fresh');
-            Artisan::call('db:seed', ['--class' => 'DatabaseSeeder']);
-        }
+        Artisan::call('migrate:fresh');
+        Artisan::call('db:seed', ['--class' => 'TestDatabaseSeeder']);
     }
 }

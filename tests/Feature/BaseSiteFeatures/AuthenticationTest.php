@@ -3,6 +3,7 @@
 namespace Tests\Feature\BaseSiteFeatures;
 
 use App\Models\User;
+use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Facades\Socialite;
 use Tests\TestCase;
 
@@ -33,10 +34,29 @@ class AuthenticationTest extends TestCase
         $this->assertStringContainsString('https://accounts.google.com/o/oauth2/auth', $response->json('url'));
     }
 
-    public function test_users_can_login_with_oauth()
+    public function test_users_can_login_with_oauth(): void
     {
-        $this->markTestSkipped('This test is bad, function works though');
-        $user = User::first();
-        Socialite::shouldReceive('driver->google')->andReturn($user);
+        $fakeUser = new class
+        {
+            public string $id = 'fake-google-id-12345';
+
+            public string $email = 'new.oauth.user@test.example.com';
+
+            public string $name = 'New OAuth User';
+
+            public ?string $avatar = null;
+        };
+
+        $provider = \Mockery::mock(Provider::class);
+        $provider->shouldReceive('stateless')->andReturnSelf();
+        $provider->shouldReceive('user')->andReturn($fakeUser);
+
+        Socialite::shouldReceive('driver')->with('google')->andReturn($provider);
+
+        $response = $this->get('/auth/callback');
+        $response->assertOk();
+
+        $this->assertDatabaseHas('users', ['email' => 'new.oauth.user@test.example.com']);
+        $this->assertDatabaseHas('personal_access_tokens', []);
     }
 }

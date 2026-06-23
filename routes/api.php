@@ -36,7 +36,7 @@ use Tighten\Ziggy\Ziggy;
 |
 */
 
-Broadcast::routes(['middleware' => ['auth:sanctum']]);
+Broadcast::routes(['middleware' => ['auth:sanctum,web']]);
 
 Route::get('/ziggy', fn () => response()->json(new Ziggy));
 

@@ -19,6 +19,8 @@
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.5",
         "laravel/tinker": "^3.0",
+        "livewire/livewire": "^4.3",
+        "livewire/volt": "^1.10",
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-google-cloud-storage": "^2.4",
         "tightenco/ziggy": "^2.6"

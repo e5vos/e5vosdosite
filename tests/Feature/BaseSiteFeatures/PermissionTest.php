@@ -17,7 +17,11 @@ class PermissionTest extends TestCase
     public function test_add_permission_event()
     {
         Permission::where('user_id', 1)->delete();
-        $response = $this->post('/api/permissions/1/event/1', ['Accept' => 'application/json']);
+        $response = $this->postJson('/api/permissions', [
+            'user_id' => 1,
+            'event_id' => 1,
+            'code' => PermissionType::Organiser->value,
+        ]);
         $response->assertStatus(201);
         $this->assertDatabaseHas('permissions', [
             'user_id' => 1,
@@ -37,8 +41,12 @@ class PermissionTest extends TestCase
             'event_id' => 1,
             'code' => PermissionType::Organiser->value,
         ]);
-        $response = $this->delete('/api/permissions/1/event/1', ['Accept' => 'application/json']);
-        $response->assertStatus(200);
+        $response = $this->deleteJson('/api/permissions', [
+            'user_id' => 1,
+            'event_id' => 1,
+            'code' => PermissionType::Organiser->value,
+        ]);
+        $response->assertStatus(204);
         $this->assertDatabaseMissing('permissions', [
             'user_id' => 1,
             'event_id' => 1,

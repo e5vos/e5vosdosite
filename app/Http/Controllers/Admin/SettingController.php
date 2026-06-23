@@ -29,7 +29,7 @@ class SettingController extends Controller
     {
         $setting = Setting::create(['key' => $request->key, 'value' => $request->value]);
 
-        return (new SettingResource($setting))->jsonSerialize();
+        return response((new SettingResource($setting))->jsonSerialize(), 201);
     }
 
     /**

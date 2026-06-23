@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Setting
  *
  * @property string $key
- * @property bool $value
+ * @property string $value
  */
 class Setting extends Model
 {

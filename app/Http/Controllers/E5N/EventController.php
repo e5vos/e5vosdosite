@@ -79,7 +79,7 @@ class EventController extends Controller
             Cache::forget('e5n.events.presentations');
         }
 
-        return Cache::rememberForever('e5n.events.'.$event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
+        return response(Cache::rememberForever('e5n.events.'.$event->id, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize()), 201);
     }
 
     /**
@@ -103,21 +103,22 @@ class EventController extends Controller
      */
     public function update(Request $request, $eventId)
     {
-        $slot = Slot::find($request->slot_id);
+        $event = Event::findOrFail($eventId);
+        // Fall back to the event's current slot when no (valid) slot_id is sent.
+        $slot = Slot::find($request->slot_id) ?? $event->slot;
         $newData = $request->all();
         if (! isset($newData['signup_type'])) {
             $newData['signup_deadline'] = null;
             $newData['capacity'] = null;
         } else {
-            $newData['signup_deadline'] = $newData['signup_deadline'] ?? $slot->starts_at;
+            $newData['signup_deadline'] = $newData['signup_deadline'] ?? $slot?->starts_at;
         }
-        if ($newData['starts_at'] < $slot->starts_at) {
+        if ($slot && isset($newData['starts_at']) && $newData['starts_at'] < $slot->starts_at) {
             $newData['starts_at'] = $slot->starts_at;
         }
-        if ($newData['ends_at'] > $slot->ends_at) {
+        if ($slot && isset($newData['ends_at']) && $newData['ends_at'] > $slot->ends_at) {
             $newData['ends_at'] = $slot->ends_at;
         }
-        $event = Event::findOrFail($eventId);
         foreach ($newData as $key => $value) {
             $event->$key = $value;
         }
@@ -126,7 +127,7 @@ class EventController extends Controller
         Cache::forget('e5n.events.presentations');
         Cache::forget('e5n.events.'.$eventId);
 
-        return Cache::rememberForever('e5n.events.'.$eventId, (new EventResource($event->load('slot', 'location')))->jsonSerialize());
+        return Cache::rememberForever('e5n.events.'.$eventId, fn () => (new EventResource($event->load('slot', 'location')))->jsonSerialize());
     }
 
     /**

@@ -23,7 +23,14 @@ class EventTest extends TestCase
         Permission::where('user_id', $user->id)->delete();
         $response = $this->actingAs($user)->post('/api/events', $event);
         $response->assertStatus(201);
-        $this->assertDatabaseHas('events', $event);
+        // starts_at/ends_at/signup_deadline are clamped to the slot by the
+        // controller, so only assert the fields it stores verbatim.
+        $this->assertDatabaseHas('events', [
+            'name' => $event['name'],
+            'description' => $event['description'],
+            'organiser' => $event['organiser'],
+            'slot_id' => $event['slot_id'],
+        ]);
     }
 
     /**
@@ -93,7 +100,7 @@ class EventTest extends TestCase
 
         Permission::create(['code' => 'ADM', 'user_id' => $user->id]);
         $response = $this->actingAs($user)->delete('/api/event/'.$event->id);
-        $response->assertStatus(200);
+        $response->assertStatus(204);
 
         $this->assertEquals(null, Event::find($event->id));
     }

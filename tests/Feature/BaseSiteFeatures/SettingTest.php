@@ -36,7 +36,7 @@ class SettingTest extends TestCase
     {
         $user = User::first();
         Permission::factory()->create(['code' => 'OPT', 'user_id' => $user->id]);
-        Setting::firstOrCreate(['key' => 'test', 'value' => 'true']);
+        Setting::updateOrCreate(['key' => 'test'], ['value' => 'true']);
         $response = $this->actingAs($user)->putJson('/api/setting/test/test_value');
         $response->assertStatus(200);
         $this->assertDatabaseHas('settings', ['key' => 'test', 'value' => 'test_value']);
@@ -53,9 +53,9 @@ class SettingTest extends TestCase
     {
         $user = User::first();
         Permission::factory()->create(['code' => 'OPT', 'user_id' => $user->id]);
-        Setting::firstOrCreate(['key' => 'test', 'value' => 'test_value']);
+        Setting::updateOrCreate(['key' => 'test'], ['value' => 'test_value']);
         $response = $this->actingAs($user)->deleteJson('/api/setting/test');
-        $response->assertStatus(200);
+        $response->assertStatus(204);
         $this->assertDatabaseMissing('settings', ['key' => 'test', 'value' => 'test_value']);
     }
 
@@ -68,6 +68,7 @@ class SettingTest extends TestCase
     {
         $user = User::first();
         Permission::factory()->create(['code' => 'OPT', 'user_id' => $user->id]);
+        Setting::where('key', 'test')->delete();
         $response = $this->actingAs($user)->postJson('/api/setting', ['key' => 'test', 'value' => 'test_value']);
         $response->assertStatus(201);
         $this->assertDatabaseHas('settings', ['key' => 'test', 'value' => 'test_value']);

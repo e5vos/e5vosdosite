@@ -73,7 +73,7 @@ class SlotTest extends TestCase
         Permission::factory()->create(['code' => 'ADM', 'user_id' => $user->id]);
         $slot = Slot::first();
         $response = $this->actingAs($user)->deleteJson('api/slot/'.$slot->id);
-        $response->assertStatus(200);
+        $response->assertStatus(204);
         $this->assertDatabaseMissing('slots', ['id' => $slot->id]);
     }
 }

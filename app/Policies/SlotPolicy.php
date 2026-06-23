@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Helpers\PermissionType;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class SlotPolicy
 {
@@ -23,7 +24,7 @@ class SlotPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function viewAny()
     {
@@ -33,7 +34,7 @@ class SlotPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function create()
     {
@@ -43,7 +44,7 @@ class SlotPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function update()
     {
@@ -53,7 +54,7 @@ class SlotPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function delete()
     {
@@ -63,7 +64,7 @@ class SlotPolicy
     /**
      * Determine whether the user can see free students.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function freeStudents(User $user)
     {

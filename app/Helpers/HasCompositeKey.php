@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * This trait provides functionality for models with composite primary keys and fixes the Illegal offsett type error.
  */
@@ -10,8 +12,8 @@ trait HasCompositeKey
     /**
      * Set the keys for a save update query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     protected function setKeysForSaveQuery($query)
     {

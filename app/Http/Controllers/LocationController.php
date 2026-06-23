@@ -6,6 +6,7 @@ use App\Http\Resources\EventResource;
 use App\Http\Resources\LocationResource;
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
 class LocationController extends Controller
@@ -13,7 +14,7 @@ class LocationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -23,7 +24,7 @@ class LocationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Location  $location
+     * @param  Location  $location
      * @return LocationResource
      */
     public function show(int $locationId)
@@ -36,7 +37,7 @@ class LocationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -49,7 +50,7 @@ class LocationController extends Controller
     /**
      * Update the specified location in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, int $locationId)
     {
@@ -68,7 +69,7 @@ class LocationController extends Controller
     /**
      * Remove the specified location from storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(int $locationId)
     {
@@ -84,7 +85,7 @@ class LocationController extends Controller
     /**
      * Display a listing of the events for the specified location.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function events(int $locationId)
     {
@@ -96,7 +97,7 @@ class LocationController extends Controller
     /**
      * Display a listing of the events ongoing in the specific time.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function currentEvents(int $locationId)
     {

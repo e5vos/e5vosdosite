@@ -7,7 +7,7 @@ use App\Models\BonusPoint;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BonusPoint>
+ * @extends Factory<BonusPoint>
  */
 class BonusPointFactory extends Factory
 {

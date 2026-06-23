@@ -6,6 +6,7 @@ use App\Helpers\PermissionType;
 use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class PermissionPolicy
 {
@@ -32,7 +33,7 @@ class PermissionPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function create(User $user)
     {
@@ -56,7 +57,7 @@ class PermissionPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function destroy(User $user, Permission $permission)
     {

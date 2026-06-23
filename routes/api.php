@@ -23,7 +23,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
-use Tightenco\Ziggy\Ziggy;
+use Tighten\Ziggy\Ziggy;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,7 +111,7 @@ Route::controller(TeamController::class)->middleware(['auth:sanctum'])->group(fu
         Route::prefix('/members')->group(function () {
             // Route::post('/', 'invite')->can('create', TeamMembership::class)->name('team.invite');
             // Route::delete('/', 'kick')->can('delete', TeamMembership::class)->name('team.kick');
-            Route::put('/', 'promote')->can('update', TeamMemberShip::class)->name('team.promote');
+            Route::put('/', 'promote')->can('update', TeamMembership::class)->name('team.promote');
         });
     });
 });

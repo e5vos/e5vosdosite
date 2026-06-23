@@ -64,7 +64,7 @@ functions:
     # This function runs the Laravel website/API
     web:
         handler: Bref\LaravelBridge\Http\OctaneHandler
-        runtime: php-82
+        runtime: php-84
         timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
         environment:
             BREF_LOOP_MAX: 250
@@ -75,7 +75,7 @@ functions:
     # This function lets us run artisan commands in Lambda
     artisan:
         handler: artisan
-        runtime: php-82-console
+        runtime: php-84-console
         timeout: 720 # in seconds
         # Uncomment to also run the scheduler every minute
         events:
@@ -87,7 +87,7 @@ constructs:
         type: queue
         worker:
             handler: Bref\LaravelBridge\Queue\QueueHandler
-            runtime: php-82
+            runtime: php-84
             timeout: 60 # seconds
     website:
         type: server-side-website

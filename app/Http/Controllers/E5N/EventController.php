@@ -17,6 +17,7 @@ use App\Models\Slot;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
 class EventController extends Controller
@@ -24,7 +25,7 @@ class EventController extends Controller
     /**
      * return event list
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(?int $slotId = null)
     {
@@ -53,7 +54,7 @@ class EventController extends Controller
     /**
      * Create an event.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -84,7 +85,7 @@ class EventController extends Controller
     /**
      * return specific event
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(int $id)
     {
@@ -98,7 +99,7 @@ class EventController extends Controller
     /**
      * edit a specific event.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $eventId)
     {
@@ -131,7 +132,7 @@ class EventController extends Controller
     /**
      * delete a specific event.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function delete($eventId)
     {
@@ -148,7 +149,7 @@ class EventController extends Controller
     /**
      * restore a specific event.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function restore($eventId)
     {
@@ -165,7 +166,7 @@ class EventController extends Controller
     /**
      * close signup of event
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function close_signup($eventId)
     {
@@ -182,7 +183,7 @@ class EventController extends Controller
     /**
      * return all presentations
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function presentations()
     {

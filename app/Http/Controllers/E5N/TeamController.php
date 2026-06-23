@@ -10,6 +10,7 @@ use App\Models\Team;
 use App\Models\TeamMembership;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
@@ -18,7 +19,7 @@ class TeamController extends Controller
     /**
      * Display a listing of teams.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -28,7 +29,7 @@ class TeamController extends Controller
     /**
      * create a team
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -103,7 +104,7 @@ class TeamController extends Controller
      * Promote, demote, kick or invite a user to a team
      *
      * @param  string  $teamCode
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function promote(Request $request, $teamCode)
     {

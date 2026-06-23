@@ -5,8 +5,8 @@ namespace App\Models;
 use App\Exceptions\NotPresentationException;
 use App\Helpers\PermissionType;
 use App\Helpers\SlotType;
-use Astrotomic\CachableAttributes\CachableAttributes;
-use Astrotomic\CachableAttributes\CachesAttributes;
+use App\Models\Concerns\CachableAttributes;
+use App\Models\Concerns\CachesAttributes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 /**
@@ -30,10 +31,10 @@ use Illuminate\Support\Collection;
  * @property float $rating
  * @property int $orgaCount
  * @property string|null $img_url
- * @property \Illuminate\Support\Carbon|null $starts_at
- * @property \Illuminate\Support\Carbon|null $ends_at
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon|null $starts_at
+ * @property Carbon|null $ends_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property int|null $root_parent
  * @property int|null $direct_child
  */

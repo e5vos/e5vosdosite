@@ -5,11 +5,13 @@ namespace App\Policies;
 use App\Helpers\MembershipType;
 use App\Helpers\PermissionType;
 use App\Models\Team;
+use App\Models\TeamMemberShip;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Cache;
 
-class TeamMemberShipPolicy
+class TeamMembershipPolicy
 {
     use HandlesAuthorization;
 
@@ -26,7 +28,7 @@ class TeamMemberShipPolicy
     /**
      * Determine whether the user can view the models for the specific team.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function view(User $user, Team|string|null $team = null)
     {
@@ -36,7 +38,7 @@ class TeamMemberShipPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function create(User $user, Team|string|null $team = null)
     {
@@ -46,8 +48,8 @@ class TeamMemberShipPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\TeamMemberShip  $teamMemberShip
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param  TeamMemberShip  $teamMemberShip
+     * @return Response|bool
      */
     public function update(User $user)
     {
@@ -75,8 +77,8 @@ class TeamMemberShipPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\TeamMemberShip  $teamMemberShip
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param  TeamMemberShip  $teamMemberShip
+     * @return Response|bool
      */
     public function delete(User $user)
     {

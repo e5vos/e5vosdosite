@@ -17,22 +17,21 @@ class TeamSeeder extends Seeder
     public function run()
     {
         $teamsize = 10;
-        $users = User::all();
+        $userIds = User::pluck('id');
+
+        // Each team gets up to $teamsize distinct members. Drawing from a
+        // shuffled pool guarantees uniqueness within a team, so the composite
+        // (user_id, team_code) primary key on team_memberships never collides.
         Team::factory()
-            ->has(
-                TeamMembership::factory()
-                    ->count($teamsize)
-                    ->state(
-                        fn ($attributes, Team $team) => [
-                            'user_id' => $users->shuffle()
-                                ->filter(
-                                    fn ($user) => ! array_search($user->id, $team->members->toArray())
-                                )->first()->id,
-                        ]
-                    ),
-                'memberships'
-            )
             ->count(10)
-            ->create();
+            ->create()
+            ->each(function (Team $team) use ($userIds, $teamsize) {
+                $userIds->shuffle()
+                    ->take($teamsize)
+                    ->each(fn ($userId) => TeamMembership::factory()->create([
+                        'team_code' => $team->code,
+                        'user_id' => $userId,
+                    ]));
+            });
     }
 }

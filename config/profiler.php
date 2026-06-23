@@ -1,5 +1,20 @@
 <?php
 
+use JKocik\Laravel\Profiler\Processors\BroadcastingProcessor;
+use JKocik\Laravel\Profiler\Trackers\AuthTracker;
+use JKocik\Laravel\Profiler\Trackers\BindingsTracker;
+use JKocik\Laravel\Profiler\Trackers\ConfigTracker;
+use JKocik\Laravel\Profiler\Trackers\ContentTracker;
+use JKocik\Laravel\Profiler\Trackers\EventsTracker;
+use JKocik\Laravel\Profiler\Trackers\ExceptionTracker;
+use JKocik\Laravel\Profiler\Trackers\PathsTracker;
+use JKocik\Laravel\Profiler\Trackers\QueriesTracker;
+use JKocik\Laravel\Profiler\Trackers\RouteTracker;
+use JKocik\Laravel\Profiler\Trackers\ServerTracker;
+use JKocik\Laravel\Profiler\Trackers\ServiceProvidersTracker;
+use JKocik\Laravel\Profiler\Trackers\SessionTracker;
+use JKocik\Laravel\Profiler\Trackers\ViewsTracker;
+
 return [
 
     /*
@@ -42,20 +57,20 @@ return [
     */
 
     'trackers' => [
-        \JKocik\Laravel\Profiler\Trackers\ConfigTracker::class, // App > Config tab
-        \JKocik\Laravel\Profiler\Trackers\ServiceProvidersTracker::class, // App > Service Providers tab
-        \JKocik\Laravel\Profiler\Trackers\BindingsTracker::class, // App > Bindings tab
-        \JKocik\Laravel\Profiler\Trackers\PathsTracker::class, // App > Paths tab
-        \JKocik\Laravel\Profiler\Trackers\SessionTracker::class, // Request > Session tab
-        \JKocik\Laravel\Profiler\Trackers\RouteTracker::class, // Request > Route tab
-        \JKocik\Laravel\Profiler\Trackers\ServerTracker::class, // Request > Server tab
-        \JKocik\Laravel\Profiler\Trackers\ContentTracker::class, // Response > Content and JSON tabs
-        \JKocik\Laravel\Profiler\Trackers\ViewsTracker::class, // Views tab
-        \JKocik\Laravel\Profiler\Trackers\EventsTracker::class, // Events tab
-        \JKocik\Laravel\Profiler\Trackers\QueriesTracker::class, // Queries tab
+        ConfigTracker::class, // App > Config tab
+        ServiceProvidersTracker::class, // App > Service Providers tab
+        BindingsTracker::class, // App > Bindings tab
+        PathsTracker::class, // App > Paths tab
+        SessionTracker::class, // Request > Session tab
+        RouteTracker::class, // Request > Route tab
+        ServerTracker::class, // Request > Server tab
+        ContentTracker::class, // Response > Content and JSON tabs
+        ViewsTracker::class, // Views tab
+        EventsTracker::class, // Events tab
+        QueriesTracker::class, // Queries tab
         //        \JKocik\Laravel\Profiler\Trackers\RedisTracker::class, // Redis tab (from Laravel 5.7)
-        \JKocik\Laravel\Profiler\Trackers\AuthTracker::class, // Auth tab
-        \JKocik\Laravel\Profiler\Trackers\ExceptionTracker::class, // Exception tab
+        AuthTracker::class, // Auth tab
+        ExceptionTracker::class, // Exception tab
     ],
 
     /*
@@ -90,7 +105,7 @@ return [
     */
 
     'processors' => [
-        \JKocik\Laravel\Profiler\Processors\BroadcastingProcessor::class,
+        BroadcastingProcessor::class,
     ],
 
     'turn_off_processors_for_paths' => [

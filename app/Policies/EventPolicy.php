@@ -13,6 +13,7 @@ use App\Models\Event;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class EventPolicy
 {
@@ -31,7 +32,7 @@ class EventPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function update(User $user, ?Event $event = null)
     {
@@ -59,7 +60,7 @@ class EventPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function delete(User $user, ?Event $event = null)
     {
@@ -71,8 +72,8 @@ class EventPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param  User  $user
+     * @return Response|bool
      */
     public function restore($user)
     {
@@ -82,7 +83,7 @@ class EventPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function forceDelete()
     {
@@ -95,9 +96,9 @@ class EventPolicy
      *
      * @return bool
      *
-     * @throws \App\Exceptions\SignupDisabledException
-     * @throws \App\Exceptions\SignupClosedException
-     * @throws \App\Exceptions\WrongSignupTypeException
+     * @throws SignupDisabledException
+     * @throws SignupClosedException
+     * @throws WrongSignupTypeException
      */
     public function signup(User $user, ?Event $event = null)
     {
@@ -128,8 +129,8 @@ class EventPolicy
      *
      * @return bool
      *
-     * @throws \App\Exceptions\SignupDisabledException
-     * @throws \App\Exceptions\SignupClosedException
+     * @throws SignupDisabledException
+     * @throws SignupClosedException
      */
     public function unsignup(User $user, ?Event $event = null)
     {
@@ -155,10 +156,10 @@ class EventPolicy
      *
      * @return bool
      *
-     * @throws \App\Exceptions\AttendanceRegisterDisabledException
-     * @throws \App\Exceptions\SignupClosedException
-     * @throws \App\Exceptions\SignupRequiredException
-     * @throws \App\Exceptions\WrongSignupTypeException
+     * @throws AttendanceRegisterDisabledException
+     * @throws SignupClosedException
+     * @throws SignupRequiredException
+     * @throws WrongSignupTypeException
      */
     public function attend(User $user, ?Event $event = null)
     {

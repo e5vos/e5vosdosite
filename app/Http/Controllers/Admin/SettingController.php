@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\SettingResource;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class SettingController extends Controller
 {
     /**
      * Display a listing of the settings.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -22,7 +23,7 @@ class SettingController extends Controller
     /**
      * Store a newly created setting in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create(Request $request)
     {
@@ -35,7 +36,7 @@ class SettingController extends Controller
      * Toggle the specified setting.
      *
      * @param  string  $key
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function set($key, $value)
     {
@@ -49,7 +50,7 @@ class SettingController extends Controller
      * Toggle a setting.
      *
      * @param  string  $key
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @deprecated
      */
@@ -65,7 +66,7 @@ class SettingController extends Controller
      * Remove the specified setting from storage.
      *
      * @param  string  $key
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($key)
     {

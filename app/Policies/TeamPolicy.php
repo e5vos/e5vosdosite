@@ -3,8 +3,10 @@
 namespace App\Policies;
 
 use App\Helpers\PermissionType;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class TeamPolicy
 {
@@ -23,7 +25,7 @@ class TeamPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function viewAny(User $user)
     {
@@ -33,8 +35,8 @@ class TeamPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param  Team  $team
+     * @return Response|bool
      */
     public function view(User $user)
     {
@@ -44,7 +46,7 @@ class TeamPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function create()
     {
@@ -54,8 +56,8 @@ class TeamPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param  Team  $team
+     * @return Response|bool
      */
     public function update(User $user)
     {
@@ -65,8 +67,8 @@ class TeamPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param  Team  $team
+     * @return Response|bool
      */
     public function delete(User $user)
     {
@@ -76,7 +78,7 @@ class TeamPolicy
     /**
      * Determine whether the user can restore the model.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function restore(User $user)
     {
@@ -86,7 +88,7 @@ class TeamPolicy
     /**
      * Determine whether the user can permanently delete the model.
      *
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @return Response|bool
      */
     public function forceDelete()
     {

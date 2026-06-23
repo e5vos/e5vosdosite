@@ -47,11 +47,12 @@ class UserPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, User $model)
+    public function update(User $user, ?User $model = null)
     {
         $modelId = $model?->id ?? request()->userId;
 
-        return $user->id === $modelId;
+        // Loose comparison: route parameters arrive as strings, $user->id is an int.
+        return $user->id == $modelId;
     }
 
     /**

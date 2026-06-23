@@ -78,7 +78,7 @@ Route::controller(EventController::class)->group(function () {
     Route::middleware(['auth:sanctum'])->get('/mypresentations', 'myPresentations')->name('events.mypresentations');
     Route::prefix('/event/{eventId}')->group(function () {
         Route::get('/', 'show')->name('event.show');
-        Route::get('/orgas', 'orgaisers')->name('event.orgas');
+        Route::get('/orgas', 'organisers')->name('event.orgas');
         Route::middleware(['auth:sanctum'])->group(function () {
             Route::put('/', 'update')->can('update', Event::class)->name('event.update');
             Route::delete('/', 'delete')->can('delete', Event::class)->name('event.delete');
@@ -89,7 +89,7 @@ Route::controller(EventController::class)->group(function () {
             Route::post('/signup', 'signup')->can('signup', Event::class)->name('event.signup');
             Route::delete('/signup', 'unsignup')->can('unsignup', Event::class)->name('event.unsignup');
             Route::post('/attend', 'attend')->can('attend', Event::class)->name('event.attend');
-            Route::post('/score', 'score')->can('setScore', Event::class)->name('event.setscore');
+            Route::post('/score', 'setScore')->can('setScore', Event::class)->name('event.setscore');
         });
     });
 });
@@ -145,7 +145,7 @@ Route::controller(LocationController::class)->group(function () {
     Route::get('/location/{locationId}/current_events', 'currentEvents')->name('locations.current_events');
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/location', 'store')->can('create', Location::class)->name('locations.store');
-        Route::put('/location/{locationId}', 'update')->can('udate', Location::class)->name('locations.update');
+        Route::put('/location/{locationId}', 'update')->can('update', Location::class)->name('locations.update');
         Route::delete('/location/{locationId}', 'destroy')->can('delete', Location::class)->name('locations.destroy');
     });
 });

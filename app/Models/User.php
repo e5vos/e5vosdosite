@@ -143,7 +143,7 @@ class User extends Authenticatable
      */
     public function teamMemberships(): HasMany
     {
-        return $this->hasMany(TeamMemberShip::class);
+        return $this->hasMany(TeamMembership::class);
     }
 
     /**
@@ -260,7 +260,9 @@ class User extends Authenticatable
 
             return Attendance::where('user_id', $this->id)->where('event_id', $event->id)->first();
         }
-        if ($event->slot !== null && $event->slot->slot_type == SlotType::presentation && $this->isBusyInSlot($event->slot)) {
+        // slot_type is stored as a string; compare against the enum's value
+        // (a string == enum comparison is always false).
+        if ($event->slot !== null && $event->slot->slot_type === SlotType::presentation->value && $this->isBusyInSlot($event->slot)) {
             throw new StudentBusyException;
         }
         if (

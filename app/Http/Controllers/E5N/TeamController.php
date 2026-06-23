@@ -51,19 +51,19 @@ class TeamController extends Controller
      */
     public function update(Request $request, $teamCode)
     {
-        $team = Cache::pull('e5n.teams.'.$teamCode) ?? Team::findOrFail($teamCode);
-        if (Cache::get('e5n.teams.'.$request->code)?->exists ?? Team::find($request->code)->exists) {
+        $team = Team::findOrFail($teamCode);
+        // Reject only a code change that collides with a different existing team.
+        if ($request->code && $request->code !== $teamCode && Team::where('code', $request->code)->exists()) {
             abort(409, 'Team already exists');
         }
         foreach ($request->all() as $key => $value) {
             $team->$key = $value;
         }
         $team->save();
-        $team = new TeamResource($team);
         Cache::forget('e5n.teams.all');
         Cache::forget('e5n.teams.'.$teamCode);
 
-        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => (new TeamResource($team))->jsonSerialize());
+        return Cache::rememberForever('e5n.teams.'.$team->code, fn () => (new TeamResource($team->load('members', 'activity')))->jsonSerialize());
     }
 
     /**

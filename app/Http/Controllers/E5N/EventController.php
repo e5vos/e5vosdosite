@@ -318,27 +318,30 @@ class EventController extends Controller
         );
     }
 
-    public function setScore(Request $request, $eventID)
+    public function setScore(Request $request, $eventId)
     {
         if (empty($request->attender)) {
-            abort('400', 'No attendeder');
+            abort(400, 'No attender');
         }
-        $event = Event::findOrFail($eventID);
+        $event = Event::findOrFail($eventId);
         if (is_numeric($request->attender)) {
-            $attendance = $event->attendances()->where('user_id', $request->attender)->findOrFail();
+            $attendance = $event->attendances()->where('user_id', $request->attender)->firstOrFail();
         } elseif (strlen($request->attender) == 13) {
             $user = User::where('e5code', $request->attender)->firstOrFail();
-            $attendance = $event->attendances()->whereBelongsTo($user)->findOrFail();
+            $attendance = $event->attendances()->where('user_id', $user->id)->firstOrFail();
         } else {
-            $attendance = $event->attendances()->Team::where('code', $request->attender)->firstOrFail();
+            $attendance = $event->attendances()->where('team_code', $request->attender)->firstOrFail();
         }
 
+        // A rank is unique within an event: release whoever currently holds it.
         $event->attendances()->where('rank', $request->rank)->update(['rank' => null]);
         $attendance->rank = $request->rank;
         $attendance->save();
 
-        Cache::forget('e5n.teams.'.$attendance->team->code);
-        Cache::forget('e5n.events.'.$eventID);
+        if ($attendance->team_code !== null) {
+            Cache::forget('e5n.teams.'.$attendance->team_code);
+        }
+        Cache::forget('e5n.events.'.$eventId);
 
         return response()->noContent();
     }

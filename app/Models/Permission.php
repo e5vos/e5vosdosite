@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Helpers\HasCompositeKey;
-use App\Helpers\PermissionType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -42,14 +41,17 @@ class Permission extends Model
     ];
 
     /**
-     * override the find method for composite key
+     * Override find() for the [user_id, event_id, code] composite key.
+     *
+     * Returns the matching permission or null. (event_id may be null for
+     * non-event-scoped permissions; where('event_id', null) becomes IS NULL.)
      */
     public static function find($id)
     {
         return static::where('user_id', $id[0])
             ->where('event_id', $id[1])
-            ->where('code', $id[1] ? PermissionType::Organiser->value : $id[2])
-            ->limit(1) ?? null;
+            ->where('code', $id[2])
+            ->first();
     }
 
     /**

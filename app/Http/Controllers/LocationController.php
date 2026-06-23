@@ -7,6 +7,7 @@ use App\Http\Resources\LocationResource;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class LocationController extends Controller
@@ -91,7 +92,7 @@ class LocationController extends Controller
     {
         $location = Location::findOrFail($locationId);
 
-        return Cache::rememberForever("locations.{$location->id}.events", fn () => EventResource::collecion($location->events())->jsonSerialize());
+        return Cache::rememberForever("locations.{$location->id}.events", fn () => EventResource::collection($location->events()->get())->jsonSerialize());
     }
 
     /**
@@ -102,14 +103,13 @@ class LocationController extends Controller
     public function currentEvents(int $locationId)
     {
         $location = Location::findOrFail($locationId);
-        $time = request()->time ?? now();
-        if (is_string($time)) {
-            $time = strtotime($time);
-        }
-        if (date_diff(now(), $time)->i > 5) {
-            return EventResource::collecion($location->currentEvents($time))->jsonSerialize();
+        $time = request()->time ? Carbon::parse(request()->time) : now();
+
+        // Only cache "now"-ish queries; a custom time far from now skips the cache.
+        if (abs($time->diffInMinutes(now())) > 5) {
+            return EventResource::collection($location->currentEvents($time)->get())->jsonSerialize();
         }
 
-        return Cache::remember("locations.{$location->id}.current_events", 360, fn () => EventResource::collecion($location->currentEvents($time))->jsonSerialize());
+        return Cache::remember("locations.{$location->id}.current_events", 360, fn () => EventResource::collection($location->currentEvents($time)->get())->jsonSerialize());
     }
 }

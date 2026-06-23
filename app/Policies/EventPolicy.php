@@ -42,6 +42,18 @@ class EventPolicy
     }
 
     /**
+     * Determine whether the user can set scores/ranks for the event.
+     *
+     * @return Response|bool
+     */
+    public function setScore(User $user, ?Event $event = null)
+    {
+        $eventId = $event->id ?? request()->eventId;
+
+        return $user->hasPermission(PermissionType::Admin->value) || $user->organisesEvent($eventId);
+    }
+
+    /**
      * Determine if the user can view the model.
      */
     public function view()

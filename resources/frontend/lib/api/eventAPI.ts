@@ -96,7 +96,7 @@ export const eventAPI = baseAPI.injectEndpoints({
         }),
         editEvent: builder.mutation<Event, Omit<Event, 'occupancy'>>({
             query: (event) => ({
-                url: routeSwitcher('event.update', { id: event.id }),
+                url: routeSwitcher('event.update', { eventId: event.id }),
                 method: 'PUT',
                 body: event,
             }),
@@ -124,7 +124,7 @@ export const eventAPI = baseAPI.injectEndpoints({
             { event: Pick<Event, 'id'>; attender: string | number }
         >({
             query: (body) => ({
-                url: routeSwitcher('event.signup', { id: body.event.id }),
+                url: routeSwitcher('event.signup', { eventId: body.event.id }),
                 method: 'POST',
                 body: { attender: body.attender },
             }),
@@ -180,7 +180,7 @@ export const eventAPI = baseAPI.injectEndpoints({
             { attender: string; event: Pick<Event, 'id'> }
         >({
             query: (body) => ({
-                url: routeSwitcher('event.signup', { id: body.event.id }),
+                url: routeSwitcher('event.signup', { eventId: body.event.id }),
                 method: 'DELETE',
                 body: { attender: body.attender },
             }),
@@ -190,7 +190,7 @@ export const eventAPI = baseAPI.injectEndpoints({
 
         deleteEvent: builder.mutation<void, Pick<Event, 'id'>>({
             query: ({ id }) => ({
-                url: routeSwitcher('event.delete', { id }),
+                url: routeSwitcher('event.delete', { eventId: id }),
                 method: 'DELETE',
             }),
             invalidatesTags: (_, err) =>
@@ -199,7 +199,7 @@ export const eventAPI = baseAPI.injectEndpoints({
 
         closeSignUp: builder.mutation<EventStub, Pick<Event, 'id'>>({
             query: ({ id }) => ({
-                url: routeSwitcher('event.close_signup', { id }),
+                url: routeSwitcher('event.close_signup', { eventId: id }),
                 method: 'PUT',
             }),
             invalidatesTags: (_, err, arg) =>
@@ -213,7 +213,7 @@ export const eventAPI = baseAPI.injectEndpoints({
 
         updateEvent: builder.mutation<EventStub, Omit<Event, 'occupancy'>>({
             query: (event) => ({
-                url: routeSwitcher('event.update', { id: event.id }),
+                url: routeSwitcher('event.update', { eventId: event.id }),
                 method: 'PUT',
                 body: event,
             }),

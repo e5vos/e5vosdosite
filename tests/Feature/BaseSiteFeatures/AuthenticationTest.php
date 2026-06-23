@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\BaseSiteFeatures;
 
 use App\Models\User;
 use Laravel\Socialite\Facades\Socialite;

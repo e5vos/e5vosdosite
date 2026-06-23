@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\BaseSiteFeatures;
 
 use App\Models\Permission;
 use App\Models\Setting;

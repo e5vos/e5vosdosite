@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\E5N;
 
 use App\Models\Event;
 use App\Models\Permission;

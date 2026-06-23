@@ -1,5 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import { setupListeners } from '@reduxjs/toolkit/dist/query'
+import { setupListeners } from '@reduxjs/toolkit/query'
 import { routerMiddleware } from 'connected-react-router'
 import { createBrowserHistory } from 'history'
 import {

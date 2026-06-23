@@ -24,7 +24,7 @@ class AttendanceSeeder extends Seeder
         foreach ($events as &$event) {
             $attendance_count = rand(0, $event->capacity ?? 30);
             if (str_contains($event->signup_type, 'user')) {
-                $current_users = $users->random(min($attendance_count / 2, count($users)));
+                $current_users = $users->random(min(intdiv($attendance_count, 2), count($users)));
                 Attendance::factory()
                     ->count(count($current_users))
                     ->sequence(
@@ -36,7 +36,7 @@ class AttendanceSeeder extends Seeder
                     ->create();
             }
             if (str_contains($event->signup_type, 'team')) {
-                $current_teams = $teams->random(min($attendance_count / 2, count($teams)));
+                $current_teams = $teams->random(min(intdiv($attendance_count, 2), count($teams)));
                 Attendance::factory()
                     ->count(count($current_teams))
                     ->sequence(

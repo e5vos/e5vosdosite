@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -85,18 +84,18 @@ class User extends Authenticatable
     }
 
     /**
-     * Determine if the user has the $code permission
+     * Determine if the user has the $code permission.
      *
-     * @return bool
+     * Reads permissions fresh on each call. The previous implementation cached
+     * the codes in the $_SESSION superglobal, which is shared across requests
+     * in a persistent worker (Octane/Bref) and therefore leaked one user's
+     * permissions to another; it also never invalidated on permission changes.
      */
-    public function hasPermission(string $code)
+    public function hasPermission(string $code): bool
     {
-        $permissions = $_SESSION['permissions'] ?? Cache::remember('users.'.$this->id.'.permissions', now()->addMinutes(5), function () {
-            return $this->permissions()->get()->pluck('code')->toArray();
-        });
-        $_SESSION['permissions'] = $permissions;
+        $codes = $this->permissions()->pluck('code')->all();
 
-        return in_array($code, $permissions) || in_array(PermissionType::Operator->value, $permissions);
+        return in_array($code, $codes) || in_array(PermissionType::Operator->value, $codes);
     }
 
     /**
